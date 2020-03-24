@@ -23,16 +23,19 @@ else:
 #%% Load the data
 parser = argparse.ArgumentParser(description="Generate simulated SAR data")
 
-#parser.add_argument("--config-xml", help="The config XML file", 
-#                    default = u'/home/ishuwa/simulation/30cm/30cm_simulation.xml')
-
 parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u"E:\\Users\\SIKANETAI\\simulation\\30cm\\30cm_simulation.xml")
-
-parser.add_argument("--compressed-range-samples",
-                    help="The number of compressed range samples to retain in each file",
+                    default = u'/home/ishuwa/simulation/40cm/40cm_simulation.xml')
+parser.add_argument("--radar-idx",
+                    help=""" The indexes of the radar files to create. This 
+                    allows the program to be run simulataneously on different 
+                    CPUs to create the data""",
+                    nargs = "*",
                     type=int,
                     default = None)
+# parser.add_argument("--compressed-range-samples",
+#                     help="The number of compressed range samples to retain in each file",
+#                     type=int,
+#                     default = None)
 vv = parser.parse_args()
 
 #%%

@@ -1,7 +1,8 @@
 #!/usr/bin/env python2.7
 
 #%%
-""" This python program should generate the config files for burst mode multi or single channel data
+""" This python program should generate the config files for burst mode multi 
+    or single channel data.
     The program generates an xml file to be processed in MATLAB """
 
 import numpy as np
@@ -12,10 +13,12 @@ from copy import deepcopy
 import lxml.etree as etree
 from functools import reduce
 import os
+from scipy.constants import c
+from generateXML.base_XML import base_XML_XBand
 
 #%% Write to file
 def createXMLStructure(folder): 
-    for fd in ["l0_data", "l1_data", "l2_data"]:
+    for fd in ["simulation_data", "simulation_plots"]:
         tfd = os.path.join(folder, fd)
         if not os.path.exists(tfd):
             try:
@@ -31,69 +34,15 @@ def writeToXML(xml_file_name, xml):
         outfile.write(etree.tostring(xml, pretty_print=True).decode())
     
 #%% Generate the XML object. This code needs refactoring and documentation
-def generateXML(vv):
+def generateXML(vv,
+                va = 7500.0,
+                nearRange = 5.568856572102291e-03,
+                element_length = 0.04):
+    
     print("SURE configuration generator")
     numAziSamples = 8192
-    burst_LENGTH = 4 
-    p = etree.XMLParser(remove_blank_text=True)
-    
-    base_XML_CBand = """
-    <gmtiAuxDataParams schemaVersion="1.0">
-      <acquisitionParameters>
-        <mode>Ish_Burst_Mode</mode>
-        <instrument>
-          <antennaArray>     
-            <carrierFrequency unit="Hz">5.405e9</carrierFrequency>
-            <azimuthPositions unit="m">0.4688 1.4062 2.3438 3.2812 4.2188 5.1562 6.0938 7.0312 7.9688 8.9062 9.8438 10.7812 11.7188 12.6562 13.5938 14.5312</azimuthPositions>
-            <elevationPositions unit="m">0.75</elevationPositions>
-            <azimuthElementLengths unit="m">0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286</azimuthElementLengths>
-            <elevationElementLengths unit="m">1.5</elevationElementLengths>
-            <transmitPowers unit="dB">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</transmitPowers>
-            <systemTemperature unit="degrees" system="Kelvin">297</systemTemperature>
-            <systemLosses unit="dB">-5.3</systemLosses>
-          </antennaArray>
-                      
-          <lookDirection>Right</lookDirection>
-          <orbit>
-            <inclination unit="degrees">98.6</inclination>
-            <eccentricity>0.00</eccentricity>
-            <semiMajorAxis unit="m">7071009</semiMajorAxis>
-            <angleOfPerigee unit="degrees">90.0</angleOfPerigee>
-            <orbitAngle unit="degrees">60</orbitAngle>
-          </orbit>
-        </instrument>
-        <platformLongitude unit="degrees" referenceEllipsoid="WGS84">90</platformLongitude>
-      </acquisitionParameters>
-    </gmtiAuxDataParams>"""
-    
-    base_XML_XBand = """
-    <gmtiAuxDataParams schemaVersion="1.0">
-      <acquisitionParameters>
-        <mode>Ish_Burst_Mode</mode>
-        <instrument>
-          <antennaArray>     
-            <carrierFrequency unit="Hz">9.650e9</carrierFrequency>
-            <azimuthPositions unit="m">0.4688 1.4062 2.3438 3.2812 4.2188 5.1562 6.0938 7.0312 7.9688 8.9062 9.8438 10.7812 11.7188 12.6562 13.5938 14.5312</azimuthPositions>
-            <elevationPositions unit="m">0.75</elevationPositions>
-            <azimuthElementLengths unit="m">0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286</azimuthElementLengths>
-            <elevationElementLengths unit="m">1.5</elevationElementLengths>
-            <transmitPowers unit="dB">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</transmitPowers>
-            <systemTemperature unit="degrees" system="Kelvin">297</systemTemperature>
-            <systemLosses unit="dB">-5.3</systemLosses>
-          </antennaArray>
-                      
-          <lookDirection>Right</lookDirection>
-          <orbit>
-            <inclination unit="degrees">98.6</inclination>
-            <eccentricity>0.00</eccentricity>
-            <semiMajorAxis unit="m">7071009</semiMajorAxis>
-            <angleOfPerigee unit="degrees">90.0</angleOfPerigee>
-            <orbitAngle unit="degrees">60</orbitAngle>
-          </orbit>
-        </instrument>
-        <platformLongitude unit="degrees" referenceEllipsoid="WGS84">90</platformLongitude>
-      </acquisitionParameters>
-    </gmtiAuxDataParams>"""
+    # burst_LENGTH = 4 
+    # p = etree.XMLParser(remove_blank_text=True)
     
     #%% Generate the base XML object
     pq = etree.XMLParser(remove_blank_text=True)
@@ -101,19 +50,16 @@ def generateXML(vv):
     fc = float(xml.find(".//carrierFrequency").text)
         
     #%% Set some defaults
-    c = 299792458.0
-    va = 7500.0
     azimuthResolution = vv.az_resolution
     rangeResolution = vv.rn_resolution
     range_BANDWIDTH = c/2.0/rangeResolution
-    range_OVERSAMPLING = vv.rn_oversample
-    nearRange = 5.568856572102291e-03
-    deltaR = 1.0/range_OVERSAMPLING/range_BANDWIDTH
+    deltaR = 1.0/vv.rn_oversample/range_BANDWIDTH
     swathWidth = vv.swath_width
-    #numRngSamples = swathWidth/(deltaR*c/2.0)
     rangeTimeBufferFactor = 2.0
-    min_M = int(np.ceil(rangeTimeBufferFactor*va*2.0*swathWidth/azimuthResolution/c - 1)) 
-    max_M = int(np.floor(np.sqrt(vv.max_antenna_length/azimuthResolution/2) - 1))
+    min_M = int(np.ceil(rangeTimeBufferFactor*va*2.0*swathWidth
+                        /azimuthResolution/c - 1)) 
+    max_M = int(np.floor(np.sqrt(vv.max_antenna_length
+                                 /azimuthResolution/2) - 1))
     if max_M >= min_M:
         M = max_M
     else:
@@ -124,19 +70,23 @@ def generateXML(vv):
     print("Antenna total length: %0.2f m" % (2.0*azimuthResolution*(M+1)**2))
     print("Sub-aperture length: %0.2f m" % (2.0*azimuthResolution*(M+1)))
     print("Ideal PRF: %0.4f Hz" % (va/(M+1)/azimuthResolution))
+    
     #%%   
     number_beams = number_channels
-    aziDoppler = 0.9*va/azimuthResolution
+    aziDoppler = va/azimuthResolution
     beam_DOPPLER = aziDoppler/number_channels
-    #azimuth_OVERSAMPLING = 1.0
-    prf = (va/(number_channels)/azimuthResolution)
+    prf = (va/(number_channels)/azimuthResolution)*vv.az_oversample
     near_RANGE = nearRange*c/2.0
     far_RANGE = near_RANGE+swathWidth
     sample_FACTOR = 1.5
-    channel_LEN = np.int(np.round(sample_FACTOR*far_RANGE*(c/fc)*(prf/number_channels)*(beam_DOPPLER)/2.0/(va**2)))
+    channel_LEN = np.int(np.round(sample_FACTOR*far_RANGE*(c/fc)
+                                  *(prf/number_channels)
+                                  *(beam_DOPPLER)
+                                  /2.0/(va**2)))
     print("Doppler bandwidth per beam: %f Hz" % beam_DOPPLER)
     print("Number of samples per beam in aperture: %d" % channel_LEN)
-    print("Number of samples/aperture (channels and beams combined): %d" % (channel_LEN*number_channels*number_beams))
+    print("Number of samples/aperture (channels and beams combined): %d" 
+          % (channel_LEN*number_channels*number_beams))
     print("Near range: %f m" % near_RANGE)
     print("Far range: %f m" % far_RANGE)
     print("Number of channels: %d" % number_channels)
@@ -147,30 +97,37 @@ def generateXML(vv):
     #%%
     numAziSamples = 2*channel_LEN*(2+number_channels*number_beams)
     
-    element_length = 0.04
     #subarray_length = 2.2
     subarray_length = number_channels*azimuthResolution*2.0
     
     
-    # Compute the channel tables for each pulse in the g vector. i.e. put in the squint
-    #allModes = []
+    # Compute the channel tables for each pulse in the g vector. 
+    # i.e. put in the squint
     subarray_elements = int(subarray_length/element_length)
     element_spacing = subarray_length/subarray_elements
     print("Beam spread interval: %f Hz" % beam_DOPPLER)
     print("Antenna Element Length: %f m" % element_length)
     print("Subarray Length: %f m" % subarray_length)
-    subarray_centres = [(pos-(number_channels-1)/2.0)*subarray_length for pos in range(number_channels)]
-    azi_positions = [[subpos + element_spacing/2.0 - subarray_length/2.0 + k*element_spacing for k in range(subarray_elements)] for subpos in subarray_centres]
+    subarray_centres = [(pos-(number_channels-1)/2.0)*subarray_length 
+                        for pos in range(number_channels)]
+    azi_positions = [[subpos + element_spacing/2.0 - 
+                      subarray_length/2.0 + k*element_spacing 
+                      for k in range(subarray_elements)] 
+                     for subpos in subarray_centres]
     
     #%%
     
     flattened_azi_positions = reduce(lambda x,y: x+y, azi_positions)
     str_azi_pos = ["%0.6f" % pos for pos in flattened_azi_positions]
-    str_azi_len = ["%0.6f" % element_length for pos in flattened_azi_positions]
-    str_azi_pwr = ["%0.1f" % vv.element_power for pos in flattened_azi_positions]
-    print("Azimuth positions:")
-    print("----------------------------------------------------")
-    print(" ".join(str_azi_pos))
+    str_azi_len = ["%0.6f" % element_length 
+                   for pos in flattened_azi_positions]
+    str_azi_pwr = ["%0.1f" % vv.element_power 
+                   for pos in flattened_azi_positions]
+    print_azi=False
+    if print_azi:
+        print("Azimuth positions:")
+        print("----------------------------------------------------")
+        print(" ".join(str_azi_pos))
     azimuthPosNode = xml.find('.//azimuthPositions')
     azimuthPosNode.text = " ".join(str_azi_pos)
     azimuthLenNode = xml.find('.//azimuthElementLengths')
@@ -179,7 +136,8 @@ def generateXML(vv):
     azimuthPwrNode.text = " ".join(str_azi_pwr)
     
     # Calculate the Doppler centroids for each beam
-    beam_DC = [beam_DOPPLER*(pos-(number_beams-1)/2.0) for pos in range(number_beams)]
+    beam_DC = [beam_DOPPLER*(pos-(number_beams-1)/2.0) 
+               for pos in range(number_beams)]
     reducedPRF = prf/len(beam_DC)
     print("Doppler frequencies:")
     print("----------------------------------------------------")
@@ -188,10 +146,12 @@ def generateXML(vv):
      
     # Generate the reference time from which to compute the offsets. e.t.c.
     reference_TIME = datetime.combine(date(2015,1,1),time(0,0,0))
-    sample_TIMES = [reference_TIME + timedelta(seconds=float(s)/prf) for s in range(len(beam_DC))]
+    sample_TIMES = [reference_TIME + timedelta(seconds=float(s)/prf) 
+                    for s in range(len(beam_DC))]
     nref_TIME = np.datetime64("2015-01-01T00:00:00")
     nsample_TIMES = [nref_TIME
-                     + np.timedelta64(int(np.round(1.0e9*float(s)/prf)), 'ns') for s in range(len(beam_DC))]
+                     + np.timedelta64(int(np.round(1.0e9*float(s)/prf)), 'ns') 
+                     for s in range(len(beam_DC))]
     
     # Calculate how many extra range samples we'll need
     u = c/fc/(4*azimuthResolution)
@@ -203,16 +163,40 @@ def generateXML(vv):
     # Add the offset due to range migration to the nim range samples
     print("RCM additional range: %f" % (RMC_range))
     print("Full simulation required range samples: %f" % sim_range_samples)
-    print("New computation: %f" % (2.0*far_RANGE/c*(1.0/np.cos(c/fc/azimuthResolution) - 1)/deltaR))
+    print("New computation: %f" 
+          % (2.0*far_RANGE/c*(1.0/np.cos(c/fc/azimuthResolution) - 1)/deltaR))
     print("Minumum number of range samples in a pulse: %f" % min_range_samples)
-    liked_range_samples = np.array(sorted(np.outer(3**(np.arange(5)), 2**(9 + np.arange(10))).flatten()))
+    liked_range_samples = np.array(sorted(
+        np.outer(3**(np.arange(5)), 2**(9 + np.arange(10))).flatten()))
     numRngSamples = liked_range_samples[liked_range_samples>min_range_samples][0]
     print("Number of range samples for this simulation: %d" % numRngSamples)
+    print("Number of azimuth samples per signal file: %d" 
+          % int(numAziSamples/number_beams))
+    #%% Estimate the size of the data
+    numSigElements = number_channels*len(beam_DC)
+    fileSize = 16*numRngSamples*numAziSamples/number_beams
+    print("Total number of signal elements: %d" % numSigElements)
+    print("Size of each signal data file: %d" % int(fileSize))
+    print("Size of all signal files in memory: %f (GB)" 
+          % float(fileSize*numSigElements/1e9))
+    
+    predicted_bands = np.arange(-int(numSigElements/2)-2,
+                                int(numSigElements/2)+1+2)
+    print("Predicted number of bands: %d" % len(predicted_bands))
+    mchanFileSize = len(predicted_bands)*fileSize
+    print("Predicted size of multi-channel processed file: %f (GB)" 
+          % float(mchanFileSize/1e9))
+    print("Peak memory requirement (approx): %f (GB)" 
+          % float((mchanFileSize+fileSize*numSigElements)/1e9))
     
     # Create the mode XML mode mode snippet
-    for fd,n,thisTime,isoTime in zip(beam_DC, range(len(beam_DC)), sample_TIMES, nsample_TIMES):
+    for fd,n,thisTime,isoTime in zip(beam_DC, 
+                                     range(len(beam_DC)), 
+                                     sample_TIMES, 
+                                     nsample_TIMES):
         phases = [[pi*x*fd/va for x in azipos] for azipos in azi_positions]
-        truedelay = [[1.0e9*x/(2.0*va)*fd/fc for x in azipos] for azipos in azi_positions]
+        truedelay = [[1.0e9*x/(2.0*va)*fd/fc for x in azipos] 
+                     for azipos in azi_positions]
                 
         for channel in range(number_channels):
             signalData = etree.Element("signalData")
@@ -242,9 +226,9 @@ def generateXML(vv):
             numRangeSamples = etree.SubElement(signalData,"numRangeSamples")
             numRangeSamples.set("unit","Pixels")
             numRangeSamples.text = "%d" % numRngSamples
-            #numRangeSamples.text = "%d" % int(numRngSamples*(1.0+np.abs(beam_Angle)))
     
-            numAzimuthSamples = etree.SubElement(signalData,"numAzimuthSamples")
+            numAzimuthSamples = etree.SubElement(signalData,
+                                                 "numAzimuthSamples")
             numAzimuthSamples.set("unit","Pixels")
             numAzimuthSamples.text = "%d" % (numAziSamples/number_beams)
     
@@ -252,13 +236,14 @@ def generateXML(vv):
             nearRangeTime = etree.SubElement(signalData,"nearRangeTime")
             nearRangeTime.set("unit","s")
             nearRangeTime.text = "%0.10e" % nearRange
-            #nearRangeTime.text = "%0.10e" % (nearRange + int(nearRange*np.abs(beam_Angle)/deltaR)*deltaR)
     
-            rangeSampleSpacing = etree.SubElement(signalData,"rangeSampleSpacing")
+            rangeSampleSpacing = etree.SubElement(signalData,
+                                                  "rangeSampleSpacing")
             rangeSampleSpacing.set("unit","s")
             rangeSampleSpacing.text = "%0.6e" % deltaR
     
-            pulseRepetitionFrequency = etree.SubElement(signalData,"pulseRepetitionFrequency")
+            pulseRepetitionFrequency = etree.SubElement(signalData,
+                                                        "pulseRepetitionFrequency")
             pulseRepetitionFrequency.set("unit","Hz")
             pulseRepetitionFrequency.text = "%0.4f" % reducedPRF
     
@@ -280,27 +265,35 @@ def generateXML(vv):
             Rpol = etree.Element("polarization")
             Rpol.text = "H"
             txChanMask = [int(bool(x==txChan)) for x in range(number_beams)]
-            txWeight = [[y for x in azi_positions[channel]] for y in txChanMask]
+            txWeight = [[y for x in azi_positions[channel]] 
+                        for y in txChanMask]
             txMag = etree.Element("magnitude")
             txMag.set("unit", "natural")
-            txMag.text = " ".join(["%d" % x for x in reduce(lambda x,y: x+y, txWeight)])
+            txMag.text = " ".join(["%d" % x for x in 
+                                   reduce(lambda x,y: x+y, txWeight)])
             txPhase = etree.Element("phase")
             txPhase.set("unit", "radians")
-            txPhase.text = " ".join(["%0.3f" % x for x in reduce(lambda x,y: x+y, phases)])
+            txPhase.text = " ".join(["%0.3f" % x for x in 
+                                     reduce(lambda x,y: x+y, phases)])
             txDelay = etree.Element("truedelay")
             txDelay.set("unit", "ns")
-            txDelay.text = " ".join(["%0.6f" % x for x in reduce(lambda x,y: x+y, truedelay)])
+            txDelay.text = " ".join(["%0.6f" % x for x in 
+                                     reduce(lambda x,y: x+y, truedelay)])
             rxChanMask = [int(bool(x==channel)) for x in range(number_beams)]
-            rxWeight = [[y for x in azi_positions[channel]] for y in rxChanMask]
+            rxWeight = [[y for x in azi_positions[channel]] 
+                        for y in rxChanMask]
             rxMag = etree.Element("magnitude")
             rxMag.set("unit", "natural")
-            rxMag.text = " ".join(["%d" % x for x in reduce(lambda x,y: x+y, rxWeight)])
+            rxMag.text = " ".join(["%d" % x for x in 
+                                   reduce(lambda x,y: x+y, rxWeight)])
             rxPhase = etree.Element("phase")
             rxPhase.set("unit", "radians")
-            rxPhase.text = " ".join(["%0.3f" % x for x in reduce(lambda x,y: x+y, phases)])
+            rxPhase.text = " ".join(["%0.3f" % x for x in 
+                                     reduce(lambda x,y: x+y, phases)])
             rxDelay = etree.Element("truedelay")
             rxDelay.set("unit", "ns")
-            rxDelay.text = " ".join(["%0.6f" % x for x in reduce(lambda x,y: x+y, truedelay)])
+            rxDelay.text = " ".join(["%0.6f" % x for x in 
+                                     reduce(lambda x,y: x+y, truedelay)])
             txuZero = etree.Element("u0")
             txuZero.set("unit", "radians")
             txuZero.text = "%0.6e" % beam_Angle
@@ -326,7 +319,7 @@ def generateXML(vv):
                                                       channel, 
                                                       n)
             thisfilename.text = os.path.sep.join([os.path.split(vv.config_xml)[0],
-                                                  "l0_data", 
+                                                  "simulation_data", 
                                                   thisfilename_text])
             xml.append(signalData)
             

@@ -12,6 +12,7 @@ import omegak.omegak as wk
 import omegak.nbomegak as nbwk
 from scipy.constants import Boltzmann
 import os
+import pickle
 from numba import cuda
 if cuda.is_available():
     from antenna.pattern import antennaResponseCudaMem as antennaResp
@@ -161,8 +162,25 @@ class stringConverters:
             return None
         
         
-#%% The configuration ode        
+#%% The configuration XML file from pickle file if possible
 def loadConfiguration(configFile = None):
+    # Make sure there is a config file
+    configFile = configFile or defaultConfig
+    pkl_file = ".".join(configFile.split(".")[0:-1]) + "_radar.pickle"
+    if os.path.exists(pkl_file):
+        print("Loading radar metadata from pickle file...")
+        with open(pkl_file, 'rb') as f:
+           radar = pickle.load(f)
+    else:
+        print("Loading radar metadata from raw calculations...(takes a while)")
+        radar = loadConfigurationRaw(configFile)
+        print("Writing radar metadata to pickle file...")
+        with open(pkl_file, 'wb') as f:
+            pickle.dump(radar, f, pickle.HIGHEST_PROTOCOL)
+    return radar
+    
+#%% Read the configuration xml file   
+def loadConfigurationRaw(configFile = None):
     # Make sure there is a config file
     configFile = configFile or defaultConfig
     
@@ -944,6 +962,7 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
     rows = len(r_sys.ks_full)
     
     """ Allocate memory and calculate indeces for the pulse workspace """
+    Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
     Yos_idx = np.round(FFT_freq(cols,cols,0)).astype('int')
     
     dkr = r_sys.kr[1]-r_sys.kr[0]
@@ -968,37 +987,18 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
                                     r_sys.C.a2,
                                     r_sys.C.a3,
                                     r_sys.C.a4,
-                                    max_iter=5,
-                                    error_tol = 1e-5)
+                                    max_iter=10,
+                                    error_tol = 1e-10)
         
         """ Perform the interpolation """
         print("Interpolating the signal...")
-        Yos = np.zeros((n_rows, cols*os_factor), dtype=np.complex128)
-        #Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
+        Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
         chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
-        chunk_DATA = np.fft.fft(chunk_DATA[:,r_sys.kridx], axis=1)
-        Yos[:,Yos_idx] = chunk_DATA
-        Yos = np.fft.ifft(Yos, axis=1)*os_factor
-        Xnew = (iP - r_sys.kr_sorted[0])/dkr
-        invalid = (Xnew<0.0) | (Xnew>(cols-1))
-
-        Xnew[invalid] = 0.0
-        xx = Xnew*os_factor
-        
-        # calculate the floor, ceiling and fractional indeces
-        xx_floor = np.floor(xx).astype('int')
-        xx_ceil = np.ceil(xx).astype('int')
-        xx_fraction = xx - xx_floor
-            
-        # Compute the linearly interpolated values
-        row_IDX = np.matlib.repmat(np.arange(n_rows), cols, 1).T
-        YY = (1.0-xx_fraction)*Yos[row_IDX, xx_floor] + xx_fraction*Yos[row_IDX, xx_ceil] 
-        YY[invalid] = 0.0
-        #nbwk.interpolatePulsesCx(chunk_DATA, 
-        #                        YY,
-        #                        (iP - r_sys.kr_sorted[0])/dkr, 
-        #                        Yos, 
-        #                        Yos_idx)
+        nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
+                                YY,
+                                (iP - r_sys.kr_sorted[0])/dkr, 
+                                Yos, 
+                                Yos_idx)
         
         
         """ Re-order the data"""
@@ -1019,8 +1019,6 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
         print("Done")
         return None
     else:
-        wk_processed = np.fft.ifft(wk_processed, axis=1)
-        
         return wk_processed
     
 #%% Define a function to load the data with given file naming

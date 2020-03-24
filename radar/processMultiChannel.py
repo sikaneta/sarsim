@@ -27,7 +27,7 @@ parser.add_argument("--processed-file",
 parser.add_argument("--make-plots",
                     help="Generate plots along the way",
                     action='store_true',
-                    default=False)
+                    default=True)
 vv = parser.parse_args()
 
 #%% Load the radar configuration
@@ -44,10 +44,7 @@ bands = np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
 r_sys = cfg.radar_system(radar, bands)
 
 #%% Multi-channel process the data
-procData, _ = cfg.multiChannelProcess(radar, bands, p=0.5)
-
-#%% Write data to file
-np.save(output_file, procData)
+procData, _ = cfg.multiChannelProcess(radar, bands, p=0.9)
 
 #%% Look at a plot
 sim_folder = os.path.split(vv.config_xml)[0]
@@ -61,6 +58,8 @@ if vv.make_plots:
     plt.grid()
     plt.show()
 
+#%% Write data to file
+np.save(output_file, procData)
 
 #%% Transform the data into the time domain
 procData = np.fft.ifft(procData, axis=0)

@@ -15,6 +15,9 @@ elif "HOME" in os.environ.keys():
     default_simulation_file = os.path.sep.join([os.environ["HOME"],"simulation","1m","1m_simulation.xml"])
     
 parser = argparse.ArgumentParser(description="Generate multi-channel XML file")
+parser.add_argument("--sim-folder",
+                    help="Folder in which to place simulated data and files",
+                    default= "./")
 parser.add_argument("--config-xml", 
                     help="The XML file", 
                     default = default_simulation_file)
@@ -42,11 +45,11 @@ parser.add_argument("--range-samples",
 parser.add_argument("--rn-oversample",
                     help="The desired range oversample factor",
                     type = float,
-                    default = 1.5)
+                    default = 1.2)
 parser.add_argument("--az-oversample",
                     help="The desired azimuth oversample factor",
                     type = float,
-                    default = 1.5)
+                    default = 1.2)
 parser.add_argument("--pulse-duration",
                     help="Desired pulse duration in us",
                     type = float,
@@ -65,6 +68,8 @@ parser.add_argument("--file-data-domain",
 vv = parser.parse_args()
 
 #%% Create the XML object
+if os.path.abspath(vv.config_xml) != vv.config_xml:
+    vv.config_xml = os.path.join(os.path.abspath(vv.sim_folder), vv.config_xml)
 myxml = s_config.generateXML(vv)
 
 #%% Create the target directory if it does not exist

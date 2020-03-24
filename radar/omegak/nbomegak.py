@@ -42,7 +42,7 @@ def df(x, p0, p1, p2, p3, p4, r, a2, a3, a4):
             p4*dkernel_factored(x,4,1,4,r,a2,a3,a4))
 
 
-"""@njit(parallel=True)"""
+@jit(forceobj=True)
 def interpolatePulsesCx(Y, YY, Xnew, Yos, Yos_idx):
     """This function interpolates the values of the matrix Y and writes
     the interpolated values into the matrix YY. Y and YY are matrices
@@ -59,23 +59,28 @@ def interpolatePulsesCx(Y, YY, Xnew, Yos, Yos_idx):
     # Switch to frequency domain and insert zero-padded values into
     oversample = Yos.shape[0]/Y.shape[1]
     
-    # Calculate the new interpolation indeces
-    invalid = (Xnew<0.0) | (Xnew>(cols-1))
-    Xnew[invalid] = 0.0
-    xx = Xnew*oversample
-    
-    # calculate the floor, ceiling and fractional indeces
-    xx_floor = np.floor(xx).astype('int')
-    xx_ceil = np.ceil(xx).astype('int')
-    xx_fraction = xx - xx_floor
+    for row in prange(rows):
+        Yos *= 0.0
+        Yos[Yos_idx] = np.fft.fft(Y[row,:])
+        Yos = np.fft.ifft(Yos)*oversample
         
-    # Compute the linearly interpolated values
-    row_IDX = np.matlib.repmat(np.arange(rows), cols, 1).T
-    YY = (1.0-xx_fraction)*Yos[row_IDX, xx_floor] + xx_fraction*Yos[row_IDX, xx_ceil] 
-    YY[invalid] = 0.0
+        # Calculate the new interpolation indeces
+        invalid = (Xnew[row,:]<0.0) | (Xnew[row,:]>(cols-1))
+        Xnew[row, invalid] = 0.0
+        xx = Xnew[row,:]*oversample
+        
+        # calculate the floor, ceiling and fractional indeces
+        xx_floor = np.floor(xx).astype('int')
+        xx_ceil = np.ceil(xx).astype('int')
+        xx_fraction = xx - xx_floor
+        
+        # Compute the linearly interpolated values
+        YY[row,:] = (1.0-xx_fraction)*Yos[xx_floor] + xx_fraction*Yos[xx_ceil] 
+        YY[row,invalid] = 0.0
     
+
 #%% Compute the interpolation points
-@njit(parallel=True)
+@njit#(parallel=True)
 def getInterpolationPoints(KS, 
                            KR,
                            iP,
@@ -87,8 +92,8 @@ def getInterpolationPoints(KS,
                            error_tol = 1e-6):
     
     num_azi_samples = len(KS)#.shape[0]
-    for row in prange(num_azi_samples):
-        ks = KS[row]
+    for l in prange(num_azi_samples):
+        ks = KS[l]
         #% Get the initial guess
         X_n = r/np.sqrt(a2)*ks/np.sqrt(a2*KR**2-ks**2)
         
@@ -116,7 +121,7 @@ def getInterpolationPoints(KS,
                 break
         
         #% Write to the array
-        iP[row,:] = (r*KR*kernel(X_n, 0, 0.5, 0, r, a2, a3, a4) + 
+        iP[l,:] = (r*KR*kernel(X_n, 0, 0.5, 0, r, a2, a3, a4) + 
                    ks*np.sqrt(a2)*kernel(X_n, 1, 0.5, 1, r, a2, a3, a4))
         
     
