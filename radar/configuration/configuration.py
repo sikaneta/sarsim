@@ -704,6 +704,8 @@ class radar_system:
         self.Na = ref['numAzimuthSamples']
         self.prf = ref['prf']
         self.nearRangeTime = rad['acquisition']['nearRangeTime']
+        self.r = (self.nearRangeTime + 
+                  np.arange(self.Nr, dtype=np.double)/self.fs)*physical.c/2.0
         self.near_range = self.nearRangeTime*physical.c/2.0
         self.mid_range = (self.nearRangeTime + (self.Nr/2-1)/self.fs)*physical.c/2.0
         self.far_range = (self.nearRangeTime + (self.Nr-1)/self.fs)*physical.c/2.0
@@ -849,7 +851,12 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
     call
     """
     
-    r = r or np.linalg.norm(r_sys.C.R)
+    try:
+        r = r or np.linalg.norm(r_sys.C.R)
+    except AttributeError as aE:
+        print("will use center range for o-w processing")
+        r = np.mean(r_sys.r)
+        
     r2t = 2.0/c
     cols = len(r_sys.kr_sorted)
     rows = len(r_sys.ks_full)
