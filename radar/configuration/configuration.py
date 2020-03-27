@@ -10,7 +10,7 @@ from geoComputer.geoComputer import satGeometry as sG
 from common.utils import FFT_freq
 import omegak.omegak as wk
 import omegak.nbomegak as nbwk
-from scipy.constants import Boltzmann
+from scipy.constants import Boltzmann, c
 import os
 import pickle
 from numba import cuda
@@ -832,113 +832,6 @@ def multiChannelProcess(radar, bands=None, p=0.5, make_plots=False, SNR = 1.0):
         procData[:,k] = procData[r_sys.ksidx[r_sys.ks_full_idx], k]
     return procData, r_sys
 
-# #%% SAR process the signal. Many assumptions are made about the signal
-# def wkProcess(procData, r_sys, r=None, os_factor=8, mem_rows=1024):
-#     rows = len(r_sys.kr_sorted)
-#     cols = len(r_sys.ks_full)
-#     #krIntIdx = np.zeros(procData.shape, dtype=np.double)
-#     #krInterpArray = np.zeros(procData.shape, dtype=np.double)
-#     krIntIdx = np.zeros((rows,cols), dtype=np.double)
-#     krInterpArray = np.zeros((rows,cols), dtype=np.double)
-#     dkr = r_sys.kr[1]-r_sys.kr[0]
-#     #rows, cols = procData.shape
-    
-#     print("Generating the Stolz interpolation points...")
-#     krInterpArray = wk.getInterpolationPoints(r_sys)
-#     krIntIdx = (krInterpArray - r_sys.kr_sorted[0])/dkr
-# #    for azIdx in range(cols):
-# #        #krInt, error = wk.getInterpolationPoints(kr_sorted, kx[azIdx], p)
-# #        #krInt = wk.getInterpolationPoints(r_sys.kr_sorted, r_sys.ks_full[azIdx], r_sys.C.a2)
-# #        #krInt = wk.getInterpolationPointsNew(r_sys, r_sys.ks_full[azIdx], r)
-# #        krInterpArray[:, azIdx] = krInt
-# #        krIntIdx[:, azIdx] = (krInt - r_sys.kr_sorted[0])/dkr
-#     krInterpArray = krInterpArray[r_sys.kridx_inv, :]
-
-#     #% Interpolate the signal
-#     print("Interpolating the signal...")
-#     zInterp = wk.interpolateCxIntMem(procData[r_sys.kridx,:], 
-#                                      krIntIdx, 
-#                                      mem_rows, 
-#                                      oversample = os_factor)
-#     zInterp = zInterp[r_sys.kridx_inv, :]
-#     # wk.phaseR(KR, KX, p)
-#     [KS, KR]=np.meshgrid(r_sys.ks_full, r_sys.kr)
-#     #KY = np.sqrt(KR**2 + KS**2/r_sys.C.a2)
-
-#     #% Phase multiply the signal
-#     print("Correcting residual phase and applying IFFT...")
-#     r = r or np.linalg.norm(r_sys.C.R)
-#     r2t = 2.0/physical.c
-#     wkSignal = np.fft.ifft2(zInterp*np.exp(-1j*(krInterpArray-KR)*r_sys.nearRangeTime/r2t))
-#     #wkSignal = np.fft.ifft2(zInterp*np.exp(-1j*(krInterpArray*r_sys.nearRangeTime/r2t-KR*r)))
-#     wkSignal = wkSignal/np.max(np.abs(wkSignal))
-    
-#     return wkSignal
-
-# #%% SAR process the signal. Many assumptions are made about the signal
-# def wkProcessMem(procData, r_sys, r=None, os_factor=8, mem_rows=2048, mem_cols=1024, tempFile = None):
-#     """ 
-#     mem_cols are the number of columns to process at one go. The data are
-#     organised by
-#             az1 az2 az3 ...
-#     rng1
-#     rng2
-#     rng2
-#     .
-#     .
-#     .
-    
-#     Thus, mem_cols defines the number of azimuth samples to process in one 
-#     call
-#     """
-    
-#     r = r or np.linalg.norm(r_sys.C.R)
-#     r2t = 2.0/physical.c
-#     cols = len(r_sys.kr_sorted)
-#     rows = len(r_sys.ks_full)
-    
-#     dkr = r_sys.kr[1]-r_sys.kr[0]
-    
-#     row_ticks = list(range(0,rows,mem_rows)) + [rows]
-#     row_spans = [(row_ticks[k], row_ticks[k+1]) for k in range(len(row_ticks)-1)]
-    
-#     wk_processed = np.zeros((mem_rows,cols), dtype=np.complex128)
-    
-#     for span in col_spans:
-#         print("Processing cols %d to %d..." % span)
-#         n_cols = span[1]-span[0]
-#         krIntIdx = np.zeros((rows,n_cols), dtype=np.double)
-#         krInterpArray = np.zeros((rows,n_cols), dtype=np.double)
-    
-#         krInterpArray = wk.getInterpolationPointsNew(r_sys, r=r+100, col_span=span)
-#         krIntIdx = (krInterpArray - r_sys.kr_sorted[0])/dkr
-#         krInterpArray = krInterpArray[r_sys.kridx_inv, :]
-        
-#         print("Interpolating the signal...")
-#         zInterp = wk.interpolateCxIntMem(procData[r_sys.kridx,span[0]:span[1]], 
-#                                          krIntIdx, 
-#                                          mem_cols, 
-#                                          oversample = os_factor)
-#         zInterp = zInterp[r_sys.kridx_inv, :]
-    
-#         #% Phase multiply the signal
-#         print("Correcting residual phase and applying IFFT...")
-#         KR = np.matlib.repmat(r_sys.kr, n_cols, 1).T
-#         wkSignal = np.fft.ifft(zInterp*np.exp(-1j*(krInterpArray-KR)*r_sys.nearRangeTime/r2t), axis=0)
-#         wk_processed[:,span[0]:span[1]] = wkSignal[0:mem_rows,:]
-        
-#     if tempFile is not None:
-#         print("W-K processing finished")
-#         print("Writing range-time azimuth-Doppler data to file: %s" % tempFile)
-#         np.save(tempFile, wk_processed)
-#         print("Done")
-#         return None
-#     else:
-#         wk_processed = np.fft.ifft(wk_processed, axis=1)
-#         wk_processed = wk_processed/np.max(np.abs(wk_processed))
-        
-#         return wk_processed
-
 #%% SAR process the signal. Many assumptions are made about the signal
 def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows=8192, tempFile = None):
     """ 
@@ -957,12 +850,11 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
     """
     
     r = r or np.linalg.norm(r_sys.C.R)
-    r2t = 2.0/physical.c
+    r2t = 2.0/c
     cols = len(r_sys.kr_sorted)
     rows = len(r_sys.ks_full)
     
     """ Allocate memory and calculate indeces for the pulse workspace """
-    Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
     Yos_idx = np.round(FFT_freq(cols,cols,0)).astype('int')
     
     dkr = r_sys.kr[1]-r_sys.kr[0]
@@ -997,7 +889,7 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
         nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
                                 YY,
                                 (iP - r_sys.kr_sorted[0])/dkr, 
-                                Yos, 
+                                os_factor, 
                                 Yos_idx)
         
         

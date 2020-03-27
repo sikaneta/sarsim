@@ -64,6 +64,11 @@ parser.add_argument("--file-data-domain",
                     lowercase=time/space""",
                     choices=["rx", "rX", "RX", "Rx"],
                     default="rX")
+parser.add_argument("--keep-pickle",
+                    help="""Keep any existing pickle file associated with the
+                    computed radar object""",
+                    action="store_true",
+                    default=False)
 
 vv = parser.parse_args()
 
@@ -78,3 +83,10 @@ if vv.config_xml is not None:
     
 #%% Write the object to file
 dummy = s_config.writeToXML(vv.config_xml, myxml)
+
+#%% Delete any existing pickle radar file
+if not vv.keep_pickle:
+    pkl_file = ".".join(vv.config_xml.split(".")[0:-1]) + "_radar.pickle"
+    if os.path.exists(pkl_file):
+        os.remove(pkl_file)
+    

@@ -15,14 +15,14 @@ import argparse
 parser = argparse.ArgumentParser(description="SAR process data that has been multi-channel processed")
 
 parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/40cm_simulation.xml')
+                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
 parser.add_argument("--mchan-processed-file",
                     help="The name of the multi-channel processed output file",
                     default = None)
 parser.add_argument("--make-plots",
                     help="Generate plots along the way",
                     action="store_true",
-                    default=False)
+                    default=True)
 parser.add_argument("--wk-processed-file",
                     help="Temporary file in which to write the W-K data. This is needed for large files",
                     default=None)
@@ -108,18 +108,17 @@ def makeAziPlot(x0,x1):
     plt.show()
 
 #%% Plot cross-sections
-if vv.make_plots:
-    def makeRngPlot(aziIdx):
-        plt.figure()
-        plt.plot(20.0*np.log10(np.abs(wkSignal[aziIdx,:])))
-        plt.plot(20.0*np.log10(np.abs(wkSignal[aziIdx,:])),'.')
-        plt.title("Range cross-section")
-        plt.xlabel('Range (sample)')
-        plt.ylabel('Response (dB)')
-        #plt.imshow(np.abs(wkSignal))
-        #plt.clim(-100,10)
-        plt.grid()
-        plt.show()
+def makeRngPlot(aziIdx):
+    plt.figure()
+    plt.plot(20.0*np.log10(np.abs(wkSignal[aziIdx,:])))
+    plt.plot(20.0*np.log10(np.abs(wkSignal[aziIdx,:])),'.')
+    plt.title("Range cross-section")
+    plt.xlabel('Range (sample)')
+    plt.ylabel('Response (dB)')
+    #plt.imshow(np.abs(wkSignal))
+    #plt.clim(-100,10)
+    plt.grid()
+    plt.show()
 
 #%%
 dSig = np.fft.fft(wkSignal[:,mxcol])
@@ -134,7 +133,7 @@ if vv.make_plots:
     plt.plot(r_sys.ks_full, np.abs(dSig*np.exp(1j*r_sys.ks_full*(s+10.0))),'.')
     plt.title("Arclength wavenumber response")
     plt.xlabel("Arclength wavenumber (rad/m)")
-    plt.ylable("Response")
+    plt.ylabel("Response")
     plt.grid()
     plt.show()
     
@@ -147,6 +146,17 @@ def plotAngle(s_off, signal):
     plt.ylabel("Angle (rad)")
     plt.grid()
     plt.show()
+   
+#%%
+def plotDiffAngle(s_off, signal):
+    plt.figure()
+    plt.plot(sorted(r_sys.ks_full)[1:], np.diff(np.unwrap(np.angle(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off)))))),'.')
+    plt.title("Arclength wavenumber angle")
+    plt.xlabel("Arclength wavenumber (rad/m)")
+    plt.ylabel("Angle (rad)")
+    plt.grid()
+    plt.show()
+    
     
 #%%
 def plotKS(s_off, signal):

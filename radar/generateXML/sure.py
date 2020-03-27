@@ -78,8 +78,7 @@ def generateXML(vv,
     prf = (va/(number_channels)/azimuthResolution)*vv.az_oversample
     near_RANGE = nearRange*c/2.0
     far_RANGE = near_RANGE+swathWidth
-    sample_FACTOR = 1.5
-    channel_LEN = np.int(np.round(sample_FACTOR*far_RANGE*(c/fc)
+    channel_LEN = np.int(np.round(far_RANGE*(c/fc)
                                   *(prf/number_channels)
                                   *(beam_DOPPLER)
                                   /2.0/(va**2)))

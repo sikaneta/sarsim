@@ -43,7 +43,7 @@ def df(x, p0, p1, p2, p3, p4, r, a2, a3, a4):
 
 
 @jit(forceobj=True)
-def interpolatePulsesCx(Y, YY, Xnew, Yos, Yos_idx):
+def interpolatePulsesCx(Y, YY, Xnew, oversample, Yos_idx):
     """This function interpolates the values of the matrix Y and writes
     the interpolated values into the matrix YY. Y and YY are matrices
     that represent range in the row direction and pulse in the column
@@ -55,19 +55,19 @@ def interpolatePulsesCx(Y, YY, Xnew, Yos, Yos_idx):
     frequency domain."""
     
     rows, cols  = Xnew.shape
-    
-    # Switch to frequency domain and insert zero-padded values into
-    oversample = Yos.shape[0]/Y.shape[1]
+    bb_factor = np.exp(2.0*1j*np.arange(cols))
+    bb_factor_conj = np.exp(-2.0*1j*np.arange(cols*oversample)/(oversample))
     
     for row in prange(rows):
-        Yos *= 0.0
-        Yos[Yos_idx] = np.fft.fft(Y[row,:])
-        Yos = np.fft.ifft(Yos)*oversample
+        Yup = np.zeros((cols*oversample,), dtype=np.complex128)
+        Yup[Yos_idx] = np.fft.fft(bb_factor*Y[row,:])
+        Yup = np.fft.ifft(Yup)*oversample*bb_factor_conj
         
         # Calculate the new interpolation indeces
         invalid = (Xnew[row,:]<0.0) | (Xnew[row,:]>(cols-1))
-        Xnew[row, invalid] = 0.0
+        #Xnew[row, invalid] = 0.0
         xx = Xnew[row,:]*oversample
+        xx[invalid] = 0.0
         
         # calculate the floor, ceiling and fractional indeces
         xx_floor = np.floor(xx).astype('int')
@@ -75,7 +75,7 @@ def interpolatePulsesCx(Y, YY, Xnew, Yos, Yos_idx):
         xx_fraction = xx - xx_floor
         
         # Compute the linearly interpolated values
-        YY[row,:] = (1.0-xx_fraction)*Yos[xx_floor] + xx_fraction*Yos[xx_ceil] 
+        YY[row,:] = (1.0-xx_fraction)*Yup[xx_floor] + xx_fraction*Yup[xx_ceil] 
         YY[row,invalid] = 0.0
     
 
