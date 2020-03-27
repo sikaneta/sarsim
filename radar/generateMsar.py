@@ -66,32 +66,14 @@ def computeSignal(radar, pointXYZ, satSV):
         velocityVectors = ref['satellitePositions'][1][:,3:]
         velocityMagnitudes = np.sqrt(np.sum(velocityVectors*velocityVectors, axis=1))
         lookDirections = np.sum(rangeVectors*velocityVectors, axis=1)/ranges/velocityMagnitudes
-        #idx = np.abs(u-rad['mode']['txuZero'])<beamwidth/2.0
         r2t = 2.0/cfg.physical.c
         rangeTimes = ranges*r2t
-        nRt = ref['nearRangeTime']
         
         #% Define the fast time values
         fastTimes = ref['nearRangeTime'] + np.arange(float(ref['numRangeSamples']))*ref['rangeSampleSpacing']
         
         #% Compute the antenna pattern amplitudes and delays
-        azimuthPositions = rad['antenna']['azimuthPositions']/cfg.physical.c
         txMag = rad['mode']['txMagnitude']
-        rxMag = rad['mode']['rxMagnitude']
-        txDelay = rad['mode']['txDelay']
-        rxDelay = rad['mode']['rxDelay']
-        
-        myTxAmp = txMag[txMag > 0.0]
-        myTxAvg = myTxAmp/np.sum(myTxAmp)
-        myTxDly = txDelay[txMag > 0.0]
-        myTxPos = azimuthPositions[txMag > 0.0]
-        myTxLen = myTxAmp.shape[0]
-        
-        myRxAmp = rxMag[rxMag > 0.0]
-        myRxAvg = myRxAmp/np.sum(myRxAmp)
-        myRxDly = rxDelay[rxMag > 0.0]
-        myRxPos = azimuthPositions[rxMag > 0.0]
-        myRxLen = myRxAmp.shape[0]
         
         radarEq1 = np.sqrt((rad['antenna']['wavelength'])
                     *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
