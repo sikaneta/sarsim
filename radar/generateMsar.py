@@ -32,10 +32,6 @@ parser.add_argument("--radar-idx",
                     nargs = "*",
                     type=int,
                     default = None)
-# parser.add_argument("--compressed-range-samples",
-#                     help="The number of compressed range samples to retain in each file",
-#                     type=int,
-#                     default = None)
 vv = parser.parse_args()
 
 #%%
