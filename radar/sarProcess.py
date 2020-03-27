@@ -79,11 +79,19 @@ mxcol = np.argmax(np.sum(np.abs(wkSignal), axis=0))
 mxrow = np.argmax(np.sum(np.abs(wkSignal), axis=1))
 print("Maximum for data located at row %d, col %d" % (mxrow, mxcol))
 
+#%%
+dSig = np.fft.fft(wkSignal[:,mxcol])
+
+#%%
+s = np.arange(r_sys.Na*r_sys.n_bands)/(r_sys.ksp*r_sys.n_bands)
+s -= np.mean(s)
+
 #%% Function to plot the processed signal
-def makePlot(DX=100, DY=100):
+def makePlot(DX=100, DY=100, cmin=-50):
     plt.figure()
-    plt.imshow(20.0*np.log10(np.abs(wkSignal[(mxrow-DY):(mxrow+DY), (mxcol-DX):(mxcol+DX)])))
-    plt.clim(-50,0)
+    plt.imshow(20.0*np.log10(np.abs(wkSignal[(mxrow-DY):(mxrow+DY), 
+                                             (mxcol-DX):(mxcol+DX)])))
+    plt.clim(cmin,0)
     plt.colorbar()
     plt.title("Response (dB)")
     plt.xlabel("Range sample")
@@ -92,15 +100,13 @@ def makePlot(DX=100, DY=100):
 
 #%% Function to plot cross-sections
 def makeAziPlot(x0,x1):
-    rows, cols = wkSignal.shape
-    x = (np.arange(rows) - rows/2.0)/(r_sys.n_bands*r_sys.ksp) - 12.852 + 0.62
-    xidx0 = np.argwhere(x>x0)[0][0]
-    xidx1 = np.argwhere(x>x1)[0][0]
+    xidx0 = np.argwhere(s>x0)[0][0]
+    xidx1 = np.argwhere(s>x1)[0][0]
     plt.figure()
-    plt.plot(x[xidx0:xidx1], 20.0*np.log10(np.abs(wkSignal[xidx0:xidx1,mxcol])), 
-             x[xidx0:xidx1], 20.0*np.log10(np.abs(wkSignal[xidx0:xidx1,mxcol])), 'o')
-    #plt.imshow(np.abs(wkSignal))
-    #plt.clim(-100,10)
+    plt.plot(s[xidx0:xidx1], 
+             20.0*np.log10(np.abs(wkSignal[xidx0:xidx1,mxcol])), 
+             s[xidx0:xidx1], 
+             20.0*np.log10(np.abs(wkSignal[xidx0:xidx1,mxcol])), 'o')
     plt.title("Azimuth cross-section")
     plt.xlabel('Azimuth (m)')
     plt.ylabel('Response (dB)')
@@ -115,32 +121,15 @@ def makeRngPlot(aziIdx):
     plt.title("Range cross-section")
     plt.xlabel('Range (sample)')
     plt.ylabel('Response (dB)')
-    #plt.imshow(np.abs(wkSignal))
-    #plt.clim(-100,10)
     plt.grid()
     plt.show()
 
-#%%
-dSig = np.fft.fft(wkSignal[:,mxcol])
-
-#%%
-s = np.arange(r_sys.Na*r_sys.n_bands)/(r_sys.ksp*r_sys.n_bands)
-s -= np.mean(s)
-
-#%%
-if vv.make_plots:
-    plt.figure()#plt.plot(np.unwrap(np.angle(np.fft.fftshift(dSig*np.exp(1j*r_sys.ks_full*(np.min(s)+10.1))))))
-    plt.plot(r_sys.ks_full, np.abs(dSig*np.exp(1j*r_sys.ks_full*(s+10.0))),'.')
-    plt.title("Arclength wavenumber response")
-    plt.xlabel("Arclength wavenumber (rad/m)")
-    plt.ylabel("Response")
-    plt.grid()
-    plt.show()
     
 #%%
 def plotAngle(s_off, signal):
     plt.figure()
-    plt.plot(sorted(r_sys.ks_full), np.unwrap(np.angle(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off))))),'.')
+    plt.plot(sorted(r_sys.ks_full), 
+             np.unwrap(np.angle(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off))))),'.')
     plt.title("Arclength wavenumber angle")
     plt.xlabel("Arclength wavenumber (rad/m)")
     plt.ylabel("Angle (rad)")
@@ -150,7 +139,8 @@ def plotAngle(s_off, signal):
 #%%
 def plotDiffAngle(s_off, signal):
     plt.figure()
-    plt.plot(sorted(r_sys.ks_full)[1:], np.diff(np.unwrap(np.angle(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off)))))),'.')
+    plt.plot(sorted(r_sys.ks_full)[1:], 
+             np.diff(np.unwrap(np.angle(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off)))))),'.')
     plt.title("Arclength wavenumber angle")
     plt.xlabel("Arclength wavenumber (rad/m)")
     plt.ylabel("Angle (rad)")
@@ -161,11 +151,20 @@ def plotDiffAngle(s_off, signal):
 #%%
 def plotKS(s_off, signal):
     plt.figure()
-    plt.plot(sorted(r_sys.ks_full), np.abs(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off)))))
+    plt.plot(sorted(r_sys.ks_full), 
+             np.abs(np.fft.fftshift(signal*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off)))))
     plt.title("Arclength wavenumber response")
     plt.xlabel("Arclength wavenumber (rad/m)")
     plt.ylabel("Angle response (amplitude)")
     plt.grid()
     plt.show()
     
-    
+#%%
+if vv.make_plots:
+    plotAngle(5.61, dSig)
+    plt.plot(r_sys.ks_full, np.abs(dSig*np.exp(1j*r_sys.ks_full*(s+10.0))),'.')
+    plt.title("Arclength wavenumber response")
+    plt.xlabel("Arclength wavenumber (rad/m)")
+    plt.ylabel("Response")
+    plt.grid()
+    plt.show()  

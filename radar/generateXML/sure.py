@@ -41,8 +41,6 @@ def generateXML(vv,
     
     print("SURE configuration generator")
     numAziSamples = 8192
-    # burst_LENGTH = 4 
-    # p = etree.XMLParser(remove_blank_text=True)
     
     #%% Generate the base XML object
     pq = etree.XMLParser(remove_blank_text=True)
@@ -71,7 +69,7 @@ def generateXML(vv,
     print("Sub-aperture length: %0.2f m" % (2.0*azimuthResolution*(M+1)))
     print("Ideal PRF: %0.4f Hz" % (va/(M+1)/azimuthResolution))
     
-    #%%   
+    #%% Compute some collection parameters
     number_beams = number_channels
     aziDoppler = va/azimuthResolution
     beam_DOPPLER = aziDoppler/number_channels
@@ -93,10 +91,9 @@ def generateXML(vv,
     print("Slow time PRF: %f Hz" % prf)
     
     
-    #%%
+    #%% Compute the azimuth positions
     numAziSamples = 2*channel_LEN*(2+number_channels*number_beams)
     
-    #subarray_length = 2.2
     subarray_length = number_channels*azimuthResolution*2.0
     
     
@@ -114,7 +111,7 @@ def generateXML(vv,
                       for k in range(subarray_elements)] 
                      for subpos in subarray_centres]
     
-    #%%
+    #%% Write the azimuth positions, lengths and powers
     
     flattened_azi_positions = reduce(lambda x,y: x+y, azi_positions)
     str_azi_pos = ["%0.6f" % pos for pos in flattened_azi_positions]
@@ -134,7 +131,7 @@ def generateXML(vv,
     azimuthPwrNode = xml.find('.//transmitPowers')
     azimuthPwrNode.text = " ".join(str_azi_pwr)
     
-    # Calculate the Doppler centroids for each beam
+    #%% Calculate the Doppler centroids for each beam
     beam_DC = [beam_DOPPLER*(pos-(number_beams-1)/2.0) 
                for pos in range(number_beams)]
     reducedPRF = prf/len(beam_DC)
@@ -143,7 +140,7 @@ def generateXML(vv,
     print(beam_DC)
     txChan = int((number_channels-1)/2)
      
-    # Generate the reference time from which to compute the offsets. e.t.c.
+    #%% Generate the reference time from which to compute the offsets. e.t.c.
     reference_TIME = datetime.combine(date(2015,1,1),time(0,0,0))
     sample_TIMES = [reference_TIME + timedelta(seconds=float(s)/prf) 
                     for s in range(len(beam_DC))]
@@ -152,9 +149,8 @@ def generateXML(vv,
                      + np.timedelta64(int(np.round(1.0e9*float(s)/prf)), 'ns') 
                      for s in range(len(beam_DC))]
     
-    # Calculate how many extra range samples we'll need
+    #%% Calculate how many extra range samples we'll need
     u = c/fc/(4*azimuthResolution)
-    # RMC_range = (far_RANGE/c*2)/2*(c/fc/(4*azimuthResolution))**2/deltaR
     sim_range_samples = 2*(far_RANGE - near_RANGE)/c/deltaR
     RMC_range = (far_RANGE/c*2)*(np.sqrt(1.0+u**2)-1)/deltaR + vv.range_samples
     
@@ -171,6 +167,7 @@ def generateXML(vv,
     print("Number of range samples for this simulation: %d" % numRngSamples)
     print("Number of azimuth samples per signal file: %d" 
           % int(numAziSamples/number_beams))
+    
     #%% Estimate the size of the data
     numSigElements = number_channels*len(beam_DC)
     fileSize = 16*numRngSamples*numAziSamples/number_beams
@@ -188,7 +185,7 @@ def generateXML(vv,
     print("Peak memory requirement (approx): %f (GB)" 
           % float((mchanFileSize+fileSize*numSigElements)/1e9))
     
-    # Create the mode XML mode mode snippet
+    #%% Create the mode XML mode mode snippet
     for fd,n,thisTime,isoTime in zip(beam_DC, 
                                      range(len(beam_DC)), 
                                      sample_TIMES, 
@@ -324,71 +321,71 @@ def generateXML(vv,
             
     return xml
 
-#%% Modify configurations
-def modifyRadarConfigurations(gmtiDataPool, radarConfigURL, directory):
-    # Open the radar configuration file and parse
-    radarConfig = etree.parse(urllib.urlopen(radarConfigURL))
-    radarConfigurations = radarConfig.xpath('//radarConfiguration')
+# #%% Modify configurations
+# def modifyRadarConfigurations(gmtiDataPool, radarConfigURL, directory):
+#     # Open the radar configuration file and parse
+#     radarConfig = etree.parse(urllib.urlopen(radarConfigURL))
+#     radarConfigurations = radarConfig.xpath('//radarConfiguration')
 
-    # Define the default pulse type
-    pulse = {'pulseId': "-", 'pulseString': "Unknown", 'pulseDuration': "0", 'pulseBwd': "0"}
+#     # Define the default pulse type
+#     pulse = {'pulseId': "-", 'pulseString': "Unknown", 'pulseDuration': "0", 'pulseBwd': "0"}
 
-    # Get all the signalData elements
-    currentConfigs = gmtiDataPool.xpath('//signalData')
+#     # Get all the signalData elements
+#     currentConfigs = gmtiDataPool.xpath('//signalData')
 
-    print("Current configurations are: ")
-    printSignalRadarConfigurations(currentConfigs)
-    currentConfig = int(raw_input("Enter the number of the configuration you wish to replace/add (0 for none)? "))
-    while((currentConfig > 0) and (currentConfig <= len(currentConfigs))):
-        targetConfig = int(raw_input("Enter the number of the desired radar configuration (-1 for a list)?"))
-        while((targetConfig < 1) or (targetConfig > len(radarConfigurations))):
-            printRadarConfigurations(radarConfigurations)
-            targetConfig = int(raw_input("Enter the number of the configuration you wish to replace it with (-1 for a list)? "))
+#     print("Current configurations are: ")
+#     printSignalRadarConfigurations(currentConfigs)
+#     currentConfig = int(raw_input("Enter the number of the configuration you wish to replace/add (0 for none)? "))
+#     while((currentConfig > 0) and (currentConfig <= len(currentConfigs))):
+#         targetConfig = int(raw_input("Enter the number of the desired radar configuration (-1 for a list)?"))
+#         while((targetConfig < 1) or (targetConfig > len(radarConfigurations))):
+#             printRadarConfigurations(radarConfigurations)
+#             targetConfig = int(raw_input("Enter the number of the configuration you wish to replace it with (-1 for a list)? "))
 
-        # Rename the element so we dont need to write so much
-        configParent = currentConfigs[currentConfig-1]
+#         # Rename the element so we dont need to write so much
+#         configParent = currentConfigs[currentConfig-1]
 
-        # Find and remove the current configuration if it is present
-        toRemove = configParent.xpath('radarConfiguration')
-        if(len(toRemove)>0):
-            # record the current pulse type
-            pulse = {'pulseId': configParent.xpath('radarConfiguration/pulse/pulseId')[0].text,
-                     'pulseString': configParent.xpath('radarConfiguration/pulse/pulseString')[0].text,
-                     'pulseDuration': configParent.xpath('radarConfiguration/pulse/pulseDuration')[0].text,
-                     'pulseBwd': configParent.xpath('radarConfiguration/pulse/pulseBwd')[0].text}
+#         # Find and remove the current configuration if it is present
+#         toRemove = configParent.xpath('radarConfiguration')
+#         if(len(toRemove)>0):
+#             # record the current pulse type
+#             pulse = {'pulseId': configParent.xpath('radarConfiguration/pulse/pulseId')[0].text,
+#                      'pulseString': configParent.xpath('radarConfiguration/pulse/pulseString')[0].text,
+#                      'pulseDuration': configParent.xpath('radarConfiguration/pulse/pulseDuration')[0].text,
+#                      'pulseBwd': configParent.xpath('radarConfiguration/pulse/pulseBwd')[0].text}
 
-            # Remove the old element
-            configParent.remove(toRemove[0])
-        else:
-            dataFile = configParent.xpath('dataFile')
-            if(len(dataFile)>0):
-                pulse = getPulseType(os.path.join(directory,dataFile[0].text).replace('SarImage_0.tif','PARM_IngestParameters.self'))
+#             # Remove the old element
+#             configParent.remove(toRemove[0])
+#         else:
+#             dataFile = configParent.xpath('dataFile')
+#             if(len(dataFile)>0):
+#                 pulse = getPulseType(os.path.join(directory,dataFile[0].text).replace('SarImage_0.tif','PARM_IngestParameters.self'))
 
-        # Add the new config. First locate the point where it will go
-        # The schema says there should be a dopplerCentroid element
-        dopEl = configParent.find('dopplerCentroid')
-        dopEl.addprevious(deepcopy(radarConfigurations[targetConfig-1]))
+#         # Add the new config. First locate the point where it will go
+#         # The schema says there should be a dopplerCentroid element
+#         dopEl = configParent.find('dopplerCentroid')
+#         dopEl.addprevious(deepcopy(radarConfigurations[targetConfig-1]))
 
-        # Now add the pulse element
-        rConf = configParent.find('radarConfiguration')
-        pulseElement = etree.Element("pulse")
-        pulseId = etree.SubElement(pulseElement, "pulseId")
-        pulseSt = etree.SubElement(pulseElement, "pulseString")
-        pulseDu = etree.SubElement(pulseElement, "pulseDuration")
-        pulseBw = etree.SubElement(pulseElement, "pulseBwd")
-        pulseId.text = pulse['pulseId']
-        pulseSt.text = pulse['pulseString']
-        pulseDu.text = pulse['pulseDuration']
-        pulseBw.text = pulse['pulseBwd']
-        rConf.insert(0, pulseElement)
+#         # Now add the pulse element
+#         rConf = configParent.find('radarConfiguration')
+#         pulseElement = etree.Element("pulse")
+#         pulseId = etree.SubElement(pulseElement, "pulseId")
+#         pulseSt = etree.SubElement(pulseElement, "pulseString")
+#         pulseDu = etree.SubElement(pulseElement, "pulseDuration")
+#         pulseBw = etree.SubElement(pulseElement, "pulseBwd")
+#         pulseId.text = pulse['pulseId']
+#         pulseSt.text = pulse['pulseString']
+#         pulseDu.text = pulse['pulseDuration']
+#         pulseBw.text = pulse['pulseBwd']
+#         rConf.insert(0, pulseElement)
 
-        #currentConfigs[currentConfig-1].getparent().remove(currentConfigs[currentConfig-1])
-        currentConfigs = gmtiDataPool.xpath('//signalData')
+#         #currentConfigs[currentConfig-1].getparent().remove(currentConfigs[currentConfig-1])
+#         currentConfigs = gmtiDataPool.xpath('//signalData')
 
-        # Ask for the next config to change
-        print("Current configurations are: ")
-        printSignalRadarConfigurations(currentConfigs)
-        currentConfig = int(raw_input("Enter the number of the configuration you wish to change (0 for none)? "))
+#         # Ask for the next config to change
+#         print("Current configurations are: ")
+#         printSignalRadarConfigurations(currentConfigs)
+#         currentConfig = int(raw_input("Enter the number of the configuration you wish to change (0 for none)? "))
 
 #%% Print configurations
 def printRadarConfigurations(radarConfigurations):
