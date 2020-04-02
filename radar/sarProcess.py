@@ -7,9 +7,7 @@ Created on Fri Aug 23 13:02:31 2019
 """
 
 import configuration.configuration as cfg
-import numpy as np
 import argparse
-import os
 import utils.fileio as fio
 
 #%% Argparse stuff
@@ -55,6 +53,8 @@ procData = fio.loadSimFiles(vv.mchan_processed_file, xidx=vv.xidx)
 r_sys = cfg.loadRsys(radar)
 
 #%% Do the SAR processing for this chunk
+print("Processing")
+print(vv.xidx)
 ks = r_sys.ks_full[vv.xidx[0]:vv.xidx[1]]
 wkSignal = cfg.wkProcessNumba(procData, 
                               r_sys, 

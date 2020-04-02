@@ -210,7 +210,9 @@ def loadNumpy_mcp_data(data_file,
 def fileStruct(filename, subfolder, domain, extension):
     path, tail = os.path.split(filename)
     path = os.path.join(os.path.split(path)[0], subfolder)
+    if domain == "":
+        domain = "toRemove"
     tail = "_".join(tail.split("_")[0:-2] + [domain, extension])
-    return os.path.join(path, tail)
+    return os.path.join(path, tail).replace("_toRemove", "")
     
     

@@ -47,6 +47,10 @@ parser.add_argument("--xblock-size",
                     help="Size of data blocks in the X direction",
                     type=int,
                     default=16384)
+parser.add_argument("--number-processors",
+                    help="The number of processors",
+                    type=int,
+                    default=4)
 vv = parser.parse_args()
 
 #%% Make sure we're looking at the absolute path
@@ -89,7 +93,6 @@ for chan_num in range(len(radar)):
                 "--rblock-size %d" % vv.rblock_size]
     all_commands.append(" ".join(gen_command + gen_args))
 
-all_commands.append("wait")
 #%% Useful function to compute blocks
 def getBlocks(N, b):
     return [(x, x + b if x < N-b else N) for x in range(0,N,b)]
@@ -97,17 +100,20 @@ def getBlocks(N, b):
 #%% Generate commands to multi channel process the data
 r_blocks = getBlocks(r_sys.Nr, vv.rblock_size)
 gen_command = ["python -m processMultiChannel"]
-for blks in r_blocks:
+for blks, k in zip(r_blocks, range(len(r_blocks))):
+    if k%vv.number_processors == 0:
+        all_commands.append("wait")
     gen_args = ["--config-xml %s" % vv.config_xml,
                 "--ridx %d %d" % blks,
                 "--xblock-size %d &" % vv.xblock_size]
     all_commands.append(" ".join(gen_command + gen_args))
-
-all_commands.append("wait")    
+ 
 #%% Generate commands to SAR (w-k) process the data
 x_blocks = getBlocks(len(r_sys.ks_full), vv.xblock_size)
 gen_command = ["python -m sarProcess"]
-for blks in x_blocks:
+for blks, k in zip(x_blocks, range(len(x_blocks))):
+    if k%vv.number_processors == 0:
+        all_commands.append("wait")
     gen_args = ["--config-xml %s" % vv.config_xml,
                 "--xidx %d %d" % blks,
                 "--rblock-size %d &" % vv.rblock_size]

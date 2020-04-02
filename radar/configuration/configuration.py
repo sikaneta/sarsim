@@ -775,8 +775,7 @@ class radar_system:
 
 #%% Compute and store the r_sys file for quicker processing
 def computeStoreRsys(radar, bands = None, ref_range_idx = None):
-    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
-    sys_file = file_signature + "_rsys.pickle"
+    sys_file = fio.fileStruct(radar[0]['filename'], "", "", "rsys.pickle")
     
     """Define bands if not defined"""
     if bands is None:
@@ -800,8 +799,7 @@ def computeStoreRsys(radar, bands = None, ref_range_idx = None):
         
 #%% Compute the processing filter or load from file
 def computeStoreMultiProcFilter(radar):
-    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
-    mprocH_file = file_signature + "_mprocH.pickle"
+    mprocH_file = fio.fileStruct(radar[0]['filename'], "", "", "mprocH.pickle")
     
     r_sys = loadRsys(radar)
     
@@ -824,8 +822,7 @@ def computeStoreMultiProcFilter(radar):
 
 #%% Compute the processing filter or load from file
 def loadMultiProcFilter(radar):
-    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
-    mprocH_file = file_signature + "_mprocH.pickle"
+    mprocH_file = fio.fileStruct(radar[0]['filename'], "", "", "mprocH.pickle")
     print("Loading processing filter from pickle file...")
     print(mprocH_file)
     try:
@@ -841,8 +838,7 @@ def loadMultiProcFilter(radar):
 
 #%% Compute the processing filter or load from file
 def loadRsys(radar):
-    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
-    sys_file = file_signature + "_rsys.pickle"
+    sys_file = fio.fileStruct(radar[0]['filename'], "", "", "rsys.pickle")
     print("Load r_sys from pickle file...")
     print(sys_file)
     try:
@@ -863,11 +859,11 @@ def multiChannelProcessMem(radar,
                            SNR = 1.0,
                            make_plots=False):
     
-    print("Get the multi-channel H matrix...")
+    # print("Get the multi-channel H matrix...")
     r_sys = loadRsys(radar)
     H = loadMultiProcFilter(radar)
     
-    print("Compute the desired antenna pattern...")
+    # print("Compute the desired antenna pattern...")
     D = np.sqrt(np.sum(np.abs(H)**2, axis=0))
     if make_plots:
         plt.figure()
@@ -878,7 +874,7 @@ def multiChannelProcessMem(radar,
         plt.grid()
         plt.show()
         
-    print("Loading the data from disk...")
+    # print("Loading the data from disk...")
     data = fio.loadNumpy_raw_dataMem(radar, 
                                      ridx = rangeidx)
     _, n_r, n_x = data.shape
@@ -887,7 +883,7 @@ def multiChannelProcessMem(radar,
     """Defining the noise covariance"""
     Rn = np.eye(len(radar))/np.sqrt(SNR)
     
-    print("Multi-channel processing ...")
+    # print("Multi-channel processing ...")
     procData = np.zeros((n_b,n_x,n_r), dtype=np.complex128)
     for kidx in tqdm(range(n_x)):
         Rinv = np.linalg.inv(np.dot(H[:,:,kidx], np.conj(H[:,:,kidx].T)) 
@@ -904,7 +900,7 @@ def multiChannelProcessMem(radar,
     del data
             
     # Reorder the data
-    print("Re-ordering data and returning...")
+    # print("Re-ordering data and returning...")
     procData = procData.reshape((n_b*n_x, n_r))
     for k in tqdm(np.arange(n_r)):
         procData[:,k] = procData[r_sys.ksidx[r_sys.ks_full_idx], k]
@@ -1025,7 +1021,7 @@ def wkProcessNumba(procData,
     wk_processed = np.zeros((rows,mem_cols), dtype=np.complex128)
     
     for span in row_spans:
-        print("Processing rows (azimuth) %d to %d..." % span)
+        # print("Processing rows (azimuth) %d to %d..." % span)
         n_rows = span[1]-span[0]
         YY = np.zeros((n_rows, cols), dtype=np.complex128)
     
@@ -1044,7 +1040,7 @@ def wkProcessNumba(procData,
                                     error_tol = 1e-10)
         
         """ Perform the interpolation """
-        print("Interpolating the signal...")
+        # print("Interpolating the signal...")
         Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
         chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
         nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
