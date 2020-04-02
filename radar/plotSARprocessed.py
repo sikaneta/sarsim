@@ -11,6 +11,7 @@ import plot.simplot as sp
 import numpy as np
 import argparse
 import os
+import utils.fileio as fio
 
 #%% Argparse stuff
 purpose = """
@@ -27,7 +28,16 @@ parser.add_argument("--arclength-offset",
                     help="Offset of the target from zero in arclength (m)",
                     type=float,
                     default=0.0)
-
+parser.add_argument("--ridx",
+                    help="The range indeces to examine",
+                    type=int,
+                    nargs=2,
+                    default=[0,None])
+parser.add_argument("--xidx",
+                    help="The azimuth indeces to examine",
+                    type=int,
+                    nargs=2,
+                    default=[0,None])
 parser.add_argument("--interactive",
                     help="Interactive mode. Program halts until figures are closed",
                     action="store_true",
@@ -41,17 +51,17 @@ if 'radar' not in locals():
 
 #%% Load the data
 if 'wkSignal'not in locals():
-    proc_file = "_".join(radar[0]['filename'].split("_")[0:-2] + 
-                         ["rX", "wkprocessed.npy"])
+    proc_file = fio.fileStruct(radar[0]['filename'],
+                                        "wk_processed",
+                                        "Xr",
+                                        "wkprocessed.npy")
     print("Loading data from file: %s" % proc_file)
-    wkSignal = np.fft.ifft(np.load(proc_file), axis=0)
+    wkSignal = fio.loadSimFiles(proc_file, xidx=vv.xidx, ridx=vv.ridx)
+    wkSignal = np.fft.ifft(wkSignal, axis=0)
     wkSignal = wkSignal/np.max(np.abs(wkSignal))
 
-#%% Define which bands to look at
-bands = np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
-
 #%% Get an r_sys object
-r_sys = cfg.radar_system(radar, bands)
+r_sys = cfg.loadRsys(radar)
 
 #%% Define the folder in which to store plots
 sim_folder = os.path.join(os.path.split(vv.config_xml)[0], 
@@ -60,6 +70,6 @@ sim_folder = os.path.join(os.path.split(vv.config_xml)[0],
 #%% Do the plotting
 sp.sarprocPlot(wkSignal, 
                r_sys, 
-               interactive=False, 
+               interactive=vv.interactive, 
                folder=sim_folder, 
                s_off=vv.arclength_offset)

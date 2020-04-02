@@ -11,6 +11,7 @@ import plot.simplot as sp
 import numpy as np
 import argparse
 import os
+import utils.fileio as fio
 
 #%% Argparse stuff
 purpose = """
@@ -28,6 +29,16 @@ parser.add_argument("--target-range-index",
                             for the last phase plot""",
                     type=int,
                     default=400)
+parser.add_argument("--ridx",
+                    help="The range indeces to examine",
+                    type=int,
+                    nargs=2,
+                    default=[0,None])
+parser.add_argument("--xidx",
+                    help="The azimuth indeces to examine",
+                    type=int,
+                    nargs=2,
+                    default=[0,None])
 parser.add_argument("--arclength-offset",
                     help="Offset of the target from zero in arclength (m)",
                     type=float,
@@ -45,16 +56,18 @@ if 'radar' not in locals():
 
 #%% Load the data
 if 'procData'not in locals():
-    proc_file = "_".join(radar[0]['filename'].split("_")[0:-2] + 
-                       ["Xr", "mchanprocessed.npy"])
+    proc_file = fio.fileStruct(radar[0]['filename'],
+                                        "mchan_processed",
+                                        "Xr",
+                                        "mchanprocessed.npy")
     print("Loading data from file: %s" % proc_file)
-    procData = np.load(proc_file)
+    procData = fio.loadSimFiles(proc_file, xidx=vv.xidx, ridx=vv.ridx)
 
 #%% Define which bands to look at
-bands = np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
+#bands = np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
 
 #%% Get an r_sys object
-r_sys = cfg.radar_system(radar, bands)
+r_sys = cfg.loadRsys(radar)
 
 #%% Compute the ground point and associate slow time parameters
 r_sys.computeGroundPoint(radar, range_idx=vv.target_range_index)

@@ -23,10 +23,6 @@ parser.add_argument("--mchan-processed-file",
 parser.add_argument("--wk-processed-file",
                     help="The name of the w-k processed output file",
                     default = None)
-# parser.add_argument("--make-plots",
-#                     help="Generate plots along the way",
-#                     action="store_true",
-#                     default=True)
 parser.add_argument("--xidx",
                     help="""The azimuth indeces to process. The process can
                             proceed with the azimuth direction split into 
@@ -36,21 +32,6 @@ parser.add_argument("--xidx",
                     type=int,
                     nargs="+",
                     default=[0,None])
-# parser.add_argument("--prf-factor",
-#                     help="""The integer increase in the PRF from the individual channel PRFs
-#                     Minimally, the number of beams times the number of channels, but
-#                     equivalent to the length of the bands array in processMultiChannel,
-#                     which is given by, as a default: 
-#                     len(np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+3))
-#                     with a buffer of 2 bands on either side of the main""",
-#                     type=int,
-#                     default = None)
-# parser.add_argument("--target-range-index",
-#                     help="""The reference range index.
-#                             This is the index of the range used for the w-k
-#                             algorithm""",
-#                     type=int,
-#                     default=None)
 parser.add_argument("--rblock-size",
                     help="Size of the output data block in the r direction",
                     type=int,
@@ -62,10 +43,6 @@ radar = cfg.loadConfiguration(vv.config_xml)
 
 #%% Load the data
 if vv.mchan_processed_file is None:
-    # vv.mchan_processed_file = "_".join(radar[0]['filename'].split("_")[0:-2] + 
-    #                                    ["Xr", "mchanprocessed.npy"])
-    # head, tail = os.path.split(vv.mchan_processed_file)
-    # vv.mchan_processed_file = os.path.join(head,"mchan_proc",tail)
     vv.mchan_processed_file = fio.fileStruct(radar[0]['filename'],
                                              "mchan_processed",
                                              "Xr",
@@ -76,7 +53,6 @@ procData = fio.loadSimFiles(vv.mchan_processed_file, xidx=vv.xidx)
 
 #%% Compute the ground point and associate slow time parameters
 r_sys = cfg.loadRsys(radar)
-#r_sys.computeGroundPoint(radar, range_idx=vv.target_range_index)
 
 #%% Do the SAR processing for this chunk
 ks = r_sys.ks_full[vv.xidx[0]:vv.xidx[1]]
@@ -88,10 +64,6 @@ wkSignal = cfg.wkProcessNumba(procData,
 
 #%% Call the SAR processing algorithm
 if vv.wk_processed_file is None:
-    # vv.wk_processed_file = "_".join(radar[0]['filename'].split("_")[0:-2] + 
-    #                                    ["X%dr" % vv.xidx[0], "wkprocessed.npy"])
-    # head, tail = os.path.split(vv.wk_processed_file)
-    # vv.wk_processed_file = os.path.join(head,"wk_proc",tail)
     vv.wk_processed_file = fio.fileStruct(radar[0]['filename'],
                                          "wk_processed",
                                          "X%dr" % vv.xidx[0],

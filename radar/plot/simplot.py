@@ -101,16 +101,39 @@ def sarprocPlot(wkSignal,
     
     # Plot the data
     for k in range(3,10):
-        makePlot(wkSignal, mxrow, mxcol, DX=2**k, DY=2**k, folder=folder)
+        makePlot(wkSignal, 
+                 mxrow, 
+                 mxcol, 
+                 DX=2**k, 
+                 DY=2**k, 
+                 folder=folder,
+                 interactive=interactive)
     for k in range(3,10):
-        makeAziPlot(wkSignal, mxrow, mxcol, s, DY=2**k, folder = folder)
+        makeAziPlot(wkSignal, 
+                    mxrow, 
+                    mxcol, 
+                    s, 
+                    DY=2**k, 
+                    folder = folder,
+                    interactive=interactive)
     for k in range(3,6):
-        makeRngPlot(wkSignal, mxrow, mxcol, 
-                    r_sys.r-r_sys.r[mxcol], DX=2**k, folder = folder)
+        makeRngPlot(wkSignal, 
+                    mxrow, 
+                    mxcol, 
+                    r_sys.r-r_sys.r[mxcol], 
+                    DX=2**k, 
+                    folder = folder,
+                    interactive=interactive)
         
-    plotAngle(dSig, r_sys, folder = folder)
+    plotAngle(dSig, 
+              r_sys, 
+              folder = folder,
+              interactive=interactive)
     
-    plotKS(dSig, r_sys, folder = folder)
+    plotKS(dSig, 
+           r_sys, 
+           folder = folder,
+           interactive=interactive)
 
 #%% Function to plot the processed signal
 def makePlot(wkSignal, 
@@ -157,6 +180,7 @@ def makeAziPlot(wkSignal,
              s[Y0:Y1], 
              20.0*np.log10(np.abs(wkSignal[Y0:Y1,mxcol])),
              '.')
+    plt.grid()
     plt.title("Response (dB)")
     plt.xlabel("Azimuth (arclength m)")
     if interactive:
