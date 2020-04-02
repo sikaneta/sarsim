@@ -18,7 +18,11 @@ from generateXML.base_XML import base_XML_XBand
 
 #%% Write to file
 def createXMLStructure(folder): 
-    for fd in ["simulation_data", "simulation_plots"]:
+    for fd in ["simulation_data", 
+               "simulation_plots",
+               os.path.join("simulation_data", "raw"),
+               os.path.join("simulation_data", "mchan_processed"),
+               os.path.join("simulation_data", "wk_processed")]:
         tfd = os.path.join(folder, fd)
         if not os.path.exists(tfd):
             try:
@@ -315,7 +319,8 @@ def generateXML(vv,
                                                       channel, 
                                                       n)
             thisfilename.text = os.path.sep.join([os.path.split(vv.config_xml)[0],
-                                                  "simulation_data", 
+                                                  "simulation_data",
+                                                  "raw",
                                                   thisfilename_text])
             xml.append(signalData)
             

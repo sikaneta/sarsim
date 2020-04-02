@@ -8,6 +8,7 @@ from measurement.measurement import state_vector
 from measurement.arclength import slow
 from geoComputer.geoComputer import satGeometry as sG
 from common.utils import FFT_freq
+import utils.fileio as fio
 import omegak.omegak as wk
 import omegak.nbomegak as nbwk
 from scipy.constants import Boltzmann, c
@@ -768,8 +769,145 @@ class radar_system:
         self.target_satellite_velocity = satSV[3:]
         self.target_time = refTime
         self.C.computeRangeCoefficients(pointXYZ - satSV[0:3])
-        
 
+#%% Compute and store the r_sys file for quicker processing
+def computeStoreRsys(radar, bands = None, ref_range_idx = None):
+    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
+    sys_file = file_signature + "_rsys.pickle"
+    
+    """Define bands if not defined"""
+    if bands is None:
+        bands = np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
+    
+    print("Computing radar parameters...")
+    r_sys = radar_system(radar, bands)
+    
+    print("Sample offsets")
+    print(r_sys.s_offsets)
+        
+    print("Computing arclength parameters at reference range...")
+    if ref_range_idx is None:
+        ref_range_idx = int(radar[0]['acquisition']['numRangeSamples']/2)
+    r_sys.computeGroundPoint(radar, range_idx=ref_range_idx)
+    
+    with open(sys_file, 'wb') as f:
+        pickle.dump(r_sys, f, pickle.HIGHEST_PROTOCOL)
+        
+    return r_sys
+        
+#%% Compute the processing filter or load from file
+def computeStoreMultiProcFilter(radar):
+    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
+    mprocH_file = file_signature + "_mprocH.pickle"
+    
+    r_sys = loadRsys(radar)
+    
+    print("Computing the multi-channel H matrix...")
+    H = np.array([twoWayArrayPatternLinearKS(r_sys.ks, 
+                                             rd, 
+                                             r_sys.kr[0], 
+                                             ds) 
+                  for rd,ds in zip(radar,r_sys.s_offsets)])
+        
+    """Normalize the computed pattern"""
+    H /= np.sqrt(np.max(H*np.conj(H)))
+    
+    print("Writing processing filter to pickle file...")
+    with open(mprocH_file, 'wb') as f:
+        pickle.dump(H, f, pickle.HIGHEST_PROTOCOL)
+    
+    """Return the processing filter"""
+    return H, r_sys
+
+#%% Compute the processing filter or load from file
+def loadMultiProcFilter(radar):
+    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
+    mprocH_file = file_signature + "_mprocH.pickle"
+    print("Loading processing filter from pickle file...")
+    print(mprocH_file)
+    with open(mprocH_file, 'rb') as f:
+       H = pickle.load(f)
+       
+    """Return the processing filter"""
+    return H
+
+#%% Compute the processing filter or load from file
+def loadRsys(radar):
+    file_signature = "_".join(radar[0]['filename'].split("_")[0:-2])
+    sys_file = file_signature + "_rsys.pickle"
+    print("Load r_sys from pickle file...")
+    print(sys_file)
+    try:
+        with open(sys_file, 'rb') as f:
+           r_sys = pickle.load(f)
+    except FileNotFoundError as fE:
+        print(fE)
+        print("No r_sys file loaded, please calculate and store")
+        r_sys = None
+    
+    """Return the processing filter"""
+    return r_sys
+
+#%% Compute the inverse matrices
+def multiChannelProcessMem(radar,
+                           rangeidx=[0,-1],
+                           p=0.5, 
+                           SNR = 1.0,
+                           make_plots=False):
+    
+    print("Get the multi-channel H matrix...")
+    r_sys = loadRsys(radar)
+    H = loadMultiProcFilter(radar)
+    
+    print("Compute the desired antenna pattern...")
+    D = np.sqrt(np.sum(np.abs(H)**2, axis=0))
+    if make_plots:
+        plt.figure()
+        plt.plot(sorted(r_sys.ks_full), D.flatten()[r_sys.ksidx])
+        plt.title("Desired antenna pattern")
+        plt.xlabel("Azimuth wavenumber (m$^{-1}$)")
+        plt.ylabel("Gain (Natural units)")
+        plt.grid()
+        plt.show()
+        
+    print("Loading the data from disk...")
+    data = fio.loadNumpy_raw_dataMem(radar, 
+                                     ridx = rangeidx)
+    _, n_r, n_x = data.shape
+    n_b = r_sys.n_bands
+    
+    """Defining the noise covariance"""
+    Rn = np.eye(len(radar))/np.sqrt(SNR)
+    
+    print("Multi-channel processing ...")
+    procData = np.zeros((n_b,n_x,n_r), dtype=np.complex128)
+    blkSize = int(n_x/10)
+    for kidx in range(n_x):
+        if kidx%blkSize == 1:
+            print("Progress: %0.2f" % (100.0*kidx/n_x))
+        Rinv = np.linalg.inv(np.dot(H[:,:,kidx], np.conj(H[:,:,kidx].T)) 
+                                    + (1.0-p)/p*Rn)
+        B = np.dot(np.diag(D[:,kidx]), np.dot(np.conj(H[:,:,kidx].T), Rinv))
+        if np.any(np.isnan(B)):
+            print(kidx)
+            break
+        dummy = np.dot(B,data[:,:,kidx])
+        for bidx in range(n_b):
+            procData[bidx,kidx,:] = dummy[bidx,:]
+    
+    # Release data from memory
+    del data
+            
+    # Reorder the data
+    print("Re-ordering data and returning...")
+    procData = procData.reshape((n_b*n_x, n_r))
+    blkSize = int(n_r/10)
+    for k in np.arange(n_r):
+        if k%blkSize ==1:
+            print("Progress: %0.2f" % (100.0*k/n_r))
+        procData[:,k] = procData[r_sys.ksidx[r_sys.ks_full_idx], k]
+    return procData, r_sys
+   
 #%% Compute the inverse matrices
 def multiChannelProcess(radar, bands=None, p=0.5, make_plots=False, SNR = 1.0):
     """Define bands if not defined"""
@@ -785,6 +923,7 @@ def multiChannelProcess(radar, bands=None, p=0.5, make_plots=False, SNR = 1.0):
     print(r_sys.s_offsets)
     
     print("Computing the multi-channel H matrix...")
+    H = computeStoreMultiProcFilter(radar, bands=None)
     H = np.array([twoWayArrayPatternLinearKS(r_sys.ks, rd, r_sys.kr[0], ds) 
                   for rd,ds in zip(radar,r_sys.s_offsets)])
         
@@ -835,7 +974,14 @@ def multiChannelProcess(radar, bands=None, p=0.5, make_plots=False, SNR = 1.0):
     return procData, r_sys
 
 #%% SAR process the signal. Many assumptions are made about the signal
-def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows=8192, tempFile = None):
+def wkProcessNumba(procData, 
+                   r_sys,
+                   ks = None,
+                   r = None, 
+                   os_factor = 8, 
+                   mem_cols = 1024, 
+                   mem_rows = 8192, 
+                   tempFile = None):
     """ 
     mem_cols are the number of columns to process at one go. The data are
     organised by
@@ -854,12 +1000,16 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
     try:
         r = r or np.linalg.norm(r_sys.C.R)
     except AttributeError as aE:
-        print("will use center range for o-w processing")
+        print("will use center range for w-k processing")
         r = np.mean(r_sys.r)
+        
+    """ Define the ks frequencies if not already defined """
+    if ks is None:
+        ks = r_sys.ks_full
         
     r2t = 2.0/c
     cols = len(r_sys.kr_sorted)
-    rows = len(r_sys.ks_full)
+    rows = len(ks)
     
     """ Allocate memory and calculate indeces for the pulse workspace """
     Yos_idx = np.round(FFT_freq(cols,cols,0)).astype('int')
@@ -867,7 +1017,8 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
     dkr = r_sys.kr[1]-r_sys.kr[0]
     
     row_ticks = list(range(0,rows,mem_rows)) + [rows]
-    row_spans = [(row_ticks[k], row_ticks[k+1]) for k in range(len(row_ticks)-1)]
+    row_spans = [(row_ticks[k], row_ticks[k+1]) 
+                 for k in range(len(row_ticks)-1)]
     
     wk_processed = np.zeros((rows,mem_cols), dtype=np.complex128)
     
@@ -876,10 +1027,11 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
         n_rows = span[1]-span[0]
         YY = np.zeros((n_rows, cols), dtype=np.complex128)
     
-        iP = np.zeros((n_rows, r_sys.kr_sorted.shape[0]), dtype=np.double)
+        iP = np.zeros((n_rows, r_sys.kr_sorted.shape[0]), 
+                      dtype=np.double)
         
         """ Compute the points at which to interpolate """
-        nbwk.getInterpolationPoints(r_sys.ks_full[span[0]:span[1]], 
+        nbwk.getInterpolationPoints(ks[span[0]:span[1]], 
                                     r_sys.kr_sorted,
                                     iP,
                                     r,
@@ -891,7 +1043,7 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
         
         """ Perform the interpolation """
         print("Interpolating the signal...")
-        Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
+        #Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
         chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
         nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
                                 YY,
@@ -911,14 +1063,7 @@ def wkProcessNumba(procData, r_sys, r=None, os_factor=8, mem_cols=1024, mem_rows
                                          r_sys.nearRangeTime/r2t), axis=1)
         wk_processed[span[0]:span[1],:] = wkSignal[:,0:mem_cols]
         
-    if tempFile is not None:
-        print("W-K processing finished")
-        print("Writing range-time azimuth-Doppler data to file: %s" % tempFile)
-        np.save(tempFile, wk_processed)
-        print("Done")
-        return None
-    else:
-        return wk_processed
+    return wk_processed
     
 #%% Define a function to load the data with given file naming
 # convention. This loads the raw data generated as measurements from
@@ -950,6 +1095,7 @@ def loadNumpy_raw_data(radar, target_domain = "rX"):
     # Load the data
     #data = np.stack([np.fft.fft(np.load(fl), axis=1) for fl in fls], axis=0)
     return np.stack([fn_dict[dm + target_domain](np.load(fl)) for dm,fl in zip(domain,fls)], axis=0)
+
 
 #%% Define a function to load the multichannel processed data. These
 # data will need to be processed by a standard "stripmap" SAR processor

@@ -5,13 +5,10 @@ Created on Thu Jul 25 12:11:41 2019
 @author: SIKANETAI
 """
 
-import sys
 import configuration.configuration as cfg
+import utils.fileio as fio
 import numpy as np
-from measurement.measurement import state_vector
-from measurement.arclength import slow
 import argparse
-import xml.etree.ElementTree as etree
 import os
 from numba import cuda
 from scipy.constants import Boltzmann
@@ -24,12 +21,29 @@ else:
 parser = argparse.ArgumentParser(description="Generate simulated SAR data")
 
 parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/40cm_simulation.xml')
+                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
 parser.add_argument("--radar-idx",
                     help=""" The indexes of the radar files to create. This 
                     allows the program to be run simulataneously on different 
                     CPUs to create the data""",
                     nargs = "*",
+                    type=int,
+                    default = None)
+parser.add_argument("--range-block",
+                    help="""The output files for each beam/channel will be
+                            written to files with the range dimension of
+                            size range block. 
+                            i.e. with 
+                            - a range block size of --range-block=512 
+                            - a data file with name (...rX_c0b0.npy)
+                            - a data size of 1200X16384 in range by
+                              azimuth respectively (rX) 
+                            then will write several files of names 
+                            ...r0X0_c0b0.npy    (has 512 rows)
+                            ...r512X0_c0b0.npy  (has 512 rows)
+                            ...r1024X0_c0b0.npy (has 1200-1024 rows)
+                            If not specified, will set block to the total
+                            number of range samples.""",
                     type=int,
                     default = None)
 vv = parser.parse_args()
@@ -47,7 +61,7 @@ satXYZ = satSV[0:3]
 satvXvYvZ = satSV[3:]  
 
 #%% Compute the signals
-def computeSignal(radar, pointXYZ, satSV): 
+def computeSignal(radar, pointXYZ, satSV, range_block=None): 
     
     # Loop through radars and compute and write data
     for rad in radar:
@@ -106,8 +120,11 @@ def computeSignal(radar, pointXYZ, satSV):
         pulse_data = fn_dict[domain](pulse_data)
         
         # Write the file to disk
-        np.save(rad['filename'], pulse_data)
+        filenames = fio.writeSimFiles(rad['filename'], 
+                                      pulse_data,
+                                      rblock = range_block)
+        #np.save(rad['filename'], pulse_data)
         
 
 #%% New generation of data
-computeSignal(radar, pointXYZ, satXYZ)       
+computeSignal(radar, pointXYZ, satXYZ, vv.range_block)       
