@@ -241,7 +241,7 @@ def computeReferenceGroundPoint(radar, radarIDX=None, rTargetIndex=None, sTarget
     rng = np.min(rngs)
     if radarIDX is None:
         radarIDX = np.argmin(rngs)
-        print("Reference radar index: %d" % radarIDX)
+        print("Reference radar object index: %d" % radarIDX)
     #ref = radar[radarIDX]['acquisition']
     
     refTimePos = radar[radarIDX]['acquisition']['satellitePositions']
@@ -629,8 +629,7 @@ def twoWayArrayPatternLinearKS(ks, rad, krz, s_off):
 
 
 #%% Compute the signals
-def computeSignal(radar, pointXYZ, satSV): 
-    
+def computeSignal(radar, pointXYZ, satSV, rblock_size=None): 
     # Loop through radars and compute and write data
     for rad in radar:
         ref = rad['acquisition']
@@ -644,7 +643,7 @@ def computeSignal(radar, pointXYZ, satSV):
         velocityVectors = ref['satellitePositions'][1][:,3:]
         velocityMagnitudes = np.sqrt(np.sum(velocityVectors*velocityVectors, axis=1))
         lookDirections = np.sum(rangeVectors*velocityVectors, axis=1)/ranges/velocityMagnitudes
-        r2t = 2.0/physical.c
+        r2t = 2.0/c
         rangeTimes = ranges*r2t
         
         #% Define the fast time values
@@ -660,15 +659,14 @@ def computeSignal(radar, pointXYZ, satSV):
         
         # Define the output array
         pulse_data = np.zeros((len(fastTimes), len(ranges)), dtype=np.complex128)
-        update_BLK = int((len(ranges)/10))
         for pulseIDX in range(len(ranges)):
-            if np.mod(pulseIDX, update_BLK) == 0:
+            if np.mod(pulseIDX, 100) == 0:
                 print("Progress %0.4f percent" % (pulseIDX/len(ranges)*100.0))
-            pulse_data[:,pulseIDX] = antennaResp(fastTimes, 
+            pulse_data[:,(pulseIDX+0)] = antennaResp(fastTimes, 
                                    rangeTimes[pulseIDX],
                                    lookDirections[pulseIDX],
                                    np.min(rad['antenna']['azimuthLengths']),
-                                   rad['antenna']['azimuthPositions']/physical.c,
+                                   rad['antenna']['azimuthPositions']/c,
                                    rad['mode']['txMagnitude'],
                                    rad['mode']['rxMagnitude'],
                                    rad['mode']['txDelay'],
@@ -689,8 +687,10 @@ def computeSignal(radar, pointXYZ, satSV):
         pulse_data = fn_dict[domain](pulse_data)
         
         # Write the file to disk
-        np.save(rad['filename'], pulse_data)
-    return True
+        filenames = fio.writeSimFiles(rad['filename'], 
+                                      pulse_data,
+                                      rblock = rblock_size)
+    return filenames
 
 #%% Define a class to hold sample radar data
 class radar_system:
@@ -785,9 +785,9 @@ def computeStoreRsys(radar, bands = None, ref_range_idx = None):
     print("Sample offsets")
     print(r_sys.s_offsets)
         
-    print("Computing arclength parameters at reference range...")
     if ref_range_idx is None:
         ref_range_idx = int(radar[0]['acquisition']['numRangeSamples']/2)
+    print("Computing arclength parameters at reference range index %d..." % ref_range_idx)
     r_sys.computeGroundPoint(radar, range_idx=ref_range_idx)
     
     with open(sys_file, 'wb') as f:

@@ -209,7 +209,7 @@ def loadNumpy_mcp_data(data_file,
 #%% Function to compute filenames
 def fileStruct(filename, subfolder, domain, extension):
     path, tail = os.path.split(filename)
-    path = os.path.join(os.path.split(path)[0][0:-1], subfolder)
+    path = os.path.join(os.path.split(path)[0], subfolder)
     tail = "_".join(tail.split("_")[0:-2] + [domain, extension])
     return os.path.join(path, tail)
     
