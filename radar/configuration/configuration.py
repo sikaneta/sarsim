@@ -15,6 +15,7 @@ from scipy.constants import Boltzmann, c
 import os
 import pickle
 from numba import cuda
+from tqdm import tqdm
 if cuda.is_available():
     from antenna.pattern import antennaResponseCudaMem as antennaResp
 else:
@@ -659,9 +660,11 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
         
         # Define the output array
         pulse_data = np.zeros((len(fastTimes), len(ranges)), dtype=np.complex128)
-        for pulseIDX in range(len(ranges)):
-            if np.mod(pulseIDX, 100) == 0:
-                print("Progress %0.4f percent" % (pulseIDX/len(ranges)*100.0))
+        n_iterations = len(ranges)
+        tick_update = int(n_iterations/20)
+        for pulseIDX in tqdm(range(n_iterations)):
+            # if np.mod(pulseIDX, tick_update) == 0:
+            #     print("Progress %0.2f percent" % (pulseIDX/n_iterations*100.0))
             pulse_data[:,(pulseIDX+0)] = antennaResp(fastTimes, 
                                    rangeTimes[pulseIDX],
                                    lookDirections[pulseIDX],
@@ -825,8 +828,13 @@ def loadMultiProcFilter(radar):
     mprocH_file = file_signature + "_mprocH.pickle"
     print("Loading processing filter from pickle file...")
     print(mprocH_file)
-    with open(mprocH_file, 'rb') as f:
-       H = pickle.load(f)
+    try:
+        with open(mprocH_file, 'rb') as f:
+           H = pickle.load(f)
+    except FileNotFoundError as fE:
+        print(fE)
+        print("No H file loaded, please calculate and store")
+        H = None
        
     """Return the processing filter"""
     return H
@@ -881,10 +889,7 @@ def multiChannelProcessMem(radar,
     
     print("Multi-channel processing ...")
     procData = np.zeros((n_b,n_x,n_r), dtype=np.complex128)
-    blkSize = int(n_x/10)
-    for kidx in range(n_x):
-        if kidx%blkSize == 1:
-            print("Progress: %0.2f" % (100.0*kidx/n_x))
+    for kidx in tqdm(range(n_x)):
         Rinv = np.linalg.inv(np.dot(H[:,:,kidx], np.conj(H[:,:,kidx].T)) 
                                     + (1.0-p)/p*Rn)
         B = np.dot(np.diag(D[:,kidx]), np.dot(np.conj(H[:,:,kidx].T), Rinv))
@@ -901,10 +906,7 @@ def multiChannelProcessMem(radar,
     # Reorder the data
     print("Re-ordering data and returning...")
     procData = procData.reshape((n_b*n_x, n_r))
-    blkSize = int(n_r/10)
-    for k in np.arange(n_r):
-        if k%blkSize ==1:
-            print("Progress: %0.2f" % (100.0*k/n_r))
+    for k in tqdm(np.arange(n_r)):
         procData[:,k] = procData[r_sys.ksidx[r_sys.ks_full_idx], k]
     return procData, r_sys
    
@@ -1043,7 +1045,7 @@ def wkProcessNumba(procData,
         
         """ Perform the interpolation """
         print("Interpolating the signal...")
-        #Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
+        Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
         chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
         nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
                                 YY,
@@ -1057,7 +1059,7 @@ def wkProcessNumba(procData,
         YY = YY[:,r_sys.kridx_inv]
     
         #% Phase multiply the signal
-        print("Correcting residual phase and applying IFFT...")
+        # print("Correcting residual phase and applying IFFT...")
         KR = np.matlib.repmat(r_sys.kr, n_rows, 1)
         wkSignal = np.fft.ifft(YY*np.exp(-1j*(iP-KR)*
                                          r_sys.nearRangeTime/r2t), axis=1)

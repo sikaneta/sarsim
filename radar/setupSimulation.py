@@ -64,17 +64,21 @@ print("""Computing the radar system signal processing object""")
 if vv.recompute_rsys:
     r_sys = cfg.computeStoreRsys(radar, bands, vv.ref_range_idx)
 else:
-    r_sys = cfg.loadRsys(radar)
+    r_sys = cfg.loadRsys(radar) or cfg.computeStoreRsys(radar, 
+                                                        bands, 
+                                                        vv.ref_range_idx)
 
 #%% Generate the processing filter
 print("""Computing the multi channel processing filter""")
 if vv.recompute_Hfilter:
-    H, _ = cfg.computeStoreMultiProcFilter(radar)
+    H,_ = cfg.computeStoreMultiProcFilter(radar)
 else:
     H = cfg.loadMultiProcFilter(radar)
+    if H is None:
+        H,_ = cfg.computeStoreMultiProcFilter(radar)[0]
 
 #%% Generate the list of commands that should be run with the given block sizes
-all_commands = []
+all_commands = ["#!/bin/bash"]
 
 #%% Generate commands to create the raw signal
 gen_command = ["python -m generateMsar"]
@@ -85,7 +89,7 @@ for chan_num in range(len(radar)):
                 "--rblock-size %d" % vv.rblock_size]
     all_commands.append(" ".join(gen_command + gen_args))
 
-all_commands.append("---wait---")
+all_commands.append("wait")
 #%% Useful function to compute blocks
 def getBlocks(N, b):
     return [(x, x + b if x < N-b else N) for x in range(0,N,b)]
@@ -96,23 +100,23 @@ gen_command = ["python -m processMultiChannel"]
 for blks in r_blocks:
     gen_args = ["--config-xml %s" % vv.config_xml,
                 "--ridx %d %d" % blks,
-                "--xblock-size %d" % vv.xblock_size]
+                "--xblock-size %d &" % vv.xblock_size]
     all_commands.append(" ".join(gen_command + gen_args))
 
-all_commands.append("---wait---")    
+all_commands.append("wait")    
 #%% Generate commands to SAR (w-k) process the data
 x_blocks = getBlocks(len(r_sys.ks_full), vv.xblock_size)
 gen_command = ["python -m sarProcess"]
 for blks in x_blocks:
     gen_args = ["--config-xml %s" % vv.config_xml,
                 "--xidx %d %d" % blks,
-                "--rblock-size %d" % vv.rblock_size]
+                "--rblock-size %d &" % vv.rblock_size]
     all_commands.append(" ".join(gen_command + gen_args))
 
-all_commands.append("---wait---")
+all_commands.append("wait")
 
 #%% Write the commands to file
-cmd_file = ".".join(vv.config_xml.split(".")[0:-1] + ["commands"])
+cmd_file = ".".join(vv.config_xml.split(".")[0:-1] + ["sh"])
 with open(cmd_file, 'w') as f:
     for cmd in all_commands:
         f.write(cmd + "\n")
