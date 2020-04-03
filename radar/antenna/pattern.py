@@ -5,7 +5,7 @@ Created on Sat Nov 16 09:42:12 2019
 
 @author: ishuwa
 """
-from numba import jit, prange, complex128, float64, cuda
+from numba import jit, njit, prange, complex128, float64, cuda, int32, void
 from scipy.constants import c
 import numpy as np
 import time
@@ -119,61 +119,57 @@ def antennaResponse(fastTimes,
     baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) - chirp_duration/2.0)**2 )
     return eF*np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, newnSamples))*np.fft.fft(response))[0:nSamples]
 
-#%%
-@jit(parallel=True)
-def antennaResponseMultiCPU(fastTimes,
-                    targetRangeTime, 
-                    u, 
-                    minAntennaLength,
-                    azimuthPositions,
-                    txMag,
-                    rxMag,
-                    txDelay,
-                    rxDelay,
-                    chirp_bandwidth,
-                    chirp_duration,
-                    chirp_carrier):
-    """ This function takes a range time: targetRangeTime and a look angle: u along
-    other parameters which describe the positions of the antenna
-    elements and the delays for each element and calculates the response
-    to a transmitted signal z.sample(t) """
-    
-    """ Let's first make sure that there are enough samples in the fastTimes
-    array to cover the chirp duration """
-    nSamples = len(fastTimes)
+#%% Compute the number of samples that we'll need
+def numberWaveformComputationSamples(fastTimes,
+                                     targetRangeTime,
+                                     waveformDuration,
+                                     waveformBufferSamples=10):
     dT = fastTimes[1] - fastTimes[0]
     if (fastTimes[0] <= targetRangeTime) and (fastTimes[-1]>targetRangeTime):
         """ enlarge the fastTimes array as necessary """
         firstValidSample = np.argwhere(fastTimes>=targetRangeTime)[0]
-        chirpLengthBuffer = 10
         requiredNumberSamples = np.max([(firstValidSample + 
-                                         chirpLengthBuffer + 
-                                         np.ceil(chirp_duration/dT)),
+                                         waveformBufferSamples + 
+                                         np.ceil(waveformDuration/dT)),
                                        len(fastTimes)])
         requiredNumberSamples = 2**int(np.ceil(np.log2(requiredNumberSamples)))
-        newFastTimes = np.arange(requiredNumberSamples)*dT + fastTimes[0]
+        return np.arange(requiredNumberSamples)*dT + fastTimes[0]
     else:
-        return np.zeros(fastTimes.shape, dtype=np.complex128)
-    
-    
-    # Compute the element factor
-    eF = np.sinc(chirp_carrier*minAntennaLength/c*u)**2
-    
-    # Ish stuff =======================================
-    N = requiredNumberSamples
-    f0 = chirp_carrier
-    fp = 1.0/dT
-    
-    freq = np.arange(N, dtype=int)
-    fidx = freq>=(N/2)
-    freq[fidx] -= N
-    unwrapped_offset = np.round(N*f0/fp).astype(int)
-    wrapped_offset = unwrapped_offset%N
-    cycle = np.round((unwrapped_offset - wrapped_offset)/N).astype(int)
-    
-    freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
-    freq = freq*fp/N
-    
+        return None
+
+#%% A number version of the FFT_freq function with scalar frequency
+@jit(float64(int32,
+             int32, 
+             float64,
+             float64,),
+     nopython=True)
+def nbFFT(k,
+          N,
+          fp,
+          f0):
+    fk = fp*(f0//fp) + fp*k/N
+    return fk if fk < f0+fp/2 else fk - fp
+
+#%% A parallel implementation of the antenna calculation
+# @jit(void(complex128[:],    # The frequency delay term (out)
+#           complex128[:],    # The dCorr term (out)
+#           float64[:],       # Input frequnecy array
+#           float64,          # u
+#           float64[:],       # azimuth positions
+#           float64[:],       # txMag
+#           float64[:],       # rxMag
+#           float64[:],       # txDelay
+#           float64[:]))      # rxDelay
+@jit(parallel=True)
+def corePatternMultiCPU(freq_delay,
+                        dCorrection,
+                        freq,
+                        u, 
+                        azimuthPositions,
+                        txMag,
+                        rxMag,
+                        txDelay,
+                        rxDelay):
     """ Calculate where the true time delays and the arrival delay, due to 
         the angle of arrival, should be computed by finding where there is
         an applied gain for the transmit and receive array elements """
@@ -191,9 +187,7 @@ def antennaResponseMultiCPU(fastTimes,
     pattern_delay = (np.dot(myTxDly, myTxAmp/np.sum(myTxAmp)) 
                     + np.dot(myRxDly, myRxAmp/np.sum(myRxAmp)))
     
-    freq_delay = np.zeros(len(freq), dtype=np.complex128)
-    num_freq_samples = len(freq)
-    for k in prange(num_freq_samples):
+    for k in prange(len(freq)):
         w = 1j*2.0*np.pi*freq[k]
         sTx = np.complex(0.0,0.0)
         for kk in range(myTxLen):
@@ -204,20 +198,208 @@ def antennaResponseMultiCPU(fastTimes,
             sRx += myRxAmp[kk]*np.exp(-w*(myRxDly[kk] + u*myRxPos[kk]))
             
         freq_delay[k] = sTx*sRx
+        dCorrection[k] = np.exp(1j*2.0*np.pi*freq[k]*pattern_delay)
     
-    dCorrection = np.exp(1j*2.0*np.pi*freq*pattern_delay)
+    return
+
+#%% A wrapper function for the real work done above
+def antennaResponseMultiCPU(return_response,
+                            fastTimes,
+                            targetRangeTime, 
+                            u, 
+                            minAntennaLength,
+                            azimuthPositions,
+                            txMag,
+                            rxMag,
+                            txDelay,
+                            rxDelay,
+                            chirp_bandwidth,
+                            chirp_duration,
+                            chirp_carrier):
+    """ This function takes a range time: targetRangeTime and a look angle: u along
+    other parameters which describe the positions of the antenna
+    elements and the delays for each element and calculates the response
+    to a transmitted signal z.sample(t) """
+    
+    """ Let's first make sure that there are enough samples in the fastTimes
+    array to cover the chirp duration """
+    
+    # Compute the element factor
+    eF = np.sinc(chirp_carrier*minAntennaLength/c*u)**2
+    
+    # Ish stuff =======================================
+    N = len(fastTimes)#requiredNumberSamples
+    f0 = chirp_carrier
+    dT = fastTimes[1] - fastTimes[0]
+    fp = 1.0/dT
+    # freq = np.array([nbFFT(k,N,fp,f0) for k in range(N)])
+    
+    # Ish stuff =======================================
+    freq = np.arange(N, dtype=int)
+    fidx = freq>=(N/2)
+    freq[fidx] -= N
+    unwrapped_offset = np.round(N*f0/fp).astype(int)
+    wrapped_offset = unwrapped_offset%N
+    cycle = np.round((unwrapped_offset - wrapped_offset)/N).astype(int)
+    
+    freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
+    freq = freq*fp/N
+    
+    freq = np.arange(N, dtype=int)
+    fidx = freq>=(N/2)
+    freq[fidx] -= N
+    unwrapped_offset = np.round(N*f0/fp).astype(int)
+    wrapped_offset = unwrapped_offset%N
+    cycle = np.round((unwrapped_offset - wrapped_offset)/N).astype(int)
+    
+    freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
+    freq = freq*fp/N
+    
+    dCorrection = np.zeros(fastTimes.shape, dtype=np.complex128)
+    freq_delay = np.zeros_like(dCorrection)
+    corePatternMultiCPU(freq_delay,
+                        dCorrection,
+                        freq,
+                        u, 
+                        azimuthPositions,
+                        txMag,
+                        rxMag,
+                        txDelay,
+                        rxDelay)
     
     rate = 1j*np.pi*chirp_bandwidth/chirp_duration
     wcarrier = 2.0*1j*np.pi*chirp_carrier
-    t = newFastTimes - targetRangeTime
+    t = fastTimes - targetRangeTime
+    
     response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*t + 
-                                             rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
-    response = response*np.exp( -wcarrier*(newFastTimes) )
+                    rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
+    response = response*np.exp( -wcarrier*(fastTimes) )
     
     # Pulse compress the signal
-    baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) - chirp_duration/2.0)**2 )
-    return eF*(np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, 
-                                              len(response)))*np.fft.fft(response))[0:nSamples])
+    baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) 
+                                    - chirp_duration/2.0)**2 )
+    response = eF*np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, N))
+                                      *np.fft.fft(response))
+    
+    
+    for k in range(len(return_response)):
+        return_response[k]=response[k]
+    
+    return
+
+#%% Some old stuff
+if False:
+    #@jit(parallel=True)
+    @jit(void(float64[:],   # fastTimes
+              float64,      # targetRangeTime
+              float64,      # u
+              float64,      # minAntennaLength
+              float64[:],   # azimuth positions
+              float64[:],   # txMag
+              float64[:],   # rxMag
+              float64[:],   # txDelay
+              float64[:],   # rxDelay
+              float64,      # chirp bandwidth
+              float64,      # chirp duration
+              float64),     # chirp carrier
+              parallel=True)
+    def antennaResponseMultiCPU2(fastTimes,
+                        targetRangeTime, 
+                        u, 
+                        minAntennaLength,
+                        azimuthPositions,
+                        txMag,
+                        rxMag,
+                        txDelay,
+                        rxDelay,
+                        chirp_bandwidth,
+                        chirp_duration,
+                        chirp_carrier):
+        """ This function takes a range time: targetRangeTime and a look angle: u along
+        other parameters which describe the positions of the antenna
+        elements and the delays for each element and calculates the response
+        to a transmitted signal z.sample(t) """
+        
+        """ Let's first make sure that there are enough samples in the fastTimes
+        array to cover the chirp duration """
+        nSamples = len(fastTimes)
+        dT = fastTimes[1] - fastTimes[0]
+        if (fastTimes[0] <= targetRangeTime) and (fastTimes[-1]>targetRangeTime):
+            """ enlarge the fastTimes array as necessary """
+            firstValidSample = np.argwhere(fastTimes>=targetRangeTime)[0]
+            chirpLengthBuffer = 10
+            requiredNumberSamples = np.max([(firstValidSample + 
+                                             chirpLengthBuffer + 
+                                             np.ceil(chirp_duration/dT)),
+                                           len(fastTimes)])
+            requiredNumberSamples = 2**int(np.ceil(np.log2(requiredNumberSamples)))
+            newFastTimes = np.arange(requiredNumberSamples)*dT + fastTimes[0]
+        else:
+            return np.zeros(fastTimes.shape, dtype=np.complex128)
+        
+        
+        # Compute the element factor
+        eF = np.sinc(chirp_carrier*minAntennaLength/c*u)**2
+        
+        # Ish stuff =======================================
+        N = requiredNumberSamples
+        f0 = chirp_carrier
+        fp = 1.0/dT
+        
+        freq = np.arange(N, dtype=int)
+        fidx = freq>=(N/2)
+        freq[fidx] -= N
+        unwrapped_offset = np.round(N*f0/fp).astype(int)
+        wrapped_offset = unwrapped_offset%N
+        cycle = np.round((unwrapped_offset - wrapped_offset)/N).astype(int)
+        
+        freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
+        freq = freq*fp/N
+        
+        """ Calculate where the true time delays and the arrival delay, due to 
+            the angle of arrival, should be computed by finding where there is
+            an applied gain for the transmit and receive array elements """
+        myTxAmp = txMag[txMag > 0.0]
+        myTxDly = txDelay[txMag > 0.0]
+        myTxPos = azimuthPositions[txMag > 0.0]
+        myTxLen = myTxAmp.shape[0]
+        
+        myRxAmp = rxMag[rxMag > 0.0]
+        myRxDly = rxDelay[rxMag > 0.0]
+        myRxPos = azimuthPositions[rxMag > 0.0]
+        myRxLen = myRxAmp.shape[0]
+        
+        """ Calculate the pattern delay terms. See written notes """
+        pattern_delay = (np.dot(myTxDly, myTxAmp/np.sum(myTxAmp)) 
+                        + np.dot(myRxDly, myRxAmp/np.sum(myRxAmp)))
+        
+        freq_delay = np.zeros(len(freq), dtype=np.complex128)
+        num_freq_samples = len(freq)
+        for k in prange(num_freq_samples):
+            w = 1j*2.0*np.pi*freq[k]
+            sTx = np.complex(0.0,0.0)
+            for kk in range(myTxLen):
+                sTx += myTxAmp[kk]*np.exp(-w*(myTxDly[kk] + u*myTxPos[kk]))
+                
+            sRx = np.complex(0.0,0.0)
+            for kk in range(myRxLen):
+                sRx += myRxAmp[kk]*np.exp(-w*(myRxDly[kk] + u*myRxPos[kk]))
+                
+            freq_delay[k] = sTx*sRx
+        
+        dCorrection = np.exp(1j*2.0*np.pi*freq*pattern_delay)
+        
+        rate = 1j*np.pi*chirp_bandwidth/chirp_duration
+        wcarrier = 2.0*1j*np.pi*chirp_carrier
+        t = newFastTimes - targetRangeTime
+        response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*t + 
+                                                 rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
+        response = response*np.exp( -wcarrier*(newFastTimes) )
+        
+        # Pulse compress the signal
+        baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) - chirp_duration/2.0)**2 )
+        return eF*(np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, 
+                                                  len(response)))*np.fft.fft(response))[0:nSamples])
 
 
 #%% Point the environment variable

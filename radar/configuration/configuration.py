@@ -16,6 +16,7 @@ import os
 import pickle
 from numba import cuda
 from tqdm import tqdm
+from antenna.pattern import numberWaveformComputationSamples as nWCS
 if cuda.is_available():
     from antenna.pattern import antennaResponseCudaMem as antennaResp
 else:
@@ -661,22 +662,27 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
         # Define the output array
         pulse_data = np.zeros((len(fastTimes), len(ranges)), dtype=np.complex128)
         n_iterations = len(ranges)
-        tick_update = int(n_iterations/20)
         for pulseIDX in tqdm(range(n_iterations)):
-            # if np.mod(pulseIDX, tick_update) == 0:
-            #     print("Progress %0.2f percent" % (pulseIDX/n_iterations*100.0))
-            pulse_data[:,(pulseIDX+0)] = antennaResp(fastTimes, 
-                                   rangeTimes[pulseIDX],
-                                   lookDirections[pulseIDX],
-                                   np.min(rad['antenna']['azimuthLengths']),
-                                   rad['antenna']['azimuthPositions']/c,
-                                   rad['mode']['txMagnitude'],
-                                   rad['mode']['rxMagnitude'],
-                                   rad['mode']['txDelay'],
-                                   rad['mode']['rxDelay'],
-                                   rad['chirp']['pulseBandwidth'],
-                                   rad['chirp']['length'],
-                                   rad['antenna']['fc'])*radarEq1
+            computeFastTimes = nWCS(fastTimes,
+                                    rangeTimes[pulseIDX],
+                                    rad['chirp']['length'])
+            if computeFastTimes is None:
+                continue
+            response = np.zeros(len(computeFastTimes), np.complex128)
+            antennaResp(response,
+                        computeFastTimes, 
+                        rangeTimes[pulseIDX],
+                        lookDirections[pulseIDX],
+                        np.min(rad['antenna']['azimuthLengths']),
+                        rad['antenna']['azimuthPositions']/c,
+                        rad['mode']['txMagnitude'],
+                        rad['mode']['rxMagnitude'],
+                        rad['mode']['txDelay'],
+                        rad['mode']['rxDelay'],
+                        rad['chirp']['pulseBandwidth'],
+                        rad['chirp']['length'],
+                        rad['antenna']['fc'])
+            pulse_data[:,pulseIDX] = response[0:len(fastTimes)]*radarEq1
         
         # Get the target domain from the filename
         domain = rad['filename'].split("_")[-2]
