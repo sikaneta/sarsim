@@ -6,7 +6,7 @@ Created on Wed Sep 11 12:00:28 2019
 """
 import numpy as np
 
-#%%
+#%% Function to convert seconds to a timedelta64 object
 def secondsToDelta(s):
         sign = int(np.sign(s))
         ds = np.abs(s)
@@ -17,7 +17,7 @@ def secondsToDelta(s):
         nsecs = sign*nsecs
         return np.timedelta64(secs,'s') + np.timedelta64(nsecs,'ns')
 
-#%%   
+#%% Function to return the indeces of a DFT
 def FFT_freq(N, fp, f0):
     freq = np.arange(N, dtype=int)
     fidx = freq>=(N/2)
@@ -28,3 +28,11 @@ def FFT_freq(N, fp, f0):
     
     freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
     return freq*fp/N
+
+#%% Function to oversample a signal
+def upsampleSignal(y, os_factor, k_off=0):
+        N = len(y)
+        YY = np.zeros((N*os_factor,), dtype=np.complex128)
+        Y_idx = np.round(FFT_freq(N, N, k_off)).astype(int)
+        YY[Y_idx] = np.fft.fft(y)
+        return np.fft.ifft(YY)*os_factor

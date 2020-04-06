@@ -12,6 +12,7 @@ import numpy as np
 import argparse
 import os
 import utils.fileio as fio
+from tqdm import tqdm
 
 #%% Argparse stuff
 purpose = """
@@ -48,6 +49,9 @@ vv = parser.parse_args()
 #%% Load the radar configuration
 if 'radar' not in locals():
     radar = cfg.loadConfiguration(vv.config_xml)
+    
+#%% Get an r_sys object
+r_sys = cfg.loadRsys(radar)
 
 #%% Load the data
 if 'wkSignal'not in locals():
@@ -57,11 +61,25 @@ if 'wkSignal'not in locals():
                                         "wkprocessed.npy")
     print("Loading data from file: %s" % proc_file)
     wkSignal = fio.loadSimFiles(proc_file, xidx=vv.xidx, ridx=vv.ridx)
+    
+    # Shift the signal as required
+    print("Attempting to shift the signal...")
+    s = np.arange(r_sys.Na*r_sys.n_bands)/(r_sys.ksp*r_sys.n_bands)
+    s -= np.mean(s)
+    mxcol = np.argmax(wkSignal[0,:])
+    intf = wkSignal[0:-1, mxcol]*np.conj(wkSignal[1:, mxcol])
+    dks = r_sys.ks_full[1] - r_sys.ks_full[0]
+    c_ang = np.angle(np.sum(intf)) - dks*np.min(s)
+    s_off = c_ang/dks
+    p_fct = np.exp(1j*r_sys.ks_full*s_off)
+    rows, cols = wkSignal.shape
+    for k in tqdm(np.arange(cols)):
+        wkSignal[:, k] *= p_fct
+    print("Computing the FFT of the signal ...")
     wkSignal = np.fft.ifft(wkSignal, axis=0)
     wkSignal = wkSignal/np.max(np.abs(wkSignal))
 
-#%% Get an r_sys object
-r_sys = cfg.loadRsys(radar)
+
 
 #%% Define the folder in which to store plots
 sim_folder = os.path.join(os.path.split(vv.config_xml)[0], 

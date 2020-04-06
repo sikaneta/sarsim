@@ -271,7 +271,7 @@ def antennaResponseMultiCPU(return_response,
     wcarrier = 2.0*1j*np.pi*chirp_carrier
     t = fastTimes - targetRangeTime
     
-    response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*t + 
+    response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*(t-chirp_duration/2.0) + 
                     rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
     response = response*np.exp( -wcarrier*(fastTimes) )
     

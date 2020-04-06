@@ -41,9 +41,9 @@ def df(x, p0, p1, p2, p3, p4, r, a2, a3, a4):
             p3*dkernel_factored(x,3,1,3,r,a2,a3,a4) +
             p4*dkernel_factored(x,4,1,4,r,a2,a3,a4))
 
-
+#%% simplified version
 @jit(forceobj=True)
-def interpolatePulsesCx(Y, YY, Xnew, oversample, Yos_idx):
+def interpolatePulsesCxSimple(y, YY, Xnew, oversample, yupidx):
     """This function interpolates the values of the matrix Y and writes
     the interpolated values into the matrix YY. Y and YY are matrices
     that represent range in the row direction and pulse in the column
@@ -55,8 +55,42 @@ def interpolatePulsesCx(Y, YY, Xnew, oversample, Yos_idx):
     frequency domain."""
     
     rows, cols  = Xnew.shape
-    bb_factor = np.exp(2.0*1j*np.arange(cols))
-    bb_factor_conj = np.exp(-2.0*1j*np.arange(cols*oversample)/(oversample))
+    
+    for row in prange(rows):
+        Yup = np.fft.fft(y[row,:], cols*oversample)[yupidx]
+        
+        # Calculate the new interpolation indeces
+        invalid = (Xnew[row,:]<0.0) | (Xnew[row,:]>(cols-1))
+        #Xnew[row, invalid] = 0.0
+        xx = Xnew[row,:]*oversample
+        xx[invalid] = 0.0
+        
+        # calculate the floor, ceiling and fractional indeces
+        xx_floor = np.floor(xx).astype('int')
+        xx_ceil = np.ceil(xx).astype('int')
+        xx_fraction = xx - xx_floor
+        
+        # Compute the linearly interpolated values
+        YY[row,:] = (1.0-xx_fraction)*Yup[xx_floor] + xx_fraction*Yup[xx_ceil] 
+        YY[row,invalid] = 0.0
+    
+
+
+@jit(forceobj=True)
+def interpolatePulsesCx(Y, YY, Xnew, oversample, Yos_idx, bb_m):
+    """This function interpolates the values of the matrix Y and writes
+    the interpolated values into the matrix YY. Y and YY are matrices
+    that represent range in the row direction and pulse in the column
+    direction. The matrix Xnew and the sample numbers (double) at which
+    to interpolate the original matrix Y. Xnew has the same dimension as
+    Y and YY. The vector Yos (os -> oversample) is a workspace in which
+    to story temporary oversampled FFT values. while the vector Yos_idx
+    provides the indeces for populating this oversampled vector in the
+    frequency domain."""
+    
+    rows, cols  = Xnew.shape
+    bb_factor = np.exp(1j*bb_m*np.arange(cols))
+    bb_factor_conj = np.exp(-1j*bb_m*np.arange(cols*oversample)/(oversample))
     
     for row in prange(rows):
         Yup = np.zeros((cols*oversample,), dtype=np.complex128)

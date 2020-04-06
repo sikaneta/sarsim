@@ -715,10 +715,10 @@ class radar_system:
         self.prf = ref['prf']
         self.nearRangeTime = rad['acquisition']['nearRangeTime']
         self.r = (self.nearRangeTime + 
-                  np.arange(self.Nr, dtype=np.double)/self.fs)*physical.c/2.0
-        self.near_range = self.nearRangeTime*physical.c/2.0
-        self.mid_range = (self.nearRangeTime + (self.Nr/2-1)/self.fs)*physical.c/2.0
-        self.far_range = (self.nearRangeTime + (self.Nr-1)/self.fs)*physical.c/2.0
+                  np.arange(self.Nr, dtype=np.double)/self.fs)*c/2.0
+        self.near_range = self.nearRangeTime*c/2.0
+        self.mid_range = (self.nearRangeTime + (self.Nr/2-1)/self.fs)*c/2.0
+        self.far_range = (self.nearRangeTime + (self.Nr-1)/self.fs)*c/2.0
         center_sat_index = int(self.Na/2)
         sv = state_vector()
         xState = sv.expandedState(ref['satellitePositions'][1][center_sat_index], 0.0)
@@ -737,7 +737,10 @@ class radar_system:
         self.C.t2s()
         
         # Generate the fast time wavenumber
-        self.kr = 4.0*np.pi*FFT_freq(self.Nr, self.fs, 0.0)/physical.c + 4.0*np.pi*self.f0/physical.c
+        # Note that since the chirp was mixed to based band, we have the 
+        # following expression for the fast time frequency rather than
+        # self.kr = (4.0*np.pi/c)*FFT_freq(self.Nr, self.fs, self.f0)
+        self.kr = 4.0*np.pi/c*(FFT_freq(self.Nr, self.fs, 0.0) + self.f0)
         self.kridx = np.argsort(self.kr)
         self.kridx_inv = np.argsort(self.kridx)
         self.kr_sorted = self.kr[self.kridx]
@@ -1005,11 +1008,17 @@ def wkProcessNumba(procData,
         r = r or np.linalg.norm(r_sys.C.R)
     except AttributeError as aE:
         print("will use center range for w-k processing")
-        r = np.mean(r_sys.r)
+        r = r_sys.mid_range
         
     """ Define the ks frequencies if not already defined """
     if ks is None:
         ks = r_sys.ks_full
+        
+    """ Calculate the inverse frequency offset for oversampling in
+        the frequency signal (this is done in the interpolation step)"""
+    swath = r_sys.far_range - r_sys.near_range
+    baseband_mix = 2.0*np.pi*np.mod(r_sys.mid_range, swath)/swath
+    # baseband_mix = 2.0*np.pi*0.5/r_sys.Nr
         
     r2t = 2.0/c
     cols = len(r_sys.kr_sorted)
@@ -1025,6 +1034,8 @@ def wkProcessNumba(procData,
                  for k in range(len(row_ticks)-1)]
     
     wk_processed = np.zeros((rows,mem_cols), dtype=np.complex128)
+    yupkr = 4.0*np.pi/c*FFT_freq(cols*os_factor, r_sys.fs, 0) + r_sys.f0
+    yupidx = np.argsort(yupkr)
     
     for span in row_spans:
         # print("Processing rows (azimuth) %d to %d..." % span)
@@ -1047,13 +1058,19 @@ def wkProcessNumba(procData,
         
         """ Perform the interpolation """
         # print("Interpolating the signal...")
-        Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
-        chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
-        nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
-                                YY,
-                                (iP - r_sys.kr_sorted[0])/dkr, 
-                                os_factor, 
-                                Yos_idx)
+        nbwk.interpolatePulsesCxSimple(procData[span[0]:span[1], :], 
+                                       YY,
+                                       (iP - r_sys.kr_sorted[0])/dkr, 
+                                       os_factor, 
+                                       yupidx)
+        # Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
+        # chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
+        # nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
+        #                         YY,
+        #                         (iP - r_sys.kr_sorted[0])/dkr, 
+        #                         os_factor, 
+        #                         Yos_idx,
+        #                         baseband_mix)
         
         
         """ Re-order the data"""

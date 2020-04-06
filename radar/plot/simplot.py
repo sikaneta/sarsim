@@ -8,6 +8,7 @@ Created on Fri Mar 27 14:43:14 2020
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from common.utils import upsampleSignal
 
 #%% Define a function to do the mchan plots
 def mchanPlot(procData, 
@@ -85,6 +86,7 @@ def sarprocPlot(wkSignal,
                 s_off = 5.61):
     
     # Calculate the maximum
+    rows, cols = wkSignal.shape
     mxcol = np.argmax(np.sum(np.abs(wkSignal), axis=0))
     mxrow = np.argmax(np.sum(np.abs(wkSignal), axis=1))
     print("Maximum for data located at row %d, col %d" % (mxrow, mxcol))
@@ -95,9 +97,9 @@ def sarprocPlot(wkSignal,
 
     # Calculate the FFT of the signal at the maximum to examine the Doppler
     # response
-    dSig = np.fft.fft(wkSignal[:,mxcol])*np.exp(1j*r_sys.ks_full*(np.min(s)+s_off))
-
+    dSig = np.fft.fft(wkSignal[:,mxcol])*np.exp(1j*r_sys.ks_full*(np.min(s)))
     
+    y = wkSignal[:,mxcol]
     
     # Plot the data
     for k in range(3,10):
@@ -124,7 +126,17 @@ def sarprocPlot(wkSignal,
                     DX=2**k, 
                     folder = folder,
                     interactive=interactive)
-        
+    for k in range(3,10):
+        makeOversampledPlot(wkSignal[:,mxcol],
+                            mxrow,
+                            s[1]-s[0],
+                            D = 2**k,
+                            os_factor = 8,
+                            folder = folder,
+                            interactive = interactive,
+                            xlabel = "Azimuth (arclength m)",
+                            title = "Response (dB)",
+                            filename = "wk_response_s_os_%d.png" % (2**k))
     plotAngle(dSig, 
               r_sys, 
               folder = folder,
@@ -163,6 +175,35 @@ def makePlot(wkSignal,
                     transparent=True)
         plt.close()
 
+#%% Make oversampled plot
+def makeOversampledPlot(signal,
+                        mxidx,
+                        ds,
+                        D = 100,
+                        os_factor = 8,
+                        folder = ".",
+                        interactive = False,
+                        xlabel = "",
+                        title = "",
+                        filename = "plot.png"):
+    Y0 = np.max([0, mxidx-D])
+    Y1 = np.min([len(signal), mxidx+D])
+    usignal = upsampleSignal(signal[Y0:Y1], os_factor, 0)
+    x = np.arange(len(usignal))*ds/os_factor
+    x -= x[np.argmax(np.abs(usignal))]
+    plt.figure()
+    plt.plot(x, 20.0*np.log10(np.abs(usignal)),
+             x, 20.0*np.log10(np.abs(usignal)), '.')
+    plt.grid()
+    plt.title(title)
+    plt.xlabel(xlabel)
+    if interactive:
+        plt.show()
+    else:
+        plt.savefig(os.path.join(folder, filename),
+                    transparent=True)
+        plt.close()
+        
 #%% Function to make azimuth plot
 def makeAziPlot(wkSignal, 
                 mxrow, 
