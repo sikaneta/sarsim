@@ -21,7 +21,7 @@ def kernel(x, k, l, m, r, a2, a3, a4):
 @njit
 def dkernel_factored(x, k, l, m, r, a2, a3, a4):
     return (kernel(x,k-1,l,m, r, a2, a3, a4)*(k - 2*a2*l*x**2/(r**2+a2*x**2) 
-                               + m*(a3/2.0-a4*x)/g(-x, a2, a3, a4)**2))
+                               + m*x*(a3/2.0-a4*x)/g(-x, a2, a3, a4)**2))
     
 
 #% Define the function (and derivative of function) to be inverted
@@ -135,7 +135,7 @@ def getInterpolationPoints(KS,
         p0 = np.sqrt(a2)*r*KR
         p1 = np.ones(KR.shape)*a2*ks
         p2 = -r*a2*a3/2*KR
-        p3 = r*a4*a2**(3/2)*KR- a3/2*a2**(3/2)*ks
+        p3 = r*a4*a2**(3/2)*KR - a3/2*a2**(3/2)*ks
         p4 = np.ones(KR.shape)*a2**2*a4*ks
         
         
@@ -158,4 +158,48 @@ def getInterpolationPoints(KS,
         iP[l,:] = (r*KR*kernel(X_n, 0, 0.5, 0, r, a2, a3, a4) + 
                    ks*np.sqrt(a2)*kernel(X_n, 1, 0.5, 1, r, a2, a3, a4))
         
+#%% Compute the interpolation points
+@njit(parallel=True)
+def oldInterpolationPoints(KS, 
+                           KR,
+                           iP,
+                           r, 
+                           a2,
+                           a3,
+                           a4, 
+                           max_iter = 5, 
+                           error_tol = 1e-6):
     
+    num_azi_samples = len(KS)#.shape[0]
+    for l in prange(num_azi_samples):
+        ks = KS[l]
+        iP[l,:] = np.sqrt(KR**2+ks**2/a2)
+        # #% Get the initial guess
+        # X_n = r/np.sqrt(a2)*ks/np.sqrt(a2*KR**2-ks**2)
+        
+        # # Define some ceofficients
+        # p0 = np.sqrt(a2)*r*KR
+        # p1 = np.ones(KR.shape)*a2*ks
+        # p2 = -r*a2*a3/2*KR
+        # p3 = r*a4*a2**(3/2)*KR- a3/2*a2**(3/2)*ks
+        # p4 = np.ones(KR.shape)*a2**2*a4*ks
+        
+        
+        
+        # #% Newton method
+        # for k in range(max_iter):
+        #     """Calculate the function at current X_n"""
+        #     f_xn = f(X_n, ks, p0, p1, p2, p3, p4, r, a2, a3, a4)
+            
+        #     """Calculate the derivative of the function at current X_n"""
+        #     df_xn = df(X_n, p0, p1, p2, p3, p4, r, a2, a3, a4)
+            
+        #     X_n = X_n - f_xn/df_xn
+            
+        #     max_error = np.max(np.abs(f_xn/df_xn))
+        #     if max_error < error_tol:
+        #         break
+        
+        # #% Write to the array
+        # iP[l,:] = (r*KR*kernel(X_n, 0, 0.5, 0, r, a2, a3, a4) + 
+        #            ks*np.sqrt(a2)*kernel(X_n, 1, 0.5, 1, r, a2, a3, a4))    

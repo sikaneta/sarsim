@@ -11,6 +11,8 @@ from common.utils import FFT_freq
 import utils.fileio as fio
 import omegak.omegak as wk
 import omegak.nbomegak as nbwk
+import omegak.omegakappa as wkap
+import omegak.stolz as stlz
 from scipy.constants import Boltzmann, c
 import os
 import pickle
@@ -730,7 +732,7 @@ class radar_system:
         # Create a slow time object
         self.C = slow(ref['satellitePositions'][0])
         
-        # Generate the differntial geometry parameters
+        # Generate the differential geometry parameters
         cdf, tdf, T, N, B, kappa, tau, dkappa = self.C.diffG(xState)
         
         # Convert time to arclength in the slow-time object
@@ -780,6 +782,8 @@ class radar_system:
         self.target_satellite_position = satSV[0:3]
         self.target_satellite_velocity = satSV[3:]
         self.target_time = refTime
+        dt = (self.target_time - self.expansion_time)/np.timedelta64(1,'s')
+        self.sx = self.C.ds(dt)
         self.C.computeRangeCoefficients(pointXYZ - satSV[0:3])
 
 #%% Compute and store the r_sys file for quicker processing
@@ -1034,7 +1038,7 @@ def wkProcessNumba(procData,
                  for k in range(len(row_ticks)-1)]
     
     wk_processed = np.zeros((rows,mem_cols), dtype=np.complex128)
-    yupkr = 4.0*np.pi/c*FFT_freq(cols*os_factor, r_sys.fs, 0) + r_sys.f0
+    yupkr = 4.0*np.pi/c*(FFT_freq(cols*os_factor, r_sys.fs, 0) + r_sys.f0)
     yupidx = np.argsort(yupkr)
     
     for span in row_spans:
@@ -1046,7 +1050,7 @@ def wkProcessNumba(procData,
                       dtype=np.double)
         
         """ Compute the points at which to interpolate """
-        nbwk.getInterpolationPoints(ks[span[0]:span[1]], 
+        stlz.getInterpolationPoints(ks[span[0]:span[1]], 
                                     r_sys.kr_sorted,
                                     iP,
                                     r,
@@ -1055,14 +1059,27 @@ def wkProcessNumba(procData,
                                     r_sys.C.a4,
                                     max_iter=10,
                                     error_tol = 1e-10)
+        # iP = np.zeros((n_rows, r_sys.kr_sorted.shape[0]), 
+        #       dtype=np.double)
+        
+        # """ Compute the points at which to interpolate """
+        # nbwk.getInterpolationPoints(ks[span[0]:span[1]], 
+        #                             r_sys.kr_sorted,
+        #                             iP,
+        #                             r,
+        #                             r_sys.C.a2,
+        #                             r_sys.C.a3,
+        #                             r_sys.C.a4,
+        #                             max_iter=10,
+        #                             error_tol = 1e-10)
         
         """ Perform the interpolation """
-        # print("Interpolating the signal...")
+        print("Interpolating the signal...")
         nbwk.interpolatePulsesCxSimple(procData[span[0]:span[1], :], 
-                                       YY,
-                                       (iP - r_sys.kr_sorted[0])/dkr, 
-                                       os_factor, 
-                                       yupidx)
+                                        YY,
+                                        (iP - r_sys.kr_sorted[0])/dkr, 
+                                        os_factor, 
+                                        yupidx)
         # Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
         # chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
         # nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
@@ -1080,8 +1097,7 @@ def wkProcessNumba(procData,
         #% Phase multiply the signal
         # print("Correcting residual phase and applying IFFT...")
         KR = np.matlib.repmat(r_sys.kr, n_rows, 1)
-        wkSignal = np.fft.ifft(YY*np.exp(-1j*(iP-KR)*
-                                         r_sys.nearRangeTime/r2t), axis=1)
+        wkSignal = np.fft.ifft(YY*np.exp(-1j*(iP-KR)*r_sys.r[0]), axis=1)
         wk_processed[span[0]:span[1],:] = wkSignal[:,0:mem_cols]
         
     return wk_processed

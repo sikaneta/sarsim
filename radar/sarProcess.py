@@ -14,7 +14,7 @@ import utils.fileio as fio
 parser = argparse.ArgumentParser(description="SAR process data that has been multi-channel processed")
 
 parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+                    default = u'/home/ishuwa/simulation/20cm/simulation_20cm.xml')
 parser.add_argument("--mchan-processed-file",
                     help="The name of the multi-channel processed output file",
                     default = None)
@@ -46,7 +46,7 @@ if vv.mchan_processed_file is None:
                                              "Xr",
                                              "mchanprocessed.npy")
     
-#%%
+#%% Load the data
 procData = fio.loadSimFiles(vv.mchan_processed_file, xidx=vv.xidx)
 
 #%% Compute the ground point and associate slow time parameters
