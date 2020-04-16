@@ -11,8 +11,9 @@ import argparse
 #%% Load the data
 parser = argparse.ArgumentParser(description="Generate simulated SAR data")
 
-parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+parser.add_argument("--config-xml", 
+                    help="The config XML file", 
+                    required=True)
 parser.add_argument("--channel-idxs",
                     help=""" The indexes of the channels to create. This 
                     allows the program to be run simulataneously on different 

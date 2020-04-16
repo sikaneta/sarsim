@@ -22,8 +22,9 @@ purpose = """
           """
 parser = argparse.ArgumentParser(description=purpose)
 
-parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+parser.add_argument("--config-xml", 
+                    help="The config XML file", 
+                    required=True)
 
 parser.add_argument("--arclength-offset",
                     help="Offset of the target from zero in arclength (m)",

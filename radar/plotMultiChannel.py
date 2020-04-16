@@ -23,8 +23,9 @@ purpose = """
           """
 parser = argparse.ArgumentParser(description=purpose)
 
-parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/20cm/simulation_20cm.xml')
+parser.add_argument("--config-xml", 
+                    help="The config XML file", 
+                    required=True)
 parser.add_argument("--mchan-processed-file",
                     help="The name of the multi-channel processed output file",
                     default = None)

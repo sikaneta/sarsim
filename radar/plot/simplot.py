@@ -189,6 +189,7 @@ def makeOversampledPlot(signal,
     Y0 = np.max([0, mxidx-D])
     Y1 = np.min([len(signal), mxidx+D])
     usignal = upsampleSignal(signal[Y0:Y1], os_factor, 0)
+    usignal/=np.max(np.abs(usignal))
     x = np.arange(len(usignal))*ds/os_factor
     x -= x[np.argmax(np.abs(usignal))]
     plt.figure()

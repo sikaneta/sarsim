@@ -20,8 +20,9 @@ desc = """Setup the simulation parameters
           - the processing filter (H matrix)"""
 parser = argparse.ArgumentParser(description=desc)
 
-parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+parser.add_argument("--config-xml", 
+                    help="The config XML file", 
+                    required=True)
 parser.add_argument("--recompute-rsys",
                     help="Recompute the signal processing object",
                     action="store_true",
@@ -79,7 +80,7 @@ if vv.recompute_Hfilter:
 else:
     H = cfg.loadMultiProcFilter(radar)
     if H is None:
-        H,_ = cfg.computeStoreMultiProcFilter(radar)[0]
+        H,_ = cfg.computeStoreMultiProcFilter(radar)
 
 #%% Generate the list of commands that should be run with the given block sizes
 all_commands = ["#!/bin/bash"]

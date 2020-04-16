@@ -19,8 +19,8 @@ parser.add_argument("--sim-folder",
                     help="Folder in which to place simulated data and files",
                     default= "./")
 parser.add_argument("--config-xml", 
-                    help="The XML file", 
-                    default = default_simulation_file)
+                    help="The config XML file", 
+                    required=True)
 parser.add_argument("--az-resolution",
                     help="The desired azimuth resolution (m)",
                     type = float,

@@ -12,8 +12,9 @@ import argparse
 #%% Argparse stuff
 parser = argparse.ArgumentParser(description="Generate the multichannel filter")
 
-parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+parser.add_argument("--config-xml", 
+                    help="The config XML file", 
+                    required=True)
 vv = parser.parse_args()
 
 #%% Load the radar configuration
