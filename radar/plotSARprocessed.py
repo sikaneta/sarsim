@@ -44,7 +44,8 @@ parser.add_argument("--interactive",
                     help="Interactive mode. Program halts until figures are closed",
                     action="store_true",
                     default=False)
-            
+
+#%% Parse the arguments           
 vv = parser.parse_args()
 
 #%% Load the radar configuration
