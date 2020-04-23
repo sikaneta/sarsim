@@ -77,7 +77,7 @@ if vv.recompute_rsys:
 else:
     r_sys = cfg.loadRsys(radar) or cfg.computeStoreRsys(radar, 
                                                         bands, 
-                                                        vv.ref_rangeidx)[0]
+                                                        vv.ref_rangeidx)
 
 #%% Generate the processing filter
 print("""Computing the multi channel processing filter""")
