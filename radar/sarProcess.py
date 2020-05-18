@@ -22,6 +22,9 @@ parser.add_argument("--mchan-processed-file",
 parser.add_argument("--wk-processed-file",
                     help="The name of the w-k processed output file",
                     default = None)
+parser.add_argument("--vanilla-stolt",
+                    help="Apply vanilla Stolt interpolation a3=a4=0",
+                    action="store_true")
 parser.add_argument("--xidx",
                     help="""The azimuth indeces to process. The process can
                             proceed with the azimuth direction split into 
@@ -52,6 +55,10 @@ procData = fio.loadSimFiles(vv.mchan_processed_file, xidx=vv.xidx)
 
 #%% Compute the ground point and associate slow time parameters
 r_sys = cfg.loadRsys(radar)
+if vv.vanilla_stolt:
+    print("Applying vanilla Stolt interpolation")
+    r_sys.C.a3 = 0.0
+    r_sys.C.a4 = 0.0
 
 #%% Do the SAR processing for this chunk
 print("Processing")

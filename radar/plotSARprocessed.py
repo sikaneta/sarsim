@@ -9,6 +9,7 @@ Created on Fri Mar 27 13:38:54 2020
 import configuration.configuration as cfg
 import plot.simplot as sp
 import numpy as np
+from scipy.signal import hann as weightwin
 import argparse
 import os
 import utils.fileio as fio
@@ -44,7 +45,8 @@ parser.add_argument("--interactive",
                     help="Interactive mode. Program halts until figures are closed",
                     action="store_true",
                     default=False)
-            
+
+#%% Parse the arguments           
 vv = parser.parse_args()
 
 #%% Load the radar configuration
@@ -69,8 +71,9 @@ if 'wkSignal'not in locals():
     s -= np.mean(s)
     mxcol = np.argmax(wkSignal[0,:])
     intf = wkSignal[0:-1, mxcol]*np.conj(wkSignal[1:, mxcol])
+    intf_weight = np.fft.fftshift(weightwin(len(intf)))**6
     dks = r_sys.ks_full[1] - r_sys.ks_full[0]
-    c_ang = np.angle(np.sum(intf)) - dks*np.min(s)
+    c_ang = np.angle(np.sum(intf*intf_weight)) - dks*np.min(s)
     s_off = c_ang/dks
     p_fct = np.exp(1j*r_sys.ks_full*s_off)
     rows, cols = wkSignal.shape

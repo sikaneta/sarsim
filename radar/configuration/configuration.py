@@ -1110,10 +1110,11 @@ def wkProcessNumba(procData,
         YY = YY[:,r_sys.kridx_inv]
     
         #% Phase multiply the signal
-        # print("Correcting residual phase and applying IFFT...")
+        print("Correcting residual phase and applying IFFT...")
         KR = np.matlib.repmat(r_sys.kr, n_rows, 1)
         wkSignal = np.fft.ifft(YY*np.exp(-1j*(iP-KR)*r_sys.r[0]), axis=1)
         wk_processed[span[0]:span[1],:] = wkSignal[:,0:mem_cols]
+        print("[DONE]")
         
     return wk_processed
     
