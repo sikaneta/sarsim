@@ -213,6 +213,8 @@ def loadConfigurationRaw(configFile = None):
     #rng = (ref['nearRangeTime'] + ref['numRangeSamples']*ref['rangeSampleSpacing'])*physical.c/2.0
     
     platform['orbit']['period'] = np.sqrt(4.0*np.pi**2/(physical.G*physical.mass_EARTH)*platform['orbit']['semiMajorAxis']**3)
+    
+    # Compute a state vector or read from XML file
     platform['stateVectors'] = orbit2state(platform['orbit'], platform['longitude'], svTime)
     platform['satelliteVelocity'] = np.linalg.norm(platform['stateVectors'].measurementData[0][3:])
     
@@ -229,11 +231,12 @@ def loadConfigurationRaw(configFile = None):
     for idxs in rdindexes:
         print("Computing satellite positions for channel %d" % idxs[0])
         #satTimes,satSV = satellitePositionsTime(radar[idxs[0]])
-        satTimes,satSV = satellitePositionsArclength(radar[idxs[0]])
+        satTimes,satSV,s,slow = satellitePositionsArclength(radar[idxs[0]])
         #satTimes,satSV = satellitePositions(radar[idxs[0]])
         print(idxs)
         for idx in idxs:
             radar[idx]['acquisition']['satellitePositions'] = satTimes,satSV
+            radar[idx]['acquisition']['satelliteArc'] = s,slow
         print("[Done]")
     return radar
 
@@ -270,7 +273,13 @@ def readPlatformParametersElement(xmlroot):
                           'orbitAngle': sconv.toAngle('.//orbitAngle', xmlroot),
                           'eccentricity': sconv.toDouble('.//eccentricity', xmlroot),
                           'semiMajorAxis': sconv.toDouble('.//semiMajorAxis', xmlroot),
-                          'angleOfPerigee': sconv.toAngle('.//angleOfPerigee', xmlroot)}, 
+                          'angleOfPerigee': sconv.toAngle('.//angleOfPerigee', xmlroot),
+                          'svec': [sconv.toDouble('.//stateVector/x', xmlroot),
+                                   sconv.toDouble('.//stateVector/y', xmlroot),
+                                   sconv.toDouble('.//stateVector/z', xmlroot),
+                                   sconv.toDouble('.//stateVector/vx', xmlroot),
+                                   sconv.toDouble('.//stateVector/vy', xmlroot),
+                                   sconv.toDouble('.//stateVector/vz', xmlroot)]},
                 'longitude': sconv.toAngle('.//platformLongitude', xmlroot)}
     antenna = {'fc': sconv.toFrequency('.//carrierFrequency', xmlroot),
                'wavelength': physical.c/sconv.toFrequency('.//carrierFrequency', xmlroot),
@@ -328,6 +337,12 @@ def readSignalDataElement(xmlroot, antenna):
         
 #%% The state vector function    
 def orbit2state(orbit, longitude, svTime):
+    if None not in orbit['svec']:
+        # State vector already supplied
+        sv = state_vector()
+        sv.add(svTime, np.array(orbit['svec']))
+        return sv
+    
     # Calculate a state vector from orbital parameters
     a = orbit['semiMajorAxis']
     e = orbit['eccentricity']
@@ -483,7 +498,7 @@ def satellitePositionsArclength(rd):
     tList = newTimes.tolist()
     sampleTimes = [myrd.measurementTime[0]
                    + secondsToDelta(t) for t in tList]
-    return sampleTimes, np.array(svc)
+    return sampleTimes, np.array(svc), sampleS, C
 
 #%% plot the space time diagram
 def plotSpaceTime(N, radar):

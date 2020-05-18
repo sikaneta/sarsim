@@ -120,7 +120,8 @@ def computeReference(r_sys, arc_signal):
     # Compute the range curve
     rngs_curve = np.outer(r_sys.C.R, s**0) + np.outer(cdf[1],s) + np.outer(cdf[2], (s**2)/2.0) + np.outer(cdf[3], (s**3)/6.0)
     rngs_full = np.sqrt(np.sum(rngs_curve*rngs_curve, axis=0))
-    rngs_approx = np.sqrt(r**2 + r_sys.C.a2*s**2 + r_sys.C.a3*s**3 + r_sys.C.a4*s**4)
+    a6 = 0*(r_sys.C.kappa**4 + r_sys.C.kappa**2*r_sys.C.tau**2 + r_sys.C.dkappa**2)/36
+    rngs_approx = np.sqrt(r**2 + r_sys.C.a2*s**2 + r_sys.C.a3*s**3 + r_sys.C.a4*s**4 + a6*s**6)
     
     rngs = rngs_approx
     
