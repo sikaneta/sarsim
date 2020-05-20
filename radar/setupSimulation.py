@@ -86,7 +86,7 @@ if vv.recompute_Hfilter:
 else:
     H = cfg.loadMultiProcFilter(radar)
     if H is None:
-        H,_ = cfg.computeStoreMultiProcFilter(radar)[0]
+        H = cfg.computeStoreMultiProcFilter(radar)[0]
 
 #%% Generate the list of commands that should be run with the given block sizes
 vsc_comm = ["#SBATCH -J sarsim", "#SBATCH -N 1", "eval \"$(conda shell.bash hook)\"", "conda activate radar"]
