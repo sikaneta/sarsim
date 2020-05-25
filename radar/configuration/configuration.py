@@ -14,6 +14,7 @@ import omegak.nbomegak as nbwk
 import omegak.omegakappa as wkap
 import omegak.stolz as stlz
 from scipy.constants import Boltzmann, c
+from scipy import interpolate
 import os
 import pickle
 from numba import cuda
@@ -213,6 +214,8 @@ def loadConfigurationRaw(configFile = None):
     #rng = (ref['nearRangeTime'] + ref['numRangeSamples']*ref['rangeSampleSpacing'])*physical.c/2.0
     
     platform['orbit']['period'] = np.sqrt(4.0*np.pi**2/(physical.G*physical.mass_EARTH)*platform['orbit']['semiMajorAxis']**3)
+    
+    # Compute a state vector or read from XML file
     platform['stateVectors'] = orbit2state(platform['orbit'], platform['longitude'], svTime)
     platform['satelliteVelocity'] = np.linalg.norm(platform['stateVectors'].measurementData[0][3:])
     
@@ -229,11 +232,12 @@ def loadConfigurationRaw(configFile = None):
     for idxs in rdindexes:
         print("Computing satellite positions for channel %d" % idxs[0])
         #satTimes,satSV = satellitePositionsTime(radar[idxs[0]])
-        satTimes,satSV = satellitePositionsArclength(radar[idxs[0]])
+        satTimes,satSV,s,slow = satellitePositionsArclength(radar[idxs[0]])
         #satTimes,satSV = satellitePositions(radar[idxs[0]])
         print(idxs)
         for idx in idxs:
             radar[idx]['acquisition']['satellitePositions'] = satTimes,satSV
+            radar[idx]['acquisition']['satelliteArc'] = s,slow
         print("[Done]")
     return radar
 
@@ -270,7 +274,13 @@ def readPlatformParametersElement(xmlroot):
                           'orbitAngle': sconv.toAngle('.//orbitAngle', xmlroot),
                           'eccentricity': sconv.toDouble('.//eccentricity', xmlroot),
                           'semiMajorAxis': sconv.toDouble('.//semiMajorAxis', xmlroot),
-                          'angleOfPerigee': sconv.toAngle('.//angleOfPerigee', xmlroot)}, 
+                          'angleOfPerigee': sconv.toAngle('.//angleOfPerigee', xmlroot),
+                          'svec': [sconv.toDouble('.//stateVector/x', xmlroot),
+                                   sconv.toDouble('.//stateVector/y', xmlroot),
+                                   sconv.toDouble('.//stateVector/z', xmlroot),
+                                   sconv.toDouble('.//stateVector/vx', xmlroot),
+                                   sconv.toDouble('.//stateVector/vy', xmlroot),
+                                   sconv.toDouble('.//stateVector/vz', xmlroot)]},
                 'longitude': sconv.toAngle('.//platformLongitude', xmlroot)}
     antenna = {'fc': sconv.toFrequency('.//carrierFrequency', xmlroot),
                'wavelength': physical.c/sconv.toFrequency('.//carrierFrequency', xmlroot),
@@ -328,6 +338,12 @@ def readSignalDataElement(xmlroot, antenna):
         
 #%% The state vector function    
 def orbit2state(orbit, longitude, svTime):
+    if None not in orbit['svec']:
+        # State vector already supplied
+        sv = state_vector()
+        sv.add(svTime, np.array(orbit['svec']))
+        return sv
+    
     # Calculate a state vector from orbital parameters
     a = orbit['semiMajorAxis']
     e = orbit['eccentricity']
@@ -483,7 +499,7 @@ def satellitePositionsArclength(rd):
     tList = newTimes.tolist()
     sampleTimes = [myrd.measurementTime[0]
                    + secondsToDelta(t) for t in tList]
-    return sampleTimes, np.array(svc)
+    return sampleTimes, np.array(svc), sampleS, C
 
 #%% plot the space time diagram
 def plotSpaceTime(N, radar):
@@ -785,6 +801,38 @@ class radar_system:
         dt = (self.target_time - self.expansion_time)/np.timedelta64(1,'s')
         self.sx = self.C.ds(dt)
         self.C.computeRangeCoefficients(pointXYZ - satSV[0:3])
+        
+    def computePhaseResidual(self):
+        C = self.radar[0]['acquisition']['satelliteArc'][1]
+        s = np.array(self.radar[0]['acquisition']['satelliteArc'][0])
+        
+        # Get the satpositions from integration and from expansion
+        sPos_numerical = self.radar[0]['acquisition']['satellitePositions'][1][:,0:3].T
+        sPos_expanded = (np.outer(C.cdf[0], np.ones_like(s)) +
+                         np.outer(C.cdf[1], s) +
+                         np.outer(C.cdf[2], s**2)/2.0 +
+                         np.outer(C.cdf[3], s**3)/6.0)
+        sDer_expanded = (np.outer(C.cdf[1], np.ones_like(s)) +
+                         np.outer(C.cdf[2], s) +
+                         np.outer(C.cdf[3], s**2)/2.0)
+        sPos_delta = sPos_numerical - sPos_expanded
+    
+        # Calculate the domain variable
+        Rn_vector = sPos_numerical - np.outer(self.target_ground_position, 
+                                              np.ones_like(s))
+        Rn = np.linalg.norm(Rn_vector, axis=0)
+        rhat_vector = Rn_vector/np.outer(np.ones((3,)), Rn)
+        ksM = -self.kr[0]*np.sum(rhat_vector*sDer_expanded, axis=0)
+    
+        # Caluclate component of delta in direction of rhat (dependent variable)
+        delta = -self.kr[0]*np.sum(sPos_delta*rhat_vector, axis=0)
+        
+        # Compute the interpolator
+        f = interpolate.interp1d(ksM, delta, kind = 'linear')
+        
+        # Get the ks dependent values
+        self.ks_phase_correction = f(self.ks_full)
+        
 
 #%% Compute and store the r_sys file for quicker processing
 def computeStoreRsys(radar, bands = None, ref_range_idx = None):

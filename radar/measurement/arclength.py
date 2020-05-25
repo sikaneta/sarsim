@@ -73,3 +73,82 @@ class slow:
         self.a3 = -(R.dot(self.B)*self.kappa*self.tau+R.dot(self.N)*self.dkappa)/3.0
         self.a4 = -self.kappa**2/12.0
         self.R = -R
+        
+    def s2t(self, s, max_iter=10, errortol = 1e-9):
+        tdf = self.tdf
+        def f(t):
+            return tdf[0] + t*tdf[1] + 0.5*t**2*tdf[2] + 1.0/6.0*t**3*tdf[3] - s
+        def df(t):
+            return tdf[1] + t*tdf[2] + 0.5*t**2*tdf[3]
+        def ddf(t):
+            return tdf[2] + t*tdf[3]
+        
+        """ Start with an initial guess """
+        t0 = s/tdf[1]
+        
+        for k in range(max_iter):
+            t = t0 - (df(t0) - np.sqrt(df(t0)**2 - 2*f(t0)*ddf(t0)))/ddf(t0)
+            error = np.max(np.abs(t - t0))
+            if error<errortol:
+                break
+            else:
+                t0 = t
+        
+        if k == max_iter:
+            print("Warning!. arclength to time failed to converge!")
+        
+        return t
+        
+    def sFromX(self, X, squint = 0.0):
+        print("Squint")
+        print(squint)
+        cdf = self.cdf
+        def c(s):
+            return cdf[0] + cdf[1]*s + cdf[2]*s**2/2.0 + cdf[3]*s**3/6.0
+        
+        def cdot(s):
+            return cdf[1] + cdf[2]*s + cdf[3]*s**2/2.0
+        
+        def cddot(s):
+            return cdf[2] + cdf[3]*s
+        
+        def cdddot(s):
+            return cdf[3]
+
+        def f(s, X):
+            return np.dot(cdot(s), c(s)-X) - squint
+        
+        def fdot(s,X):
+            return np.dot(cddot(s), c(s)-X) + np.dot(cdot(s),cdot(s))
+        
+        def fddot(s,X):
+            return np.dot(cdddot(s), c(s)-X) + 3*np.dot(cddot(s),cdot(s))
+        
+        def iterateS(s, X):
+            fn = f(s, X)
+            fdn = fdot(s,X)
+            fddn = fddot(s,X)
+            return s + (-fdn + np.sqrt(fdn**2 - 2*fn*fddn))/fddn
+        
+        def newtonS(X, s=0.0, errorTol=1e-12, maxIter = 10):
+            sn = s
+            for k in range(maxIter):
+                s = iterateS(sn, X)
+                error = np.abs(s - sn)
+                if error < errorTol:
+                    break
+                else:
+                    sn = s
+            if k == maxIter:
+                print("Warning: Newton algorithm failed to converge")
+            return s
+        
+        m,n = X.shape
+        S = np.zeros(X.shape)
+        R = np.zeros(X.shape)
+        s = np.zeros(n)
+        for k in range(n):
+            s[k] = newtonS(X[:,k])
+            S[:,k] = c(s[k])
+            R[:,k] = S[:,k] - X[:,k]
+        return R, S, s
