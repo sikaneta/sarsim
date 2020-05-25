@@ -14,6 +14,7 @@ import omegak.nbomegak as nbwk
 import omegak.omegakappa as wkap
 import omegak.stolz as stlz
 from scipy.constants import Boltzmann, c
+from scipy import interpolate
 import os
 import pickle
 from numba import cuda
@@ -800,6 +801,38 @@ class radar_system:
         dt = (self.target_time - self.expansion_time)/np.timedelta64(1,'s')
         self.sx = self.C.ds(dt)
         self.C.computeRangeCoefficients(pointXYZ - satSV[0:3])
+        
+    def computePhaseResidual(self):
+        C = self.radar[0]['acquisition']['satelliteArc'][1]
+        s = np.array(self.radar[0]['acquisition']['satelliteArc'][0])
+        
+        # Get the satpositions from integration and from expansion
+        sPos_numerical = self.radar[0]['acquisition']['satellitePositions'][1][:,0:3].T
+        sPos_expanded = (np.outer(C.cdf[0], np.ones_like(s)) +
+                         np.outer(C.cdf[1], s) +
+                         np.outer(C.cdf[2], s**2)/2.0 +
+                         np.outer(C.cdf[3], s**3)/6.0)
+        sDer_expanded = (np.outer(C.cdf[1], np.ones_like(s)) +
+                         np.outer(C.cdf[2], s) +
+                         np.outer(C.cdf[3], s**2)/2.0)
+        sPos_delta = sPos_numerical - sPos_expanded
+    
+        # Calculate the domain variable
+        Rn_vector = sPos_numerical - np.outer(self.target_ground_position, 
+                                              np.ones_like(s))
+        Rn = np.linalg.norm(Rn_vector, axis=0)
+        rhat_vector = Rn_vector/np.outer(np.ones((3,)), Rn)
+        ksM = -self.kr[0]*np.sum(rhat_vector*sDer_expanded, axis=0)
+    
+        # Caluclate component of delta in direction of rhat (dependent variable)
+        delta = -self.kr[0]*np.sum(sPos_delta*rhat_vector, axis=0)
+        
+        # Compute the interpolator
+        f = interpolate.interp1d(ksM, delta, kind = 'linear')
+        
+        # Get the ks dependent values
+        self.ks_phase_correction = f(self.ks_full)
+        
 
 #%% Compute and store the r_sys file for quicker processing
 def computeStoreRsys(radar, bands = None, ref_range_idx = None):
