@@ -21,7 +21,8 @@ desc = """Setup the simulation parameters
 parser = argparse.ArgumentParser(description=desc)
 
 parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+                    required = True)
+                    # default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
 parser.add_argument("--recompute-rsys",
                     help="Recompute the signal processing object",
                     action="store_true",

@@ -853,6 +853,9 @@ def computeStoreRsys(radar, bands = None, ref_range_idx = None):
     print("Computing arclength parameters at reference range index %d..." % ref_range_idx)
     r_sys.computeGroundPoint(radar, range_idx=ref_range_idx)
     
+    # Compute phase residual
+    r_sys.computePhaseResidual()
+    
     with open(sys_file, 'wb') as f:
         pickle.dump(r_sys, f, pickle.HIGHEST_PROTOCOL)
         

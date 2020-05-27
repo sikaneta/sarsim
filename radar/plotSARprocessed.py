@@ -26,7 +26,14 @@ parser = argparse.ArgumentParser(description=purpose)
 parser.add_argument("--config-xml", 
                     help="The config XML file", 
                     required=True)
-
+parser.add_argument("--keep-phase-residual",
+                    help="""Do not remove residual phase
+                            This is the phase between the expansion of the
+                            satellite position using differential geometry
+                            and the numerically integrated satellite
+                            position""",
+                    action="store_true",
+                    default=False)
 parser.add_argument("--arclength-offset",
                     help="Offset of the target from zero in arclength (m)",
                     type=float,
@@ -65,6 +72,14 @@ if 'wkSignal'not in locals():
     print("Loading data from file: %s" % proc_file)
     wkSignal = fio.loadSimFiles(proc_file, xidx=vv.xidx, ridx=vv.ridx)
     
+    # Apply the phase correction
+    rows, cols = wkSignal.shape
+    if not vv.keep_phase_residual:
+        print("Removing residual phase")
+        for k in tqdm(range(rows)):
+            wkSignal[k,:] *= np.exp(-1j*r_sys.ks_phase_correction[k])
+    
+    
     # Shift the signal as required
     print("Attempting to shift the signal...")
     s = np.arange(r_sys.Na*r_sys.n_bands)/(r_sys.ksp*r_sys.n_bands)
@@ -76,7 +91,6 @@ if 'wkSignal'not in locals():
     c_ang = np.angle(np.sum(intf*intf_weight)) - dks*np.min(s)
     s_off = c_ang/dks
     p_fct = np.exp(1j*r_sys.ks_full*s_off)
-    rows, cols = wkSignal.shape
     for k in tqdm(np.arange(cols)):
         wkSignal[:, k] *= p_fct
     print("Computing the FFT of the signal ...")
