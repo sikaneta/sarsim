@@ -90,7 +90,7 @@ for k in tqdm(range(len(x_blocks))):
 arc_signal = np.fft.ifft(signal)
 
 #%% Compute the ground point and associate slow time parameters
-if vv.target_range_indx is not None:
+if vv.target_range_index is not None:
     r_sys.computeGroundPoint(radar, range_idx=vv.target_range_index)
 
 #%%

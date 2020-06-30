@@ -922,7 +922,7 @@ class state_vector(measurement):
 #        return nState + pState
         
     def estimateTimeRange(self, dtime, integrationTimes = None):
-        if type(dtime) == datetime.datetime:
+        if type(dtime[0]) == datetime.datetime:
             mnTime = sum([(tm - dtime[0]).total_seconds() for tm in dtime])/len(dtime)
             minK = self.findNearest(dtime[0] + datetime.timedelta(seconds=mnTime))
         else:
@@ -1074,7 +1074,7 @@ class state_vector_RSO(state_vector):
     
         
 class state_vector_ESAEOD(state_vector):
-    def readStateVectors(self, EODFile, desiredStartTime, desiredStopTime):
+    def readStateVectors(self, EODFile, desiredStartTime=None, desiredStopTime=None):
         xmlroot = etree.parse(EODFile).getroot()
         osvlist = xmlroot.findall(".//OSV")
 
@@ -1082,7 +1082,17 @@ class state_vector_ESAEOD(state_vector):
             utcElement = osv.find(".//UTC")
             datetime.datetime
             utc = datetime.datetime.strptime(utcElement.text.split('=')[1],'%Y-%m-%dT%H:%M:%S.%f')
-            if(utc > desiredStartTime and utc < desiredStopTime):
+            if desiredStartTime is not None and desiredStopTime is not None:
+                if(utc > desiredStartTime and utc < desiredStopTime):
+                    # Add to list of state vectors
+                    self.add(utc,
+                                [float(osv.find(".//X").text), 
+                                 float(osv.find(".//Y").text), 
+                                 float(osv.find(".//Z").text), 
+                                 float(osv.find(".//VX").text), 
+                                 float(osv.find(".//VY").text), 
+                                 float(osv.find(".//VZ").text)])
+            else:
                 # Add to list of state vectors
                 self.add(utc,
                             [float(osv.find(".//X").text), 
@@ -1091,6 +1101,7 @@ class state_vector_ESAEOD(state_vector):
                              float(osv.find(".//VX").text), 
                              float(osv.find(".//VY").text), 
                              float(osv.find(".//VZ").text)])
+                
         
         return
         

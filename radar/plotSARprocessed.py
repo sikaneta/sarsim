@@ -26,7 +26,7 @@ parser = argparse.ArgumentParser(description=purpose)
 parser.add_argument("--config-xml", 
                     help="The config XML file", 
                     required=True)
-parser.add_argument("--keep-phase-residual",
+parser.add_argument("--phase-correct",
                     help="""Do not remove residual phase
                             This is the phase between the expansion of the
                             satellite position using differential geometry
@@ -74,7 +74,7 @@ if 'wkSignal'not in locals():
     
     # Apply the phase correction
     rows, cols = wkSignal.shape
-    if not vv.keep_phase_residual:
+    if vv.phase_correct:
         print("Removing residual phase")
         for k in tqdm(range(rows)):
             wkSignal[k,:] *= np.exp(-1j*r_sys.ks_phase_correction[k])

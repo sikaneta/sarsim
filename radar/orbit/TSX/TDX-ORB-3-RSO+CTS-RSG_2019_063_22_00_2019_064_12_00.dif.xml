@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DIF xsi:noNamespaceSchemaLocation="http://isdc.gfz-potsdam.de/xsd/TDX-ORB-3-RSO.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Entry_ID>TDX-ORB-3-RSO+CTS-RSG_2019_063_22_00_2019_064_12_00</Entry_ID>
+	<Entry_Title>TanDEM-X Rapid Science Orbit</Entry_Title>
+        <Parameters>
+                <Category>EARTH SCIENCE</Category>
+                <Topic>SOLID EARTH</Topic>
+                <Term>GEODETICS/GRAVITY</Term>
+                <Variable_Level_1>Satellite Orbits</Variable_Level_1>
+        </Parameters>
+	<ISO_Topic_Category>GEOSCIENTIFIC INFORMATION</ISO_Topic_Category>
+	<Data_Center>
+		<Data_Center_Name>
+			<Short_Name>DE/GFZ/ISDC</Short_Name>
+			<Long_Name>Information System and Data Center, GeoForschungszentrum Potsdam, Germany</Long_Name>
+		</Data_Center_Name>
+		<Data_Center_URL>http://isdc.gfz-potsdam.de/</Data_Center_URL>
+		<Data_Set_ID>doi:10.5880/ISDC.TanDEM-X/TDX-ORB-3-RSO</Data_Set_ID>
+		<Personnel>
+			<Role>DATA CENTER CONTACT</Role>
+			<First_Name>RZ</First_Name>
+			<Last_Name>Support</Last_Name>
+			<Email>isdc-support@gfz-potsdam.de</Email>
+			<Contact_Address>
+				<Address>Helmholtz-Zentrum Potsdam Deutsches GeoForschungsZentrum GFZ</Address>
+				<Address>Rechenzentrum</Address>
+				<Address>Telegrafenberg A20</Address>
+				<City>Potsdam</City>
+				<Postal_Code>14473</Postal_Code>
+				<Country>GERMANY</Country>
+			</Contact_Address>
+		</Personnel>
+	</Data_Center>
+	<Summary>
+          This data set features the TanDEM-X Rapid Science Orbit (RSO).
+	</Summary>
+	<Parent_DIF>TDX-ORB-3-RSO</Parent_DIF>
+	<Metadata_Name>CEOS IDN DIF</Metadata_Name>
+	<Metadata_Version>VERSION 9.0</Metadata_Version>
+	<DIF_Creation_Date>2019-03-07</DIF_Creation_Date>
+	<Data_Parameters>
+		<Data_Revision>1</Data_Revision>
+		<Satellite_ID>0702601</Satellite_ID>
+		<Data_File>
+			<Name>TDX-ORB-3-RSO+CTS-RSG_2019_063_22_00_2019_064_12_00.dat</Name>
+			<Size>202861</Size>
+			<MD5>6bdf0dfa82f6937a2cdc3a77a8119660</MD5>
+			<Format>CHORB</Format>
+		</Data_File>
+		<Release_Date>2019-03-07T09:09:53Z</Release_Date>
+		<Start_Time>2019-03-04T22:00:00Z</Start_Time>
+		<Stop_Time>2019-03-05T12:00:30Z</Stop_Time>
+		<Reference_Frame>CTS</Reference_Frame>
+                <Data_Source>RSG</Data_Source>
+		<Processing_Center>GeoForschungsZentrum Potsdam</Processing_Center>
+		<Software_Package>EPOS-OC 06.70</Software_Package>
+		<Dump_File_Name></Dump_File_Name>
+	</Data_Parameters>
+</DIF>
