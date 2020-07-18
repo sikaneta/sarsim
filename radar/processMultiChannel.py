@@ -13,7 +13,7 @@ import utils.fileio as fio
 parser = argparse.ArgumentParser(description="Multichannel process the data")
 
 parser.add_argument("--config-xml", help="The config XML file", 
-                    default = u'/home/ishuwa/simulation/40cm/simulation_40cm.xml')
+                    default = u'/home/ishuwa/simulation/40cm/40cm.xml')
 parser.add_argument("--processed-file",
                     help="The name of the processed output file",
                     default = None)

@@ -969,7 +969,70 @@ def multiChannelProcessMem(radar,
     for k in tqdm(np.arange(n_r)):
         procData[:,k] = procData[r_sys.ksidx[r_sys.ks_full_idx], k]
     return procData, r_sys
-   
+
+#%% Compute the inverse matrices
+def multiChannelNoise(radar, p=0.5, SNR = 1.0, make_plots=False):
+    
+    # print("Get the multi-channel H matrix...")
+    r_sys = loadRsys(radar)
+    H = loadMultiProcFilter(radar)
+    
+    # print("Compute the desired antenna pattern...")
+    D = np.sqrt(np.sum(np.abs(H)**2, axis=0))
+    if make_plots:
+        plt.figure()
+        plt.plot(sorted(r_sys.ks_full), D.flatten()[r_sys.ksidx])
+        plt.title("Desired antenna pattern")
+        plt.xlabel("Azimuth wavenumber (m$^{-1}$)")
+        plt.ylabel("Gain (Natural units)")
+        plt.grid()
+        plt.show()
+        
+    # print("Loading the data from disk...")
+    # data = fio.loadNumpy_raw_dataMem(radar, 
+    #                                  ridx = rangeidx)
+    # _, n_r, n_x = data.shape
+    n_c, n_b, n_x = H.shape
+    
+    """ The normalization factor of n_x accounts for transformation into 
+        the DFT domain. The factor of 1/2 for unit variance complex noise"""
+    data = (np.random.randn(n_c, n_x) + 
+            1j*np.random.randn(n_c, n_x))*np.sqrt(n_x/2.0)
+    
+    """Defining the noise covariance"""
+    Rn = np.eye(len(radar))/np.sqrt(SNR)
+    
+    # print("Multi-channel processing ...")
+    procData = np.zeros((n_b,n_x), dtype=np.complex128)
+    for kidx in tqdm(range(n_x)):
+        Rinv = np.linalg.inv(np.dot(H[:,:,kidx], np.conj(H[:,:,kidx].T)) 
+                                    + (1.0-p)/p*Rn)
+        B = np.dot(np.diag(D[:,kidx]), np.dot(np.conj(H[:,:,kidx].T), Rinv))
+        if np.any(np.isnan(B)):
+            print(kidx)
+            break
+        dummy = np.dot(B,data[:,kidx])
+        procData[:,kidx] = dummy
+    
+    # Release data from memory
+    del data
+            
+    # Reorder the data
+    # print("Re-ordering data and returning...")
+    procData = procData.reshape((n_b*n_x, ))
+    procData = procData[r_sys.ksidx[r_sys.ks_full_idx]]
+    
+    pulseCompressionGain = (radar[0]['chirp']['length']/
+                       radar[0]['acquisition']['rangeSampleSpacing'])
+    transmitArrayGain = np.sum(radar[0]['mode']['txMagnitude'])
+    receiveArrayGain = np.sum(radar[0]['mode']['rxMagnitude'])
+
+    procData*=np.sqrt(pulseCompressionGain*
+                      transmitArrayGain*
+                      receiveArrayGain)
+    
+    return procData, r_sys
+
 #%% Compute the inverse matrices
 def multiChannelProcess(radar, bands=None, p=0.5, make_plots=False, SNR = 1.0):
     """Define bands if not defined"""

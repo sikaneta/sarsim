@@ -10,6 +10,7 @@ import configuration.configuration as cfg
 import plot.simplot as sp
 import numpy as np
 from scipy.signal import hann as weightwin
+from scipy.constants import c
 import argparse
 import os
 import utils.fileio as fio
@@ -38,6 +39,10 @@ parser.add_argument("--arclength-offset",
                     help="Offset of the target from zero in arclength (m)",
                     type=float,
                     default=0.0)
+parser.add_argument("--elevation-length",
+                    help="Length of the antenna in the elevation direction",
+                    type=None,
+                    default=2.0)
 parser.add_argument("--ridx",
                     help="The range indeces to examine",
                     type=int,
@@ -60,8 +65,11 @@ vv = parser.parse_args()
 if 'radar' not in locals():
     radar = cfg.loadConfiguration(vv.config_xml)
     
-#%% Get an r_sys object
-r_sys = cfg.loadRsys(radar)
+#%% Calculate noise and get an r_sys object
+noiseSignal, r_sys = cfg.multiChannelNoise(radar, p=0.9)
+noiseSignal = np.fft.ifft(noiseSignal)
+noisePower = np.var(noiseSignal)
+
 
 #%% Load the data
 if 'wkSignal'not in locals():
@@ -95,7 +103,19 @@ if 'wkSignal'not in locals():
         wkSignal[:, k] *= p_fct
     print("Computing the FFT of the signal ...")
     wkSignal = np.fft.ifft(wkSignal, axis=0)
-    wkSignal = wkSignal/np.max(np.abs(wkSignal))
+    maxSignal = np.max(np.abs(wkSignal))**2
+    wkSignal = wkSignal/maxSignal
+    
+    # Use some estimate for the antenna element gain 4*pi/lambda**2*Area
+    eLen = vv.elevation_length or radar[0]['antenna']['elevationLengths'][0]
+    aLen = radar[0]['antenna']['azimuthLengths'][0]
+    
+    elementGainTx = 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*eLen)
+    elementGainTx += 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*aLen)
+    elementGainRx = 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*eLen)
+    elementGainRx += 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*aLen)
+    NESZ = -10*np.log10(maxSignal/noisePower) - elementGainTx - elementGainRx
+    print('NESZ: %0.2f dB' % NESZ)
 
 
 
