@@ -1,0 +1,83 @@
+\section{MIMO configuration}
+\label{an:mimo}
+This section demonstrates how subarrays of a uniform phased array antenna can be combined to yield signals of the form of \eqref{eq:antennaArgument2}. In the configuration described below, Transmit/Receive T/R modules form the basic element of the phased array. 
+\par
+As illustrated in \fgref{fg:mimo}, 
+\begin{figure}[ht!]
+    \resizebox{\textwidth}{!}{\input{mimoconfig.pdf_tex}}
+	\caption{Configuration of transmit and receive. Each transmitted signal is received by all receivers}
+	\label{fg:mimo}
+\end{figure}
+assume that every transmission, from every element, is received and summed independently (i.e. assume superpostiion applies). Assume further that signals are transmitted at time $\fasttime$, but with different delays on transmission (programmed delays) for each T/R module
+and that the echoes of these signals are received at time $\fasttime + 2\targetrange(\parm)/c$, but with different Rx delays for each T/R module (programmed delays)
+\par
+Now, the time delay to irradiate a target depends on the position of the transmitter and the location of the target. In the model, we denote the target position as $\targetxparm$ and the position of each transmitter and receiver as $\anTx{\txn}$, $\txn\in\{0, \txN-1\}$ and $\anRx{\txm}$, $\txm\in\{0, \txM-1\}$, respectively. We also denote the transmitted waveform as 
+\begin{equation}
+ \pulse(\fasttime)=\envelope(\fasttime)\eex{\im\omega_0\fasttime},
+\end{equation}
+where $\envelope(\fasttime)$ is some baseband waveform. With this notation, and with transmit and receive delays given by $\txDelay{\txn}$ and $\rxDelay{\txm}$, respectively, the far field delay for a transmit/receive pair is given by
+\begin{equation}  \mnDelay(\parm) = \frac{2\amplitude\range(\parm, \targetnoparm)}{c} + \txDelay{\txn} + \rxDelay{\txn} 
++ \frac{\anTx{\txn}\cdot\uRangeVectorParm}{c} + \frac{\anRx{\txm}\cdot\uRangeVectorParm}{c}
+\end{equation}
+and the return signal is given by 
+\begin{equation}
+\pulse_{mn}(\fasttime, \parm) = \txAmp{\txn}\rxAmp{\txm}\pulse[\fasttime - \mnDelay(\parm)].
+\end{equation}
+Through the principle of superposition, the system measured signal is given by
+\begin{equation}
+\begin{split}
+\pulse_{s}(\fasttime, \parm) &= \sum_{\txm,\txn}\pulse_{\txm\txn}(\fasttime, \parm)\\
+&=\sum_{\txm,\txn}\txAmp{\txn}\rxAmp{\txm}\pulse[\fasttime - \mnDelay(\parm)].
+\end{split}
+\end{equation}
+In the fast-time frequency domain, this signal can be written as
+\begin{equation}
+\begin{split}
+\Pulse_{s}(\omega', \parm)&=\sum_{\txm,\txn}\txAmp{\txn}\rxAmp{\txm}\Pulse(\omega')\eex{-\im\omega'\mnDelay(\parm)}\\
+&=\Pulse(\omega')\eex{-\im\omega'\frac{2\amplitude\range(\parm, \targetnoparm)}{c}}\sum_{\txn}\txAmp{\txn}\eex{-\im\omega'[\txDelay{\txn}+\frac{\anTx{\txn}\cdot\uRangeVectorParm}{c}]}\\
+&\cdot\sum_{\txm}\rxAmp{\txm}\eex{-\im\omega'[\rxDelay{\txm}+\frac{\anRx{\txm}\cdot\uRangeVectorParm}{c}]},
+\end{split}
+\end{equation}
+where $\omega'=\omega+\omega_0$.
+\par
+Suppose that $\anTx{\txn} = \txn\bline$ and that $\anRx{\txm} = \txm\bline$, i.e. a uniformly spaced array, and that the timing delays are chosen such that $\txDelay{\txn} = -\txn\bline\cdot\uzero/c$ and $\rxDelay{\txm} = -\txm\bline\cdot\uzero/c$ for some given look vector $\uzero$. In this case, the signal becomes
+ \begin{equation}
+ \begin{split}
+  \Pulse_{s}(\omega', \parm)&=\Pulse(\omega')\eex{-\im\omega'\frac{2\amplitude\range(\parm, \targetnoparm)}{c}}\sum_{\txn}\txAmp{\txn}\eex{-\im\omega'\frac{\txn}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}\\
+  &\cdot\sum_{\txm}\rxAmp{\txm}\eex{-\im\omega'\frac{\txm}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}
+ \end{split}
+ \end{equation}
+Further, suppose that the weights, $\txAmp{\txn}$ and $\rxAmp{\txm}$, are such that $\exists \txn_\channelIndex, \txm_\channelIndex$ with the properties that both
+ \begin{equation}
+  \sum_{\txn}\txAmp{\txn}\eex{-\im\omega'\frac{\txn-\txn_\channelIndex}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}
+ \end{equation}
+ and
+ \begin{equation}
+  \sum_{\txm}\rxAmp{\txm}\eex{-\im\omega'\frac{\txm-\txm_\channelIndex}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}
+ \end{equation}
+ are real $\forall\omega'$. As a particular example, if $\txAmp{\txn}=A_{T_x}$, a constant, for $\txn\in\{\txn_0, \txn_0+1, \txn_0+2, \ldots, \txn_0+\txN-1\}$, then $\txn_\channelIndex=\txn_0+\txN/2$. With this condition,
+ \begin{equation}
+ \begin{split}
+  \Pulse_{s}(\omega', \parm)&=\Pulse(\omega')\eex{-\im\omega'\frac{2\amplitude\range(\parm, \targetnoparm)}{c}}\eex{-\im\omega'\frac{\txn_\channelIndex}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}\eex{-\im\omega'\frac{\txm_\channelIndex}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}\\&\sum_{\txn}\txAmp{\txn}\eex{-\im\omega'\frac{\txn-\txn_\channelIndex}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}
+  \sum_{\txm}\rxAmp{\txm}\eex{-\im\omega'\frac{\txm-\txm_\channelIndex}{c}\bline\cdot[-\uzero+\uRangeVectorParm]}
+ \end{split}
+ \end{equation}
+With $\omega'/c=\kr/2$, let
+ \begin{equation}
+  \pAntennaParm{\channelIndex} = \frac{\txn_\channelIndex\bline + \txm_\channelIndex\bline}{2},
+ \end{equation}
+ and define
+ \begin{equation}
+ \begin{split}
+  \dPattern{\channelIndex}[\kr, \uRangeVectorParm] = 
+  &\sum_{\txn}\txAmp{\txn}\eex{-\im\kr\frac{\txn-\txn_\channelIndex}{2}\bline\cdot[-\uzero+\uRangeVectorParm]}\\&
+  \sum_{\txm}\rxAmp{\txm}\eex{-\im\kr\frac{\txm-\txm_\channelIndex}{2}\bline\cdot[-\uzero+\uRangeVectorParm]}.
+  \end{split}
+ \end{equation}
+ Then,
+ \begin{equation}
+ \begin{split}
+  \Pulse_{s}(\kr, \parm)&=\Pulse(\kr)\eex{-\im\kr\amplitude\range(\parm, \targetnoparm)}\eex{-\im\kr\pAntennaParm{\channelIndex}\cdot\uRangeVectorParm}\eex{\im\kr\pAntennaParm{\channelIndex}\cdot\uzero}\dPattern{\channelIndex}[\kr, \uRangeVectorParm]
+ \end{split}
+ \end{equation}
+Finally, compute $\eex{-\im\kr\pAntennaParm{\channelIndex}\cdot\uzero}\Pulse_{s}(\kr, \parm)$ to obtain the expression in \eqref{eq:Skst1}.

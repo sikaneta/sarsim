@@ -1,0 +1,9 @@
+[General]
+kile_livePreviewEnabled=true
+kile_livePreviewStatusUserSpecified=false
+kile_livePreviewTool=LivePreview-PDFLaTeX
+lastDocument=
+
+[item:ecefparm.kilepr]
+open=false
+order=-1

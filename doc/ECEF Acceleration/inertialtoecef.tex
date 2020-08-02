@@ -1,0 +1,116 @@
+\section{ECEF acceleration}
+\label{an:inertialecef}
+This section relates the equations of motion of a satellite in an Earth-Centered, Earth-Fixed (ECEF) coordinate system to those in an Earth-Centered Inertial (ECI) coordinate system. These relations play a role in propagating the orbit of a satellite since the acceleration of the satellite (derived from the egm96 gravitational potential in this document) has nothing to do with the rotation of the planet. On the other hand, SAR imaging of the ground, which rotates underneath the satellite, is most readily described in a coordinate system common both to the ground and the satellite (an ECEF system). This means that we prefer satellite position, velocity, acceleration, and the rate of change of acceleration in an ECEF coordinate system. In essence, the inertial gravitational acceleration needs to be properly interpreted in an ECEF coordinate system. We then propagate the satellite orbit in an ECEF coordinate system.
+\par
+Define the relation between ECEF space and inertial space as
+\begin{equation}
+ \vct{x}_e(t)=\mtx{M}(t)\vct{x}_i(t),
+\end{equation}
+and
+\begin{equation}
+ \vct{x}_i(t)=\mtx{M}^T(t)\vct{x}_e(t),
+\end{equation}
+where
+\begin{equation}
+ \mtx{M}(t)=\begin{bmatrix}
+             \ct & -\st & 0\\
+             \st & \ct  & 0\\
+             0   & 0    & 1
+            \end{bmatrix},
+\end{equation}
+where $\omega_e$ is the rotation rate of the earth.
+% Note that
+% \begin{equation}
+%  \mtx{M}^T(t)=\begin{bmatrix}
+%              \ct & \st & 0\\
+%              -\st & \ct  & 0\\
+%              0   & 0    & 1
+%             \end{bmatrix}
+% \end{equation}
+Calculation of derivatives yields
+\begin{equation}
+ \dot{\mtx{M}}(t) = \omega_e\begin{bmatrix}
+             -\st & -\ct & 0\\
+             \ct & -\st  & 0\\
+             0   & 0    & 0
+            \end{bmatrix},
+\end{equation}
+\begin{equation}
+ \ddot{\mtx{M}}(t) = -\omega^2_e\begin{bmatrix}
+             \ct & -\st & 0\\
+             \st & \ct  & 0\\
+             0   & 0    & 0
+            \end{bmatrix},
+\end{equation}
+and
+\begin{equation}
+ \dddot{\mtx{M}}(t) = -\omega^3_e\begin{bmatrix}
+             -\st & -\ct & 0\\
+             \ct & -\st  & 0\\
+             0   & 0    & 0
+            \end{bmatrix}.
+\end{equation}
+To simplfy notation, let
+\begin{equation}
+ \Itwo=\begin{bmatrix}
+ 1 & 0 & 0\\
+ 0 & 1 & 0\\
+ 0 & 0 & 0
+\end{bmatrix}
+\end{equation}
+and
+\begin{equation}
+ \Qtwo=\begin{bmatrix}
+ 0 & -1 & 0\\
+ 1 & 0 & 0\\
+ 0 & 0 & 0
+\end{bmatrix}.
+\end{equation}
+By direct calculation
+\begin{equation}
+ \Qtwo\Qtwo = -\Itwo 
+\end{equation}
+For use later, we compute the following
+\begin{align}
+\dot{\mtx{M}}(t)\mtx{M}^T(t) &= \omega_e\Qtwo\\
+\ddot{\mtx{M}}(t)\mtx{M}^T(t) &= -\omega^2_e\Itwo\\
+\dddot{\mtx{M}}(t)\mtx{M}^T(t) &= -\omega^3_e\Qtwo\\
+\end{align}
+\subsection{ECEF equations of motion}
+With the previous material, one computes
+\begin{align}
+ \dot{\vct{x}}_e(t) &= \dot{\mtx{M}}(t)\vct{x}_i(t) + \mtx{M}(t)\dot{\vct{x}}_i(t)\\
+ \ddot{\vct{x}}_e(t) &= \ddot{\mtx{M}}(t)\vct{x}_i(t) + 2\dot{\mtx{M}}(t)\dot{\vct{x}}_i(t) + \mtx{M}(t)\ddot{\vct{x}}_i(t)\\
+ \dddot{\vct{x}}_e(t) &= \dddot{\mtx{M}}(t)\vct{x}_i(t) + 3\ddot{\mtx{M}}(t)\dot{\vct{x}}_i(t) + 3\dot{\mtx{M}}(t)\ddot{\vct{x}}_i(t) + \mtx{M}(t)\dddot{\vct{x}}_i(t)
+\end{align}
+From the first expression
+\begin{equation}
+\begin{split}
+ \mtx{M}^T(t)\dot{\vct{x}}_e(t) &= \mtx{M}^T(t)\dot{\mtx{M}}(t)\mtx{M}^T(t)\vct{x}_e(t) + \dot{\vct{x}}_i(t)\\
+ &= \omega_e\mtx{M}^T(t)\Qtwo\vct{x}_e(t) + \dot{\vct{x}}_i(t)
+ \end{split}
+\end{equation}
+so that
+\begin{equation}
+ \dot{\vct{x}}_i(t) = \mtx{M}^T(t)\left[\dot{\vct{x}}_e(t) - \omega_e\Qtwo\vct{x}_e(t)\right]
+\end{equation}
+Substitution of this equivalence into the second expression above yields
+\begin{equation}
+\begin{split}
+\ddot{\vct{x}}_e(t) &= \ddot{\mtx{M}}(t)\mtx{M}^T(t)\vct{x}_e(t) + 2\dot{\mtx{M}}(t)\mtx{M}^T(t)\left[\dot{\vct{x}}_e(t) - \omega_e\Qtwo\vct{x}_e(t)\right] + \mtx{M}(t)\ddot{\vct{x}}_i(t)\\
+&= -\omega_e^2\Itwo\vct{x}_e(t) + 2\omega_e\Qtwo\left[\dot{\vct{x}}_e(t) - \omega_e\Qtwo\vct{x}_e(t)\right] + \mtx{M}(t)\ddot{\vct{x}}_i(t)\\
+&= -\omega_e^2\Itwo\vct{x}_e(t) + 2\omega_e\Qtwo\dot{\vct{x}}_e(t) + 2\omega^2_e\Itwo\vct{x}_e(t) + \mtx{M}(t)\ddot{\vct{x}}_i(t)\\
+&= \omega_e^2\Itwo\vct{x}_e(t) + 2\omega_e\Qtwo\dot{\vct{x}}_e(t) + \mtx{M}(t)\ddot{\vct{x}}_i(t)
+\end{split}
+\label{eq:inertialddot}
+\end{equation}
+and substitution into the third expression yields
+\begin{equation}
+\begin{split}
+ \dddot{\vct{x}}_e(t) &= \dddot{\mtx{M}}(t)\mtx{M}^T(t)\vct{x}_e(t) + 3\ddot{\mtx{M}}(t)\mtx{M}^T(t)\left[\dot{\vct{x}}_e(t) - \omega_e\Qtwo\vct{x}_e(t)\right]\\
+ &+ 3\dot{\mtx{M}}(t)\ddot{\vct{x}}_i(t) + \mtx{M}(t)\dddot{\vct{x}}_i(t)\\
+ &= -\omega^3_e\Qtwo\vct{x}_e(t) - 3\omega_e^2\Itwo\left[\dot{\vct{x}}_e(t) - \omega_e\Qtwo\vct{x}_e(t)\right] + 3\dot{\mtx{M}}(t)\ddot{\vct{x}}_i(t) + \mtx{M}(t)\dddot{\vct{x}}_i(t)\\
+ &= 2\omega^3_e\Qtwo\vct{x}_e(t) - 3\omega_e^2\Itwo\dot{\vct{x}}_e(t) + 3\dot{\mtx{M}}(t)\ddot{\vct{x}}_i(t) + \mtx{M}(t)\dddot{\vct{x}}_i(t)
+ \end{split}
+\label{eq:inertialdddot}
+\end{equation}

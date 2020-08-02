@@ -1,0 +1,74 @@
+\section{Numerical implementation of the Stolz interpolation}
+\label{an:stolz}
+This section outlines an approach to support numerical implementation of the proposed, generalized Stolz interpolation. Because the generalized Stolz interpolation points do not have a closed form as they do in, for instance, \cite{Cumming2005, Bamler1992}, this section presents a numerical approach. There is nothing particularly insightful about the proposed algorithm; in fact, this section aims to present an approach that avoids confusion and facilitates numerical implementation.
+\par
+So, to begin, recall that
+\begin{equation}
+ \xang = -\targetrange\tan\thetas,
+\end{equation}
+so that
+\begin{align}
+ \sin\thetas &= -\frac{\xang}{\sqrt{\targetrange^2+\xang^2}}\label{eq:angsin}\\
+ \cos\thetas &= \frac{\targetrange}{\sqrt{\targetrange^2+\xang^2}}\label{eq:angcos}.
+\end{align}
+Alos recall that
+\begin{equation}
+ -\frac{\xang}{\sqrt{\targetrange^2+\xang^2}}\biggl[\gfunc(\parm)+\frac{\rcoeff_3\xang}{2\gfunc^2(\parm)}+\frac{\rcoeff_4\xang^2}{\gfunc^3(\parm)}\biggr] = \frac{\kparm}{\kr}.
+\end{equation}
+From \eqref{eq:newStolz}, when one makes the (Stolt interpolation) change of variables,
+\begin{equation}
+ \krstolt = \kr\sec\thetas - \kparm\frac{\tan\thetas}{\gfunc(\parm)},
+\end{equation}
+which leads to the relation that
+\begin{equation}
+ \kr = \frac{\targetrange\krstolt}{\sqrt{\targetrange^2+\xang^2}} - \frac{\kparm\xang}{\gfunc(\parm)\sqrt{\targetrange^2+\xang^2}}.
+\end{equation}
+\subsection{Simplification for iterative root-finding}
+In the opinion of the authors, implementation of the Stolz interpolation (into computer code) benefits from defining the following function
+\begin{equation}
+ \shelp{l}{m}{n} = \frac{\xang^l}{(\targetrange^2+\xang^2)^m\gfunc^n(\parm)}
+\end{equation}
+The Newton iterative root finding method requires computation of the derivative of the above function, which, in turn, requires caculation of the derivative of $\gfunc(\parm)$ with respect to $\xang$. Specifically,
+\begin{equation}
+\begin{split}
+ \frac{\d\gfunc(\parm)}{\d\xang} &= \frac{\d\gfunc(\parm)}{\d\parm}\frac{\d\parm}{\d\xang}\\
+ &=\frac{\rcoeff_3+2\rcoeff_4\parm}{2\gfunc(\parm)}\frac{\d\parm}{\d\xang}\\
+ &=\left(\frac{\rcoeff_3}{2\gfunc(\parm)}+\frac{\rcoeff_4\xang}{\gfunc^2(\parm)}\right)\frac{\d\parm}{\d\xang}
+\end{split}
+\label{eq:dgpart1}
+\end{equation}
+Because $\xang=\parm\gfunc(\parm)$, one derives
+\begin{equation}
+\begin{split}
+ 1 &= \frac{\d\parm}{\d\xang}\gfunc(\xparm) + \parm\frac{\d\gfunc(\parm)}{\d\parm}\frac{\d\parm}{\d\xang}\\
+ & = \frac{\d\parm}{\d\xang}\left[\gfunc(\xparm) + \parm\frac{\rcoeff_3+2\rcoeff_4\parm}{2\gfunc(\parm)}\right]\\
+ & = \frac{\d\parm}{\d\xang}\left[\gfunc(\xparm) + \frac{\xang}{\gfunc(\parm)}\left(\frac{\rcoeff_3}{2\gfunc(\parm)} + \frac{\rcoeff_4\xang}{\gfunc^2(\parm)}\right)\right]\\
+\end{split}
+\label{eq:dgpart2}
+\end{equation}
+By substituting \eqref{eq:dgpart2} into \eqref{eq:dgpart1}, one arrives at
+\begin{equation}
+ \frac{\d\gfunc(\parm)}{\d\xang} = \frac{\rcoeff_3\gfunc^2(\xparm) + 2\rcoeff_4\xang\gfunc(\xparm)}{2\gfunc^4(\xparm) + \rcoeff_3\xang\gfunc(\xparm) + 2\rcoeff_4\xang^2}
+\end{equation}
+The derivative of $\shelp{l}{m}{n}$ is thus given by\footnote{For use in a Newton numerical, iterative, root-finding procedure},
+\begin{multline}
+ \frac{\d\shelp{l}{m}{n}}{\d\xang} = \shelp{l-1}{m}{n}\\
+ \left(l-m\frac{2\xang^2}{\targetrange^2+\xang^2} - n\frac{\rcoeff_3\xang\gfunc(\xparm) + 2\rcoeff_4\xang^2}{2\gfunc^4(\xparm) + \rcoeff_3\xang\gfunc(\xparm) + 2\rcoeff_4\xang^2}\right)
+\end{multline}
+\par
+With the aforementioned definition,
+\begin{equation}
+ \kr = \targetrange\krstolt\shelp{0}{1/2}{0} - \kparm\shelp{1}{1/2}{1},
+ \label{eq:stoltRelation}
+\end{equation}
+and, when this is substituted into \eqref{eq:angleRelation}, along with the realtions in \eqref{eq:angsin} and \eqref{eq:angcos}, one obtains
+\begin{equation}
+\begin{split}
+ &\targetrange\krstolt\shelp{1}{1}{-1} - \kparm\shelp{2}{1}{0}
+ +\frac{\targetrange\krstolt\rcoeff_3}{2}\shelp{2}{1}{2}\\
+ &+\left(\targetrange\krstolt\rcoeff_4-\frac{\rcoeff_3\kparm}{2}\right)\shelp{3}{1}{3}
+ - \rcoeff_4\kparm\shelp{4}{1}{4} + \kparm = 0
+\end{split}
+\label{eq:stoltInversionX}
+\end{equation}
+Equation \ref{eq:stoltInversionX} permits numerical computation of $\xang$ given values for $\kparm$ and $\krstolt$. This computed value for $\xang$ can be inserted into \ref{eq:stoltRelation} to provide the particular value of $\kr$ at which the data need to be estimated (through interpolation).

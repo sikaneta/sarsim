@@ -1,0 +1,42 @@
+\subsection{Demodulation}
+If the return signal is mixed with $\eex{-\im\omega_0\fasttime}$, and if filters are applied to remove unwanted images, one obtains the \Index{demodulated signal}
+\begin{equation}
+\begin{split}
+ \stst{\channelIndex}(\fasttime,\parm)\rightarrow \stst{\channelIndex}(\fasttime,\parm)&=\int\pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)}{\amplitude\range^2(\parm, \targetnoparm)}\\&\cdot\envelope\left(\fasttime-2\frac{\amplitude\range(\parm, \targetnoparm)+\rangeErrorZero(\parm)}{c}\right)
+ \eex{-2\im\omega_0\frac{\amplitude\range(\parm, \targetnoparm)+\rangeErrorZero(\parm)}{c}}\d\vct\target
+ \label{eq:fasttime1}
+ \end{split}
+\end{equation}
+The fast-time \Index{\gls{FT}} of $\stst{\channelIndex}(\fasttime,\parm)$ may be computed as
+\begin{equation}
+\begin{split}
+ \Sfst{\channelIndex}(\omega,\parm) &= 	\Envelope(\omega)\int\eex{-\im\frac{2[\omega+\omega_0]}{c}[\amplitude\range(\parm, \targetnoparm)+\rangeErrorZero(\parm)]}\pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)}{\amplitude\range^2(\parm, \targetnoparm)}\d\vct\target
+ \end{split}
+\end{equation}
+Recall that $\kr=\frac{2(\omega+\omega_0)}{c}$, and define $\krc = \frac{2\omega}{c}$ and $\krnaught = \frac{2\omega_0}{c}$, to yield the processed fast-time frequency signal
+\begin{center}
+\fbox{
+\begin{minipage}{1.0\textwidth}
+\begin{equation}
+\begin{split}
+\Skst{\channelIndex}(\kr,\parm) &= \Snvelope(\krc)\eex{-\im\kr\rangeErrorZero(\parm)}\int\eex{-\im\kr\amplitude\range(\parm, \targetnoparm)}\pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)}{\amplitude\range^2(\parm, \targetnoparm)} \d\vct\target
+\label{eq:Skst1}
+\end{split}
+\end{equation}
+\end{minipage}
+}
+\end{center}
+where $\Snvelope(\krc) = \lvert\Envelope(c\krc/2)\rvert$ and the absolute value has been computed by multiplying by the known conjugate phase of $\Envelope(\cdot)$. Indeed, range or \Index{pulse compression} is achieved through multiplication by the conjugate phase. For instance, if the pulse is a chirp, then it is at this point that the chirp phase is removed.
+\subsubsection{Range error compensation}
+\label{sc:phaseCompensation}
+One can compensate for the range error term througgh multiplication by $\eex{\im\kr\rangeErrorZero(\parm)}$. This operation simply accounts for the time delay between the ideal path and the real path of the satellite.
+\par
+A simplification is possible in the case of small range errors. In this case, assume that \eqref{eq:Skst1} is multiplied by $\eex{\im\krnaught\rangeErrorZero(\parm)}$. This leads to a leading term given by $\Snvelope(\krc)\eex{-\im\krc\rangeErrorZero(\parm)}$ which can be interpreted as a shift of the pulse compressed signal by $\rangeErrorZero(\parm)$ at each point $\parm$. 
+\par
+If the signal is sampled at a spatial sampling rate proportional to the range resolution, $\rresolution$, then the baseband pulse will be shifted by $\rangeErrorZero(\parm)/\rresolution$ samples in the range direction. This suggests that a phase compensation is valid so long as range error is small compared to the range resolution. One could take, as a rule of thumb, that 
+\begin{equation}
+\lvert\rangeErrorZero(\parm)\rvert\leq\frac{\rresolution}{8} 
+\label{eq:rangeErrorCondition}
+\end{equation}
+In the case of 10cm range resolution, this means the the range errors over the synthetic aperture should be less than approximately 1cm. Note that all data plotted in figures \ref{fg:29} to \ref{fg:3725} satisfy the condition of \eqref{eq:rangeErrorCondition} over the period of $\pm$ 10 seconds.
+

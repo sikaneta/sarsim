@@ -1,0 +1,46 @@
+\section{Arclength-paremterized range function}
+\label{sc:rangeHistory}
+As the range history plays a critical role in the development of the SAR signal model, this section relates the previously developed arclength parameterized satellite curve to the range history of a scatterer. The range history defined in this section assumes that the satellite trajectory follows $\satp(\parm)$. 
+\par
+For a scatterer at point $\vct\target$, define the range vector as $\rangeVectorParm = \satp(\parm) - \vct\target$. There is a value, $\targetxparm$, such that $\satp(\targetxparm) - \vct\target$ is perpendicular to $\satp'(\targetxparm)$. That is, there exists a broadside arclength parameter\footnote{at broadside, the tangent vector (aligned with the satellite velocity vector) is perpendicular to the vector connecting the satellite position vector with the target vector}. Further, $\vct\target$ can be completely determined by 
+\begin{equation}
+ \vct\target = \satp(\targetxparm) + \targetrange\cos\targetdepression\vct{N}(\targetxparm) + \targetrange\sin\targetdepression\vct{B}(\targetxparm),
+\end{equation}
+where $\targetrange=\lvert\satp(\targetxparm)-\vct\target\rvert$ and $\targetrange\cos\targetdepression = [\vct\target - \satp(\targetxparm)]\cdot\vct{N}(\targetxparm)$. One notes that $\targetdepression$ relates to the depression angle of observation. 
+\par
+One can define the ``nearest''-range vector associated to the point $\vct\target$ as  
+\begin{equation}
+\rangeVector{\targetxparm, \vct\target} = \targetrange\cos\targetdepression\vct{N}(\targetxparm) + \targetrange\sin\targetdepression\vct{B}(\targetxparm).
+\end{equation}
+\Anref{an:rangeComputation} uses \eqref{eq:diffgeoeqn} and the above coordinate transformation $\vct\target\rightarrow(\targetrange, \targetxparm, \targetdepression)$ to produce the highly-accurate approximation that 
+\begin{equation}
+ \targetrange^2(\parm, \vct\target) = \lvert\satp(\parm)-\vct\target\rvert^2 = \sum_{k=0}^6\rcoeff_k(\parm-\targetxparm)^k
+ \label{eq:bestRangeEquation}
+\end{equation}
+with the following coefficients valid in the neighbourhood of some chosen point of expansion, $\parm_0$ (with $\kappa_0, \tau_0, \dot{\kappa}_0$ evaluated at $\parm_0$)
+\begin{align}
+ \rcoeff_0 &= \targetrange^{2}\\
+ \rcoeff_1 &= 0\\
+ \rcoeff_2 &= 1 - \kappa_0\targetrange\cos\targetdepression\\
+ \rcoeff_3 &= -\frac{\targetrange}{3}(\kappa_0\tau_0\sin\targetdepression + \dot{\kappa}_0\cos\targetdepression)\\
+ \rcoeff_4 &= -\frac{\kappa_0^2}{12}\\
+ \rcoeff_5 &= 0\\
+ \rcoeff_6 &= 0,
+\end{align}
+% where
+% \begin{equation}
+%  \vct\target_0 = \satp(\parm_0) + \targetrange\cos\targetdepression\vct{N}_0 + \targetrange\sin\targetdepression\vct{B}_0.
+% \end{equation}
+The third and fourth order terms $\rcoeff_3,\rcoeff_4$ become non-negligeable for very high azimuth resolution modes such as the terrasar-X staring spotlight mode, \cite{Mittermayer}.
+\par
+Note that the expression for $\vct\target$ has been defined by the point $\targetxparm$ where the satellite tangent vector makes a right angle to the range vector. The expression can be modified to any other angle if one desires to incorporate a squint angle.
+\subsection{Error in the range function}
+Note that because, as figures \ref{fg:29} to \ref{fg:3725} demonstrate, there is a slight deviation from the path assumed in this section, the true range function should include an error term. Beause this error is small, it can be approximated by
+\begin{equation}
+ \rangeError(\parm, \vct\target) = [\sats(\parm)-\satp(\parm)]\cdot\uRangeVectorParm
+\end{equation}
+In the case of very long synthetic apertures, this residual range error term will have to be compensated for. If it is assumed that the set of look vectors for the syynthtic apeture and for the entire scene do not vary too much, the above may be simplifed to
+\begin{equation}
+ \rangeError(\parm, \vct\target) \approx \rangeErrorZero(\parm) = [\sats(\parm)-\satp(\parm)]\cdot\uRangeVectorParmZero
+\end{equation}
+where $\uRangeVectorParmZero$ is some representative look vector for the scene (the averge look vector, for instance).

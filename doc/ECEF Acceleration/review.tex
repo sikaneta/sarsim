@@ -1,0 +1,15 @@
+\section{Quick review of stripmap SAR}
+For a SAR, the azimutuh bandwidth relates to the azimuth beamwidth, $\threeDB$, and the wavelength, $\wavelength$, through
+\begin{equation}
+ \aziBW = \frac{2}{\wavelength}\satv\threeDB,
+\end{equation}
+which leads to an azimuth resolution approximately given by
+\begin{equation}
+ \aziRes = \frac{\lambda}{2\threeDB}.
+\end{equation}
+\par
+Clearly, the larger $\threeDB$, and smaller $\wavelength$, the better the azimuth resolution.
+\par
+For stripmap SAR, $\threeDB \approx \frac{\wavelength}{\antennaLength}$, where $\antennaLength$ is the azimuth length of the transmit and receive antennas, which leads to an azimuth resolution of $\antennaLength/2$. In a spotlight mode, $\threeDB$ is increased by mechanically or electronically steering the antenna around the along-track axis. This leads to an azimuth beamwidth that can be significantly larger than for stripmap. The azimuth beamwidth can also be increased, when using a phased-array antenna, by applying beam spoiling.
+\par
+In any event, the azimuth frequency spectrum must be sampled according to the Nyquist theorem; thus the Pulse Repetition Frequency (PRF) must satisfy $\prf \geq \aziBW$.

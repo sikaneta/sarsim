@@ -1,0 +1,45 @@
+\section{A proposal for very high resolution SAR}
+This document proposes a system for improved space-based SAR imaging. It describes the design\footnote{Herein, the design is the phased array, including its dimension and element spacing, the required switching/routing circuits, the required digitizers, and the required hardware to permit changing the transmit and receive beam table on a pulse by pulse basis.}, which is based upon a phased-array and an appropriate switching network, the configuration\footnote{The configuration is the way in which the system is operated and includes the pulse-repetition frequency and the transmit/receive beam tables at each pulse.}, which imposes a rapid electronic beam switching capability upon the design, and the required signal processing algorithm to compute the high-resolution imagery.
+\par
+As there are no readily available operational systems to demonstrate the approach, an end-to-end simulation, that uses a realistic collection scenario, is used to validate the system performace with a 10cm resolution mode. 
+\subsection{Positive apects of the proposed approach}
+The proposed configuration permits measurement of very high resolution SAR in a stripmap-like mode, thereby offering, theoretically, unlimited azimuth extent.
+\par
+The proposed approach significantly increases the area coverage (both in swath and azimuth extent) for the highest resolution imagery sensors on the commercial market while at the same time offering equivalent or better azimuth resolution. \Tbref{tb:reswidth} highlights the added value of the approach by comparing the swath width to azimuth resolution ratio for several active commercial SAR missions \cite{Brautigam2010, Fox2004, Porfilio2016, Mittermayer}. To summarise, the potential ratio of swath-width to azimuth resolution is, approximately, an order of magnitude better. 
+\begin{table}[h!]
+ \begin{center}
+ \caption{Swath width, azimuth resolution and their ratio}
+  \begin{tabular}{r|c|c|l}
+   & {\bf Azimuth} & {\bf Swath} & {\bf ratio}\\
+   & {\bf resolution (m)} & {\bf width (km)} & {}\\\hline
+   RADARSAT-2 & 0.8 & 18 & 22.5\\\hline
+   TerraSAR-X & 0.25 & 4 & 16\\\hline
+   CSK & 0.35 & 7.3 & 22.8\\\hline
+   Proposed & 0.1 & 22 & 220.0
+  \end{tabular}
+  \label{tb:reswidth}
+ \end{center}
+\end{table}
+In addition, the strip-like nature of the proposed configuration allows imaging over an unlimited along-track (azimuth) extent. For most commercial SAR missions the Spotlight imagery footprint in ground-range and azimuth is approximately square \cite{Mittermayer}. 
+\par
+In addition to describing the system and configuration for data collection, this document goes into the details of how to process the data to obtain a high resolution image. The signal processing is split into two components that both depend on the system configuration and the imaging geometry. These components include the task of how to multi-channel process the data to obtain a single {\em as if collected by a traditional single channel SAR} signal, and the task of how to process this single channel signal to obtain a high resolution image. While the challenge of processing high-resolution SAR imagery has been studied in the literature, and back-projection is a viable solution, this document develops a wavenumber-based method to speed up processing.
+\par
+Both multi-channel processing and SAR processing depend on both the system configuration and the geometry, and as one enters the realm of high-resolution, an accurate description of the geometry becomes critical. It is well-known that the path of a satellite can be accurately propagated from a given state vector through numerical integration of the equations of motion. These equations depend upon an accurate model of the gravitational potential (such as from the EGM96 or EGM2008 spherical harmonic model). The numerically integrated satellite positions can be directly incorporated into back-projection SAR processing. 
+\par 
+In order to implement a wavenumber domain processor, however, a new approach is required. This approach is presented here. Although physically constant data, such as the spherical harmonic coefficients (the EGM96 coefficients), are required, the proposed approach requires only a single dynamic variable; namely, a single, accurate state-vector. 
+\par
+The state-vector is used to derive a satellite position model that is sufficiently accurate for an X-band SAR over a period of up to 20 seconds. By comparison, ``vanilla'' spaceborne SAR, i.e., the hypoerbolic model, supports an aperture time of 4.8 seconds while the fourth order model of \cite{Luo2014} achieves an aperture time of 13.4 seconds. As far as the authors know, the presented approach is novel for space-based SAR imaging. In brief, the approach is based upon simple concepts from differential geometry which prove to be ideal, not only for computing the SAR signal model, but also for describing the multi-channel system. For instance, the differential geometry construct is used to show that, locally, mutli-channel filters do not depend on the range. As a final note, we shall see that very high resolution spaceborne SAR demands consideration of not only the curvature and eccentricity of the orbit, but also the irregularities in trajectory caused by the uneven distribution of the planetery mass.
+\subsection{Negative aspects of the proposed approach}
+The promise of such a capability, no doubt, raises questions about what unfavourable aspects of the system are amplified. What trades need to be made to realise such a system, are they physically feasible, and are they worth the reward? 
+\par
+For a start, imaging a larger area while maintaining a useful Signal-to-Noise-Ratio (SNR) requires a proportional increase in transmit/receive power. To avoid this problem, the size of the proposed system is on the order of 20m which is larger than most current missions (with the exception of RADARSAT-2). Also, as we shall see, the operating configuration benefits from the use of the entire receive aperture to maximise capture of scattered energy. 
+\par
+Second, to function as specified, the operating configuration calls for the ability to transmit different beams from pulse to pulse thus requiring a rapid electronic steering capability. 
+\par
+Third, the system needs a switching mechanism that distributes the receive sub-arrays to a multitude of distinct digitizers which, on the one hand increases hardware complexity and on the other hand, demands that more data is captured. 
+\par
+Fourth, as the desired resolution decreases, the required azimuth beamwidth increases which also means the Doppler bandwidth increases. So, not only is the synthetic aperture physically longer (range times beamwidth), but it has to be sampled more frequently (higher bandwidth) to meet the Nyquist criteria; thus, as a rule of thumb, the required number of samples to cover the Synthetic Aperture in azimuth grows as $1/\delta_0^2$, where $\delta_0$ is the desired azimuth resolution. As an example, while the synthetic aperture of a $3\text{m}$ mode on RADARSAT-2 might require $2,000$ azimuth samples, equivalent $1\text{m}$ and $0.1\text{m}$ modes would require $18,000$ and $1,800,000$ samples respectively. To make this even more challenging, depending on the used pulse waveform and on-board processing, a similar constraint would also apply in the range direction. These data need to find a path to the ground either through a link with increased bandwidth or by a mechanism that transmits less data over a longer period of time. 
+\par
+Finally, the transformation of these more complex data into final image products requires the development and implementation of more complex signal-processing algorithms. As shall be explained, the demand for a precise geometrical description of the orbit over a long synthetic aperture, introduces several new complications to traditional SAR processing.
+\par
+The next section introduces the operating configuration under ideal conditions to aid in conveying the operating concept. The combination of this operating configuration with a desired azimuth resolution dictates the design parameters and defines the minimum PRF through which the maximum swath is determined.

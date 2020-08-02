@@ -10,7 +10,7 @@ import configuration.configuration as cfg
 import plot.simplot as sp
 import numpy as np
 from scipy.signal import hann as weightwin
-from scipy.constants import c
+from scipy.constants import c, Boltzmann
 import argparse
 import os
 import utils.fileio as fio
@@ -35,6 +35,12 @@ parser.add_argument("--phase-correct",
                             position""",
                     action="store_true",
                     default=False)
+parser.add_argument("--power-correct",
+                    help="""Correct error in power computation.
+                            Simulations run after 31/07/2020 should
+                            not need this correction""",
+                    action="store_true",
+                    default=False)
 parser.add_argument("--arclength-offset",
                     help="Offset of the target from zero in arclength (m)",
                     type=float,
@@ -42,7 +48,7 @@ parser.add_argument("--arclength-offset",
 parser.add_argument("--elevation-length",
                     help="Length of the antenna in the elevation direction",
                     type=None,
-                    default=2.0)
+                    default=None)
 parser.add_argument("--ridx",
                     help="The range indeces to examine",
                     type=int,
@@ -69,6 +75,24 @@ if 'radar' not in locals():
 noiseSignal, r_sys = cfg.multiChannelNoise(radar, p=0.9)
 noiseSignal = np.fft.ifft(noiseSignal)
 noisePower = np.var(noiseSignal)
+correction = 1.0
+
+if vv.power_correct:
+    rad = radar[0]
+    txMag = rad['mode']['txMagnitude']
+    radarEq1 = np.sqrt((rad['antenna']['wavelength'])
+                        *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
+                        /np.sqrt(Boltzmann*rad['antenna']['systemTemperature'])
+                        /np.sqrt(rad['antenna']['systemLosses']))
+            
+            
+    radarEq2 = ((rad['antenna']['wavelength'])
+                *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
+                /np.sqrt(Boltzmann*rad['antenna']['systemTemperature']*rad['chirp']['pulseBandwidth'])
+                /np.sqrt(rad['antenna']['systemLosses'])
+                )
+    
+    correction = (radarEq2/radarEq1)**2
 
 
 #%% Load the data
@@ -103,7 +127,7 @@ if 'wkSignal'not in locals():
         wkSignal[:, k] *= p_fct
     print("Computing the FFT of the signal ...")
     wkSignal = np.fft.ifft(wkSignal, axis=0)
-    maxSignal = np.max(np.abs(wkSignal))**2
+    maxSignal = np.max(np.abs(wkSignal))**2*correction
     wkSignal = wkSignal/maxSignal
     
     # Use some estimate for the antenna element gain 4*pi/lambda**2*Area
@@ -114,7 +138,9 @@ if 'wkSignal'not in locals():
     elementGainTx += 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*aLen)
     elementGainRx = 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*eLen)
     elementGainRx += 10*np.log10(2*np.sqrt(np.pi)/(c/r_sys.f0)*aLen)
-    NESZ = -10*np.log10(maxSignal/noisePower) - elementGainTx - elementGainRx
+    NESZ = (-10*np.log10(maxSignal/noisePower) 
+            - elementGainTx 
+            - elementGainRx)
     print('NESZ: %0.2f dB' % NESZ)
 
 

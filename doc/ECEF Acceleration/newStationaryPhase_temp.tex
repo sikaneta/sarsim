@@ -1,0 +1,126 @@
+\section{Stationary phase}
+This section presents the results of applying the stationary phase approximation to the fast-time, arclength parameterized signal model. The final result is seen to be a generalization of the classical hyperbolic model approximation with additional terms accounting for the presence of the higher order $\rcoeff_3$ and $\rcoeff_4$ terms (whcih appear in the range equation). These terms also appear in a generalized Stolz interpolation. 
+\par
+We shall find at the end of the section that the presence of the higher order terms results in a Stolz interpolation scheme where there is no closed form for the interpolation points. Instead, interpolation points are given as the roots of a mathematical expression and are assumed (and demonstrated) to be numerically computable.
+\par
+Recall from \eqref{eq:bestRangeEquation} that
+\begin{equation}
+\begin{split}
+\targetrange(\parm, \vct\target) &= \sqrt{\lvert\satp(\parm)-\vct\target\rvert^2} = \sqrt{\sum_{k=0^4}\rcoeff_k(\parm-\targetxparm)^k}\\
+&=\sqrt{\targetrange^2 + \rcoeff_2(\parm-\targetxparm)^2 + \rcoeff_3(\parm-\targetxparm)^3 + \rcoeff_4(\parm-\targetxparm)^4}
+\end{split}
+\end{equation}
+The phase of the function in \eqref{eq:sparmft} is then given by
+\begin{equation}
+ \Phi(\parm) = -\kr\sqrt{\targetrange^2 + \rcoeff_2(\parm-\targetxparm)^2 + \rcoeff_3(\parm-\targetxparm)^3 + \rcoeff_4(\parm-\targetxparm)^4} - \kparm\parm
+ \label{eg:rangeEq1}
+\end{equation}
+In order to simplify the calculation, let
+\begin{equation}
+\begin{split}
+ -\targetrange\tan\thetas(\parm) &= \sqrt{\rcoeff_2\parm^2 + \rcoeff_3\parm^3 + \rcoeff_4\parm^4}\\
+ &=\parm\sqrt{\rcoeff_2 + \rcoeff_3\parm + \rcoeff_4\parm^2}\\
+ &=\parm\gfunc(\parm)
+\end{split}
+\label{eq:gfunc}
+\end{equation}
+The above relation is really only a mathematical convenience; however, in the simple linear trajectory case (i.e..airborne SAR), the angle $\thetas(\parm)$ corresponds to the look angle. By substituting this relation in \eqref{eg:rangeEq1}, one finds that
+\begin{equation}
+\begin{split}
+ \Phi(\parm) &= -\targetrange\kr\sec\thetas(\parm-\targetxparm) - \kparm\parm\\
+ &= -\targetrange\kr\sec\thetas(\parm-\targetxparm) - \kparm(\parm-\targetxparm) - \kparm\targetxparm
+ \end{split}
+\end{equation}
+Now
+\begin{equation}
+\begin{split}
+ \frac{\d\Phi(\parm)}{\d\parm} &= \frac{\d\Phi(\parm)}{\d(\parm-\targetxparm)}\frac{\d(\parm-\targetxparm)}{\d\parm}\\
+ &=-\targetrange\kr\tan\thetas(\parm-\targetxparm)\sec\thetas(\parm-\targetxparm)\frac{\d\thetas(\parm-\targetxparm)}{\d(\parm-\targetxparm)} -\kparm,
+ \end{split}
+\end{equation}
+and the stationary phase prescription instructs that this should be equated to zero, thus
+\begin{equation}
+\begin{split}
+ -\targetrange\kr\tan\thetas(\parm-\targetxparm)\sec\thetas(\parm-\targetxparm)\frac{\d\thetas(\parm-\targetxparm)}{\d(\parm-\targetxparm)} = \kparm.
+ \end{split}
+\end{equation}
+On the other hand, by taking the derivative of \eqref{eq:gfunc}, one calculates that
+\begin{equation}
+ -\targetrange\sec^2\thetas(\parm-\targetxparm)\frac{\d\thetas(\parm-\targetxparm)}{\d(\parm-\targetxparm)} = \gfunc(\parm-\targetxparm) + (\parm-\targetxparm)\frac{\d\gfunc(\parm-\targetxparm)}{\d(\parm-\targetxparm)},
+\end{equation}
+which means that the stationary phase value $\stationaryparm$ is the value which satisfies
+\begin{equation}
+ \kr\sin\thetas(\stationaryparm-\targetxparm)\left[\gfunc(\stationaryparm-\targetxparm) + (\stationaryparm-\targetxparm)\frac{\d\gfunc(\stationaryparm-\targetxparm)}{\d(\stationaryparm-\targetxparm)}\right] = \kparm.
+\end{equation}
+By letting $\myparm = \stationaryparm - \targetxparm$, the preceding becomes
+\begin{equation}
+ \kr\sin\thetas(\myparm)\left[\gfunc(\myparm) + \myparm\frac{\d\gfunc(\myparm)}{\d\myparm}\right] = \kparm.
+ \label{eq:stationaryAngleRelation}
+\end{equation}
+\subsection{Relation between arclength and wavenumber}
+The remainder of this section seeks to present a means to invert \eqref{eq:stationaryAngleRelation}, that is, to compute some form of $\stationaryparm$ or $\thetas$ given wavenumbers $\kparm$ and $\kr$.
+\par
+The rest of the material in this section depends upon the following key approximation. Recall from \eqref{eq:gfunc} that 
+\begin{equation}
+ -\targetrange\tan\thetas(\parm) = \parm\gfunc(\parm) 
+\end{equation}
+Let us write this as
+\begin{equation}
+ \xang = \parm\gfunc(\parm)
+\end{equation}
+To invert the above note that
+\begin{equation}
+\begin{split}
+ \parm &= \frac{\xang}{\gfunc(\parm)} = \frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc(\parm)}\right)}\\
+ &\approx\frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc(0)}\right)}
+\end{split}
+\label{eq:Sdefinition}
+\end{equation}
+which also leads to the approximation that
+\begin{equation}
+ \gfunc(\parm)\approx\gfunc\left(\frac{\xang}{\gfunc(0)}\right)
+\end{equation}
+\par
+From the definition of $\gfunc(\parm)$, one computes that
+\begin{equation}
+ \gfunc(\parm) + \parm\frac{\d\gfunc(\parm)}{\d\parm}    = \gfunc(\parm) + \frac{\rcoeff_3\parm + 2\rcoeff_4\parm^2}{2\gfunc(\parm)}.% + \frac{\rcoeff_3\parm}{2\gfunc^2(\parm)} + \frac{\rcoeff_4\parm^2}{\gfunc^3(\parm)} 
+\end{equation}
+Thus,
+\begin{equation}
+\begin{split}
+\gfunc(\parm) + \parm\frac{\d\gfunc(\parm)}{\d\parm} &\approx \gfunc\left(\frac{\xang}{\gfunc(0)}\right) + \frac{\rcoeff_3y}{2\gfunc^2\left(\frac{\xang}{\gfunc(0)}\right)} + \frac{\rcoeff_4y^2}{\gfunc^3\left(\frac{\xang}{\gfunc(0)}\right)}\\ %+ \frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc(0)}\right)}+ \frac{\rcoeff_3\parm}{2\gfunc(\parm)} + \frac{\rcoeff_4\parm^2}{\gfunc(\parm)}
+&= \gfunc\left(\frac{-\targetrange\tan\thetas(\parm)}{\sqrt\rcoeff_2}\right) - \frac{\rcoeff_3\targetrange\tan\thetas(\parm)}{2\gfunc^2\left(\frac{-\targetrange\tan\thetas(\parm)}{\sqrt\rcoeff_2}\right)} + \frac{\rcoeff_4\targetrange^2\tan^2\thetas(\parm)}{\gfunc^3\left(\frac{-\targetrange\tan\thetas(\parm)}{\sqrt\rcoeff_2}\right)}
+\end{split}
+\end{equation}
+The above can be inserted into \eqref{eq:stationaryAngleRelation} to yield an expression that relates, on the left, a function that depends on $\sin\thetas(\myparm)$ (which is written as $\sin\thetas$, with $\tan\thetas=\sin\thetas/\sqrt{1-\sin^2\thetas}$) to, on the right, a function of $\kr, \kparm$.
+\begin{equation}
+ \sin\thetas\left[\gfunc\left(\frac{-\targetrange\tan\thetas}{\sqrt\rcoeff_2}\right) - \frac{\rcoeff_3\targetrange\tan\thetas}{2\gfunc^2\left(\frac{-\targetrange\tan\thetas}{\sqrt\rcoeff_2}\right)} + \frac{\rcoeff_4\targetrange^2\tan^2\thetas}{\gfunc^3\left(\frac{-\targetrange\tan\thetas}{\sqrt\rcoeff_2}\right)}\right] = \frac{\kparm}{\kr}.
+ \label{eq:angleRelation}
+\end{equation}
+To be specific, the above can be written as
+\begin{equation}
+ f(\sin\thetas; r) = \frac{\kparm}{\kr}
+ \label{eq:wavenumberangle}
+\end{equation}
+and one observes that only in the case that $\rcoeff_3=\rcoeff_4=0$ is the above independent of $\targetrange$.
+\par
+One can write \eqref{eq:Sdefinition} as
+\begin{equation}
+ \myparm\approx\frac{-\targetrange\tan\thetas}{\gfunc\left(\frac{-\targetrange\tan\thetas}{\sqrt\rcoeff_2}\right)}
+\end{equation}
+The above allows the phase expression at the stationary point to be written as
+\begin{equation}
+\begin{split}
+ \Phi(\parm) &= -\targetrange\kr\sec\thetas(\parm-\targetxparm) - \kparm(\parm-\targetxparm) - \kparm\targetxparm\\
+ &= -\targetrange\kr\sec\thetas + \targetrange\kparm\frac{\tan\thetas}{\gfunc\left(\frac{-\targetrange\tan\thetas}{\sqrt\rcoeff_2}\right)} - \kparm\targetxparm\\
+ &= -\targetrange\left[\kr\sec\thetas - \kparm\frac{\tan\thetas}{\gfunc\left(\frac{-\targetrange\tan\thetas}{\sqrt\rcoeff_2}\right)}\right] - \kparm\targetxparm
+ \label{eq:newStolz}
+ \end{split}
+\end{equation}
+By inverting \eqref{eq:wavenumberangle}, one can compute $\sin\thetas$ as a function of $\kr, \kparm$. This can be substituted into the above to yield a phase function dependent only upon the spatial wavenumbers (and the range). The first term (the term multiplied by $\targetrange$) in the last line of \eqref{eq:newStolz} thus represents a modified Stolz interpolation function which can easily be computed numerically. Note that in the case $\rcoeff_3=\rcoeff_4=0$, the above reduces to
+\begin{equation}
+\begin{split}
+ \Phi(\parm) &= -\targetrange\sqrt{\kr^2 - \frac{\kparm^2}{\rcoeff_2}} - \kparm\targetxparm.
+ \label{eq:oldStolz}
+ \end{split}
+\end{equation}

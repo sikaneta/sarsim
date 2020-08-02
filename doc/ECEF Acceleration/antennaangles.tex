@@ -1,0 +1,126 @@
+\subsection{Antenna pattern angles}
+\label{sc:antennaAngles}
+In this section, we examine the implications of the stationary phase approximation on the antenna pattern. While the Stolz interpolation and the range equation are critical for single-channel SAR signal processing, multi-channel signal processing further demands an accurate description of the antenna pattern, in this case, in the wavenumber domain. The material presented in this section relies heavily upon both the Frenet-Seret equations and the vector calculus expansions referenced in \anref{an:vectorCalc}.
+\par
+Before switching to the main content of this section, it is worth discussing some of the physical implications of the results presented at the end. One of the primary results shows that in the neighbourhood of some ground point, chosen for SAR processing, the multi-channel singal reconstruction algorithms can be considered independent of the range wavenumber, $\kr$\footnote{This independence does not include potential implementation of a frequency domain implementation of a fast-time delay}. Signals from the multiple channels can be combined into a single response, equivalent to what one would have expected from a single adequately-sampled SAR, without regard to a varying $\kr$. This simplifies the multi-channel signal processing. Note that after multi-channel signal processing, the produced signal still needs to be SAR processed, and this SAR processing does depend on $\kr$. 
+\par
+Assume that the point around which we wish to SAR process the signals is given by $\targetrangez, \targetxparmz, \targetdepressionz$. Our objective is to expand the signals around this point with the demonstrated assumption that over a neighbourhood of significant size, the expansion is accurate enough for SAR processing.
+\par
+The quantities $\uRangeVectorParm\cdot\vct{T}(\parm)$, $\uRangeVectorParm\cdot\vct{N}(\parm)$ and $\uRangeVectorParm\cdot\vct{B}(\parm)$ all appear in the antenna pattern arguments, both in the phase component through
+\begin{equation}
+ \eex{-\im\kr\uRangeVectorParm\cdot\pAntennaParm{\channelIndex}}
+\end{equation}
+since
+\begin{equation}
+ \uRangeVectorParm\cdot\pAntennaParm{\channelIndex} = \alongtrack\uRangeVectorParm\cdot\vct{T}(\parm) + \acrosstrack\cdot\begin{bmatrix}\uRangeVectorParm\cdot\vct{N}(\parm)\\\uRangeVectorParm\cdot\vct{B}(\parm)\end{bmatrix},
+\end{equation}
+and in the antenna gain component through
+\begin{equation}
+\begin{split}
+ \dPattern{\channelIndex}&[\kr, \uRangeVectorParm] =\\ &\dazPattern{\channelIndex}[\kr, \uRangeVectorParm\cdot\vct{T}(\parm)] \ \delPattern{\channelIndex}[\kr, \uRangeVectorParm\cdot\vct{N}(\parm), \uRangeVectorParm\cdot\vct{B}(\parm)].
+ \end{split}
+\end{equation}
+According to \eqref{eq:stationaryphasedefinition}, these all need to evaluated at the stationary point $\stationaryparm$. We have already seen from equation \eqref{eq:kparmangle} that
+\begin{equation}
+ \vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) = -\kparm/\kr
+\end{equation}
+\Anref{an:Angles} further calculates that
+\begin{align}
+ \vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm) &\approx \cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)\\
+ \vhat{\range}(\stationaryparm)\cdot\vct{B}(\stationaryparm) &\approx \sin\targetdepressionz - \frac{\targetrange}{\targetrangez}\cos\targetdepressionz\sin(\targetdepression-\targetdepressionz)
+\end{align}
+Which leads the following
+\begin{equation}
+ \begin{split}
+  &\alongtrack\kr\vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) + \kr\acrosstrack\cdot\begin{bmatrix}\vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm)\\ \vhat{\range}(\stationaryparm)\cdot\vct{B}(\stationaryparm)\end{bmatrix}\\
+  &=-\alongtrack\kparm+\kr\acrosstrack\cdot\uRangeVectorParmZero+\kr\targetrange\frac{\acrosstrack\cdot\uRangeVectorParmZeroPerp}{\targetrangez}\sin(\targetdepression-\targetdepressionz)
+ \end{split}
+\end{equation}
+The above shows that even in the case of an across-track baseline, it is the component of this baseline in the look direction (the second term, $\kr\acrosstrack\cdot\uRangeVectorParmZero$) that has most effect on the multi-channel phase. This physically makes sense as the ranges to the targets on the ground do not change significantly with across-track baselines in the cross-look-direction. The expression further shows that a compenstation for the look-direction component of the across-track baseline can be computed and applied in the neighbourhood of the selected expansion point. This correction should be applied before any azimuth processing so as to eliminate the majority of effects stemming from an across-track baseline.
+\subsection{The 2-D wavenumber signal}
+Assuming that the across-track compensation has been applied, i.e. that the signal has been multiplied by 
+\begin{equation}
+ H_{al} = \eex{\im\kr\acrosstrack\cdot\uRangeVectorParmZero},
+\end{equation}
+and that the component in the cross-look direction,
+\begin{equation}
+ H_{cl} = \eex{-\im\kr\targetrange\frac{\acrosstrack\cdot\uRangeVectorParmZeroPerp}{\targetrangez}\sin(\targetdepression-\targetdepressionz)} \rightarrow 1,
+\end{equation}
+the expression for the signal in $k$-space is given by
+% \begin{center}
+% \fbox{
+% \begin{minipage}{1.0\textwidth}
+% \begin{equation}
+% \begin{split}
+%  &\SkSf{\channelIndex}(\kr,\kparm)=\Snvelope(\krc)\eex{-\im\alongtrack\kparm}\\
+%  &\int\frac{\reflectivity(\targetnoparm)\dPattern{\channelIndex}[\kr, -\kparm/\kr, \cos\targetdepression, \sin\targetdepression]}{\amplitude\range^2(\stationaryparm[\kr,\kparm])}\eex{-\im\kr\amplitude\range(\stationaryparm[\kr,\kparm])}\d\targetnoparm.
+%  \end{split}
+%  \label{eq:sparmft2}
+% \end{equation}
+% \end{minipage}
+% }
+% \end{center}
+% With a factorable antenna gain pattern
+\begin{equation}
+\begin{split}
+ \SkSk{\channelIndex}(\kr,\kparm)=\eex{-\im\kr\rangeErrorZero(\stationaryparm[\kr,\kparm])}\eex{\im\alongtrack\kparm}\dazPattern{\channelIndex}[\kr, -\kparm/\kr]\vkern_\channelIndex(\kr, \kparm)
+ \end{split}
+ \label{eq:sparmft2}
+\end{equation}
+where
+\begin{equation}
+\vkern_\channelIndex(\kr, \kparm) = \sqrt{2\pi\im}\Snvelope(\krc)\int\frac{\reflectivity(\targetnoparm)\delPattern{\channelIndex}[\kr, \cos\targetdepression, \sin\targetdepression]}{\sqrt{\ddot\Phi(\stationaryparm)}\amplitude\range^2(\stationaryparm[\kr,\kparm])}\eex{\im\Phi(\stationaryparm[\kr,\kparm])}\d\targetnoparm
+\end{equation}
+and $\Phi(\stationaryparm[\kr,\kparm])$ is as given in \eqref{eq:newStolz}.
+\par
+In the case that the elevation component of the gain pattern is constant across all channels, the above simplifies to
+\begin{center}
+\fbox{
+\begin{minipage}{1.0\textwidth}
+\begin{equation}
+\begin{split}
+ \SkSk{\channelIndex}(\kr,\kparm)=\eex{-\im\kr\rangeErrorZero(\stationaryparm[\kr,\kparm])}\eex{\im\alongtrack\kparm}\dazPattern{\channelIndex}[\kr, -\kparm/\kr]\vkern(\kr, \kparm)
+ \end{split}
+ \label{eq:sparmft3}
+\end{equation}
+where
+\begin{equation}
+\vkern(\kr, \kparm) = \Snvelope(\krc)\int\frac{\dconstelPattern[\kr, \cos\targetdepression, \sin\targetdepression]}{\amplitude\range^2}\reflectivity(\targetnoparm)\eex{\im\Phi(\stationaryparm[\kr,\kparm])}\d\targetnoparm
+\label{eq:vkern}
+\end{equation}
+\end{minipage}
+}
+\end{center}
+In the above, $\sqrt{\ddot\Phi(\stationaryparm)}$ and $\sqrt{2\pi\im}$ have been omitted because the first only varies slowly over the parameters while the second is a constant. Also $\amplitude\range^2(\stationaryparm[\kr,\kparm])$ is approximated with $\amplitude\range^2$. With the signal as written, one sees that the elevation gain pattern and the inverse range relationship simply modulate the reflectivity (through the radar equation) according to the geometry.
+\subsection{Modified Stolz interpolation}
+\label{sc:modifiedStolz}
+If the signal has been sampled adequately and is evaluated a a set of different points given by
+\begin{equation}
+\begin{split}
+ \krstolt &= \kr\sec\thetas - \kparm\frac{\tan\thetas}{\gfunc[\myparm(\xang)]} = \stolt(\kr,\kparm)\\
+ \kparm &= \kparm
+\end{split},
+\end{equation}
+then
+\begin{equation}
+ \eex{\im\Phi(\stationaryparm[\krstolt = \stolt(\kr;\kparm),\kparm])} = \eex{-\im\range\krstolt}\eex{ -\im\targetxparm\kparm}
+\end{equation}
+and
+\begin{equation}
+\begin{split}
+ \vkern&[\krstolt = \stolt(\kr;\kparm),\kparm] = \\&\Snvelope(\krc)\int\frac{\dconstelPattern[\stolt^{-1}(\krstolt;\kparm), \cos\targetdepression, \sin\targetdepression]}{\amplitude\range^2}\reflectivity(\targetnoparm)\eex{-\im\range\krstolt}\eex{ -\im\targetxparm\kparm}\d\targetnoparm
+ \end{split}
+\end{equation}
+This formulation illustrates that the measured 2-D wavenumber representation, evaluated at the transformed points, is a modulated Fourier Transform of the reflectivity. Although the reflectivity is expressed in terms of $\targetnoparm$, it can be transformed into reflectivity as a function of $\range, \targetxparm$ and $\targetdepression$. The integration means that two points with common $\range$ and $\targetxparm$ but different values for $\targetdepression$ end up superimposed.
+\par
+% \begin{equation}
+% \begin{split}
+%  \frac{\SkSk{\channelIndex}[\krstolt = \stolt(\kr;\kparm),\kparm]\eex{\im\kr\rangeErrorZero(\stationaryparm[\kr,\kparm])}\eex{-\im\alongtrack\kparm}}{\Snvelope(\krc)\dazPattern{\channelIndex}[\kr, -\kparm/\kr]}= \\\int\frac{\dconstelPattern[\stolt^{-1}(\krstolt;\kparm), \cos\targetdepression, \sin\targetdepression]}{\amplitude\range^2}\reflectivity(\targetnoparm)\eex{-\im\range\krstolt}\eex{ -\im\targetxparm\kparm}\d\targetnoparm
+%  \end{split}
+% \end{equation}
+% \par
+An adequately-sampled SAR signal, with the modified Stolz interpolation scheme outlined in this section, can be processed with the well-known Wavenumber processing algorithms of, for instance, \cite{Bamler1992, Cumming2003, Cafforio1991a}.
+\par
+The proposed numerical Stolz interpolation can be challenging to implement. For this reason, \anref{an:stolz} outlines the particular implementation of the numerical approach adopted in this work. 
+\par
+We have repeatedly stated that the above approach only works if the signal has been adequately sampled. In the case of a multichannel configuration where the channels are deliberately undersampled, an unambiguous signal must first be reconstructed; only then can the Wavenumber processing algorithm be implemented. Reconstruction of such a signal from undersampled channels is the task of \scref{sc:hrws}.

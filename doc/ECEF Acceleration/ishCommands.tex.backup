@@ -1,0 +1,194 @@
+\newcommand{\vct}[1]{\ensuremath{\mathbf{#1}}}                                                    
+\newcommand{\mtx}[1]{\ensuremath{\mathbf{\uppercase{#1}}}}                                   
+\newcommand{\htr}[1]{\ensuremath{#1^\dagger}}
+\newcommand{\dtm}[1]{\ensuremath{\lvert #1\rvert}}   
+\newcommand{\im}{\ensuremath{i}}
+\newcommand{\vhat}[1]{\ensuremath{\hat{\mathbf{#1}}}}
+
+%\newcommand{\vre}{\ensuremath{v_{\vct{\xi}}}}
+
+% Section, figure, table and equation references
+\renewcommand{\eqref}[1]{(\ref{#1})}                                                    % equation reference
+\newcommand{\Eqref}[1]{{Equation (\ref{#1})}}                                                      % Equation reference
+\newcommand{\fgref}[1]{{Figure \ref{#1}}}                                                        % figure reference
+\newcommand{\Fgref}[1]{{Figure \ref{#1}}}                                                        % Figure reference
+\newcommand{\tbref}[1]{Table \ref{#1}}                                                               % table reference
+\newcommand{\Tbref}[1]{Table \ref{#1}}                                                               % Table reference
+\newcommand{\cpref}[1]{Chapter \ref{#1}}                                                             % chapter reference
+\newcommand{\Cpref}[1]{Chapter \ref{#1}}                                                             % Chapter reference
+\newcommand{\anref}[1]{{Appendix \ref{#1}}}                                                      % appendix reference
+\newcommand{\Anref}[1]{{Appendix \ref{#1}}}                                                      % Appendix reference
+\newcommand{\scref}[1]{{Section \ref{#1}}}                                                       % section reference
+\newcommand{\Scref}[1]{{Section \ref{#1}}}                                                       % Section reference
+\newcommand{\lmref}[1]{{Lemma \ref{#1}}}                                                       % lemma reference
+\newcommand{\Lmref}[1]{{Lemma \ref{#1}}}                                                       % lemma reference
+
+% Expected value
+\newcommand{\expct}[1]{\ensuremath{\mathcal{E}\{#1\}}}                                          
+\newcommand{\Expct}[1]{\ensuremath{\mathcal{E}\biggl\{#1\biggr\}}}  
+\newcommand{\eex}[1]{\ensuremath{e^{#1}}}                                     
+\newcommand{\ex}[1]{\ensuremath{\exp(#1)}}
+\newcommand{\Ex}[1]{\ensuremath{\exp\biggl(#1\biggr)}}
+
+\newcommand{\fdc}{\ensuremath{f_{\parm_{dc}}}}
+\newcommand{\mtxIdentity}{\ensuremath{\mtx{I}}}
+
+\newcommand{\pulse}{\ensuremath{z}}
+\newcommand{\envelope}{\ensuremath{p}}
+\newcommand{\Envelope}{\ensuremath{P}}
+\newcommand{\Snvelope}{\ensuremath{\mathscr{P}}}
+\newcommand{\snvelope}{\ensuremath{\text{p}}}
+\newcommand{\range}{\ensuremath{r}}
+\newcommand{\velocity}{\ensuremath{v}}
+\newcommand{\acceleration}{\ensuremath{a}}
+\newcommand{\sat}{\ensuremath{\mathfrak{s}}}
+\newcommand{\target}{\ensuremath{\mathfrak{p_s}}}
+\renewcommand{\d}{\ensuremath{\text{d}}}
+\newcommand{\parm}{\ensuremath{\xi}}
+\newcommand{\fasttime}{\ensuremath{\tau}}
+\newcommand{\satparm}{\ensuremath{\vct\sat(\parm)}}
+\newcommand{\targetnoparm}{\ensuremath{\vct\target}}
+\newcommand{\uSatVelocity}[1]{\ensuremath{\vhat\velocity_s(#1)}}
+\newcommand{\huSatVelocity}[1]{\ensuremath{\htr{\vhat\velocity}_s(#1)}}
+\newcommand{\satVelocity}[1]{\ensuremath{\vct\velocity_s(#1)}}
+\newcommand{\vtarget}{\ensuremath{\vct\velocity_\target}}
+\newcommand{\hsatVelocity}[1]{\ensuremath{\htr{\vct\velocity}_s(#1)}}
+
+\newcommand{\targetVelocity}[1]{\ensuremath{\vct\velocity^\stationarySymbol_t(#1)}}
+\newcommand{\rangeVectorParm}{\ensuremath{\vct{\range}(\parm)}}
+\newcommand{\rangeVector}[1]{\ensuremath{\vct\range(#1)}}
+\newcommand{\hrangeVector}[1]{\ensuremath{\htr{\vct\range}(#1)}}
+\newcommand{\uRangeVectorParm}{\ensuremath{\vhat{\range}(\parm)}}
+\newcommand{\huRangeVectorParm}{\ensuremath{\htr{\vhat{\range}}(\parm)}}
+\newcommand{\RangeVector}[1]{\ensuremath{\vct\range(#1)}}
+\newcommand{\hRangeVector}[1]{\ensuremath{\htr{\vct\range}(#1)}}
+
+\newcommand{\uRangeVector}[1]{\ensuremath{\vhat{\range}(#1)}}
+\newcommand{\uRangeVectorl}[2]{\ensuremath{\vhat{\range}_{#1}(#2)}}
+\newcommand{\huRangeVector}[1]{\ensuremath{\htr{\vhat{\range}}(#1)}}
+\newcommand{\huRangeVectorl}[2]{\ensuremath{\htr{\vhat{\range}_{#1}}(#2)}}
+\newcommand{\antennaPosition}[1]{\ensuremath{\vct{p}_{#1}}}
+\newcommand{\pAntennaParm}[1]{\ensuremath{\vct{p}_{#1}(\parm)}}
+\newcommand{\pAntennaParms}[1]{\ensuremath{\vct{p}_{#1}(\parm_s)}}
+\newcommand{\pAntenna}[2]{\ensuremath{\vct{p}_{#1}(#2)}}
+\newcommand{\xAntennaNoParm}[1]{\ensuremath{\vct{p}_{#1}}}
+\newcommand{\xAntenna}[2]{\ensuremath{\xAntennaNoParm{#1}(#2)}}
+\newcommand{\kr}{\ensuremath{k_r}}
+\newcommand{\krn}{\ensuremath{k_{r'}}}
+\newcommand{\krstolt}{\ensuremath{k_{s}}}
+\newcommand{\krc}{\ensuremath{\krn}}
+\newcommand{\krnaught}{\ensuremath{k_{r_0}}}
+\renewcommand{\r}{\ensuremath{r_0}}
+\newcommand{\xparm}{\ensuremath{\chi}}
+\newcommand{\kparm}{\ensuremath{k_{\xparm}}}
+\newcommand{\kparmPRF}{\ensuremath{k_{\xparm_p}}}
+
+% Signal in different domains
+\newcommand{\ztzt}[1]{\ensuremath{zz_{#1}}}
+\newcommand{\stst}[1]{\ensuremath{ss_{#1}}}
+\newcommand{\ntnt}[1]{\ensuremath{\nu\nu_{#1}}}
+\newcommand{\Sfst}[1]{\ensuremath{Ss_{#1}}}
+\newcommand{\SfSf}[1]{\ensuremath{SS_{#1}}}
+\newcommand{\Skst}[1]{\ensuremath{\mathscr{S}s_{#1}}}
+\newcommand{\SkSf}[1]{\ensuremath{\mathscr{S}S_{#1}}}
+\newcommand{\SkSk}[1]{\ensuremath{\mathscr{S}\mathscr{S}_{#1}}}
+\newcommand{\srSk}[1]{\ensuremath{s\mathscr{S}_{#1}}}
+\newcommand{\SkSkM}{\ensuremath{\mtx{S}}}
+\newcommand{\ststV}{\ensuremath{\boldsymbol{s}\boldsymbol{s}}}
+\newcommand{\SfstV}{\ensuremath{\boldsymbol{S}\boldsymbol{s}}}
+\newcommand{\SkstV}{\ensuremath{\boldsymbol{\mathscr{S}}\boldsymbol{s}}}
+\newcommand{\SkSkV}{\ensuremath{\vct{s}}}
+\newcommand{\SkSfV}{\ensuremath{\boldsymbol{\mathscr{S}}\boldsymbol{S}}}
+\newcommand{\ZkZkM}{\ensuremath{\vct{z}}}
+\newcommand{\SkSkR}{\ensuremath{\mathscr{S}\mathscr{S}_{R}}}
+\newcommand{\ZkZkR}{\ensuremath{\mathscr{Z}\mathscr{Z}_{R}}}
+\newcommand{\NkNkM}{\ensuremath{\vct{n}}}
+\newcommand{\NkNkMP}{\ensuremath{\boldsymbol{\nu}}}
+
+\newcommand{\fparm}{\ensuremath{f_\parm}}
+\newcommand{\fparmPRF}{\ensuremath{f_{\parm_p}}}
+\newcommand{\rangepos}{\ensuremath{\vct\range}_0}
+\newcommand{\uRangepos}{\ensuremath{\vhat{\range}}_0}
+\newcommand{\rangevel}{\ensuremath{{\vct{\velocity}}}_0}
+\newcommand{\uRangevel}{\ensuremath{{\vhat{\velocity}}}_0}
+\newcommand{\rangeacc}{\ensuremath{{\vct{\acceleration}}}_0}
+\newcommand{\channelIndex}{\ensuremath{n}}
+\newcommand{\pattern}[1]{\ensuremath{\text{A}_{#1}}}
+\newcommand{\dPattern}[1]{\ensuremath{\text{D}_{#1}}}
+\newcommand{\edPattern}[1]{\ensuremath{\text{E}_{#1}}}
+\newcommand{\elementPattern}[1]{\ensuremath{\text{E}_{#1}}}
+\newcommand{\magVec}[1]{\ensuremath{\lvert#1\rvert}}
+\newcommand{\amplitude}[1]{\ensuremath{\mathnormal{#1}}}
+\newcommand{\Tx}[1]{\ensuremath{\vct\target\text{\footnotesize{x}}_{#1}}}
+\newcommand{\Rx}[1]{\ensuremath{\vct\range\text{\footnotesize{x}}_{#1}}}
+\newcommand{\costFunction}[1]{\ensuremath{J}_{#1}}
+\newcommand{\eVec}[1]{\ensuremath{\vct{e}_{#1}}}
+\newcommand{\heVec}[1]{\ensuremath{\htr{\vct{e}}_{#1}}}
+\newcommand{\ebVec}[1]{\ensuremath{\vct{b}_{#1}}}
+\newcommand{\hbVec}[1]{\ensuremath{\htr{\vct{b}}_{#1}}}
+\newcommand{\cost}{\ensuremath{\varrho}}
+\newcommand{\kvec}{\ensuremath{\vct{k}}}
+\newcommand{\kveczero}{\ensuremath{\kr, \kparm}}
+\newcommand{\kvecl}{\ensuremath{\kr, \kparm + l\kparmPRF}}
+\newcommand{\kargs}{\ensuremath{\kr,\kparm, \depression}}
+\newcommand{\hkvec}{\ensuremath{\htr{\vct{k}}}}
+\newcommand{\effrelvel}{\ensuremath{\velocity_e}}
+\newcommand{\vsat}{\ensuremath{\velocity_\sat}}
+\newcommand{\transmitSet}[1]{\ensuremath{\mathcal{T}_{#1}}}
+\newcommand{\arrayVector}{\ensuremath{\vct{e}}}
+\newcommand{\transmitVector}[1]{\ensuremath{\vct{T}_{x_{#1}}}}
+\newcommand{\htransmitVector}[1]{\ensuremath{\htr{\vct{T}}_{x_{#1}}}}
+\newcommand{\receiveVector}[1]{\ensuremath{\vct{R}_{x_{#1}}}}
+\newcommand{\hreceiveVector}[1]{\ensuremath{\htr{\vct{R}}_{x_{#1}}}}
+\newcommand{\receiveSet}[1]{\ensuremath{\mathcal{R}_{#1}}}
+\newcommand{\spacing}{\ensuremath{d}}
+\newcommand{\nadAngle}{\ensuremath{\phi_0}}
+\newcommand{\numberChannels}{\ensuremath{N_c}}
+\newcommand{\uX}[1]{\ensuremath{\vct{\hat{x}}(#1)}}
+\newcommand{\uY}[1]{\ensuremath{\vct{\hat{y}}(#1)}}
+\newcommand{\uZ}[1]{\ensuremath{\vct{\hat{z}}(#1)}}
+
+\newcommand{\targetx}{\ensuremath{x}}
+\newcommand{\targety}{\ensuremath{y}}
+\newcommand{\targetz}{\ensuremath{z}}
+\newcommand{\squint}{\ensuremath{\theta_s}}
+
+\newcommand{\re}{\ensuremath{r_e}}
+\newcommand{\rs}{\ensuremath{r_s}}
+\newcommand{\rxz}{\ensuremath{r_{xz}}}
+\newcommand{\rxy}{\ensuremath{r_{xy}}}
+\newcommand{\rzy}{\ensuremath{r_z}}
+\newcommand{\omegas}{\ensuremath{\omega_s}}
+\newcommand{\satECEFangular}{\ensuremath{\boldsymbol\omega}_s}
+\newcommand{\angular}{\ensuremath{\hat{\boldsymbol\omega}_s}}
+\newcommand{\depression}{\ensuremath{\phi}}
+\newcommand{\targetdepression}{\ensuremath{\depression}}
+\newcommand{\targetomega}{\ensuremath{\omegas\parm_0}}
+\newcommand{\targetrange}{\ensuremath{\range}}
+\newcommand{\targetxparm}{\ensuremath{\xparm_t}}
+\newcommand{\targetrangez}{\ensuremath{\range_0}}
+\newcommand{\targetxparmz}{\ensuremath{\xparm_{t_0}}}
+\newcommand{\targetdepressionz}{\ensuremath{\depression_{0}}}
+\newcommand{\omegat}{\ensuremath{\omega_t}}
+\newcommand{\thetat}{\ensuremath{\Theta_0}}
+\newcommand{\thetas}{\ensuremath{\Theta_s}}
+
+\newcommand{\antennaVector}{\ensuremath{\vct{a}}}
+\newcommand{\antennaMatrix}{\ensuremath{\mtx{H}}}
+\newcommand{\antennaPhaseMatrix}{\ensuremath{\mtx{P}}}
+\newcommand{\diagAntennaMatrix}{\ensuremath{\mtx{D}}}
+\newcommand{\hrwsFilterMatrix}{\ensuremath{\mtx{B}}}
+
+\newcommand{\dthetas}{\ensuremath{\dot\Theta_s}}
+\newcommand{\gweight}[1]{\ensuremath{D_{#1}}}
+\newcommand{\hgweight}[1]{\ensuremath{\averageAntenna^*_{#1}}}
+\newcommand{\reflectivity}{\ensuremath{g}}
+\newcommand{\vkern}{\ensuremath{v}}
+\newcommand{\vkernvect}{\ensuremath{\vct{\vkern}}}
+\newcommand{\alphaSymbol}{\ensuremath{\alpha}}
+\newcommand{\betaSymbol}{\ensuremath{\beta}}
+\newcommand{\gammaSymbol}{\ensuremath{\gamma}}
+\newcommand{\alphaComponent}[1]{\ensuremath{\alphaSymbol_{#1}}}
+\newcommand{\betaComponent}[1]{\ensuremath{\betaSymbol_{#1}}}
+\newcommand{\gammaComponent}[1]{\ensuremath{\gammaSymbol_{#1}}}
+\newcommand\Index[1]{#1\index{#1}}

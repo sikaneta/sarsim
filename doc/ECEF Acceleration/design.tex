@@ -1,0 +1,88 @@
+\section{Multi-channel design and configuration}
+Instead of beam spoiling or spotlighting, this letter proposes an operating configuration that time-multiplexes a sequence of beams using an $M+1$ multichannel design, as illustrated in \ref{fg:fivechan} (with a five-channel system). This design can be realised with a phased-array that has the ability to change transmit and receive beam tables on a pulse by pulse basis \cite{CalabreseDiego2014, SikanetaGierullTGRS2015}. Additionally, $M+1$ digitizers and a switching mechanism to route and combine the measurements from each phased-array element (i.e. form subarrays) are required to realise this multichannel system. Although in this letter we shall consider a general $M+1$ channel system, we shall occasionally choose specific values of $M$ for illustrative purposes. The proposed system is also a uniform antenna array.
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{1.0\columnwidth}{!}{\input{fivechan.pdf_tex}}
+ \caption{Five channel schematic for design. Circles denote the phase-centre location while the angle denotes the direction of the transmit and receive beams.}
+ \label{fg:fivechan}
+ \end{center}
+\end{figure}
+\par
+As can be seen from the figure, if viewed vertically, at each sampling point, the system is configured to make $5$ measurements with $5$ different antenna patterns. If each of these antenna patterns has a beamwidth given by $\threeDB/(M+1)$, then at each sampling point, the system scans over a total azimuth beamwidth of $\threeDB$. The reduced beamwidth at each sampling instant corresponds to a reduced required PRF for each channel according to
+\begin{equation}
+ \prfEffective \geq \aziBW/(M+1).
+\end{equation}
+\subsection{System design size}
+Consider the requirement for an azimuth resolution of $\resxDesired$. From fundamental SAR theory, for a classical stripmap mode, this corresponds to an antenna length given by
+\begin{equation}
+ \antennaLengthDesired = 2\resxDesired,
+\end{equation}
+which, in turn, corresponds to a required azimuth beamwidth of
+\begin{equation}
+ \threeDBDesired = \frac{\wavelength}{2\resxDesired}.
+\end{equation}
+If this desired beamwidth is divided into $M+1$ parts of width
+\begin{equation}
+ \threeDBEffective = \frac{\threeDBDesired}{M+1}=\frac{\wavelength}{2(M+1)\resxDesired},
+\end{equation}
+then each channel requires an antenna of length
+\begin{equation}
+ \antennaLengthEffective = 2(M+1)\resxDesired.
+\end{equation}
+The required PRF is given by
+\begin{equation}
+ \prfEffective = \frac{2\satv}{\wavelength}\threeDBEffective = \frac{2\satv}{\antennaLengthEffective} = \frac{\satv}{(M+1)\resxDesired},
+ \label{eq:requiredPRF}
+\end{equation}
+which corresponds to a required two-way phase-centre separation of
+\begin{equation}
+ \phaseSep = (M+1)\resxDesired.
+\end{equation}
+Now, with a transmit antenna of length $\antennaLengthEffective = 2(M+1)\resxDesired$ and a receive antenna of the same length, the effective phase centre positions are given by  multiples of $\phaseSep = (M+1)\resxDesired$. The total antenna length, as illustrated in figure \ref{fg:antennaLenghts}, will be given by
+\begin{equation}
+ \antennaLength = (M+1)\antennaLengthEffective = 2(M+1)^2\resxDesired.
+\end{equation}
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{0.8\columnwidth}{!}{\input{antennaLengths.pdf_tex}}
+ \caption{Antenna Lengths to achieve desired resolution for an example 11 channel system for a desired resolution of $\resxDesired$.}
+ \label{fg:antennaLenghts}
+ \end{center}
+\end{figure}
+Let us examine what this means for a specific case of $\resxDesired = 0.1$. As listed in table \ref{tb:Simulation}, a traditional stripmap SAR would have to be $0.2$ m in azimuth length to achieve this resolution. Additionally the required PRF would be $\prf = 75$ KHz for a satellite travelling at 7500 m/s which corresponds to a rather limited swath. On the other hand, with $M=10$, the required PRF is $\prfEffective = 6.818$ KHz which corresponds to a range-swath width of approximately 22 Km (minus any time needed for chirp transmission) which would be even larger in ground range.
+\par
+The choice of $\resxDesired=0.1, M=10$ leads to an antenna of length $24.2$ m with each subaperture having a length of $2.2$ m. This antenna length of $24.2$ m is only about $60$\% longer than RADARSAT-2.
+\begin{table}[h!]
+\begin{center}
+\caption{System parameters for $\resxDesired=0.1 \text{m}$ and $\satv=7500 \text{m/s}$.}
+\label{tb:Simulation}
+ \begin{tabular}{r|c|c|c|c}\\\hline
+  {\bf $M$} & {\bf $\antennaLengthEffective$ m} & {\bf $\antennaLength$ m} & {\bf $\prfEffective$ Hz} & {\bf Swath (slant-range Km)}\\\hline 
+0 & 0.20 & 0.20 & 75000 & 2.00\\\hline
+2 & 0.60 & 1.80 & 25000 & 6.00\\\hline
+4 & 1.00 & 5.00 & 15000 & 10.00\\\hline
+6 & 1.40 & 9.80 & 10710 & 14.00\\\hline
+8 & 1.80 & 16.20 & 8330 & 18.00\\\hline
+{\bf 10} & {\bf 2.20} & {\bf 24.20} & {\bf 6810} & {\bf 22.00}\\\hline
+12 & 2.60 & 33.80 & 5760 & 26.00\\\hline
+14 & 3.00 & 45.00 & 5000 & 30.00\\\hline
+ \end{tabular}
+ \end{center}
+\end{table}
+\subsection{Traditional HRWS configuration and design}
+It is useful to examine the implication of utilising a traditional HRWS configuration that does not use a sequence of beams as proposed in this paper. With this design, $M+1$ channels transmit a wide beam that covers the desired range of angles corresponding to the desired resolution; see \fgref{fg:equivHRWS}. The spatial distribution of two-way phase-centres at each pulse again compensates for a lower PRF according to \eqref{eq:requiredPRF} \cite{GebertPHD}.
+\par
+To satisfy the spatial sampling requirement, the two-way phase-centre separation must be the same as with the proposed multi-beam design. This means that the receive antenna elements must be spaced by $2\resxDesired$, giving a total receive antenna length of $2(M=1)\resxDesired$ which is $(M+1)$ times shorter than the length proposed by the multi-beam design. This means that, on a pulse-by-pulse basis, the total receive area to capture reflected flux is reduced by a factor of $M+1$ resulting in a corresponding loss in SNR. For this reason, the multi-beam design is recommended.
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{1.0\columnwidth}{!}{\input{equivalentHRWS.pdf_tex}}
+ \caption{Equivalent HRWS system.}
+ \label{fg:equivHRWS}
+ \end{center}
+\end{figure}
+\section{Transmit antenna}
+Although the proposed design consists of $M+1$ subapertures, the requirements on the width of the transmit beam prevent transmission from the entire antenna. Transmission from the entire antenna would lead to a beam that is too narrow. Rather than route a finite power supply evenly across the entire antenna, one could instead supply the entirety of the available power only to the centre subaperture for transmission. Alternatively, one could transmit from the entire antenna, but with a spoiled pattern.
+\par
+One advantage to the first approach is that only the centre subaperture requires the ability to transmit (as illustrated in figure \ref{fg:antennaLenghts}), while the other subapertures can simply be passive receivers. Of course, if the system is to be used for other purposes, then it may not be desirable to limit transmit capability only to the centre subaperture.
+\par
+Note that one can easily narrow the two-way beam by transmitting from a larger number of T/R modules. This may be desirable if the user wishes for the data to be sampled above the Nyquist rate.

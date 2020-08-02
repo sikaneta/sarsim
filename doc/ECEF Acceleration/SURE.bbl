@@ -1,0 +1,59 @@
+\begin{thebibliography}{1}
+
+\bibitem{Brautigam2010}
+B.~Brautigam, P.~Rizzoli, C.~Gonzalez, M.~Weigt, D.~Schrank, D.~Schulze, and
+  M.~Schwerdt.
+\newblock {SAR performance monitoring for TerraSAR-X mission}.
+\newblock In {\em {Geoscience and Remote Sensing Symposium (IGARSS), 2010 IEEE
+  International}}, pages 3454--3457, 2010.
+
+\bibitem{CalabreseDiego2014}
+Diego Calabrese.
+\newblock {DIscrete Stepped Strip (DI2S)}.
+\newblock In {\em {EUSAR 2014; 10th European Conference on Synthetic Aperture
+  Radar; Proceedings of}}, pages 1--4, June 2014.
+
+\bibitem{Cumming2005}
+I.~G. Cumming and F.~H. Wong.
+\newblock {\em {Digital Processing of Synthetic Aperture Radar Data: Algorithms
+  and Implementation}}.
+\newblock Artech House Remote Sensing Library, Norwood, MA, 2005.
+
+\bibitem{Fox2004}
+Peter~A Fox, Anthony~P Luscombe, and Alan~A Thompson.
+\newblock {{RADARSAT-2 {SAR}} modes development and utilization}.
+\newblock {\em Canadian journal of remote sensing}, 30(3):258--264, 2004.
+
+\bibitem{GebertPHD}
+N.~Gebert.
+\newblock {\em {Multi-Channel Azimuth Processing for High-Resolution Wide-Swath
+  SAR Imaging}}.
+\newblock PhD thesis, University of Karlsruhe, 2009.
+
+\bibitem{Mittermayer}
+J.~Mittermayer, S.~Wollstadt, P.~Prats-Iraola, and R.~Scheiber.
+\newblock The terrasar-x staring spotlight mode concept.
+\newblock {\em IEEE Transactions on Geoscience and Remote Sensing},
+  52(6):3695--3706, June 2014.
+
+\bibitem{Porfilio2016}
+M.~Porfilio, S.~Serva, C.~A.~M. Fiorentino, and D.~Calabrese.
+\newblock The acquisition modes of cosmo-skymed di seconda generazione: A new
+  combined approach based on sar and platform agility.
+\newblock In {\em 2016 IEEE International Geoscience and Remote Sensing
+  Symposium (IGARSS)}, pages 2082--2085, July 2016.
+
+\bibitem{SikanetaGierullTGRS2015}
+I.~Sikaneta and C.~Gierull.
+\newblock Phased-array beam-diversity with multiple channels for improved sar
+  imaging.
+\newblock {\em IEEE Journal of Selected Topics in Applied Earth Observations
+  and Remote Sensing}, 8(11):5106--5115, Nov 2015.
+
+\bibitem{NovelRadar}
+I.~C. Sikaneta and D.~Cerutti-Maori.
+\newblock {\em Novel Radar Techniques and Applications}, chapter
+  {High-resolution wide-swath SAR}.
+\newblock SciTech Publishing, Raleigh, 2017.
+
+\end{thebibliography}

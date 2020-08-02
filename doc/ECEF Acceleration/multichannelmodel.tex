@@ -1,0 +1,30 @@
+\section{Notation}
+\label{sc:notation}
+This document describes the SAR collection geometry with two primary variables: these are the range, $\range$, which represents the across-track or \Index{fast-time} dimension ($\fasttime = 2\range/c$) and $\xparm$ which defines arclength in the along-track dimension. The choice arclength, $\xparm$, instead of the traditional slow-time variable, $t$ will be explained in the section describing the satellite geometry model. Moreover a transformation from $xparm\rightarrow t$ will be derived. Even though the arclength has been adopted as the along-track parameter, in various places in the document, the PRF is still used to describe the measurement system, particularly when relating the amount of time in between pulses to the achievable swath width.
+\par
+We adopt a two-symbol notation for the measured scalar signal, see \tbref{tb:notation}; the first symbol corresponds to the domain of the $\range$ variable while the second indicates the domain of the $\xparm$ variable. For aesthetic reasons, we represent the measured vector and matrix signals using a single symbol; vectors, with lowercase bold, $\SkSkV(\kr,\kparm)$, and matrices, with uppercase bold, $\SkSkM(\kr,\kparm)$.
+\begin{table}[b!]
+\begin{center}
+\begin{tabular}{l|l|l}
+ & {\bf Range} & {\bf Azimuth}\\\hline
+ $\stst{\channelIndex}(\fasttime, \parm)$ & fast-time (s) & arclength (m)\\\hline
+ $\Sfst{\channelIndex}(\omega, \parm)$ & angular-frequency (rad/s) & arclength (m)\\\hline
+ $\Skst{\channelIndex}(\kr, \parm)$ & wavenumber (rad/m) & arclength (m)\\\hline
+ $\SkSk{\channelIndex}(\kr, \kparm)$ & wavenumber (rad/m) & wavenumber (rad/m)\\\hline
+\end{tabular}
+\caption{Notation for the scalar signal in various domains. The subscript denotes the $\channelIndex^\text{th}$ channel.}
+\label{tb:notation}
+\end{center}
+\end{table}
+Also note that the symbol $\htr{\cdot}$ is used to denote the complex conjugate of a vector which, for a real-valued vector or matrix, reduces to the regular transpose operation. The magnitude of a vector is denoted with italicised text; for instance, $\magVec\rangeVectorParm = \amplitude\range(\parm)$. The summation without specifying limits, $\sum_l$, denotes summation over all $l$ from $-\infty$ to $\infty$. Similarly an integration without limits indicates integration over an infinite domain.
+\par
+Without loss of generality, one may consider the measured signals in the 2-D spatial frequency domain. In this domain, if one has measurements from $N$ (possibly different) two-way antennas, the measured signal may be represented as a vector, $\ZkZkM(\kveczero)$, with each element corresponding to the measurement from each of the different two-way antennas in the presence of additive white Gaussian noise: 
+\begin{equation}
+\begin{split}
+ \ZkZkM(\kveczero) &= \sum_l\begin{bmatrix}\SkSk{1}(\kvecl)\\\SkSk{2}(\kvecl)\\\vdots\\\SkSk{N}(\kvecl)\end{bmatrix} + \NkNkM(\kveczero)\\
+ &= \sum_l\SkSkV(\kvecl) + \NkNkM(\kveczero)
+ \end{split}
+\end{equation}
+where $\NkNkM(\kveczero)$ is additive white noise.
+\par
+In the above, $\kr$ is a wavenumber that corresponds to the fast-time or range dimension related to the frequency of the signal via $\kr=2\omega/c$ where $\omega$ is the radial frequency (in radians per second) of the signal and $c$ is the speed of light. Correspondingly, $\kparm$ is a wavenumber corresponding to the slow-time-related arclength parameter.

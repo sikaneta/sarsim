@@ -1,0 +1,63 @@
+%% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'equivalentHRWS.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{1344.68183427bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.32992832)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{equivalentHRWS.pdf}}%
+    \put(0.8767036,0.32345546){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge Along-track position}}}}%
+    \put(0.00647286,0.00287315){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lb]{\smash{{\Huge Slow time}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{equivalentHRWS.pdf}}%
+    \put(0.08314903,0.1050249){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\frac{1}{\prfEffective}$}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{equivalentHRWS.pdf}}%
+    \put(0.25847556,0.09998937){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\phaseSep$}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{equivalentHRWS.pdf}}%
+    \put(0.2171063,0.17364376){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\threeDBDesired$}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{equivalentHRWS.pdf}}%
+  \end{picture}%
+\endgroup%

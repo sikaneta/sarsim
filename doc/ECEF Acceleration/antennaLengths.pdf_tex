@@ -1,0 +1,64 @@
+%% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'antennaLengths.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{489.73525669bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.50984692)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{antennaLengths.pdf}}%
+    \put(0.46950414,0.20432342){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11602408\unitlength}\raggedright \end{minipage}}}%
+    \put(0.10132125,0.48432816){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge Tx and Rx}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{antennaLengths.pdf}}%
+    \put(0.10286817,0.41161978){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge Rx}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{antennaLengths.pdf}}%
+    \put(0.44629932,0.14405319){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\figL$}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{antennaLengths.pdf}}%
+    \put(0.29933551,0.00637103){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\figWL$}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{antennaLengths.pdf}}%
+    \put(0.5808472,0.36501808){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\figD$}}}}%
+  \end{picture}%
+\endgroup%

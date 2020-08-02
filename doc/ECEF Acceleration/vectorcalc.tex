@@ -1,0 +1,28 @@
+\section{Derivative of unit vectors}
+\label{an:vectorCalc}
+This section provides a summary of well-known vector derivative relations. These relations can be used to tie together many of the mathematical derivations scattered throughout the document.
+\par
+Specifically, the section presents the derivatives of three forms of a parameterized vector with respect to the parameter. These forms include the derivative of the amplitude of the parameterized vector, the derivative of the parameterized unit vector and the derivative of the projection of a given parameterized vector in the direction perpendicular to another vector with the same parameterization.
+\par
+Consider
+\begin{equation}
+ \frac{\d{\lvert\vct{f}\rvert}}{\d{t}} = \uf^T\df
+\end{equation}
+from which one derives
+\begin{equation}
+ \frac{\d{\vct{\hat{f}}}}{\d{t}} = \frac{\d{}}{\d{t}}\frac{\vct{f}}{\lvert\vct{f}\rvert} 
+ = \frac{\dot{\vct{f}} - \vct{\hat{f}}^T\dot{\vct{f}}\hat{\vct{f}}}{\lvert\vct{f}\rvert}
+ = \frac{\dot{\vct{f}} - \hat{\vct{f}}\vct{\hat{f}}^T\dot{\vct{f}}}{\lvert\vct{f}\rvert}
+ = \frac{\mtx{P}_\vct{f}\dot{\vct{f}}}{\lvert\vct{f}\rvert}
+\end{equation}
+where
+\begin{equation}
+ \mtx{P}_\vct{f} = \mtx{I} - \hat{\vct{f}}\vct{\hat{f}}^T
+\end{equation}
+where $\mtx{I}$ is the identity matrix. By inspection, one notes that pre-multiplication of a vector by the matrix $\mtx{P}_\vct{f}$ always yields the component of that vector that is perpendicular to $\vct{f}$.
+\par
+By using the above relations, one calculates the final relation that
+\begin{equation}
+ \frac{\d{}}{\d{t}}\Pf\vct{g} = -\frac{1}{\lvert\vct{f}\rvert}\left[\Pf\df\uf^T + \uf\df^T\Pf\right]\vct{g} + \Pf\dot{\vct{g}}
+\end{equation}
+

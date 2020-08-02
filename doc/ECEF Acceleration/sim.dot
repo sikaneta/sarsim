@@ -1,0 +1,50 @@
+digraph G {
+	ResolutionAz[label="Desired azimuth\nresolution", shape=box];
+	ResolutionRn[label="Desired range\nresolution", shape=box];
+	GenerateConfigFile[align=left, label="Compute:\l  Number channels\l  Number beams\l  Beam tables\l  PRF\lGenerate config file", shape=box];
+	ResolutionAz -> GenerateConfigFile;
+	ResolutionRn -> GenerateConfigFile;
+	GenerateRawSignal[label="Generate\nraw signals", shape=box];
+	GenerateConfigFile -> GenerateRawSignal;
+	subgraph cluster_00 {
+	rankdir=LR
+	//{rank=same; c1b1, c1b2, c1bN}
+	//{rank=same; c2b1, c2b2, c2bN}
+	//{rank=same; cMb1, cMb2, cMbN}
+	subgraph cluster_0 {
+		c1b1[label="Chan 0", shape=cylinder];
+		c2b1[label="Chan 1", shape=cylinder];
+		cMb1[label="Chan M", shape=cylinder];
+		c1b1 -> c2b1[style=invis, dir=none];
+		c2b1 -> cMb1[style=dotted, dir=none];
+		label="Beam 0";
+	}
+	subgraph cluster_1 {
+		c1b2[label="Chan 0", shape=cylinder];
+		c2b2[label="Chan 1", shape=cylinder];
+		cMb2[label="Chan M", shape=cylinder];
+		c1b2 -> c2b2[style=invis, dir=none];
+		c2b2 -> cMb2[style=dotted, dir=none];
+		label="Beam 1";
+	}
+	subgraph cluster_2 {
+		c1bN[label="Chan 0", shape=cylinder];
+		c2bN[label="Chan 1", shape=cylinder];
+		cMbN[label="Chan M", shape=cylinder];
+		c1bN -> c2bN[style=invis, dir=none];
+		c2bN -> cMbN[style=dotted, dir=none];
+		label="Beam N";
+	}
+	//c2b2 -> c2bN[style=dotted, dir=none];
+	//c1b1 -> c1b2[style=invis];
+	//c1b2 -> c1bN[style=invis]; 
+	}
+	//GenerateRawSignal -> c1b1;
+	//GenerateRawSignal -> c1b2;
+	//GenerateRawSignal -> c2b1;
+	GenerateRawSignal -> c2b2;
+	MultichannelProcess[label="Multichannel\nprocess", shape=box];
+	c2b2 -> MultichannelProcess;
+	
+
+}

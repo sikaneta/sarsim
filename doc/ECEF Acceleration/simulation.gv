@@ -1,0 +1,8 @@
+digraph G {
+	ResolutionAz[label="Desired azimuth\nresolution"];
+	ResolutionAz[label="Desired range\nresolution"];
+	GenerateConfigFile[label="Compute:\n  Number channels\n  Number beams\n  Beam tables\n PRF\nGenerate config file"];
+	ResolutionAz -> GenerateConfigFile;
+	ResolutionRn -> GenerateConfigFile;
+
+}

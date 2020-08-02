@@ -1,0 +1,32 @@
+\subsection{Stationary phase approximation}
+The Fourier transform over $\parm$ is given by
+\begin{equation}
+\begin{split}
+ \SkSk{\channelIndex}&(\kr,\kparm)=\int\Skst{\channelIndex}(\kr,\parm)\Ex{-\im\kparm\parm}\d\parm\\
+ &=\Snvelope(\krc)\iint \pattern{\channelIndex}[\kr,\uRangeVector{\parm, \targetnoparm}, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\targetnoparm)\eex{-\im\kr\rangeErrorZero(\parm)}}{\amplitude\range^2(\parm, \targetnoparm)}\eex{-\im\kr\amplitude\range(\parm, \targetnoparm) - \im\kparm\parm}\d\targetnoparm\d\parm.
+ \end{split}
+ \label{eq:sparmft}
+\end{equation}
+The \Index{stationary phase} procedure is an asymptotic approximation procedure that can be used to accurately approximate the above integral. The approximation is given by
+\begin{equation}
+ \int f(\parm)\eex{\im\Phi(\parm)}\d \parm = \eex{\im\Phi(\stationaryparm)}f(\stationaryparm)\sqrt{\frac{2\pi\im}{\ddot\Phi(\stationaryparm)}},
+ \label{eq:stationaryphasedefinition}
+\end{equation}
+where $\stationaryparm$ is the value of $\parm$ such that $\dot{\Phi}(\stationaryparm)=0$ and $f(\parm)$ is some slowly varying smooth function.
+The approximation becomes ever more accurate for increasing values of the second derivative, $\ddot\Phi(\stationaryparm)$, \cite{Spiegel1964}. 
+\par
+We shall apply the above approximation to compute the Fourier transform in \eqref{eq:sparmft} by setting
+\begin{equation}
+ f(\parm) = \pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)\eex{-\im\kr\rangeErrorZero(\parm)}}{\amplitude\range^2(\parm, \targetnoparm)}
+\end{equation}
+and
+\begin{equation}
+ \Phi(\parm) = -\kr\amplitude\range(\parm, \targetnoparm) - \kparm\parm
+ \label{eq:generalphase}
+\end{equation}
+By taking the derivative of $\Phi(\parm)$ and equating the result to zero, one finds that $\stationaryparm$ is the solution to the following equation
+\begin{equation}
+ \kparm = -\kr\frac{\d\amplitude\range(\parm, \targetnoparm)}{\d\parm} = -\kr\uRangeVectorParm\cdot\frac{\d\{\sats(\parm) - \target\}}{\d\parm} = -\kr\uRangeVectorParm\cdot\vct{T}(\parm)
+ \label{eq:kparmangle}
+\end{equation}
+One notes that the above expression is found in the first part of \eqref{eq:spaceDiversityCurve}.

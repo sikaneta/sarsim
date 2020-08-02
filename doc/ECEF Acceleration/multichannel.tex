@@ -1,0 +1,189 @@
+\section{Multi-channel SAR processing}
+\label{sc:hrws}
+With the signal represented in the 2-D frequency domain we are finally ready to derive the \gls{multi-channel} \Index{processing filters}.
+\par
+This section derives signal processing methods to reconstruct an optimal \Index{scalar spectrum} for \Index{\gls{wideband}} SAR imaging. It is assumed that the antennas are fixed relative to track - {\em i.e.}, that one can model the signal according to \eqref{eq:sparmft2}. Further, it is assumed that the antenna positions relative to track are known. The relative motion parameters are also known and the objective is to reproduce a high-resolution image from the multi-channel signal which is \Index{aliased} according to the PRF.
+\subsection{Linear filtering to extract signal components}
+\label{sc:linearfilt}
+The \Index{linear filtering} approach applies a multi-dimensional filter in the wavenumber domain so that a scalar reconstructed signal, denoted by $\ZkZkR(\kr,\kparm)$, is created via 
+\begin{equation}
+ \ZkZkR(\kvecl) = \htr{\vct{b}}_l(\kveczero)\ZkZkM(\kveczero)
+\end{equation}
+The challenge is to find the vectors $\vct{b}_l(\kveczero)$ that yield the desired quality of signal. The goal of this section is to determine appropriate choices for $\vct{b}_l(\kveczero)$ such that the reconstructed, scalar signal,
+\begin{equation}
+ \ZkZkR(\kvecl) = \htr{\vct{b}}_l(\kveczero)\ZkZkM(\kveczero)
+\end{equation}
+is as free from \Index{azimuth ambiguities} as possible and that it does not suffer catastrophic losses in \gls{snr}.
+\subsection{Matrix-vector model for the aliased signal}
+The derivation of the filters is aided by rewriting the multi-channel signal in matrix-vector notation.
+\par
+Recall that an $N$-channel system measurement can be represented as
+\begin{equation}
+\begin{split}
+ \ZkZkM(\kveczero) &= \sum_{l\in\mathcal{L}}\SkSkV(\kvecl) + \NkNkM(\kveczero)\\
+ &=\sum_{l\in\mathcal{L}}\antennaVector(\kr, \kparm)\vkern(\kvecl) + \NkNkM(\kveczero)
+\end{split}
+\end{equation}
+where
+\begin{equation}
+ \antennaVector(\kr, \kparm)=
+ \begin{bmatrix}
+  \eex{\im\alongtrackparm{1}\kparm}\dazPattern{1}[\kr, -\kparm/\kr]\\
+  \eex{\im\alongtrackparm{2}\kparm}\dazPattern{2}[\kr, -\kparm/\kr]\\
+  \ldots\\
+  \eex{\im\alongtrackparm{N}\kparm}\dazPattern{N}[\kr, -\kparm/\kr]
+ \end{bmatrix}
+\end{equation}
+and $\vkern(\kr,\kparm)$ is defined in \eqref{eq:vkern}.
+\par
+The summation can be incorporated into a matrix multiplication to yield
+\begin{center}
+\fbox{
+\begin{minipage}{\textwidth}
+\begin{equation}
+\begin{split}
+ \ZkZkM(\kveczero) &=\antennaMatrix(\kargs)\vkernvect(\kr, \kparm)\\
+ &+ \NkNkM(\kveczero)
+\end{split}
+\label{eq:hrwsMatrix}
+\end{equation}
+where the matrix $\antennaMatrix$ is composed of the vectors $\antennaVector$ according to
+\begin{equation}
+ \antennaMatrix(\kargs) = 
+ \begin{bmatrix}
+  \hdots & \antennaVector(\kr, \kparm -\kparmPRF) & \antennaVector(\kr, \kparm) & \hdots                          
+ \end{bmatrix}
+\end{equation}
+and
+\begin{equation}
+ \vkernvect(\kr, \kparm) = 
+ \begin{bmatrix}
+  \vdots\\
+  \vkern(\kr, \kparm - \kparmPRF)\\
+  \vkern(\kr, \kparm)\\
+  \vdots
+ \end{bmatrix}
+\end{equation}
+\end{minipage}
+}
+\end{center}
+The matrix $\antennaMatrix$ may be fat, skinny or square\footnote{A matrix of size $m\times n$ is square if $m=n$, skinny if $m>n$, and fat if $m<n$.} according to the number of channels and the degree of aliasing of a band-limited signal.
+\subsection{A cost function for HRWS processing}
+% Let us re-write the aliased signal as
+% \begin{equation}
+%  \ZkZkM(\kveczero) =\int\antennaMatrix(\kargs)\vkernvect(\kr, \kparm,\depression) + \NkNkMP(\kargs)\d\depression
+% \end{equation}
+% where
+% \begin{equation}
+%  \int\NkNkMP(\kargs)\d\depression =  \NkNkM(\kveczero)
+% \end{equation}
+% In fact, in the above, ideally $\NkNkMP(\kargs) = \NkNkMP(\kveczero)\text{Rect}_{B_{\depression}}(\depression)$, i.e. is constant and non-zero only over the support of integration over $\depression$.
+%\subsubsection{Extraction of the aliased signal components}
+Our wish is to multiply the measured signal in \eqref{eq:hrwsMatrix} by some matrix, $\hrwsFilterMatrix(\kargs)$, such that $\hrwsFilterMatrix(\kargs)\antennaMatrix(\kargs) = \diagAntennaMatrix(\kargs)$ where $\diagAntennaMatrix(\kargs)$ is some desired diagonal matrix. This desired matrix, resulting from the product, should ideally be one that provides good \Index{radiometric resolution}. A practical choice is, for instance, the \Index{average antenna pattern}.  
+Note that if $\diagAntennaMatrix(\kargs)$ is diagonal, then it is straight-forward to read the individual aliased components of the signal as they will just correspond to the diagonal element of $\diagAntennaMatrix(\kargs)$ multiplied by the corresponding row of $\vkernvect(\kargs)$.
+%\par
+%Although a particular value of $\depression$ has been assumed, the range of angles over which $\depression$ varies for a typical SAR measurement is quite small and the processing filters are quite insensitive to changes over this small range. As far as the \gls{hrws} processing filters are concerned, the mean value provides a suitable surrogate for the value itself. Of course, one could create filters for a range of different $\depression$ if desired.
+\par
+In particular, because, heuristically, we are interested in the signal measured by the {\em average} antenna pattern, let the diagonal elements of $\diagAntennaMatrix(\kargs)$ be given by
+\begin{equation}
+ \gweight{ll}(\kargs) = \sqrt{\sum_n\lvert\dazPattern{\channelIndex}[\uRangeVectorl{l}{\kargs}]\rvert^2}
+ \label{eq:averagePattern}
+\end{equation}
+where
+\begin{equation}
+ \uRangeVectorl{l}{\kargs} = \uRangeVector{\kr, \kparm+l\kparmPRF}
+\end{equation}
+For different values of $l$, the range look vector points in different directions. Our choice of $\diagAntennaMatrix(\kargs)$ contains elements corresponding to the signal returned from the different directions corresponding to $l$ (weighted by the average antenna pattern). This provides a mechanism to extract the \Index{unambiguous signal}. 
+\par
+The minimum square error approach to computing $\hrwsFilterMatrix(\kargs)$ seeks to minimise the following cost function
+\begin{equation}
+\costFunction{0} = \lvert\hrwsFilterMatrix(\kargs)\antennaMatrix(\kargs) - \diagAntennaMatrix(\kargs)\rvert^2
+\end{equation}
+where $\lvert\cdot\rvert^2$ denotes the \Index{Frobenius norm}. 
+\subsubsection{Amplified additive noise}
+Before attempting to find minimum values for $\costFunction{0}$, one should recognise that if we pre-multiply $\ZkZkM(\kveczero)$ by $\hrwsFilterMatrix(\kargs)$, then the additive noise term is also pre-multiplied by $\hrwsFilterMatrix(\kargs)$ and this might adversely change the \gls{snr}. Thus, one should simultaneously try to minimise the following cost function
+\begin{equation}
+ \costFunction{1} = \expct{\lvert\hrwsFilterMatrix(\kargs)\NkNkMP(\kargs)\rvert^2}
+\end{equation}
+ 
+\subsubsection{Blended cost function}
+In the event that the solution to minimising each cost-function is different, a fair trade would see the construction of a tuneable \Index{hybrid cost-function} given by
+\begin{equation}
+ \costFunction{2} = \cost\costFunction{0} + (1-\cost)\costFunction{1}
+\end{equation}
+where $\cost\in(0,1]$.
+The solution to this problem is computed in \cite{NovelRadar} yielding the \gls{mmse} filters given by
+\begin{center}
+\fbox{
+\begin{minipage}{\textwidth}
+\begin{equation}
+\begin{split}
+ \hrwsFilterMatrix(\kargs) &= \diagAntennaMatrix(\kargs)\htr{\antennaMatrix}(\kargs)\\
+ &\biggl[\antennaMatrix(\kargs)\htr{\antennaMatrix}(\kargs)+\frac{1-\cost}{\cost}\mtx{R}_n(\kargs)\biggr]^{-1}
+\end{split}
+\label{eq:hrwsCostBlend}
+ \end{equation}
+\end{minipage}
+}
+\end{center}
+
+% \subsubsection{Projection filters}
+% \gls{hrws} SAR was first made popular through work from the \gls{dlr}, Germany in a series of publications, \cite{Krieger2004,Gebert2009b,GebertPHD}, which proposed, mainly, the use of \Index{projection filters}. This section shows that these projection filters are a special case of the blended cost function, $\costFunction{2}$. To relate the adopted notation to that of \cite{GebertPHD}, we make the following simplifications and substitutions
+% \begin{align}
+%  2\vct{p}_\channelIndex(\parm) &\leftrightarrow  \Delta x_\channelIndex\uX{\parm} + 0\uSatVelocity{\parm} + 0\angular\\
+%  \kappa\kparm &\leftrightarrow 2\pi \fparm/\vsat
+% \end{align}
+% Set $\cost=1$, and assume that there exists a {\em square} or {\em fat} matrix $\antennaMatrix^{-1}(\kargs)$ such that $\antennaMatrix^{-1}(\kargs)\antennaMatrix(\kargs)=\mtxIdentity_{n\times n}$ where $\antennaMatrix(\kargs)$ is an $m\times n$ matrix. The condition of square or fat for the left inverse translates into the condition that the number of antenna channels is greater than or equal to the number of aliased bands in the bandlimited signal.
+% \par
+% With these assumptions, and with the further simplification that all antenna patterns are identical, \Eqref{eq:hrwsCostBlend} evaluates to 
+% \begin{equation}
+% \begin{split}
+% \hrwsFilterMatrix(\kargs) &= \diagAntennaMatrix(\kargs)\antennaMatrix^{-1}(\kargs)\\
+%  &= \diagAntennaMatrix(\kargs)[\antennaPhaseMatrix(\kargs)\diagAntennaMatrix(\kargs)]^{-1}\\
+%   &= \antennaPhaseMatrix^{-1}(\kargs)\\
+% \end{split}
+% \end{equation}
+% where the element in the $m^\text{th}$ row and $n^\text{th}$ column of $\antennaPhaseMatrix(\kargs)$ is given by
+% \begin{equation}
+%  \eex{\im\kr\huRangeVectorl{n}{\kargs}\antennaPosition{m}} = \eex{-2\pi\im\frac{(\fparm+n\fparmPRF)\Delta x_m}{2\vsat}}
+% \end{equation}
+% The above expression can be compared with equation (31) and the transpose of equation (39) in \cite{GebertPHD} to see the equivalence with the \Index{projection method}. It should be noted that there is an additional phase term in equation (31) of \cite{GebertPHD} which is typically very small for baselines that are small compared to the range (a \Index{far-field approximation}). Further, the model in \cite{GebertPHD} derives from a \Index{parabolic slow-time model} while, here, the signal derives from a \Index{hyperbolic model}. In very high-resolution systems, the requirement for applying the hyperbolic model becomes ever more important for accurate compression. Indeed, the requirement for application to very high-resolution systems lies behind the rather detailed presentation of the \Index{hyperbolic signal model} in \scref{sc:signalModel}.
+% \par
+% Also note that in this special case, the matrix $\antennaPhaseMatrix(\kargs) = \antennaPhaseMatrix(f)$, {\em i.e.} it does not depend on the range, the range wavenumber or the incidence angle. As such, a single 1-D \gls{hrws}) filter (across Doppler frequency can be computed and applied across the entire 2-D range-frequency Doppler-frequency domain. This property does not depend on the signal being \Index{narrowband}. 
+% 
+% \subsubsection{HRWS filters in the narrowband case}
+% Recall from \scref{sc:narrow} that in the \gls{narrowband} case,
+% \begin{equation}
+%  \antennaVector(\kargs)\rightarrow\antennaVector(\krnaught, \kparm, \targetdepression)
+%  \begin{bmatrix}
+%   \pattern{1}[\krnaught,\uRangeVector{\krnaught, \kparm, \targetdepression},\antennaPosition{1}]\\
+%   \pattern{2}[\krnaught,\uRangeVector{\krnaught, \kparm, \targetdepression},\antennaPosition{2}]\\
+%   \ldots\\
+%   \pattern{N}[\krnaught,\uRangeVector{\krnaught, \kparm, \targetdepression},\antennaPosition{N}]
+%  \end{bmatrix}
+% \end{equation}
+% This leads to
+% \begin{equation}
+%  \antennaMatrix(\kargs) \rightarrow \antennaMatrix(\krnaught, \kparm, \targetdepression) =  
+%  \begin{bmatrix}
+%   \hdots & \antennaVector(\krnaught, \kparm -\kparmPRF, \depression) & \antennaVector(\krnaught, \kparm, \depression) & \hdots                          
+%  \end{bmatrix}
+% \end{equation}
+% and \gls{hrws} filters given by
+% \begin{center}
+% \fbox{
+% \begin{minipage}{\textwidth}
+% \begin{equation}
+% \begin{split}
+%  \hrwsFilterMatrix(\krnaught, \kparm, \targetdepression) &= \diagAntennaMatrix(\krnaught, \kparm, \targetdepression)\htr{\antennaMatrix}(\krnaught, \kparm, \targetdepression)\\
+%  &\biggl[\antennaMatrix(\krnaught, \kparm, \targetdepression)\htr{\antennaMatrix}(\krnaught, \kparm, \targetdepression)+\frac{1-\cost}{\cost}\mtx{R}_n(\krnaught, \kparm, \targetdepression)\biggr]^{-1}
+% \end{split}
+% \label{eq:hrwsCostBlendNarrow}
+%  \end{equation}
+% \end{minipage}
+% }
+% \end{center}
+% These filters do not depend on the range wavenumber; thus, only a 1-D processing filter needs to be computed and applied to the data yielding, as promised, a simplification to \gls{hrws} signal processing.
+\subsection{Section summary}
+This section developed the \gls{hrws} signal processing methods to construct a scalar signal with reduced or eliminated \Index{azimuth ambiguities} and acceptable \gls{snr} from a vector of \Index{aliased signals}. The section derived set of filters that depends on a variable parameter $\cost$ which controls the level of azimuth ambiguity (or residual aliasing) and the \gls{snr}. The choice of $\cost=1$ leads to the \Index{projection filters} of \cite{Krieger2004,Gebert2009b,GebertPHD}. In the general \gls{wideband} case, the \gls{hrws} processing filters are $\kr$ and $\kparm$ dependant, but for systems with no \Index{across-track baseline} or \Index{narrowband} systems, the processing filters depend only on $\kparm$.
+

@@ -1,0 +1,55 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{A proposal for very high resolution SAR}{chapter.1}% 2
+\BOOKMARK [2][-]{subsection.1.1.1}{Positive apects of the proposed approach}{section.1.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.2}{Negative aspects of the proposed approach}{section.1.1}% 4
+\BOOKMARK [1][-]{section.1.2}{Notation}{chapter.1}% 5
+\BOOKMARK [0][-]{chapter.2}{System configuration}{}% 6
+\BOOKMARK [1][-]{section.2.1}{Multi-channel design and configuration}{chapter.2}% 7
+\BOOKMARK [2][-]{subsection.2.1.1}{System design size}{section.2.1}% 8
+\BOOKMARK [2][-]{subsection.2.1.2}{Traditional HRWS configuration and design}{section.2.1}% 9
+\BOOKMARK [1][-]{section.2.2}{Transmit antenna}{chapter.2}% 10
+\BOOKMARK [0][-]{chapter.3}{Signal collection geometry}{}% 11
+\BOOKMARK [1][-]{section.3.1}{A closer look at SAR from an orbiting satellite}{chapter.3}% 12
+\BOOKMARK [2][-]{subsection.3.1.1}{A closer examination of locally circular orbits}{section.3.1}% 13
+\BOOKMARK [2][-]{subsection.3.1.2}{Non-linearity between arclength and time}{section.3.1}% 14
+\BOOKMARK [2][-]{subsection.3.1.3}{Arclength parameterization approach}{section.3.1}% 15
+\BOOKMARK [1][-]{section.3.2}{Differential geometry of curves in 3D}{chapter.3}% 16
+\BOOKMARK [2][-]{subsection.3.2.1}{Calculation of differential geometry parameters from position, velocity and acceleration}{section.3.2}% 17
+\BOOKMARK [2][-]{subsection.3.2.2}{Slow-time curve parameters, state vectors and the geoid model}{section.3.2}% 18
+\BOOKMARK [2][-]{subsection.3.2.3}{Demonstration of accuracy of the model}{section.3.2}% 19
+\BOOKMARK [1][-]{section.3.3}{Arclength-paremterized range function}{chapter.3}% 20
+\BOOKMARK [2][-]{subsection.3.3.1}{Error in the range function}{section.3.3}% 21
+\BOOKMARK [0][-]{chapter.4}{Single channel measured signal}{}% 22
+\BOOKMARK [1][-]{section.4.1}{The SAR signal in arclength space}{chapter.4}% 23
+\BOOKMARK [2][-]{subsection.4.1.1}{Scene measurement through multiple antenna patterns}{section.4.1}% 24
+\BOOKMARK [2][-]{subsection.4.1.2}{Demodulation}{section.4.1}% 25
+\BOOKMARK [0][-]{chapter.5}{Wavenumber processing}{}% 26
+\BOOKMARK [1][-]{subsection.5.0.1}{Stationary phase approximation}{chapter.5}% 27
+\BOOKMARK [1][-]{section.5.1}{Stationary phase}{chapter.5}% 28
+\BOOKMARK [2][-]{subsection.5.1.1}{Relation between arclength and wavenumber}{section.5.1}% 29
+\BOOKMARK [2][-]{subsection.5.1.2}{Antenna pattern angles}{section.5.1}% 30
+\BOOKMARK [2][-]{subsection.5.1.3}{The 2-D wavenumber signal}{section.5.1}% 31
+\BOOKMARK [2][-]{subsection.5.1.4}{Modified Stolz interpolation}{section.5.1}% 32
+\BOOKMARK [0][-]{chapter.6}{Signal processing of multichannel signals}{}% 33
+\BOOKMARK [1][-]{section.6.1}{Multichannel signal processing for high resolution}{chapter.6}% 34
+\BOOKMARK [1][-]{section.6.2}{Multi-channel SAR processing}{chapter.6}% 35
+\BOOKMARK [2][-]{subsection.6.2.1}{Linear filtering to extract signal components}{section.6.2}% 36
+\BOOKMARK [2][-]{subsection.6.2.2}{Matrix-vector model for the aliased signal}{section.6.2}% 37
+\BOOKMARK [2][-]{subsection.6.2.3}{A cost function for HRWS processing}{section.6.2}% 38
+\BOOKMARK [2][-]{subsection.6.2.4}{Section summary}{section.6.2}% 39
+\BOOKMARK [0][-]{chapter.7}{End-to-end simulation}{}% 40
+\BOOKMARK [1][-]{section.7.1}{Simulated mutli-channel signal}{chapter.7}% 41
+\BOOKMARK [2][-]{subsection.7.1.1}{Generation of the raw signals}{section.7.1}% 42
+\BOOKMARK [2][-]{subsection.7.1.2}{Multichannel processing}{section.7.1}% 43
+\BOOKMARK [2][-]{subsection.7.1.3}{Azimuth compression}{section.7.1}% 44
+\BOOKMARK [1][-]{section.7.2}{Conclusion}{chapter.7}% 45
+\BOOKMARK [0][-]{appendix.A}{Appendix}{}% 46
+\BOOKMARK [1][-]{section.A.1}{Derivative of unit vectors}{appendix.A}% 47
+\BOOKMARK [1][-]{section.A.2}{ECEF acceleration}{appendix.A}% 48
+\BOOKMARK [2][-]{subsection.A.2.1}{ECEF equations of motion}{section.A.2}% 49
+\BOOKMARK [2][-]{subsection.A.2.2}{Rate of change of acceleration}{section.A.2}% 50
+\BOOKMARK [1][-]{section.A.3}{Derivation of the arclength-paremterized range function}{appendix.A}% 51
+\BOOKMARK [1][-]{section.A.4}{Numerical implementation of the Stolz interpolation}{appendix.A}% 52
+\BOOKMARK [2][-]{subsection.A.4.1}{Simplification for iterative root-finding}{section.A.4}% 53
+\BOOKMARK [1][-]{section.A.5}{MIMO configuration}{appendix.A}% 54
+\BOOKMARK [1][-]{section.A.6}{Antenna pattern angles}{appendix.A}% 55

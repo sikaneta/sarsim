@@ -1,0 +1,122 @@
+\documentclass[10pt,oneside]{book}
+\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\ifx\pdftexversion\undefined
+  \usepackage[dvips]{graphicx}
+\else
+  \usepackage[pdftex]{graphicx,hyperref}
+  \hypersetup{backref,colorlinks=true,plainpages=false,pdfpagelabels}
+  \hypersetup{%
+    colorlinks=true,   % aktiviert farbige Referenzen
+    linkcolor=black,    % Make the link colours blue
+    citecolor=black,
+    filecolor=black,
+    pdfpagemode=UseNone,  % PDF-Viewer startet ohne Inhaltsverzeichnis et.al.
+    pdfstartview=FitH} % PDF-Viewer benutzt beim Start bestimmte Seitenbreite
+  
+  \hypersetup{% Ä=\304; Ö=\326; Ü=\334; ä=\344; ö=\366; ü=\374; ß=\377
+    pdftitle={Wavenumber domain representation of satellite signal},
+    pdfauthor={Ishuwa C. Sikaneta},
+    pdfsubject={Special Functions},
+    pdfkeywords={Statistics, Product model, Stationarity, Gaussian, Non Gaussian, SAR, GMTI, CFAR}
+  }
+\fi
+\usepackage[x11names, svgnames, rgb]{xcolor}
+%\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{snakes,arrows,shapes}
+
+\usepackage[mathscr]{euscript}
+\usepackage{subcaption}
+\usepackage{dblfloatfix}
+\usepackage{fixltx2e}
+\usepackage{color}
+\usepackage{array, hhline}
+\usepackage[normalem]{ulem}
+\usepackage{rotating}
+\usepackage{marvosym}
+\usepackage{multirow}
+\usepackage[mathscr]{euscript}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+%\usepackage{svgnames}
+\usepackage[svgnames]{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,
+  showstringspaces=false,
+  %commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  moredelim=[s][\bfseries\color{Maroon}]{<}{\ },
+  moredelim=[s][\bfseries\color{Maroon}]{</}{>},
+  moredelim=[l][\bfseries\color{Maroon}]{/>},
+  moredelim=[l][\bfseries\color{Maroon}]{>},
+  morecomment=[s]{<?}{?>},
+  morecomment=[s]{<!--}{-->},
+  commentstyle=\color{DarkOliveGreen},
+  stringstyle=\color{blue},
+  identifierstyle=\color{red}
+}
+
+\usepackage[bibstyle=nature, style=numeric, citestyle=numeric-comp, sorting=none, backend=biber]{biblatex}
+\bibliography{../bibliography/ishbib}
+
+% \usepackage[sans]{dsfont}
+
+\input{ishCommands}
+\DeclareUnicodeCharacter{2212}{-}
+\pgfplotsset{compat=1.16}
+
+\title{Super Resolution Stripmap SAR}
+\author{Christoph H. Gierull, Senior Member, \textsl{IEEE},\\ Ishuwa Sikaneta, Member, \textsl{IEEE}}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Introduction}
+\input{SURE_introduction}
+\input{multichannelmodel}
+\chapter{System configuration}
+\input{SURE_multichannel}
+\input{SURE_transmit}
+\chapter{Signal collection geometry}
+\input{orbiterror}
+\input{diffgeo}
+\input{diffgeoslow}
+\input{diffgeostategeoid}
+\input{orbit_demo}
+\input{range}
+\chapter{Single channel measured signal}
+\input{sardiffgeo}
+\input{demodulation}
+\chapter{Wavenumber processing}
+\input{stationaryphase}
+\input{newStationaryPhase}
+\input{antennaangles}
+\chapter{Signal processing of multichannel signals}
+\input{introduction}
+\input{multichannel}
+\chapter{End-to-end simulation}
+\input{simulation}
+\input{conclusion}
+
+\printbibliography
+\appendix
+\chapter{Appendix}
+\input{vectorcalc}
+\input{inertialtoecef}
+\input{rateofacceleration}
+\input{rangeAppendix}
+\input{stolz}
+\input{mimo}
+\input{antennaanglesAppendix}
+\end{document}

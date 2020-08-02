@@ -1,0 +1,416 @@
+%\documentclass[journal,onecolumn,11pt]{IEEEtran}
+\documentclass[journal]{IEEEtran}
+%\usepackage[utf8]{inputenc}
+%\usepackage{media9}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\newtheorem{thm}{Theorem}[section]
+\usepackage[sans]{dsfont}
+\usepackage{subfigure}
+\usepackage{dblfloatfix}
+\usepackage{fixltx2e}
+\usepackage{color}
+\usepackage{array, hhline}
+\usepackage{makecell}
+\usepackage[normalem]{ulem}
+%\input{commands}
+\ifx\pdftexversion\undefined
+  \usepackage[dvips]{graphicx}
+\else
+  \usepackage[pdftex]{graphicx}
+  \usepackage[pdfstartview={FitH},pdfstartpage={1},pdftitle={Superresolution Stripmap SAR},pdfauthor={Christoph Gierull and Ishuwa Sikaneta}]{hyperref}
+\fi
+\usepackage{rotating}
+\usepackage{marvosym}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{pgf}
+\usepackage[mathscr]{euscript}
+\hypersetup{backref,colorlinks=true,plainpages=false,pdfpagelabels}
+%\usepackage[bibstyle=nature, citestyle=numeric-comp, sorting=none, backend=biber]{biblatex}
+
+%opening
+\title{Super Resolution Stripmap SAR}
+\author{Christoph H. Gierull, Senior Member, \textsl{IEEE}, Ishuwa Sikaneta, \cg{Senior}  Member, \textsl{IEEE}}
+\newcommand{\antennaLength}{\ensuremath{L}}
+\newcommand{\antennaLengthDesired}{\ensuremath{L_0}}
+\newcommand{\antennaLengthEffective}{\ensuremath{L_M}}
+\newcommand{\wavelength}{\ensuremath{\lambda}}
+\newcommand{\threeDB}{\ensuremath{\Theta}}
+\newcommand{\threeDBDesired}{\ensuremath{\Theta_{0}}}
+\newcommand{\threeDBEffective}{\ensuremath{\Theta_{M}}}
+\newcommand{\satv}{\ensuremath{v_s}}
+\newcommand{\aziBW}{\ensuremath{B_a}}
+\newcommand{\aziRes}{\ensuremath{\delta_x}}
+\newcommand{\prf}{\ensuremath{f_p}}
+\newcommand{\prfEffective}{\ensuremath{\prf}}
+\newcommand{\prfreal}{\ensuremath{f_M}}
+\newcommand{\dx}{\ensuremath{\Delta_x}}
+\newcommand{\resxDesired}{\ensuremath{\delta_0}}
+\newcommand{\phaseSep}{\ensuremath{d}}
+\newcommand{\lookdirection}{\ensuremath{\hat{u}}}
+\newcommand{\vecsigTime}{\ensuremath{\vct{z}}}
+\newcommand{\vecsigFreq}{\ensuremath{\vct{Z}}}
+\newcommand{\vecsigFreqSampled}{\ensuremath{\vct{Z}_s}}
+\newcommand{\htrvecsigFreqSampled}{\ensuremath{\htr{\vct{Z}}_s}}
+% \antenna{}
+% \newcommand{\vct}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\phaseCentreLocation}[1]{\ensuremath{\vct{p}_{#1}}}
+
+\input{ishCommands}
+\newcommand{\temporalbaseline}{\ensuremath{d_t}}
+\newcommand{\spatialbaseline}{\ensuremath{d_s}}
+\newcommand{\opt}{\rm opt}
+\newcommand{\weight}[1]{\ensuremath{z_{#1}}}
+\newcommand{\Nbands}{\ensuremath{N_{b}}}
+\newcommand{\costweight}{\ensuremath{\varrho}}
+\newcommand{\winweight}[1]{\ensuremath{\zeta_{#1}}}
+\newcommand{\Winweight}{\ensuremath{\boldsymbol{\zeta}}}
+\newcommand{\vopt}[1]{\ensuremath{\vct{v}^{\cg{\opt}}_{#1}}}
+\newcommand{\Vopt}{\ensuremath{\mtx{V}_{\cg{\opt}}}}
+\newcommand{\eigval}[1]{\ensuremath{\lambda_{#1}}}
+\newcommand{\eigvec}[1]{\ensuremath{\vct{u}_{#1}}}
+\newcommand{\alert}[1]{\textcolor{blue}{#1}}
+\newcommand{\ish}[1]{\textcolor{blue}{#1}}
+\newcommand{\cg}[1]{\textcolor{red}{#1}}
+\newcommand{\cgs}[1]{\textcolor{red}{\sout{#1}}}
+% \newcommand{\ishfix}[3]{{\textcolor{cyan}{#1}}{\tiny\textcolor{magenta}{#2}}{\scshape\small\textcolor{red}{#3}}}
+\newcommand{\ishfix}[3]{#1}
+\newcommand{\figref}[1]{\figurename~\ref{#1}}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{question}{Question}[section]
+\newtheorem{Definition}{Definition}[section]
+
+
+\begin{document}
+\maketitle
+
+
+% ========================================================= %
+% Abstract
+% ========================================================= %
+\begin{abstract}
+By presenting the design, configuration and required signal processing, this letter proposes a \cg{new SAR mode} for improved imaging. Compared to conventional Spotlight SAR, the proposed system will generate imagery with equivalent or better resolution and a significantly increased \cg{coverage} to azimuth resolution ratio. The design and configuration are based upon a phased-array antenna in combination with the appropriate hardware to enable rapid electronic beam steering and to permit digitisation of multiple receive channels. The current state of technology \cg{has} matured enough to construct all components of such a system. As a specific \cg{ambitious example}, the letter proposes an 11-\cg{aperture} system capable of imaging with 10~cm azimuth resolution, using a Pulse Repetition Frequency (PRF) of 6.8~kHz and an unlimited azimuth extent. \cg{The system design and configuration scale down accordingly for a less ambitious but still compelling imaging performance.}  
+\end{abstract}
+
+
+% ========================================================= %
+% Introduction
+% ========================================================= %
+\section{Introduction}
+This letter proposes a system for improved space-based SAR imaging. It describes the design, which is based upon a phased-array \cg{including its dimension and element spacing},
+%\footnote{In this letter, the design is the phased array, including its dimension and element spacing, the required switching/routing circuits, the required digitizers, and the required hardware to permit changing the transmit and receive beam table on a pulse by pulse basis.}
+an appropriate switching network to allow digitisation of multiple receive channels, the configuration,
+%\footnote{The configuration is the way in which the system is operated and includes the pulse-repetition frequency and the transmit/receive beam tables at each pulse.}
+which imposes a rapid electronic beam switching capability upon the design, and the required signal processing algorithm to compute the high resolution imagery. The proposed configuration permits measurement in a stripmap-like mode, thereby offering, theoretically, unlimited azimuth extent. 
+\par
+The proposed approach offers a significant increase in the area coverage (both in swath and azimuth extent) to azimuth resolution ratio when compared with the highest resolution imagery sensors on the commercial market. By listing metadata from actual Spotligt mode collections from several commercial systems \cite{Brautigam2010, Fox2004, Porfilio2016, Mittermayer}, \Tbref{tb:reswidth} highlights the added value of the approach by comparing the processed azimuth bandwidth (which is inversely proportional to the azimuth resolution) to the utilized PRF (which is inversely proportional to the swath width). It should be noted that the PRFs listed for the real systems are not necessarily reflective of the achievable swath width of the Spotlight imagery as chirp generation time, echo buffer capacity and collection margins have to be considered. To summarise, the potential azimuth bandwidth to PRF ratio for the proposed system is, approximately, twice as good. 
+\begin{table}[h!]
+ \begin{center}
+ \caption{Processed azimuth bandwidth \cg{in Spotlight mode} compared to utilized PRF}
+  \begin{tabular}{r|c|c|c|l}
+   & \thead{\bf Azimuth \\ Bandwidth (kHz)} & \thead{\bf PRF \\(kHz)} & \thead{\bf Incidence \\Angle ($^\circ$)} & {\bf Ratio}\\\hline
+   RADARSAT-2 & 9.716 & 1.652 & 22 & 5.88\\\hline
+   TerraSAR-X & 38.261 & 5.057 & 30 & 7.57\\\hline
+   CSK & 24.146 & 3.348 & 38 & 7.21\\\hline
+   Kompsat-5 & 11.422 & 3.443 & 52 & 3.31\\\hline
+   Proposed & 75.000 & 6.810 & N/A & 11.01
+  \end{tabular}
+  \label{tb:reswidth}
+ \end{center}
+\end{table}
+\par
+In addition, the strip-like nature of the proposed configuration allows imaging over an unlimited along-track (azimuth) extent. For most commercial SAR missions the Spotlight imagery footprint in ground-range and azimuth \cg{is in the order of tens of km} and is approximately square \cite{Mittermayer}. 
+\par
+The promise of such a capability, no doubt, raises questions about what unfavourable aspects of the system are amplified, \cg{and what trade-offs are required} to realise such a system, are they physically feasible, and are they worth the reward? 
+\par
+\cg{First}, imaging a larger area while maintaining a useful Signal-to-Noise Ratio (SNR) requires a proportional increase in transmit/receive \cg{T/R} power. To avoid this problem, the size of the proposed \cg{antenna} is on the order of 20~m, which is larger than most current missions (with the exception of RADARSAT-2). \cg{In addition}, the operating configuration benefits from the use of the entire receive aperture to \cg{optimize collection} of scattered energy \cg{(maximum SNR)}. Second, to function as specified, the operating configuration calls for the ability to transmit different beams from pulse to pulse thus requiring a rapid electronic steering capability. Third, the system needs a switching mechanism that distributes the receive sub-arrays to a multitude of distinct digitizers which, on the one hand increases hardware complexity and on the other hand, \cg{significantly increases the data volume}. These data need to find a path to the ground either through a link with increased bandwidth or by a mechanism that transmits less data over a longer period of time. Finally, the transformation of these more complex data into final image products requires the development and implementation of more complex signal-processing algorithms.
+\par
+The next section introduces the operating configuration under ideal conditions to aid in conveying the operating concept. The combination of this operating configuration with a desired azimuth resolution dictates the design parameters and defines the minimum PRF through which the maximum swath is determined.
+
+
+% ========================================================= %
+% Design
+% ========================================================= %
+\section{Multi-channel design and configuration}
+Instead of beam spoiling or spotlighting, this letter proposes an operating configuration that time-multiplexes a sequence of beams using an $M+1$ multi-channel design, as illustrated in Fig.~\ref{fg:fivechan} (with $M=4$). This design can be realised with a phased-array that has the ability to change \cg{T/R} beam tables on a pulse by pulse basis \cite{CalabreseDiego2014, SikanetaGierullTGRS2015}. Additionally, $M+1$ digitizers and a switching mechanism to route and combine the measurements from each phased-array element (i.e.~form subarrays) are required to realise this multi-channel system. Although in this letter a general $M+1$ channel system \cg{is considered}, occasionally specific values of $M$ \cg{are chosen} for illustrative purposes. The proposed system is a uniform \cg{linear} antenna array.
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{0.95\columnwidth}{!}{\input{fivechan.pdf_tex}}
+ \caption{Five channel schematic for design. Circles denote the phase-centre location while the angle denotes the direction of the transmit and receive beams. \cg{$\phaseSep$ denotes the phase centre separation and $\prfEffective$ the PRF.}}
+ \label{fg:fivechan}
+ \end{center}
+\end{figure}
+\par
+As can be seen, the system makes \cg{five} measurements with \cg{five} different antenna patterns at each sampling point. If each of these antenna patterns has a beamwidth given by $\threeDB/(M+1)$, then the system scans over a total azimuth beamwidth of $\threeDB$. The reduced beamwidth at each sampling instant corresponds to a reduced required PRF $\prfEffective$ for each channel according to
+\begin{equation}
+ \prfEffective \geq \aziBW/(M+1),
+\end{equation}
+\cg{where $\aziBW$ the Doppler bandwidth according to the total beamwidth $\threeDB$.}
+
+% ========================================================= %
+% Design size
+% ========================================================= %
+\subsection{System design size}
+Consider the requirement for an azimuth resolution of $\resxDesired$. From fundamental SAR theory, for a classical stripmap mode, this corresponds to an antenna length $\antennaLengthDesired$ given by \cite{Cumming2005}
+\begin{equation}
+ \antennaLengthDesired = 2\resxDesired,
+\end{equation}
+which corresponds to a required azimuth beamwidth of
+\begin{equation}
+ \threeDBDesired = \frac{\wavelength}{2\resxDesired}
+\end{equation}
+\cg{in which $\wavelength$ is the wavelength.}
+If this desired beamwidth is divided into $M+1$ parts of width
+\begin{equation}
+ \threeDBEffective = \frac{\threeDBDesired}{M+1}=\frac{\wavelength}{2(M+1)\resxDesired},
+\end{equation}
+then each channel requires an antenna of length
+\begin{equation}\label{antennaLengthEffective}
+ \antennaLengthEffective = 2(M+1)\resxDesired.
+\end{equation}
+\cg{For a given satellite velocity $\satv$}, the required PRF is given by
+\begin{equation}
+ \prfEffective = \frac{2\satv}{\wavelength}\threeDBEffective = \frac{2\satv}{\antennaLengthEffective} = \frac{\satv}{(M+1)\resxDesired},
+ \label{eq:requiredPRF}
+\end{equation}
+which corresponds to a required two-way phase-centre separation of
+\begin{equation}\label{phaseSep}
+ \phaseSep = (M+1)\resxDesired.
+\end{equation}
+\cgs{Now,} With a transmit antenna of length $\antennaLengthEffective$ \eqref{antennaLengthEffective} and a receive antenna of the same length, the effective phase centre positions are given by  multiples of \eqref{phaseSep}. The total antenna length, as illustrated in Fig.~\ref{fg:antennaLenghts}, is \cg{consequently} given by
+\begin{equation}
+ \antennaLength = (M+1)\antennaLengthEffective = 2(M+1)^2\resxDesired.
+\end{equation}
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{0.8\columnwidth}{!}{\input{antennaLengths.pdf_tex}}
+ \caption{Antenna lengths to achieve desired resolution $\resxDesired$ for $M=10$.}
+ \label{fg:antennaLenghts}
+ \end{center}
+\end{figure}
+
+Let us examine what this means for a specific case of $\resxDesired = 0.1$~m. As listed in Table~\ref{tb:Simulation}, a traditional stripmap SAR would have to be $0.2$~m in azimuth length to achieve this resolution. Additionally the required PRF would be $\prf = 75$ kHz for a satellite travelling at $\cg{\satv=}7500$~m/s which corresponds to a rather limited swath. \cg{In contrast}, with $M=10$, the required PRF is $\prfEffective = 6.818$ kHz which corresponds to a \cg{slant} range swath width of approximately 22~km (minus any time needed for chirp transmission or buffer limitations), which would be even larger in ground range.
+\par
+The choice of $\resxDesired=0.1$~m, and $M=10$ leads to an antenna of length $24.2$~m wjere each subaperture has a length of $2.2$~m. This antenna length is \cgs{only} about $60$\% longer than \cg{that of} RADARSAT-2.
+\begin{table}[h!]
+\begin{center}
+\caption{System parameters for $\resxDesired=0.1$~m and $\satv=7500$~m/s.}
+\label{tb:Simulation}
+ \begin{tabular}{r|c|c|c|c}\\\hline
+  {\bf $M$} & {\bf $\antennaLengthEffective$ (m)} & {\bf $\antennaLength$ (m)} & {\bf $\prfEffective$ (Hz)} & {\bf Swath (slant-range (km))}\\\hline 
+0 & 0.20 & 0.20 & 75000 & 2.00\\\hline
+2 & 0.60 & 1.80 & 25000 & 6.00\\\hline
+4 & 1.00 & 5.00 & 15000 & 10.00\\\hline
+6 & 1.40 & 9.80 & 10710 & 14.00\\\hline
+8 & 1.80 & 16.20 & 8330 & 18.00\\\hline
+{\bf 10} & {\bf 2.20} & {\bf 24.20} & {\bf 6810} & {\bf 22.00}\\\hline
+12 & 2.60 & 33.80 & 5760 & 26.00\\\hline
+14 & 3.00 & 45.00 & 5000 & 30.00\\\hline
+ \end{tabular}
+ \end{center}
+\end{table}
+
+% ========================================================= %
+% Traditional HRWS
+% ========================================================= %
+\subsection{Traditional HRWS configuration and design}
+It is useful to examine the implication of utilising a traditional High-Resolution Wide-Swath (HRWS) configuration that does not use a sequence of beams. With this design, $M+1$ channels transmit a wide beam that covers the desired range of angles corresponding to the desired resolution; see Fig.~\ref{fg:equivHRWS}. The spatial distribution of two-way phase-centres at each pulse again compensates for a lower PRF according to \eqref{eq:requiredPRF} \cite{GebertPHD}.
+\par
+To satisfy the spatial sampling requirement, the receive antenna elements must be spaced by $2\resxDesired$, giving a total receive antenna length of $2(M+1)\resxDesired$ which is $(M+1)$ times shorter than the length proposed by the multi-beam design. This means that, on a pulse-by-pulse basis, the total receive area to capture reflected flux is reduced by a factor of $M+1$ resulting in a corresponding loss in SNR.
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{0.9\columnwidth}{!}{\input{equivalentHRWS.pdf_tex}}
+ \caption{Equivalent HRWS system.}
+ \label{fg:equivHRWS}
+ \end{center}
+\end{figure}
+
+
+% ========================================================= %
+% Transmit antenna
+% ========================================================= %
+\section{Transmit antenna}
+Although the proposed design consists of $M+1$ subapertures, the requirements on the width of the transmit beam prevent uniform transmission from the entire antenna as this would lead to a beam that is too narrow. Rather than route a finite power supply evenly across the entire antenna, one could instead supply the entirety of the available power only to the centre subaperture for transmission. Alternatively, one could transmit from the entire antenna, but with a spoiled pattern.
+\par
+One advantage to the first approach is that only the centre subaperture requires the ability to transmit (as illustrated in figure \ref{fg:antennaLenghts}), while the other subapertures can simply be passive receivers. Of course, if the system is to be used for other purposes, then it may not be desirable to limit transmit capability only to the centre subaperture.
+
+
+% ========================================================= %
+% Signal processing algorithm
+% ========================================================= %
+\section{Signal processing algorithm}
+This section presents the promised third component of the improved SAR imaging capability; namely, the fundamentals of a suitable signal processing method. As we have already seen, the desired configuration impacts the design. The signal processing method presented in this section, on the other hand, is one of potentially several others, and its adoption does not place any restrictions upon the configuration or the design.  
+\par
+The previous material depends on a strict timing regime. A practical system may only operate with near-ideal timing conditions and this raises the questions of impact and how best to process the data under these conditions. 
+\par
+Even if timing conditions are perfect, the best approach to data processing is not entirely clear. A simple approach first concatenates the measurements from each beam into a uniformly-sampled time series and then transforms the data from the fast-time, slow-time domain into the fast-time Doppler domain. Given that, for each beam direction, the data correspond to different Doppler centroids, one could assign each response to different portions of the Doppler spectrum (or to different Doppler frequency bands). The union of these Doppler frequency bands corresponds to a wider Doppler spectrum and thereby to higher overall azimuth resolution. If the Doppler bands are non-overlapping, the concept of the union of the frequency bands is straight-forward. Optimal processing of Doppler bands that do overlap, however, requires a more rigorous approach. Optimal processing of data collected under non-ideal timing further calls for a flexible yet robust processing approach.
+\par
+Given that processing should apply to very high-resolution systems, it is best that the approach be suitable for a wide-band system. 
+\par
+The derivation of an optimal processing approach would require more space than available for a letter publication. This section, therefore, only presents the final algorithm along with references to the derivation.
+\subsection{The measured signal}
+In continuous time, the signal from antenna $m$, beam $n$ at fast time $\fasttime$ and slow time $\parm$ is represented as
+\begin{equation}
+ \ztzt{m,n}(\fasttime, \parm)=\stst{m,n}(\fasttime, \parm) + \ntnt{m,n}(\fasttime, \parm)
+\end{equation}
+where $\ntnt{m,n}(\fasttime, \parm)$ represents white noise and $\stst{m,n}(\fasttime, \parm)$ the desired clutter signal. We introduce the vector signal
+\begin{equation}
+ \vecsigTime(\fasttime, \parm) = 
+ \begin{bmatrix}
+ \stst{0\ldots M, 0}(\fasttime, \parm) &
+ \ldots & 
+ \stst{0\ldots M, N}(\fasttime, \parm)
+ \end{bmatrix}^T
+ +
+ \boldsymbol{\nu}(\fasttime, \parm),
+\end{equation}
+where $\boldsymbol{\nu}(\fasttime, \parm)$ is a vector of white noise values.
+\par
+Due to the relationship between Doppler frequency and azimuth angle, the measured vector signal is, perhaps, most readily processed in the frequency domain. As a simplification, this letter assumes that the two-way phase-centre positions of each channel are evenly aligned along the direction of motion so that each two-way phase centre is located at along-track position $m\phaseSep\uSatVelocity{\parm}$, where $\uSatVelocity{\parm}$ denotes the unit vector in the direction of the satellite velocity vector over slow-time. Without going into the derivation, we present the unambiguous frequency domain representation of the signal as
+\begin{equation}
+ \mathcal{F}\{\stst{m,n}(\fasttime, \parm)\} = \SkSk{m,n}(\kr, \kparm)
+\end{equation}
+where,
+\begin{equation}
+ \SkSk{m,n}(\kveczero) = \eex{-\im [m\phaseSep\kappa+n\effrelvel/\prf]\kparm}\GkGk{n}(\kveczero).
+ \label{eq:signalModel}
+\end{equation}
+The phase term at the front corresponds to spatial sampling delays from one channel to the next and temporal sampling delays from one beam to the next. The signal corresponding to each beam contains many terms that are conveniently separated into terms related to the antenna pattern (or beam) and terms that related to the imaging geometry:
+\begin{equation}
+\begin{split}
+ &\GkGk{n}(\kveczero) = \int\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]\vkern(\kr,\kparm,\depression)\d\depression,
+ \end{split}
+ \label{eq:stripSAR3d}
+\end{equation}
+where the amplitude of the antenna pattern is given by $\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]$ which depends on the direction of the beam through $n$, does {\bf not} depend on the two-way phase-centre location (no $m$ dependence) and also depends on the wavelength through $\kr$. The term that corresponds to the geometry and the reflectivity is given by
+\begin{equation}
+\begin{split}
+ &\vkern(\kveczero, \depression) = C_0\Snvelope(\krc)\frac{(\kr^2-\kparm^2)^{\frac{1}{4}}}{v_\sat\kr}\\
+ &\int\frac{\reflectivity[\targetrange, \targetxparm, \depression]}{\sqrt{\targetrange}}\eex{-\im \targetxparm\kparm-\im \targetrange\sqrt{\kr^2-\kparm^2}}\d\targetrange\d\targetxparm
+ \end{split},
+ \label{eq:vparm}
+\end{equation} 
+where, $\kparm=2\pi\fparm/\effrelvel$, $\effrelvel$ represents the effective satellite velocity (relative) and $\fparm$ represents the slow-time Doppler frequency. Also $\kappa = \effrelvel/\amplitude\velocity_s$, where $\amplitude\velocity_s$ is the amplitude of the satellite velocity vector, $\satVelocity{\parm}$, and is assumed constant over $\parm$.  The function, $\reflectivity[\targetrange, \targetxparm, \depression]$, represents the terrain reflectivity as a function of range, $\targetrange$ from the radar, along-track position, $\targetxparm$ and depression angle, $\targetdepression$. Note that the hyperbolic phase term, $\sqrt{\kr^2-\kparm^2}$, may be insufficiently accurate for extremely high azimuth resolution \cite{Mittermayer}. In this case, a more accurate expression can be computed from the material in \cite{NovelRadar}. The look-direction vector in the 2D frequency domain is given by
+\begin{equation}
+ \uRangeVector{\kveczero, \targetdepression} = 
+ \begin{bmatrix}
+  -\kappa\kparm/\kr\\
+  \cos\targetdepression\cos\thetas(\kr,\kparm)\\
+  \sqrt{1 - \cos^2\targetdepression\cos^2\thetas(\kr,\kparm) + \kappa^2\kparm^2/\kr^2}
+ \end{bmatrix}.
+\end{equation}
+Finally, $\Snvelope(\krc)$ denotes the baseband frequency ($\krc$) response of the pulsed waveform after processing for pulse compression, and $C_0$ is some constant. Derivation of the above material can be found in \cite{NovelRadar}.
+\subsection{Multi-channel processing}
+Define the vector $\vct{h}(\kr, \kparm, \depression)$ as the concatenation of the columns of an $(M+1)\times(N+1)$ matrix with element $(m,n)$ given by $\eex{-\im n\temporalbaseline\kparm}\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]\eex{-\im m\spatialbaseline\kparm}$, where, $\temporalbaseline=\effrelvel/\prf$ and $\spatialbaseline=\phaseSep\kappa$.
+\par
+The sampled signal is gven by
+\begin{equation}
+\begin{split}
+\vecsigFreqSampled(\kr, \kparm) &= \sum_l\int\vct{h}(\kr, \kparm+l\kparmPRF)\vkern(\kr,\kparm+l\kparmPRF,\depression)\d\depression\\ 
+&+ \boldsymbol{\nu}(\kr, \kparm)\\
+&=\int\antennaMatrix(\kargs)\vkernvect(\kr, \kparm, \depression)\d\depression+ \boldsymbol{\nu}(\kr, \kparm),
+\end{split}
+\end{equation}
+where
+\begin{equation}
+	\antennaMatrix(\kargs)=
+    \begin{bmatrix}
+    	\hdots & \vct{h}(\kr, \kparm - \kparmPRF, \depression) & \vct{h}(\kr, \kparm, \depression) & \hdots
+    \end{bmatrix},
+\end{equation}
+and
+\begin{equation}
+	\vkernvect(\kr, \kparm, \depression) = 
+    \begin{bmatrix}
+    	\vdots\\
+        \vkern(\kr,\kparm-\kparmPRF,\depression)\\
+        \vkern(\kr,\kparm,\depression)\\
+        \vdots
+    \end{bmatrix},
+\end{equation}
+and, where the spatial sampling frequency is given by
+\begin{equation}
+ \kparmPRF = \frac{2\pi\prf}{(M+1)(N+1)\effrelvel}.
+\end{equation}
+Each element of $\vecsigFreqSampled(\kr, \kparm)$ is undersampled in $\kparm$; however, by applying linear filters an unambiguous scalar spectrum of the signal may be reconstructed. Let us consider a single value of $\depression$ and apply a filtering matrix via $\hrwsFilterMatrix(\kargs)\antennaMatrix(\kargs)=\diagAntennaMatrix(\kargs)$. If the result, $\diagAntennaMatrix(\kargs)$, is diagonal, then we have constructed a mechanism to extract unambiguous signal components - we need only assign the elements of the vector
+\begin{equation}
+	\hrwsFilterMatrix(\kargs)\antennaMatrix(\kargs)\vkernvect(\kr, \kparm, \depression) + \hrwsFilterMatrix(\kargs)\boldsymbol{\nu}(\kr, \kparm)
+\end{equation}
+to each band. As seen in the above, however, the noise component has also been filtered by this matrix and can possibly lead to degraded SNR. The solution presented in this letter provides a mechanism to control this potential SNR loss. 
+\par
+In addition to desiring a diagonal matrix (or as close as possible) for $\diagAntennaMatrix(\kargs)$, it is also fitting to select this matrix such that it has diagonal elements given by the average of the antenna patterns, i.e. $D_{ll}(\kparm) = \dPatternDesired[\kr,\uRangeVector{\kr, \kparm-l\kparmPRF, \targetdepression}]$ where,
+\begin{equation}
+ \dPatternDesired[\kr,\uRangeVector{\kveczero, \targetdepression}]=\sqrt{\frac{1}{N+1}\sum_{n=0}^{N}\biggl\lvert\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]\biggr\rvert^2}.
+\end{equation}
+This desired antenna pattern has support over a wide range of azimuth angles and hence leads to a high-resolution signal.
+\par
+As can be shown, the optimal filter matrix, in a mean-squared error sense, is given by \cite{NovelRadar}
+\begin{equation}
+\begin{split}
+ \hrwsFilterMatrix(&\kargs)=\diagAntennaMatrix(\kargs)\htr{\antennaMatrix}(\kargs)\\
+ &\biggl[\antennaMatrix(\kargs)\htr{\antennaMatrix}(\kargs)+\cost\mtx{R}_n(\kargs)\biggr]^{-1},
+\end{split}
+\end{equation}
+where $\mtx{R}_n(\kargs)$ is the noise covariance matrix and $\cost\in[0,\infty)$ is a parameter that can be set to control potential SNR loss. Specifically, the larger $\cost$, the greater the reduction in potential SNR loss; $\cost=0$ completely ignores any potential SNR loss.
+
+
+% ========================================================= %
+% Simulation
+% ========================================================= %
+\subsection{Simulated Point Spread Function}
+To demonstrate the signal processing approach, this section generates a simulated signal using the design parameters of an 11-channel system. The simulation, with parameters listed in \Tbref{tb:simulation}, has been computed in Python with plots generated using Matplotlib.
+\begin{table}[h!]
+\begin{center}
+ \caption{Simulation parameters}
+ \label{tb:simulation}
+ \begin{tabular}{r|l}
+  $\prf$ (Hz) & $6810$\\\hline
+  $\antennaLengthEffective$ (m) & $2.2$\\\hline
+  $\antennaLength$ (m) & $24.2$\\\hline
+  $M$ & $11$\\\hline
+  $\wavelength$ (m) & $0.031067$\\\hline
+  Azimuth element spacing (m) & 0.04\\\hline
+  $\Delta\threeDBEffective$ (deg) & $0.809$
+ \end{tabular}
+ \end{center}
+\end{table}
+The simulator computes the back-folded signal for each of the 121 channels of data, computes the processing filters, applies the filters to the back-folded data and presents the amplitude of the reconstructed signal in the Doppler domain in \fgref{fg:reconstructed}. The response in the Doppler domain shows the desired response across a region spanning 75 KHz with each local maximum in this region highlighting the response of each sub-beam.
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{\columnwidth}{!}{\input{reconstructed.pgf}}
+ \caption{Response of the reconstructed signal in the Doppler domain.}
+ \label{fg:reconstructed}
+ \end{center}
+\end{figure}
+The simulator then azimuth compresses this reconstructed signal with a computed chirp and transforms the data back into the spatial domain to produce the Point Spread Function (PSF) shown in \fgref{fg:psf}. This figure illustrates that the system achieves the desired resolution with the response width less than 0.1 m at the -5 dB level. While the figure also shows a second set of sidelobes at -15 dB, it is assumed that these can be reduced by an appropriate choice of weighting on the antenna patterns. 
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{\columnwidth}{!}{\input{PSF.pgf}}
+ \caption{Point Spread Function using the described processing method.}
+ \label{fg:psf}
+ \end{center}
+\end{figure}
+\par
+A test noise signal is also generated by the simulator. The SNR prior to filtering is compared with the SNR after filtering (but before azimuth compression) giving a change of about -0.4 dB. This shows that with the simulated parameters, the SNR does not change significantly. Finally, the highest azimuth ambiguity is more than 40 dB below the peak.
+\par
+In summary, the simulation demonstrates the suitability of the proposed signal processing algorithm and also shows how the generated PSF contains extra sidelobes that most likely result from the different shape of the signal response in the Doppler domain. If these sidelobes are intolerable, they can possibly be removed by modifying the phased-array beam tables; however, this is a topic for further research.
+
+
+% ========================================================= %
+% Conclusion
+% ========================================================= %
+\section{Conclusion}
+This letter proposes a system for improved space-based SAR imaging, describing the design, which is based upon a phased-array and an appropriate switching network to allow digitisation of multiple receive channels, the configuration, which imposes a rapid electronic beam switching capability upon the design, and a suitable signal processing algorithm to compute the high resolution imagery. The proposed configuration permits measurement of a relatively large swath in a Stripmap-like mode, thereby offering, theoretically, unlimited azimuth extent. On the other hand, as demonstrated by the test example of 10cm azimuth resolution considered throughout the paper, the resolution of the imagery can be even better than the highest resolution spotlight imagery available from current commercial systems.
+\par
+Importantly, the state of current technology is sufficiently advanced to construct such a SAR system, \cg{e.g.~\cite{7944492}}.
+\par
+As a final important consideration, we note that the design does not preclude the use of other traditional measurement modes such as Spotlight, TOPS or ScanSAR. Further, it provides the flexibility to implement other advanced modes such as HRWS and Ground Moving Target Indication.
+
+\bibliography{document}
+\bibliographystyle{plain}
+\end{document}
+

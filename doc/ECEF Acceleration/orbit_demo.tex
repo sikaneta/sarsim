@@ -1,0 +1,191 @@
+\subsection{Demonstration of accuracy of the model}
+With the above relations, figures \ref{fg:29} to \ref{fg:3725} plot satellite positions using \eqref{eq:diffgeoeqn} over a range of different locations for exemplary data from Sentinel-1 and Terrasar-X. Restituted orbit files from Sentinel-1, sourced from \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/}, and rapid science orbit files for Terrasar-X, sourced from \url{http://isdc-old.gfz-potsdam.de} are used to generate the analysis. Each of the data files obtained from the aforementioned URLs containes several hundred satellite state vectors for the corresponding sensor and, in order to test numerical integration, as outlined in \Scref{sc:svgeoid}, a few randomly selected state vectors are examined from each file. The indeces of these few state vectors are the numbers associated with each of the points illustrated in \fgref{fg:orbitMap}, where the physical location of the satellite at the times of propagation are presented geographically. Satellite orbits are propagated around these selected points, both forward and backwards in time and the results are compared with neighbouring state vectors also recorded in the file. As is clearly evident in figures \ref{fg:4591} to \ref{fg:3725}, numerical integration of the differential equations yields highly accurate, sub-millimeter, values over the period of 40 seconds\footnote{Similar propagation accuracies are obtained with the rapid science orbit files for TSX. These are not plotted because the temporal spacing between sample points is 30 seconds; thus, only the trivial source vector for propagation, which was read from the file, would be available for comparison.}. The satellite position derived through numerical integration thus provides a highly accurate reference against which to test \eqref{eq:diffgeoeqn}. 
+\par
+The figures show that the error in using \eqref{eq:diffgeoeqn} depends on the spatial location of the satellite. This is a result of the uneven distribution of the mass of the earth. On average, over a period of plus/minus ten seconds, the approximation yields an accurate range history, maximum error of 5-10 mm, for a target that is in the center of a beam with a depression angle of 45 degrees. 
+\par
+Note that although these errors are small, they are computable and can be eliminated with appropriate processing. Given the scale of the error (for an X-band system), corrections can be made to the phase of the measured data without regard to the time delay.  \Scref{sc:mysimulation} illustrates the effect of these errors and shows how they can be mitigated.  
+% \begin{figure}
+%     \resizebox{\textwidth}{!}{\input{diffGeoNumerical.pgf}}
+% 	\caption{Difference between application of \eqref{eq:diffgeoeqn} and numerical integration of the differential equation of satellite satellite motion. State vector sourced from \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/}.}
+% 	\label{fg:diffgeonumerical}
+% \end{figure}
+\par
+\Eqref{eq:diffgeoeqn} thus provides a highly accurate and readily computable mathematical function to express the satellite position during a period of twenty seconds. 
+\begin{figure}
+    \resizebox{\textwidth}{!}{\includegraphics{orbitMap.pdf}}
+	\caption{Locations of Sentinel-1 and Terrasar-X  satellites at the times that the geometric model is evaluated. The satellite positions were sourced from \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/} and \url{http://isdc-old.gfz-potsdam.de} for Sentinel and Terrasar-X respectivaely. Image basemap \textcopyright \url{https://www.openstreetmap.org}.}
+	\label{fg:orbitMap}
+\end{figure}
+Compared to the Sentinel-1 orbit, which occupies a higher altitude, the expansion for the Terrasar-X orbit maintains its accuracy for a shorter period of time.
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_28_error.pgf}}  
+  \label{fg:29a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_28_errorProjection_45.0.pgf}} 
+  \label{fg:29b}
+\end{subfigure} 
+\caption{Terrasar-X 29: Argentina, descending}
+\label{fg:29}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_705_error.pgf}}  
+  \label{fg:706a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_705_errorProjection_45.0.pgf}}  
+  \label{fg:706b}
+\end{subfigure}
+\caption{Terrasar-X 706: Ukraine, ascending}
+\label{fg:706}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_1265_error.pgf}}  
+  \label{fg:1266a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_1265_errorProjection_45.0.pgf}}  
+  \label{fg:1266b}
+\end{subfigure}
+\caption{Terrasar-X 1266: Mid-Atlantic, ascending}
+\label{fg:1266}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_676_error.pgf}}  
+  \label{fg:677a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_676_errorProjection_45.0.pgf}}  
+  \label{fg:677b}
+\end{subfigure} 
+\caption{Terrasar-X 677: Tanzania, ascending}
+\label{fg:677}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_1649_error.pgf}} 
+  \label{fg:1650a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{tsx_1649_errorProjection_45.0.pgf}}  
+  \label{fg:1650b}
+\end{subfigure}
+\caption{Terrasar-X 1650: United States, ascending}
+\label{fg:1650}
+\end{figure}
+%
+\clearpage
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_4590_error.pgf}}  
+  \label{fg:4591a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_4590_errorProjection_45.0.pgf}}  
+  \label{fg:4591b}
+\end{subfigure}
+\caption{Sentinel-1 4591: Canada, descending}
+\label{fg:4591}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_1726_error.pgf}}  
+  \label{fg:1727a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_1726_errorProjection_45.0.pgf}}  
+  \label{fg:1727b}
+\end{subfigure}
+\caption{Sentinel-1 1727: Zambia, descending}
+\label{fg:1727}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_4417_error.pgf}}  
+  \label{fg:4418a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_4417_errorProjection_45.0.pgf}}  
+  \label{fg:4418b}
+\end{subfigure}
+\caption{Sentinel-1 4418: India, ascending}
+\label{fg:4418}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_5649_error.pgf}}  
+  \label{fg:5650a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_5649_errorProjection_45.0.pgf}}  
+  \label{fg:5650b}
+\end{subfigure}
+\caption{Sentinel-1 5650: Russia, ascending}
+\label{fg:5650}
+\end{figure}
+%
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_3724_error.pgf}}  
+  \label{fg:3725a}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \resizebox{\textwidth}{!}{\input{sentinel_3724_errorProjection_45.0.pgf}}  
+  \label{fg:3725b}
+\end{subfigure}
+\caption{Sentinel-1 3725: Australia, ascending}
+\label{fg:3725}
+\end{figure}
+\clearpage

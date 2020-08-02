@@ -1,0 +1,816 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{Brautigam2010}{inproceedings}{}
+      \name{author}{7}{}{%
+        {{hash=41f41ed7789ab3a0a9174163bcc4090d}{%
+           family={Brautigam},
+           familyi={B\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=464d7f708777f392d63b94554eb1e7e4}{%
+           family={Rizzoli},
+           familyi={R\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=bb66bed957519b77fabb352b06947e45}{%
+           family={Gonzalez},
+           familyi={G\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=72914f3beab43de7181c84e974b74cc3}{%
+           family={Weigt},
+           familyi={W\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=15b9f7a44001632b033b0a7b8b0ebb36}{%
+           family={Schrank},
+           familyi={S\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=3afff803e100c42d52b3f286b32059c2}{%
+           family={Schulze},
+           familyi={S\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=728ef903b8180ebcb5a746084bfd571f}{%
+           family={Schwerdt},
+           familyi={S\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+      \strng{fullhash}{5b22e2fb570582741519eae1e7cadc3d}
+      \strng{bibnamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+      \strng{authorbibnamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+      \strng{authornamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+      \strng{authorfullhash}{5b22e2fb570582741519eae1e7cadc3d}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The TerraSAR-X satellite features an advanced X-Band SAR based on the active phased array technology which allows flexible operation of Spotlight, Stripmap, and ScanSAR mode for various combinations and elevation angles. It combines the ability to acquire high resolution images for detailed analysis as well as wide swath images for overview applications. The SAR performance of the system is analysed with respect to geometric and radiometric parameters. Long-term monitoring of system parameters like instrument characteristics or SAR image quality confirms the continuous stability of the system. By launching a twin satellite TanDEM-X for global DEM acquisition, the TerraSAR-X mission is now supported by two satellites. The approach presented in the following shows how to keep the SAR performance for both satellites, TerraSAR-X and TanDEM-X.}
+      \field{booktitle}{{Geoscience and Remote Sensing Symposium (IGARSS), 2010 IEEE International}}
+      \field{issn}{2153-6996}
+      \field{title}{{SAR performance monitoring for TerraSAR-X mission}}
+      \field{year}{2010}
+      \field{pages}{3454\bibrangedash 3457}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/IGARSS.2010.5648907
+      \endverb
+      \keyw{artificial satellites; image resolution; phased array radar; radar imaging; radiometry; remote sensing by radar; spaceborne radar; synthetic aperture radar; SAR image quality; SAR performance monitoring; ScanSAR mode; Spotlight; Stripmap; TerraSAR-X mission; TerraSAR-X satellite; active phased array technology; advanced X-Band SAR; elevation angles; geometric parameters; global DEM acquisition; high resolution images; long-term monitoring; radiometric parameters; system parameters; twin satellite TanDEM-X; wide swath images; Azimuth; Image resolution; Instruments; Monitoring; Radiometry; Satellite broadcasting; Satellites; Performance; SAR; TanDEM-X; TerraSAR-X}
+    \endentry
+    \entry{Fox2004}{article}{}
+      \name{author}{3}{}{%
+        {{hash=8d2a13b484d0e4ce2135c4fb3dcb866e}{%
+           family={Fox},
+           familyi={F\bibinitperiod},
+           given={Peter\bibnamedelima A},
+           giveni={P\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=4bcd73a3f45da11cbb7e3c53fc43c719}{%
+           family={Luscombe},
+           familyi={L\bibinitperiod},
+           given={Anthony\bibnamedelima P},
+           giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=9ccceca586eed95fe491acddbcaa241b}{%
+           family={Thompson},
+           familyi={T\bibinitperiod},
+           given={Alan\bibnamedelima A},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {NRC Research Press Ottawa, Canada}%
+      }
+      \strng{namehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \strng{fullhash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \strng{bibnamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \strng{authorbibnamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \strng{authornamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \strng{authorfullhash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Canadian journal of remote sensing}
+      \field{number}{3}
+      \field{title}{{{RADARSAT-2 {SAR}} modes development and utilization}}
+      \field{volume}{30}
+      \field{year}{2004}
+      \field{pages}{258\bibrangedash 264}
+      \range{pages}{7}
+    \endentry
+    \entry{Porfilio2016}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=9fa636684a780612d3a493ffd2c354f6}{%
+           family={Porfilio},
+           familyi={P\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=299308aa2402c48f0cd3fce147d8233b}{%
+           family={Serva},
+           familyi={S\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=09242c145456d84bac1fb063694729d0}{%
+           family={Fiorentino},
+           familyi={F\bibinitperiod},
+           given={C.\bibnamedelimi A.\bibnamedelimi M.},
+           giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=688c6a49491c503c7e843003e7ca6dec}{%
+           family={Calabrese},
+           familyi={C\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+      \strng{fullhash}{652c0569c3cb89cee7effe2a31f9ef3d}
+      \strng{bibnamehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+      \strng{authorbibnamehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+      \strng{authornamehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+      \strng{authorfullhash}{652c0569c3cb89cee7effe2a31f9ef3d}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2016 IEEE International Geoscience and Remote Sensing Symposium (IGARSS)}
+      \field{month}{7}
+      \field{title}{The acquisition modes of COSMO-Skymed di Seconda Generazione: A new combined approach based on SAR and platform agility}
+      \field{year}{2016}
+      \field{pages}{2082\bibrangedash 2085}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/IGARSS.2016.7729537
+      \endverb
+      \keyw{data acquisition;remote sensing by radar;synthetic aperture radar;COSMO-Skymed di Seconda Generazione acquisition mode;SAR agility;Stripmap mode;dual-polarisation product;geolocation performances;polarisation characteristics;quad-polarisation product;satellite Earth observation;synthetic aperture radar;zero-doppler acquisition;Azimuth;Image quality;Image resolution;Satellites;Spaceborne radar;Standards;Synthetic aperture radar;Acquisition Modes;COSMO-SkyMed;CSG;CSK;SAR}
+    \endentry
+    \entry{Mittermayer}{article}{}
+      \name{author}{4}{}{%
+        {{hash=89722277c2d288e97198fbd6bbc0e7a4}{%
+           family={Mittermayer},
+           familyi={M\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=768ced179aad640998a1be23b4bb404e}{%
+           family={Wollstadt},
+           familyi={W\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=89db8e91ab9594cf4e03042e69fb5ad6}{%
+           family={Prats-Iraola},
+           familyi={P\bibinithyphendelim I\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=cdde3a7e240c6f7860db74659078cd5d}{%
+           family={Scheiber},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{cb3f71910742ffeed21f22a55f32a3e8}
+      \strng{fullhash}{be1007f9ef69546ed0fdd406c387b206}
+      \strng{bibnamehash}{cb3f71910742ffeed21f22a55f32a3e8}
+      \strng{authorbibnamehash}{cb3f71910742ffeed21f22a55f32a3e8}
+      \strng{authornamehash}{cb3f71910742ffeed21f22a55f32a3e8}
+      \strng{authorfullhash}{be1007f9ef69546ed0fdd406c387b206}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The paper investigates the possibility to enhance the TerraSAR-X (TSX) azimuth resolution by means of staring spotlight imaging in combination with an extended azimuth pattern steering. The current TSX spotlight modes are briefly reviewed, and the azimuth steering limitations are discussed. Based on a realistic TSX azimuth pattern simulation and performance estimation using a Kepler orbit and the WGS84 reference ellipsoid, the key performance parameters are estimated for an increasing azimuth pattern steering angle span. The azimuth ambiguity performance is identified to be the driving performance parameter. Experimental TSX staring spotlight high-resolution images are presented. They demonstrate and verify the envisaged performance estimation. The paper concludes with a concept for a high-resolution TSX staring spotlight mode that serves as baseline for the upcoming operational implementation.}
+      \field{issn}{0196-2892}
+      \field{journaltitle}{IEEE Transactions on Geoscience and Remote Sensing}
+      \field{month}{6}
+      \field{number}{6}
+      \field{title}{The TerraSAR-X Staring Spotlight Mode Concept}
+      \field{volume}{52}
+      \field{year}{2014}
+      \field{pages}{3695\bibrangedash 3706}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/TGRS.2013.2274821
+      \endverb
+      \keyw{geophysical techniques;image resolution;radar imaging;radar resolution;remote sensing by radar;spaceborne radar;synthetic aperture radar;Kepler orbit;TSX azimuth pattern simulation;TSX azimuth resolution;TSX spotlight mode;TerraSAR-X staring spotlight mode concept;WGS84 reference ellipsoid;azimuth ambiguity performance;azimuth pattern steering angle span;azimuth steering limitation;extended azimuth pattern steering;high-resolution images;performance parameter estimation;staring spotlight imaging;Antennas;Arrays;Azimuth;Gain;Gratings;Orbits;Signal to noise ratio;High-resolution;TerraSAR-X;staring spotlight;synthetic aperture radar (SAR)}
+    \endentry
+    \entry{Luo2014}{article}{}
+      \name{author}{6}{}{%
+        {{hash=c792eda15a421cf9cc8d73528e9cf458}{%
+           family={{Luo}},
+           familyi={L\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=b79936295c8c242b778091b6c73c89fc}{%
+           family={{Zhao}},
+           familyi={Z\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=d5f7ae42a563998bd7eccae3eaed6b75}{%
+           family={{Han}},
+           familyi={H\bibinitperiod},
+           given={X.},
+           giveni={X\bibinitperiod}}}%
+        {{hash=95c40ddfdd2cb0ac5a1ef74bb71692f3}{%
+           family={{Wang}},
+           familyi={W\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=595a3b9daf2838911d5e8dc95dfa20be}{%
+           family={{Song}},
+           familyi={S\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod}}}%
+        {{hash=81632e508226c691684605abf5de1ba8}{%
+           family={{Deng}},
+           familyi={D\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{f6b96f09224c246be0b806653e74b336}
+      \strng{fullhash}{c4aec8961d4582e92285127b21966ec3}
+      \strng{bibnamehash}{f6b96f09224c246be0b806653e74b336}
+      \strng{authorbibnamehash}{f6b96f09224c246be0b806653e74b336}
+      \strng{authornamehash}{f6b96f09224c246be0b806653e74b336}
+      \strng{authorfullhash}{c4aec8961d4582e92285127b21966ec3}
+      \field{sortinit}{3}
+      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{High-resolution spaceborne synthetic aperture radar (SAR) mainly poses two challenges to signal processing. The first challenge involves the signal model, where a precise range equation of spaceborne SAR should be considered as the conventional hyperbolic range equation fails to precisely describe the range history in the high-resolution case. The second challenge is an efficient focusing algorithm since the existing SAR processors are inaccurate or inefficient for high-resolution spaceborne SAR. Therefore, in this paper, a novel fourth-order polynomial range equation based on Doppler parameters is proposed, and the method for parameter determination is also addressed. Compared with conventional range equations, the presented one is more accurate and concise for low-earth-orbit SAR so that a higher azimuth resolution can be achieved. Based on the range model, a 2-D spectrum is derived, and an extended range Doppler domain algorithm for SAR image formation in the sliding spotlight mode is also developed. Additionally, we carried out several simulations to validate the presented approach. Results demonstrate high performances of the focusing algorithm as well as the range equation.}
+      \field{issn}{1558-0644}
+      \field{journaltitle}{IEEE Transactions on Geoscience and Remote Sensing}
+      \field{month}{6}
+      \field{number}{6}
+      \field{title}{A Novel High-Order Range Model and Imaging Approach for High-Resolution LEO SAR}
+      \field{volume}{52}
+      \field{year}{2014}
+      \field{pages}{3473\bibrangedash 3485}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/TGRS.2013.2273086
+      \endverb
+      \keyw{Doppler radar;focusing;image resolution;radar imaging;radar resolution;remote sensing by radar;signal processing;spaceborne radar;synthetic aperture radar;high-order range model;imaging approach;high-resolution LEO SAR;high-resolution spaceborne synthetic aperture radar;signal processing;signal model;focusing algorithm;SAR processor;high-resolution spaceborne SAR;fourth-order polynomial range equation;Doppler parameters;parameter determination;low-Earth-orbit SAR;azimuth resolution;2D spectrum;extended range Doppler domain algorithm;SAR image formation;sliding spotlight mode;Doppler effect;Synthetic aperture radar;Mathematical model;Azimuth;Low earth orbit satellites;Equations;Signal processing algorithms;Fourth-order Doppler range model (DRM4);high resolution;low earth orbit (LEO);range Doppler algorithm (RDA);Fourth-order Doppler range model (DRM4);high resolution;low earth orbit (LEO);range Doppler algorithm (RDA)}
+    \endentry
+    \entry{CalabreseDiego2014}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=437b36bcdd3480d4173f682bc78812e7}{%
+           family={Calabrese},
+           familyi={C\bibinitperiod},
+           given={Diego},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{437b36bcdd3480d4173f682bc78812e7}
+      \strng{fullhash}{437b36bcdd3480d4173f682bc78812e7}
+      \strng{bibnamehash}{437b36bcdd3480d4173f682bc78812e7}
+      \strng{authorbibnamehash}{437b36bcdd3480d4173f682bc78812e7}
+      \strng{authornamehash}{437b36bcdd3480d4173f682bc78812e7}
+      \strng{authorfullhash}{437b36bcdd3480d4173f682bc78812e7}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{A novel technique for design of Synthetic Aperture Radar (SAR) is proposed. The main idea is that by using a SAR in time sharing, it is possible to acquire different strip images either to increase azimuth resolution or to have a multi-image system. This new method for SAR design overcomes the constraint relative to the minimum stripmap resolution, conventionally fixed at half of the antenna physical or equivalent dimension. The idea to acquire different strip images gives the name to this technique: DIscrete Stepped Strip (DI2S). DI2S and in general the applications using this acquisition logic, are patent pending.}
+      \field{booktitle}{{EUSAR 2014; 10th European Conference on Synthetic Aperture Radar; Proceedings of}}
+      \field{month}{6}
+      \field{title}{{DIscrete Stepped Strip (DI2S)}}
+      \field{year}{2014}
+      \field{pages}{1\bibrangedash 4}
+      \range{pages}{4}
+    \endentry
+    \entry{SikanetaGierullTGRS2015}{article}{}
+      \name{author}{2}{}{%
+        {{hash=41b11ca50624f7d7a41c39c697340d0e}{%
+           family={Sikaneta},
+           familyi={S\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+        {{hash=e264b975a11891d712521a933b4aa13a}{%
+           family={Gierull},
+           familyi={G\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+      \strng{fullhash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+      \strng{bibnamehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+      \strng{authorbibnamehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+      \strng{authornamehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+      \strng{authorfullhash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This paper discusses the ability of a SAR to create high-resolution images with high sensitivity in a stripmap configuration. Since geometric resolution is driven by the effective azimuth beamwidth of the antenna, it compares beam spoiling methods to beam switching methods with particular attention to the achieved SNR. It also formulates the effects of element mutual coupling on the SNR. Further, since existing systems may not be able to switch beams at a rate equivalent to the PRF, this paper also discusses a method to process beam switched data collected in a burst configuration, showing that SNR and the presence of grating lobes trade against each other as the number of pulses per burst increases. Finally, this paper investigates improvements to signal quality offered by using a multichannel system, with elements aligned in the flight direction, over a single channel system.}
+      \field{issn}{1939-1404}
+      \field{journaltitle}{IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing}
+      \field{month}{11}
+      \field{number}{11}
+      \field{title}{Phased-Array Beam-Diversity With Multiple Channels for Improved SAR Imaging}
+      \field{volume}{8}
+      \field{year}{2015}
+      \field{pages}{5106\bibrangedash 5115}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/JSTARS.2015.2483758
+      \endverb
+      \keyw{antenna phased arrays;image resolution;radar imaging;radar resolution;synthetic aperture radar;antenna;beam spoiling methods;beam switching methods;burst configuration;effective azimuth beamwidth;element mutual coupling;flight direction;geometric resolution;grating lobes;high-resolution images;improved SAR imaging;multichannel system;phased-array beam-diversity;signal quality;single channel system;stripmap configuration;Azimuth;Image resolution;Phased arrays;Radar antennas;Radar imaging;Synthetic aperture radar;Ambiguity ratio;SAR;beam diversity;geometric resolution;phased array;radiometric resolution}
+    \endentry
+    \entry{Cumming2005}{book}{}
+      \name{author}{2}{}{%
+        {{hash=27d35ab114713748d3b6abc41b9201ba}{%
+           family={Cumming},
+           familyi={C\bibinitperiod},
+           given={I.\bibnamedelimi G.},
+           giveni={I\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=664d235e302a645a5d3700b68535ec48}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={F.\bibnamedelimi H.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Norwood, MA}%
+      }
+      \list{publisher}{1}{%
+        {Artech House Remote Sensing Library}%
+      }
+      \strng{namehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+      \strng{fullhash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+      \strng{bibnamehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+      \strng{authorbibnamehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+      \strng{authornamehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+      \strng{authorfullhash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+      \field{sortinit}{5}
+      \field{sortinithash}{5dd416adbafacc8226114bc0202d5fdd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{1-58053-058-3}
+      \field{title}{{Digital Processing of Synthetic Aperture Radar Data: Algorithms and Implementation}}
+      \field{year}{2005}
+    \endentry
+    \entry{GebertPHD}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=107d2211de0ae10ac5fa4635ce6a1c38}{%
+           family={Gebert},
+           familyi={G\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {University of Karlsruhe}%
+      }
+      \strng{namehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+      \strng{fullhash}{107d2211de0ae10ac5fa4635ce6a1c38}
+      \strng{bibnamehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+      \strng{authorbibnamehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+      \strng{authornamehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+      \strng{authorfullhash}{107d2211de0ae10ac5fa4635ce6a1c38}
+      \field{sortinit}{6}
+      \field{sortinithash}{7851c86048328b027313775d8fbd2131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Multi-Channel Azimuth Processing for High-Resolution Wide-Swath SAR Imaging}}
+      \field{type}{phdthesis}
+      \field{year}{2009}
+    \endentry
+    \entry{Shou2014}{article}{}
+      \name{author}{1}{}{%
+        {{hash=2af4424d8b78a4e9318dd36d8a045594}{%
+           family={Shou},
+           familyi={S\bibinitperiod},
+           given={Ho-Nien},
+           giveni={H\bibinithyphendelim N\bibinitperiod}}}%
+      }
+      \strng{namehash}{2af4424d8b78a4e9318dd36d8a045594}
+      \strng{fullhash}{2af4424d8b78a4e9318dd36d8a045594}
+      \strng{bibnamehash}{2af4424d8b78a4e9318dd36d8a045594}
+      \strng{authorbibnamehash}{2af4424d8b78a4e9318dd36d8a045594}
+      \strng{authornamehash}{2af4424d8b78a4e9318dd36d8a045594}
+      \strng{authorfullhash}{2af4424d8b78a4e9318dd36d8a045594}
+      \field{sortinit}{7}
+      \field{sortinithash}{f615fb9c6fba11c6f962fb3fd599810e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Antennas and Propagation}
+      \field{title}{Orbit Propagation and Determination of Low Earth Orbit Satellites}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb https://doi.org/10.1155/2014/903026
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1155/2014/903026
+      \endverb
+    \endentry
+    \entry{Cumming2003}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=27d35ab114713748d3b6abc41b9201ba}{%
+           family={Cumming},
+           familyi={C\bibinitperiod},
+           given={I.G.},
+           giveni={I\bibinitperiod}}}%
+        {{hash=b4a5cd43c191f0af180d8499c31e64ac}{%
+           family={Neo},
+           familyi={N\bibinitperiod},
+           given={Y.L.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=664d235e302a645a5d3700b68535ec48}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={F.H.},
+           giveni={F\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Toulouse, France}%
+      }
+      \strng{namehash}{2c9429498cbcc7706b6dd54942a58efa}
+      \strng{fullhash}{2c9429498cbcc7706b6dd54942a58efa}
+      \strng{bibnamehash}{2c9429498cbcc7706b6dd54942a58efa}
+      \strng{authorbibnamehash}{2c9429498cbcc7706b6dd54942a58efa}
+      \strng{authornamehash}{2c9429498cbcc7706b6dd54942a58efa}
+      \strng{authorfullhash}{2c9429498cbcc7706b6dd54942a58efa}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{Geoscience and Remote Sensing Symposium, 2003. IGARSS '03. Proceedings. 2003 IEEE International}}
+      \field{month}{7}
+      \field{title}{{Interpretations of the omega-K algorithm and comparisons with other algorithms}}
+      \field{volume}{3}
+      \field{year}{2003}
+      \field{pages}{1455\bibrangedash 1458}
+      \range{pages}{4}
+    \endentry
+    \entry{Franc99}{book}{}
+      \name{author}{2}{}{%
+        {{hash=617b1bb2db79a207c24c51e4aa8b4e98}{%
+           family={Franceschetti},
+           familyi={F\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=1aebd807e8aeae2393967a8f7ac4b606}{%
+           family={Lanari},
+           familyi={L\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Washington}%
+      }
+      \list{publisher}{1}{%
+        {CRC Press}%
+      }
+      \strng{namehash}{46f3f16f6bd7f1539120dbf64243198c}
+      \strng{fullhash}{46f3f16f6bd7f1539120dbf64243198c}
+      \strng{bibnamehash}{46f3f16f6bd7f1539120dbf64243198c}
+      \strng{authorbibnamehash}{46f3f16f6bd7f1539120dbf64243198c}
+      \strng{authornamehash}{46f3f16f6bd7f1539120dbf64243198c}
+      \strng{authorfullhash}{46f3f16f6bd7f1539120dbf64243198c}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Synthetic Aperture Radar Processing}}
+      \field{year}{1999}
+    \endentry
+    \entry{Raney1992}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=89297a2599df8e9e50dc7d6cefd0ba03}{%
+           family={Raney},
+           familyi={R\bibinitperiod},
+           given={R.\bibnamedelimi K.},
+           giveni={R\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Houston, TX, USA}%
+      }
+      \strng{namehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+      \strng{fullhash}{89297a2599df8e9e50dc7d6cefd0ba03}
+      \strng{bibnamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+      \strng{authorbibnamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+      \strng{authornamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+      \strng{authorfullhash}{89297a2599df8e9e50dc7d6cefd0ba03}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Geoscience and Remote Sensing Symposium, 1992. IGARSS '92. International}
+      \field{month}{5}
+      \field{title}{A New And Fundamental Fourier Transform Pair}
+      \field{volume}{1}
+      \field{year}{1992}
+      \field{pages}{106\bibrangedash 107}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1109/IGARSS.1992.576640
+      \endverb
+      \keyw{Azimuth;Equations;Fourier transforms;Frequency domain analysis;Image analysis;Pulse modulation;Remote sensing;Signal analysis;Signal processing;Tomography}
+    \endentry
+    \entry{Bamler1992}{article}{}
+      \name{author}{1}{}{%
+        {{hash=a89e7fb258f55dd0d1b62199281587f0}{%
+           family={Bamler},
+           familyi={B\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{a89e7fb258f55dd0d1b62199281587f0}
+      \strng{fullhash}{a89e7fb258f55dd0d1b62199281587f0}
+      \strng{bibnamehash}{a89e7fb258f55dd0d1b62199281587f0}
+      \strng{authorbibnamehash}{a89e7fb258f55dd0d1b62199281587f0}
+      \strng{authornamehash}{a89e7fb258f55dd0d1b62199281587f0}
+      \strng{authorfullhash}{a89e7fb258f55dd0d1b62199281587f0}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Focusing of SAR data requires a space-variant two-dimensional correlation. Different algorithms are compared with each other in terms of their focusing quality and their ability to handle the space-variance of the correlation kernel: the range-Doppler approach with and without secondary range compression, modified range-Doppler algorithms, and four versions of the wavenumber domain processor. The phase aberrations of the different algorithms are given in analytic form. Numerical examples are presented for Seasat and ERS-1. A novel systems theoretical derivation of the wavenumber domain algorithm is presented}
+      \field{journaltitle}{Geoscience and Remote Sensing, IEEE Transactions on}
+      \field{month}{7}
+      \field{number}{4}
+      \field{title}{{A comparison of range-Doppler and wavenumber domain SAR focusing algorithms}}
+      \field{volume}{30}
+      \field{year}{1992}
+      \field{pages}{706\bibrangedash 713}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/36.158864
+      \endverb
+    \endentry
+    \entry{EnderSignalTheoretic}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=7cc07dbc72f0eb6fb7115c7108af547d}{%
+           family={Ender},
+           familyi={E\bibinitperiod},
+           given={J.\bibnamedelimi H\bibnamedelima G},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Toulouse, France}%
+      }
+      \strng{namehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+      \strng{fullhash}{7cc07dbc72f0eb6fb7115c7108af547d}
+      \strng{bibnamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+      \strng{authorbibnamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+      \strng{authornamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+      \strng{authorfullhash}{7cc07dbc72f0eb6fb7115c7108af547d}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Not Available}
+      \field{booktitle}{{Geoscience and Remote Sensing Symposium, 2003. IGARSS '03. Proceedings. 2003 IEEE International}}
+      \field{month}{7}
+      \field{title}{{Signal theoretical aspects of bistatic SAR}}
+      \field{volume}{3}
+      \field{year}{2003}
+      \field{pages}{1438\bibrangedash 1441}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/IGARSS.2003.1294137
+      \endverb
+      \keyw{Geometry; History; Layout; Radar antennas; Radar polarimetry; Radar scattering; Receiving antennas; Reflectivity; Transmitters; Transmitting antennas}
+    \endentry
+    \entry{Spiegel1964}{book}{}
+      \name{author}{1}{}{%
+        {{hash=f8fde6c55a68984d84dc0b739b38d6fd}{%
+           family={Spiegel},
+           familyi={S\bibinitperiod},
+           given={M.\bibnamedelimi R.},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York}%
+      }
+      \list{publisher}{1}{%
+        {Schaums}%
+      }
+      \strng{namehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+      \strng{fullhash}{f8fde6c55a68984d84dc0b739b38d6fd}
+      \strng{bibnamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+      \strng{authorbibnamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+      \strng{authornamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+      \strng{authorfullhash}{f8fde6c55a68984d84dc0b739b38d6fd}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Theory and Problems of Complex Variables}}
+      \field{year}{1964}
+    \endentry
+    \entry{Cafforio1991a}{article}{}
+      \name{author}{3}{}{%
+        {{hash=52f1191b00e09996a551b60899393d6b}{%
+           family={Cafforio},
+           familyi={C\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=ac7acf2d3666a9ddf3335a067b7d654b}{%
+           family={Prati},
+           familyi={P\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=dfa8f77429b9ae3b40fae15a4e667dd1}{%
+           family={Rocca},
+           familyi={R\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{83db69cda12666637c9ccb5a46a37951}
+      \strng{fullhash}{83db69cda12666637c9ccb5a46a37951}
+      \strng{bibnamehash}{83db69cda12666637c9ccb5a46a37951}
+      \strng{authorbibnamehash}{83db69cda12666637c9ccb5a46a37951}
+      \strng{authornamehash}{83db69cda12666637c9ccb5a46a37951}
+      \strng{authorfullhash}{83db69cda12666637c9ccb5a46a37951}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The focusing of synthetic-aperture-radar (SAR) data using migration techniques quite similar to those used in geophysics is treated. The algorithm presented works in the \&sub>x domain. Because time delays can be easily accommodated with phase shifts that increase linearly with \& range migration poses no problem. The algorithm is described in plane geometry first, where range migration and phase history can be exactly matched. The effects of the sphericity of the Earth, of the Earth's rotation, and of the satellite trajectory curvature are taken into account, showing that the theoretically achievable spatial resolution is well within the requirements of present day and near future SAR missions. Terrestrial swaths as wide as 100 km can be focused simultaneously with no serious degradation. The algorithm has been tested with synthetic data, with Seasat-A data, and with airplane data (NASA-AIR). The experimental results fully support the theoretical analysis}
+      \field{journaltitle}{Aerospace and Electronic Systems, IEEE Transactions on}
+      \field{month}{3}
+      \field{number}{2}
+      \field{title}{{SAR data focusing using seismic migration techniques}}
+      \field{volume}{27}
+      \field{year}{1991}
+      \field{pages}{194\bibrangedash 207}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1109/7.78293
+      \endverb
+    \endentry
+    \entry{NovelRadar}{inbook}{}
+      \name{author}{2}{}{%
+        {{hash=d965f0b6cfe13c8601e087854bd43efa}{%
+           family={Sikaneta},
+           familyi={S\bibinitperiod},
+           given={I.\bibnamedelimi C.},
+           giveni={I\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=b3f0d10e55fdb355e6ecbc9108dea188}{%
+           family={Cerutti-Maori},
+           familyi={C\bibinithyphendelim M\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \name{editor}{6}{}{%
+        {{hash=cc05ad91d647ee34ad039e0954bc508b}{%
+           family={Klemm},
+           familyi={K\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=6a77d4b0979293c4f776e2e1034d542f}{%
+           family={Nickel},
+           familyi={N\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod}}}%
+        {{hash=e264b975a11891d712521a933b4aa13a}{%
+           family={Gierull},
+           familyi={G\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=68949d7a15ae5d151f88a648d8faf521}{%
+           family={Lombardo},
+           familyi={L\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=691446ea8764102a0b49cb4abfd8bd1d}{%
+           family={Griffiths},
+           familyi={G\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod}}}%
+        {{hash=639d6d70f3b52e3de3ed132885b0ca55}{%
+           family={Koch},
+           familyi={K\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Raleigh}%
+      }
+      \list{publisher}{1}{%
+        {SciTech Publishing}%
+      }
+      \strng{namehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+      \strng{fullhash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+      \strng{bibnamehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+      \strng{authorbibnamehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+      \strng{authornamehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+      \strng{authorfullhash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+      \strng{editorbibnamehash}{5706d03ceee1f2ace3931c9eb197a558}
+      \strng{editornamehash}{5706d03ceee1f2ace3931c9eb197a558}
+      \strng{editorfullhash}{57b121221c064e26a8704ad9948d9692}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{{High-resolution wide-swath SAR}}
+      \field{title}{Novel Radar Techniques and Applications}
+      \field{year}{2017}
+    \endentry
+    \entry{Krieger2004}{article}{}
+      \name{author}{3}{}{%
+        {{hash=e0a2391fdc3512f1b96d9b8746d1c3ff}{%
+           family={Krieger},
+           familyi={K\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=107d2211de0ae10ac5fa4635ce6a1c38}{%
+           family={Gebert},
+           familyi={G\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+        {{hash=dcbc8560e9d8a385ed9b9de21d5f5d9c}{%
+           family={Moreira},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{843f580b4ffa79e2a8072cd28f10a20e}
+      \strng{fullhash}{843f580b4ffa79e2a8072cd28f10a20e}
+      \strng{bibnamehash}{843f580b4ffa79e2a8072cd28f10a20e}
+      \strng{authorbibnamehash}{843f580b4ffa79e2a8072cd28f10a20e}
+      \strng{authornamehash}{843f580b4ffa79e2a8072cd28f10a20e}
+      \strng{authorfullhash}{843f580b4ffa79e2a8072cd28f10a20e}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The displaced phase center (DPC) technique will enable a wide-swath synthetic aperture radar (SAR) with high azimuth resolution. In a classic DPC system, the pulse repetition frequency (PRF) has to be chosen such that the SAR carrier moves just one half of its antenna length between subsequent radar pulses. Any deviation from this PRF will result in a nonuniform sampling of the synthetic aperture. This letter derives an innovative reconstruction algorithm and shows that an unambiguous reconstruction of a SAR signal is possible for nonuniform sampling of the synthetic aperture. This algorithm will also have great potential for multistatic satellite constellations as well as the dual receive antenna mode in Radarsat 2 and TerraSAR-X.}
+      \field{issn}{1545-598X}
+      \field{journaltitle}{Geoscience and Remote Sensing Letters, IEEE}
+      \field{month}{10}
+      \field{number}{4}
+      \field{title}{{Unambiguous SAR signal reconstruction from nonuniform displaced phase center sampling}}
+      \field{volume}{1}
+      \field{year}{2004}
+      \field{pages}{260\bibrangedash 264}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/LGRS.2004.832700
+      \endverb
+      \verb{file}
+      \verb attachment\:KriegerGebertMoreira.pdf:attachment\:KriegerGebertMoreira.pdf:PDF
+      \endverb
+      \keyw{Radarsat 2; TerraSAR-X; antenna length; azimuth resolution; dual receive antenna mode; multistatic satellite constellations; nonuniform displaced phase center sampling; pulse repetition frequency; radar pulse; unambiguous SAR signal reconstruction; wide-swath synthetic aperture radar; data acquisition; geophysical equipment; geophysical signal processing; geophysical techniques; signal reconstruction; signal sampling; spaceborne radar; synthetic aperture radar}
+    \endentry
+    \entry{Gebert2009b}{article}{}
+      \name{author}{2}{}{%
+        {{hash=107d2211de0ae10ac5fa4635ce6a1c38}{%
+           family={Gebert},
+           familyi={G\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+        {{hash=e0a2391fdc3512f1b96d9b8746d1c3ff}{%
+           family={Krieger},
+           familyi={K\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{421695b97053c2614014735b91601394}
+      \strng{fullhash}{421695b97053c2614014735b91601394}
+      \strng{bibnamehash}{421695b97053c2614014735b91601394}
+      \strng{authorbibnamehash}{421695b97053c2614014735b91601394}
+      \strng{authornamehash}{421695b97053c2614014735b91601394}
+      \strng{authorfullhash}{421695b97053c2614014735b91601394}
+      \field{sortinit}{1}
+      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Synthetic aperture radar (SAR) systems with multiple receive channels allow for high-resolution wide-swath imaging thus overcoming a fundamental limitation of conventional single-aperture SAR. By using multiple apertures in azimuth, additional samples are received for each transmitted pulse. This allows for a reduced pulse repetition frequency (PRF) thereby enabling a wider swath. However, a nonoptimum PRF is associated with a nonuniform sample spacing in azimuth and needs to be compensated by a multichannel reconstruction algorithm. For strong deviations from the optimum PRF, the inverse character of such an algorithm might result in a degraded performance. This can be overcome by an innovative advanced transmit antenna architecture which allows for a pulse-to-pulse shift of the phase center. Such an antenna enables the adaptive adjustment of the system's phase center positions to the respective PRF, thereby ensuring constant performance over a clearly extended PRF range. In particular, in combination with conventional multichannel processing strategies, this technique represents the next step toward a fully active multiple-input multiple-output (MIMO) SAR and has a great potential for future systems.}
+      \field{issn}{1545-598X}
+      \field{journaltitle}{Geoscience and Remote Sensing Letters, IEEE}
+      \field{month}{10}
+      \field{number}{4}
+      \field{title}{{Azimuth Phase Center Adaptation on Transmit for High-Resolution Wide-Swath SAR Imaging}}
+      \field{volume}{6}
+      \field{year}{2009}
+      \field{pages}{782\bibrangedash 786}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/LGRS.2009.2025245
+      \endverb
+      \verb{file}
+      \verb attachment\:GebertLetter.pdf:attachment\:GebertLetter.pdf:PDF
+      \endverb
+      \keyw{azimuth phase center adaptation; high-resolution wide-swath SAR imaging; multichannel reconstruction algorithm; multiple receive channels; multiple-input multiple-output SAR; reduced pulse repetition frequency; synthetic aperture radar; transmit antenna architecture; MIMO systems; array signal processing; geophysical signal processing; radar antennas; radar signal processing; remote sensing by radar; signal reconstruction; synthetic aperture radar}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

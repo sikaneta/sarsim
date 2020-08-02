@@ -1,0 +1,165 @@
+\section{Antenna pattern angles}
+\label{an:Angles}
+Let us examine $\uRangeVectorParm\cdot\vct{N}(\parm)$ and $\uRangeVectorParm\cdot\vct{B}(\parm)$ by exanding these terms around $\parm_0, \targetnoparmzero$. A first order expansion of the look vector yields
+\begin{equation}
+ \uRangeVectorParm \approx \uRangeVectorParmZero + (\parm-\parm_0)\frac{\mtx{P}_{\rangeVectorParmZero}\vct{T}_0}{\targetrangez} + \frac{\mtx{P}_{\rangeVectorParmZero}(\targetnoparm-\targetnoparmzero)}{\targetrangez},
+\end{equation}
+where $\rangeVectorParmZero=\defrangeVectorParmZero$.
+\par
+Since $\vct{T}_0$ is perpendicular to $\rangeVectorParmZero$, one immediately finds that $\mtx{P}_{\rangeVectorParmZero}\vct{T}_0 = \vct{T}_0$. Furthermore
+\begin{equation}
+ \targetnoparmzero = \sat(\parm_0) + \targetrangez\cos\targetdepressionz\vct{N}_0 + \targetrangez\sin\targetdepressionz\vct{B}_0,
+ \label{eq:pzero}
+\end{equation}
+and
+\begin{equation}
+\begin{split}
+ \targetnoparm &= \sat(\parm_0) + (\targetxparm - \parm_0)\vct{T}_0 + \frac{(\targetxparm - \parm_0)^2}{2}\kappa_0\vct{N}_0 + \frac{(\targetxparm - \parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + \dot{\kappa}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\\ 
+ &+ \targetrange\cos\targetdepression\left[\vct{N}_0 + (\targetxparm - \parm_0)\biggl(-\kappa_0\vct{T}_0 + \tau_0\vct{B}_0\biggr)\right] + \targetrange\sin\targetdepression\left[\vct{B}_0 + (\targetxparm - \parm_0)\biggl(- \tau_0\vct{N}_0\biggr)\right]
+ \label{eq:ptarget}
+ \end{split}
+\end{equation}
+In the above, we have used the Frenet-Serret equations of \eqref{eq:FrenetSerret} to make the approximation that
+\begin{align}
+ \mtx{N}(\parm)&\approx\vct{N}_0 + (\parm - \parm_0)\biggl[-\kappa_0\vct{T}_0 + \tau_0\vct{B}_0\biggr]\\
+ \mtx{B}(\parm)&\approx\vct{B}_0 + (\parm - \parm_0)\biggl[- \tau_0\vct{N}_0\biggr]
+\end{align}
+Now with
+\begin{equation}
+ \uRangeVectorParmZero = \cos\targetdepressionz\vct{N}_0 + \sin\targetdepressionz\vct{B}_0
+\end{equation}
+one can calculate that
+\begin{equation}
+ \uRangeVectorParmZeroPerp = \sin\targetdepressionz\vct{N}_0 - \cos\targetdepressionz\vct{B}_0.
+ \label{eq:rperp}
+\end{equation}
+By combining equations \eqref{eq:pzero}, \eqref{eq:ptarget} and \eqref{eq:rperp}, one arrives at the following expressions
+\begin{equation}
+  \mtx{P}_{\rangeVectorParmZero}(\targetnoparm-\targetnoparmzero) = [\uRangeVectorParmZeroPerp\cdot(\targetnoparm-\targetnoparmzero)]\uRangeVectorParmZeroPerp
+\end{equation}
+and
+\begin{equation}
+\begin{split}
+  \uRangeVectorParmZeroPerp\cdot(\targetnoparm-\targetnoparmzero)&\approx\frac{1}{6}(\targetxparm-\parm_0)^3[\kappa_0\tau_0\cos\targetdepressionz - \dot{\kappa}_0\sin\targetdepressionz]+\frac{1}{2}\kappa(\targetxparm-\parm_0)^2\sin\targetdepressionz\\
+  &- (\targetxparm-\parm_0)\targetrange\tau_0\cos(\targetdepression-\targetdepressionz) -\targetrange\sin(\targetdepression-\targetdepressionz)
+ \end{split}
+\end{equation}
+The only term that makes a difference in the above is $\targetrange\sin(\targetdepression-\targetdepressionz)$, thus
+\begin{equation}
+ \frac{\mtx{P}_{\rangeVectorParmZero}(\targetnoparm-\targetnoparmzero)}{\targetrangez}\approx-\frac{\targetrange}{\targetrangez}\sin(\targetdepression-\targetdepressionz)\uRangeVectorParmZeroPerp
+\end{equation}
+Thus, one finally arrives at
+\begin{equation}
+\begin{split}
+ \uRangeVectorParm &\approx \uRangeVectorParmZero + (\parm-\parm_0)\frac{\vct{T}_0}{\targetrangez} + \frac{\targetrange}{\targetrangez}\sin(\targetdepression-\targetdepressionz)\uRangeVectorParmZeroPerp\\
+ &=\cos\targetdepressionz\vct{N}_0 + \sin\targetdepressionz\vct{B}_0 + (\parm-\parm_0)\frac{\vct{T}_0}{\targetrangez}\\ 
+ &+ \frac{\targetrange}{\targetrangez}\sin(\targetdepression-\targetdepressionz)[\sin\targetdepressionz\vct{N}_0 - \cos\targetdepressionz\vct{B}_0]\\
+ &= [\cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)]\vct{N}_0\\
+ &+ [\sin\targetdepressionz - \frac{\targetrange}{\targetrangez}\cos\targetdepressionz\sin(\targetdepression-\targetdepressionz)]\vct{B}_0\\
+ &+ (\parm-\parm_0)\frac{\vct{T}_0}{\targetrangez}
+ \end{split}
+\end{equation}
+Note that in the neighbourhood of $\targetnoparmzero$, $\sin(\targetdepression-\targetdepressionz)\approx\targetdepression-\targetdepressionz$ and $\frac{\targetrange}{\targetrangez}\approx 1$ one arrives at the approximation that
+\begin{equation}
+\begin{split}
+ \uRangeVectorParm &\approx \cos\targetdepression\vct{N}_0 + \sin\targetdepression\vct{B}_0 + (\parm-\parm_0)\frac{\vct{T}_0}{\targetrangez}
+ \end{split}
+\end{equation}
+Substitution of the approximations for $\vct{N}(\parm)$ and $\vct{B}(\parm)$ yields
+\begin{equation}
+\begin{split}
+ \uRangeVectorParm\cdot\vct{N}(\parm)&\approx\cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)\\
+ &+ \tau_0(\parm-\parm_0)[\sin\targetdepressionz - \frac{\targetrange}{\targetrangez}\cos\targetdepressionz\sin(\targetdepression-\targetdepressionz)]\\
+ &-\kappa_0\frac{(\parm-\parm_0)^2}{\targetrangez}
+\end{split}
+ \end{equation}
+and
+\begin{equation}
+\begin{split}
+ \uRangeVectorParm\cdot\vct{B}(\parm)&\approx\sin\targetdepressionz - \frac{\targetrange}{\targetrangez}\cos\targetdepressionz\sin(\targetdepression-\targetdepressionz)\\
+ &- \tau_0(\parm-\parm_0)[\cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)]
+\end{split}
+\end{equation} 
+In summary, and with only the non-negligeable terms retained (for the Sentinel-1 orbit examined in this document, $\kappa_0$ and $\tau_0$ take on values of approximately $10^{-7}$, $10^{-8}$, repectively which means that they can be considered negligeable over over a scene of several hundred kilometers in $\parm$), one finds that
+\begin{align}
+ \vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) &= -\kparm/\kr\label{eq:ender}\\
+ \vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm) &= \cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)\label{eq:cos}\\
+ \vhat{\range}(\stationaryparm)\cdot\vct{B}(\stationaryparm) &= \sin\targetdepressionz - \frac{\targetrange}{\targetrangez}\cos\targetdepressionz\sin(\targetdepression-\targetdepressionz),\label{eq:sin}
+\end{align}
+which leads the following
+\begin{equation}
+ \begin{split}
+  &\alongtrack\kr\vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) + \kr\acrosstrack\cdot[\vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm), \vhat{\range}(\stationaryparm)\cdot\vct{B}(\stationaryparm)]\\
+  &=-\alongtrack\kparm+\kr\acrosstrack\cdot\uRangeVectorParmZero+\kr\targetrange\frac{\acrosstrack\cdot\uRangeVectorParmZeroPerp}{\targetrangez}\sin(\targetdepression-\targetdepressionz)
+ \end{split}
+\end{equation}
+Note that in the neighbourhood of $\targetrangez, \targetdepressionz$, \eqref{eq:cos} and \eqref{eq:sin} closely approximate the first order expansion of the cosine and sine functions; thus, in this neighbourhood, one may write
+\begin{align}
+ \vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) &= -\kparm/\kr\\
+ \vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm) &= \cos\targetdepression\label{eq:cossimp}\\
+ \vhat{\range}(\stationaryparm)\cdot\vct{B}(\stationaryparm) &= \sin\targetdepression\label{eq:sinsimp}
+\end{align}
+% By omitting terms proportional to $\kappa_0$ and $\tau_0$, the previous two expressions combine to yield the approximation:
+% \begin{equation}
+%  \begin{bmatrix}
+%  \uRangeVectorParm\cdot\mtx{N}(\parm)\\
+%  \uRangeVectorParm\cdot\mtx{B}(\parm)
+%  \end{bmatrix}
+% \approx
+% \uRangeVectorParmZero + \uRangeVectorParmZeroPerp\frac{(\targetnoparm-\targetnoparmzero)\cdot\uRangeVectorParmZeroPerp}{\range_0}
+% \end{equation}
+% where the unit vector $\uRangeVectorParmZeroPerp$ is perpendicular to $\uRangeVectorParmZero$ and
+% % \begin{align}
+%  \uRangeVectorParm\cdot\mtx{N}(\parm)&\approx\cos\depression_0 + \frac{\sin\depression_0}{\range(\parm_0,\targetnoparmzero)}(\targetnoparm - \targetnoparmzero)\cdot[\sin\depression_0\vct{N}_0 - \cos\depression_0\vct{B}_0]\\
+%  \uRangeVectorParm\cdot\mtx{B}(\parm)&\approx\sin\depression_0 - \frac{\cos\depression_0}{\range(\parm_0,\targetnoparmzero)}(\targetnoparm - \targetnoparmzero)\cdot[\sin\depression_0\vct{N}_0 - \cos\depression_0\vct{B}_0]
+% \end{align}
+% where we have defined
+% \begin{equation}
+%  \uRangeVectorParmZero = \cos\depression_0\vct{N}_0 + \sin\depression_0\vct{B}_0,
+% \end{equation}
+%Because $\uRangeVectorParmZero$ has been chosen to be perpendicular to $\vct{T}_0$ and by omitting terms proportional to $\kappa_0$ and $\tau_0$, 
+% This can be written as
+% 
+% For instance,
+% \begin{equation}
+% \begin{split}
+%  \frac{\d\uRangeVectorParm\cdot\vct{N}(\parm)}{\d\parm} &= \left\{\frac{\d\uRangeVectorParm}{\d\parm}\right\}\cdot\vct{N}(\parm) + \uRangeVectorParm\cdot\vct{N}'(\parm)\\
+%  &= \frac{\mtx{P}_{\rangeVectorParm}\vct{r}'(\parm, \targetnoparm)}{\lvert\rangeVectorParm\rvert}\cdot\vct{N}(\parm) + \uRangeVectorParm\cdot\left[-\kappa(\parm)\vct{T}(\parm) + \tau(\parm)\vct{B}(\parm)\right]\\
+%  &= \frac{\mtx{P}_{\rangeVectorParm}\mtx{T}(\parm)}{\lvert\rangeVectorParm\rvert}\cdot\vct{N}(\parm) + \uRangeVectorParm\cdot\left[-\kappa(\parm)\vct{T}(\parm) + \tau(\parm)\vct{B}(\parm)\right],
+%  \end{split}
+% \end{equation}
+% where the Frenet-Serret equations of \eqref{eq:FrenetSerret} have been used. Similarly
+% \begin{equation}
+%  \frac{\d\uRangeVectorParm\cdot\vct{B}(\parm)}{\d\parm} = \frac{\mtx{P}_{\rangeVectorParm}\mtx{T}(\parm)}{\lvert\rangeVectorParm\rvert}\cdot\vct{B}(\parm) + -\tau(\parm)\uRangeVectorParm\cdot\vct{N}(\parm)
+% \end{equation}
+% If one chooses $\parm_0$ such that $\uRangeVectorParmZero$ is perpendicular to $\vct{T}_0$, then the expressions evaluate to
+% \begin{align}
+%  \frac{\d\uRangeVectorParm\cdot\vct{N}(\parm)}{\d\parm}\Biggr|_{\parm_0} &= \tau_0\uRangeVectorParmZero\cdot\vct{B}_0\\
+%  \frac{\d\uRangeVectorParm\cdot\vct{B}(\parm)}{\d\parm}\Biggr|_{\parm_0} &= -\tau_0\uRangeVectorParmZero\cdot\vct{N}_0
+% \end{align}
+% Thus
+% \begin{align}
+%  \uRangeVectorParm\cdot\vct{N}(\parm) &\approx\uRangeVectorParmZero\cdot\vct{N}_0 + (\parm-\parm_0)\tau_0\uRangeVectorParmZero\cdot\vct{B}_0\\
+%  \uRangeVectorParm\cdot\vct{B}(\parm) &\approx\uRangeVectorParmZero\cdot\vct{B}_0 + -(\parm-\parm_0)\tau_0\uRangeVectorParmZero\cdot\vct{N}_0
+% \end{align}
+% which, for small values of the torsion, $\tau(\parm)$, can be considered constant. 
+% \begin{align}
+%  \vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) &= -\kparm/\kr\\
+%  \vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm) &= \left[\uRangeVectorParmZero + \frac{\mtx{P}_{\rangeVectorParmZero}(\targetnoparm-\targetnoparmzero)}{\lvert\rangeVectorParmZero\rvert}\right]\cdot\vct{N}_0\\
+%  \vhat{\range}(\stationaryparm)\cdot\vct{B}(\stationaryparm) &= \left[\uRangeVectorParmZero + \frac{\mtx{P}_{\rangeVectorParmZero}(\targetnoparm-\targetnoparmzero)}{\lvert\rangeVectorParmZero\rvert}\right]\cdot\vct{B}_0
+% \end{align}
+\par
+In summary, \eqref{eq:ender}, \eqref{eq:cos}, \eqref{eq:sin}, \eqref{eq:cossimp}, \eqref{eq:sinsimp} and \eqref{eq:kparmangle} lead to the following expression for the signal in $k$-space
+% 
+% The above expression has been expanded around $\parm_0$ under the condition that $\uRangeVectorParmZero$ is perpendicular to $\vct{T}_0$. This condition holds for a set of points $\targetnoparm$, but not all. An expression for $\uRangeVectorParmZero = \vct{c}(\parm_0)-(\targetnoparm-\targetnoparmzero)/\lvert\vct{c}(\parm_0)-(\targetnoparm-\targetnoparmzero)\rvert$ allows for a generalization of the above equations
+% \begin{equation}
+%  \hat{\range}(\parm_0, \targetnoparm) \approx \hat{\range}(\parm_0, \targetnoparmzero) + \frac{\mtx{P}_{\vct{r}(\parm_0, \targetnoparmzero) }[\targetnoparm - \targetnoparmzero]}{\lvert\vct{r}(\parm_0, \targetnoparmzero)\rvert} 
+% \end{equation}
+% \par
+%The expression for the signal in $k$-space is then given by
+\begin{equation}
+\begin{split}
+ &\SkSf{\channelIndex}(\kr,\kparm)=\Snvelope(\krc)\eex{\im\alongtrack\kparm-\im\kr\acrosstrack\cdot\uRangeVectorParmZero}\\
+ &\int\frac{\reflectivity(\targetnoparm)\eex{-\im\kr\targetrange\frac{\acrosstrack\cdot\uRangeVectorParmZeroPerp}{\targetrangez}\sin(\targetdepression-\targetdepressionz)}\dPattern{\channelIndex}[\kr, -\kparm/\kr, \cos\targetdepression, \sin\targetdepression]}{\amplitude\range^2(\stationaryparm[\kr,\kparm])}\eex{-\im\kr\amplitude\range(\stationaryparm[\kr,\kparm])}\d\targetnoparm.
+ \end{split}
+\end{equation}

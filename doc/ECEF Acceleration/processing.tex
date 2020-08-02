@@ -1,0 +1,202 @@
+\section{Signal processing algorithm}
+This section presents the promised third component of the improved SAR imaging capability; namely, the fundamentals of a suitable signal processing method. As we have already seen, the desired configuration impacts the design. The signal processing method presented in this section, on the other hand, is one of potentially several others, and its adoption does not place any restrictions upon the configuration or the design.  
+\par
+The previous material depends on a strict timing regime. A practical system may only operate with near-ideal timing conditions and this raises the questions of impact and how best to process the data under these conditions. 
+\par
+Even if timing conditions are perfect, the best approach to data processing is not entirely clear. A simple approach first concatenates the measurements from each beam into a uniformly-sampled time series and then transforms the data from the fast-time, slow-time domain into the fast-time Doppler domain. Given that, for each beam direction, the data correspond to different Doppler centroids, one could assign each response to different portions of the Doppler spectrum (or to different Doppler frequency bands). The union of these Doppler frequency bands corresponds to a wider Doppler spectrum and thereby to higher overall azimuth resolution. If the Doppler bands are non-overlapping, the concept of the union of the frequency bands is straight-forward. Optimal processing of Doppler bands that do overlap, however, requires a more rigorous approach. Optimal processing of data collected under non-ideal timing further calls for a flexible yet robust processing approach.
+\par
+Given that processing should apply to very high-resolution systems, it is best that the approach be suitable for a wide-band system. 
+\par
+The derivation of an optimal processing approach would require more space than available for a letter publication. This section, therefore, only presents the final algorithm along with references to the derivation.
+\subsection{The measured signal}
+In continuous time, the signal from antenna $m$, beam $n$ at fast time $\fasttime$ and slow time $\parm$ is represented as
+\begin{equation}
+ \ztzt{m,n}(\fasttime, \parm)=\stst{m,n}(\fasttime, \parm) + \ntnt{m,n}(\fasttime, \parm)
+\end{equation}
+where $\ntnt{m,n}(\fasttime, \parm)$ represents white noise and $\stst{m,n}(\fasttime, \parm)$ the desired clutter signal. We introduce the vector signal
+\begin{equation}
+ \vecsigTime(\fasttime, \parm) = 
+ \begin{bmatrix}
+ \begin{bmatrix}
+ \stst{0,0}(\fasttime, \parm)\\
+ \stst{1,0}(\fasttime, \parm)\\
+ \vdots\\
+ \stst{M,0}(\fasttime, \parm)
+ \end{bmatrix}\\
+ \begin{bmatrix}
+ \stst{0,1}(\fasttime, \parm)\\
+ \stst{1,1}(\fasttime, \parm)\\
+ \vdots\\
+ \stst{M,1}(\fasttime, \parm)
+ \end{bmatrix}\\
+ \vdots\\
+ \begin{bmatrix}
+ \stst{0,N}(\fasttime, \parm)\\
+ \stst{1,N}(\fasttime, \parm)\\
+ \vdots\\
+ \stst{M, N}(\fasttime, \parm)
+ \end{bmatrix}
+ \end{bmatrix}
+ +
+ \boldsymbol{\nu}(\fasttime, \parm)
+\end{equation}
+where $\boldsymbol{\nu}(\fasttime, \parm)$ is a vector of white noise values.
+\par
+Due to the relationship between Doppler frequency and azimuth angle, the measured vector signal is, perhaps, most readily processed in the frequency domain. As a simplification, this letter assumes that the two-way phase-centre positions of each channel are evenly aligned along the direction of motion so that each two-way phase centre is located at along-track position $m\phaseSep\uSatVelocity{\parm}$, where $\uSatVelocity{\parm}$ denotes the unit vector in the direction of the satellite velocity vector over slow-time. Without going into the derivation, we present the unambiguous frequency domain representation of the signal as
+\begin{equation}
+ \mathcal{F}\{\stst{m,n}(\fasttime, \parm)\} = \SkSk{m,n}(\kr, \kparm)
+\end{equation}
+where,
+\begin{equation}
+ \SkSk{m,n}(\kveczero) = \eex{-\im [m\phaseSep\kappa+n\effrelvel/\prf]\kparm}\GkGk{n}(\kveczero).
+ \label{eq:signalModel}
+\end{equation}
+The phase term at the front corresponds to spatial sampling delays from one channel to the next and temporal sampling delays from one beam to the next. The signal from each beam contains many terms that are conveniently separated into terms that correspond to the antenna pattern (or beam) and terms that correspond to the imaging geometry.
+\begin{equation}
+\begin{split}
+ &\GkGk{n}(\kveczero) = \int\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]\vkern(\kr,\kparm,\depression)\d\depression,
+ \end{split}
+ \label{eq:stripSAR3d}
+\end{equation}
+where the amplitude of the antenna pattern is given by $\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]$ which depends on the direction of the beam through $n$, does {\bf not} depend on the two-way phase-centre location (no $m$ dependence) and also depends on the wavelength through $\kr$. The term that corresponds to the geometry and the reflectivity is given by
+\begin{equation}
+\begin{split}
+ &\vkern(\kveczero, \depression) = C_0\Snvelope(\krc)\frac{(\kr^2-\kparm^2)^{\frac{1}{4}}}{v_\sat\kr}\\
+ &\int\frac{\reflectivity[\targetrange, \targetxparm, \depression]}{\sqrt{\targetrange}}\eex{-\im \targetxparm\kparm-\im \targetrange\sqrt{\kr^2-\kparm^2}}\d\targetrange\d\targetxparm
+ \end{split},
+ \label{eq:vparm}
+\end{equation} 
+where, $\kparm=2\pi\fparm/\effrelvel$, $\effrelvel$ represents the effective satellite velocity (relative) and $\fparm$ represents the slow-time Doppler frequency. Also $\kappa = \effrelvel/\amplitude\velocity_s$, where $\amplitude\velocity_s$ is the amplitude of the satellite velocity vector, $\satVelocity{\parm}$, and is assumed constant over $\parm$.  The function, $\reflectivity[\targetrange, \targetxparm, \depression]$, represents the terrain reflectivity as a function of range, $\targetrange$ from the radar, along-track position, $\targetxparm$ and depression angle, $\targetdepression$. Note that the hyperbolic phase term, $\sqrt{\kr^2-\kparm^2}}$, may be insufficiently accurate for extremely high azimuth resolution \cite{Mittermayer}. In this case, a more accurate expression can be computed from the material in \cite{NovelRadar}. The look-direction vector in the 2D frequency domain is given by
+\begin{equation}
+ \uRangeVector{\kveczero, \targetdepression} = \frac{1}{\kr}
+ \begin{bmatrix}
+  -\kappa\kparm\\
+  \cos\targetdepression\sqrt{\kr^2 - \kparm^2}\\
+  \sqrt{\sin^2\targetdepression[\kr^2-\kparm^2] + \kparm^2(1-\kappa^2)}
+ \end{bmatrix}.
+\end{equation}
+Finally, $\Snvelope(\krc)$ denotes the baseband frequency ($\krc$) response of the pulsed waveform after processing for pulse compression, and $C_0$ is some constant. Derivation of the above material can be found in \cite{NovelRadar}.
+\subsection{Multi-channel processing}
+Let
+\begin{equation}
+ \vct{h}(\kr, \kparm, \depression) = 
+ \begin{bmatrix}
+ \eex{-\im 0\temporalbaseline\kparm}\dPattern{0}[\kr,\uRangeVector{\kveczero, \targetdepression}]
+ \begin{bmatrix}
+ \eex{-\im 0\spatialbaseline\kparm}\\
+ \eex{-\im 1\spatialbaseline\kparm}\\
+ \vdots\\
+ \eex{-\im M\spatialbaseline\kparm}
+ \end{bmatrix}\\
+ \eex{-\im 1\temporalbaseline\kparm}\dPattern{1}[\kr,\uRangeVector{\kveczero, \targetdepression}]
+ \begin{bmatrix}
+ \eex{-\im 0\spatialbaseline\kparm}\\
+ \eex{-\im 1\spatialbaseline\kparm}\\
+ \vdots\\
+ \eex{-\im M\spatialbaseline\kparm}
+ \end{bmatrix}\\
+ \vdots\\
+ \eex{-\im N\temporalbaseline\kparm}\dPattern{N}[\kr,\uRangeVector{\kveczero, \targetdepression}]
+ \begin{bmatrix}
+ \eex{-\im 0\spatialbaseline\kparm}\\
+ \eex{-\im 1\spatialbaseline\kparm}\\
+ \vdots\\
+ \eex{-\im M\spatialbaseline\kparm}
+ \end{bmatrix}
+ \end{bmatrix},
+\end{equation}
+where, $\temporalbaseline=\effrelvel/\prf$ and $\spatialbaseline=\phaseSep\kappa$.
+\par
+The sampled signal is gven by
+\begin{equation}
+\begin{split}
+\vecsigFreqSampled(\kr, \kparm) &= \sum_l\int\vct{h}(\kr, \kparm+l\kparmPRF)\vkern(\kr,\kparm+l\kparmPRF,\depression)\d\depression\\ 
+&+ \boldsymbol{\nu}(\kr, \kparm)\\
+&=\int\antennaMatrix(\kargs)\vkernvect(\kr, \kparm, \depression)\d\depression+ \boldsymbol{\nu}(\kr, \kparm),
+\end{split}
+\end{equation}
+where
+\begin{equation}
+	\antennaMatrix(\kargs)=
+    \begin{bmatrix}
+    	\hdots & \vct{h}(\kr, \kparm - \kparmPRF, \depression) & \vct{h}(\kr, \kparm, \depression) & \hdots
+    \end{bmatrix},
+\end{equation}
+and
+\begin{equation}
+	\vkernvect(\kr, \kparm, \depression) = 
+    \begin{bmatrix}
+    	\vdots\\
+        \vkern(\kr,\kparm-\kparmPRF,\depression)\\
+        \vkern(\kr,\kparm,\depression)\\
+        \vdots
+    \end{bmatrix},
+\end{equation}
+and, where the spatial sampling frequency is given by
+\begin{equation}
+ \kparmPRF = \frac{2\pi\prf}{(M+1)(N+1)\effrelvel}.
+\end{equation}
+Each component of $\vecsigFreqSampled(\kr, \kparm)$ is undersampled in $\kparm$; however, by applying linear filters an unambiguous scalar spectrum of the signal may be reconstructed. Let us consider a single value of $\depression$ and apply a filtering matrix via $\hrwsFilterMatrix(\kargs)\antennaMatrix(\kargs)=\diagAntennaMatrix(\kargs)$. If the result, $\diagAntennaMatrix(\kargs)$, is diagonal, then we have constructed a mechanism to extract unambiguous signal components - we need only assign the elements of the vector
+\begin{equation}
+	\hrwsFilterMatrix(\kargs)\antennaMatrix(\kargs)\vkernvect(\kr, \kparm, \depression) + \hrwsFilterMatrix(\kargs)\boldsymbol{\nu}(\kr, \kparm)
+\end{equation}
+to each band. As seen in the above, however, the noise component has also been filtered by this matrix and can possibly lead to degraded SNR. In addition to desiring a diagonal matrix (or as close as possible) for $\diagAntennaMatrix(\kargs)$, it is also fitting to select this matrix such that it has diagonal elements given by the average of the antenna patterns, i.e. $D_{ll}(\kparm) = \dPatternDesired[\kr,\uRangeVector{\kr, \kparm-l\kparmPRF, \targetdepression}]$
+%\par
+%Filters can be chosen to best approximate the following desired signal
+%\begin{equation}
+%\begin{split}
+% &\GkGkD(\kveczero) = C_0\Snvelope(\krc)\frac{(\kr^2-\kparm^2)^{\frac{1}{4}}}{v_\sat\kr}\\
+% &\int\dPatternDesired[\kr,\uRangeVector{\kveczero, \targetdepression}]\frac{\reflectivity[\targetrange, \targetxparm, \depression]}{\sqrt{\targetrange}}\eex{-\im \targetxparm\kparm-\im \targetrange\sqrt{\kr^2-\kparm^2}}\d\targetrange\d\targetxparm\d\depression
+% \end{split}
+% \label{eq:stripSAR3dDesired}
+%\end{equation}
+where
+\begin{equation}
+ \dPatternDesired[\kr,\uRangeVector{\kveczero, \targetdepression}]=\sqrt{\frac{1}{N+1}\sum_{n=0}^{N}\biggl\lvert\dPattern{n}[\kr,\uRangeVector{\kveczero, \targetdepression}]\biggr\rvert^2}.
+\end{equation}
+This desired antenna pattern has support over a wide range of azimuth angles and hence leads to a high-resolution signal.
+\par
+As can be shown, the optimal filter matrix, in a mean-squared error sense, is given by
+\begin{equation}
+\begin{split}
+ \hrwsFilterMatrix(&\kargs)=\diagAntennaMatrix(\kargs)\htr{\antennaMatrix}(\kargs)\\
+ &\biggl[\antennaMatrix(\kargs)\htr{\antennaMatrix}(\kargs)+\frac{1-\cost}{\cost}\mtx{R}_n(\kargs)\biggr]^{-1},
+\end{split}
+\end{equation}
+where $\mtx{R}_n(\kargs)$ is the noise covariance matrix.
+\subsection{Simulated Point Spread Function}
+To demonstrate the signal processing approach, this section generates a simulated signal using the design parameters of an 11-channel system. The simulation, with parameters listed in \Tbref{tb:simulation}, has been computed in Python with plots generated with Matplotlib.
+\begin{table}[h!]
+\begin{center}
+ \caption{Simulation parameters}
+ \label{tb:simulation}
+ \begin{tabular}{r|l}
+  $\prf$ & $6810$ Hz\\\hline
+  $\antennaLengthEffective$ & $2.2$ m\\\hline
+  $\antennaLength$ & $22$ m\\\hline
+  $M$ & $11$\\\hline
+  $\wavelength$ & $0.031067$ m\\\hline
+  $\Delta\threeDBEffective$ & $0.809$ deg
+ \end{tabular}
+ \end{center}
+\end{table}
+The simulator computes the back-folded signal for each of the 121 channels of data, computes the processing filters, applies the filters to the back-folded data and presents the amplitude of the reconstructed signal in the Doppler domain in \fgref{fg:reconstructed}. The response in the Doppler domain shows the desired response across a region spanning 75 KHz with each local maximum in this region highlighting the response of each sub-beam.
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{\columnwidth}{!}{\input{reconstructed.pgf}}
+ \caption{Response of the reconstructed signal in the Doppler domain.}
+ \label{fg:reconstructed}
+ \end{center}
+\end{figure}
+The simulator then azimuth compresses this reconstructed signal with a computed chirp and transforms the data back into the spatial domain to produce the Point Spread Function (PSF) shown in \fgref{fg:psf}. This figure illustrates that the system achieves the desired resolution with the response width less than 0.1 m at the -5 dB level. While the figure also shows a second set of sidelobes at -15 dB, it is assumed that these can be reduced by an appropriate choice of weighting on the antenna patterns. 
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{\columnwidth}{!}{\input{PSF.pgf}}
+ \caption{Point Spread Function using the described processing method.}
+ \label{fg:psf}
+ \end{center}
+\end{figure}
+\par
+A test noise signal is also generated by the simulator. The SNR prior to filtering is compared with the SNR after filtering (but before azimuth compression) giving a change of about -0.4 dB. This shows that with the simulated parameters, the SNR does not change significantly.
+\par
+In summary, the simulation demonstrates the suitability of the proposed signal processing algorithm and also shows how the generated PSF contains extra sidelobes that most likely result from the different shape of the signal response in the Doppler domain. If these sidelobes are intolerable, they can possibly be removed by modifying the phased-array beam tables; however, this is a topic for further research.

@@ -672,10 +672,18 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
         #% Compute the antenna pattern amplitudes and delays
         txMag = rad['mode']['txMagnitude']
         
-        radarEq1 = np.sqrt((rad['antenna']['wavelength'])
+        # The following was quite wrong. I don't know where the logic came from
+        # radarEq1 = np.sqrt((rad['antenna']['wavelength'])
+        #             *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
+        #             /np.sqrt(Boltzmann*rad['antenna']['systemTemperature'])
+        #             /np.sqrt(rad['antenna']['systemLosses']))/(fastTimes/r2t)**2
+        
+        
+        radarEq1 = ((rad['antenna']['wavelength'])
                     *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
-                    /np.sqrt(Boltzmann*rad['antenna']['systemTemperature'])
-                    /np.sqrt(rad['antenna']['systemLosses']))/(fastTimes/r2t)**2
+                    /np.sqrt(Boltzmann*rad['antenna']['systemTemperature']*rad['chirp']['pulseBandwidth'])
+                    /np.sqrt(rad['antenna']['systemLosses'])
+                    )/(fastTimes/r2t)**2
         
         # Define the output array
         pulse_data = np.zeros((len(fastTimes), len(ranges)), dtype=np.complex128)
@@ -998,6 +1006,9 @@ def multiChannelNoise(radar, p=0.5, SNR = 1.0, make_plots=False):
         the DFT domain. The factor of 1/2 for unit variance complex noise"""
     data = (np.random.randn(n_c, n_x) + 
             1j*np.random.randn(n_c, n_x))*np.sqrt(n_x/2.0)
+    print("Noise level PRE filtering")
+    print("-"*40)
+    print(np.var(data))
     
     """Defining the noise covariance"""
     Rn = np.eye(len(radar))/np.sqrt(SNR)
@@ -1016,6 +1027,9 @@ def multiChannelNoise(radar, p=0.5, SNR = 1.0, make_plots=False):
     
     # Release data from memory
     del data
+    print("Noise level POST filtering")
+    print("-"*40)
+    print(np.var(procData))
             
     # Reorder the data
     # print("Re-ordering data and returning...")

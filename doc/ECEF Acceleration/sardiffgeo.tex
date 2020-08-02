@@ -1,0 +1,78 @@
+\section{The SAR signal in arclength space}
+\label{sc:sararc}
+This section derives the signal model for a single channel in the \Index{wavenumber domain}. The term channel refers to a transmit and receive pair and each channel, considered here in isolation, is assumed to be a component of a multi-channel system. The signal derived in this section applies to \gls{wideband} systems. Special care is taken to ensure that the \Index{antenna pattern} gain functions are accurately represented as they play an important role in multi-channel signal processing algorithms. The material in this section reviews some concepts already published in the SAR literature, \cite{Cumming2003, Cumming2005, Franc99, Raney1992, Bamler1992}, but with greater care given to the antenna patterns and with, in some cases, simplified derivations.
+\par
+As introduced in \cite{EnderSignalTheoretic}, let the parameterized satellite position is given by $\sats(\parm)$ while the \Index{point scatterer} position is given by $\vct\target$. In the chosen coordinate system, the point scatterer is not moving, only the satellite.
+\par
+At the front-end of the sequence of operations, electronic components mix a desired baseband waveform, $\envelope(\fasttime)$, up to the carrier frequency, $\omega_0$, to yield the signal to be transmitted\footnote{Waveforms can also be generated directly at the carrier.}. This signal is represented as the real part of
+\begin{equation}
+ \pulse(\fasttime)=\envelope(\fasttime)\eex{\im\omega_0\fasttime}
+\end{equation}
+The signal travels down to the surface and a delayed version returns to the radar after reflection from the terrain. For any given $\parm$, the distance that the signal must travel is given by
+\begin{equation}
+ 2\magVec{\sats(\parm)-\vct\target} = 2\amplitude\range(\parm, \targetnoparm)+2\rangeErrorZero(\parm)
+\end{equation}
+From here onward, we shall omit the small range error term, $2\rangeErrorZero(\parm)$, in places where it has no impact. For instance it is omitted from the inverse range-squared term and from the look direction in the antenna patterns.
+\par
+If the wave propagates with speed $c$, then the measured return signal is proportional to
+\begin{equation}
+ \pulse\left(\fasttime-\frac{2\amplitude\range(\parm, \targetnoparm)+2\rangeErrorZero(\parm)}{c}\right)
+\end{equation}
+\subsection{Scene measurement through multiple antenna patterns}
+The following considers a single element of a multi-aperture antenna system. This single element is composed of a transmit and a receive antenna where the transmit and receive antennas are described by their gain patterns and phase characteristics. As a specific example, such an element could be realized by utilizing subapertures on a phased-array as described in \scref{an:mimo}.
+\par
+Each \Index{antenna pattern} in the system plays a critical role in multi-channel signal processing. Simple antennas, such as the dipole antenna, and simple antenna models, such as a uniformly-excited aperture or the uniformly-spaced phased-array factor, yield directivity patterns that depend on the wavelength and have beamwidths and gain patterns which depend on the dimensions of the antenna in a given coordinate system. 
+\par
+For an antenna in the far-field, the effective antenna pattern may be represented as
+\begin{equation}
+\begin{split}
+\pattern{\channelIndex}[\uRangeVectorParm, \pAntennaParm{\channelIndex}]&=\eex{-2\frac{2\pi\im}{\lambda}\uRangeVectorParm\cdot\pAntennaParm{\channelIndex}}\dPattern{\channelIndex}[\lambda, \uRangeVectorParm]
+\label{eq:antennaArgument}
+\end{split}
+\end{equation}
+where $\lambda$ is the \Index{narrowband} wavelength, $\pAntennaParm{\channelIndex}$ represents the coordinate of the phase-centre of antenna $\channelIndex$ in a reference frame centered on the radar platform, $\dPattern{\channelIndex}(\cdot)$ is the \Index{two-way antenna pattern} amplitude (the product of the transmit antenna pattern and the receive antenna pattern), and $\uRangeVectorParm$ is the look vector is defined as $\uRangeVectorParm=\rangeVectorParm/\amplitude\range(\parm, \targetnoparm)$. If the two-way antenna pattern depends on two different phase-centres, located at $\pAntennaParm{\channelIndex_{\text{Tx}}}$ and $\pAntennaParm{\channelIndex_{\text{Rx}}}$, then we define
+\begin{equation}
+ \pAntennaParm{\channelIndex}=\frac{1}{2}[\pAntennaParm{\channelIndex_{\text{Tx}}}+\pAntennaParm{\channelIndex_{\text{Rx}}}]
+\end{equation}
+\par
+The \Index{wideband} generalization sees different values for the carrier wavelength in \eqref{eq:antennaArgument} so that as $\lambda$ increases, the antenna can measure over a larger range of angles. Conversely, as $\lambda$ decreases, the antenna beamwidth narrows.
+\par
+By defining $2\pi/\lambda=(\omega+\omega_0)/c=\kr/2$, one can write the argument to the antenna pattern as
+\begin{equation}
+\pattern{\channelIndex}[\kr, \uRangeVectorParm]=\eex{-\im\kr\uRangeVectorParm\cdot\pAntennaParm{\channelIndex}}\dPattern{\channelIndex}[\kr, \uRangeVectorParm]
+\label{eq:antennaArgument2}
+\end{equation}
+where, now, $\kr$ is not constant, but free to wander over a range of values to accommodate a \gls{wideband} model.
+\par
+We assume from here onwards that the antennas are ``steered'' so that they maintain a constant orientation relative to the satellite track in a coordinate sytem where the scene is stationary. That is, for regular non moving targets on the Earth's surface, the antennas are fixed relative to the ECEF coordinate track (this is the reason that this paper develops the satellite curve in the ECEF coordinate system). By using the basis vectors developed in the previous section, this means that the antenna patterns can be described as
+\begin{equation}
+ \pAntennaParm{\channelIndex} = \alpha_n\vct{T}(\parm) + \beta_n\vct{N}(\parm) + \gamma_n\vct{B}(\parm),
+\end{equation}
+where $\alpha_n, \beta_n, \gamma_n$ are constant with $\parm$. It is advantageous to rewrite the above symbolically as
+\begin{equation}
+ \pAntennaParm{\channelIndex} = \alongtrack\vct{T}(\parm) + \acrosstrack\cdot\begin{bmatrix}\vct{N}(\parm)\\\vct{B}(\parm)\end{bmatrix},
+ \label{eq:spaceDiversityCurve}
+\end{equation}
+where $\alongtrack$ is the projection of $\pAntennaParm{\channelIndex}$ onto the direction of travel, $\vct{T}(\parm)$, while $\acrosstrack$ is the vector component of $\pAntennaParm{\channelIndex}$ that is perpendicular to $\vct{T}(\parm)$.
+\par
+Accompanying the phase component of the antenna pattern, the gain can be described as
+\begin{equation}
+ \dPattern{\channelIndex}[\kr, \uRangeVectorParm] = \dPattern{\channelIndex}[\kr, \uRangeVectorParm\cdot\vct{T}(\parm), \uRangeVectorParm\cdot\vct{N}(\parm), \uRangeVectorParm\cdot\vct{B}(\parm)]
+ \label{eq:antennaDiversityCurve}
+\end{equation}
+\par
+We assume that the gain-pattern model consists of an azimuth component (aligned with the direction of satellite motion) and an elevation component (oriented perpendicular to the direction of motion). This assumption holds for a rectangular array with one dimension of the array aligned along the satellite direction of motion. More specifically, we model the gain-pattern as
+\begin{equation}
+\begin{split}
+ &\dPattern{\channelIndex}[\kr, \uRangeVectorParm\cdot\vct{T}(\parm), \uRangeVectorParm\cdot\vct{N}(\parm), \uRangeVectorParm\cdot\vct{B}(\parm)]\\ &= \dazPattern{\channelIndex}[\kr, \uRangeVectorParm\cdot\vct{T}(\parm)]\delPattern{\channelIndex}[\kr, \uRangeVectorParm\cdot\vct{N}(\parm), \uRangeVectorParm\cdot\vct{B}(\parm)] 
+\end{split} 
+\label{eq:antennaDiversityCurveFactored}
+\end{equation}
+\par
+The measured return signal consists of the superposition of the reflected signal from various locations over the terrain; thus, for some $\parm$, the overall return signal is given by
+\begin{equation}
+\begin{split}
+ \stst{\channelIndex}(\fasttime,\parm)&=\int\pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)}{\amplitude\range^2(\parm, \targetnoparm)} \pulse\left(\fasttime-\frac{2\amplitude\range(\parm, \targetnoparm)+2\rangeErrorZero(\parm)}{c}\right)\d\vct\target
+ \end{split}
+\end{equation}
+where $\reflectivity(\vct\target)\in\mathcal{C}$ denotes a random function which represents the scattering response of the \Index{point scatterer} at $\vct\target$, and the term $\amplitude\range^2(\parm,\targetnoparm)$ in the denominator accounts for the fact that in the far-field, electric fields decay at a rate given by the inverse of the range, and the expression accounts for a two-way propagation of an electric field. Without loss of generality, other constant factors from the radar equation have been omitted. In any practical calculation that requires computation of the \gls{snr}, an account can be made for these factors.

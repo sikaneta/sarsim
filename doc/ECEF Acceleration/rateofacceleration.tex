@@ -1,0 +1,124 @@
+\subsection{Rate of change of acceleration}
+\label{an:rateacc}
+This subsection computes the rate of change of acceleration of a satellite in an intertial Earth-Centered coordinate system. Further, because the egm96 gravitational potential, \eqref{eq:egm96model}, is defined using spherical-polar coordinates, this subsection also demonstrates how to convert the gradient of this potential into a Cartesian representation. The ECEF rate of change of acceleration is then given by the derivative of this acceleration with respect to time and one then acquires the ECEF equations of motion by substituting the two computed quantities into \eqref{eq:inertialddot} and \eqref{eq:inertialdddot}.
+\par
+The gravitational potential, $U(r,\phi,\lambda)$, is defined in \eqref{eq:egm96model}, and the gradient of this quantity defines the gravitational acceleration. We convert the gradient in spherical-polar coordinates to a graident in Cartesian coordinates, $x,y,z$, through
+\begin{equation}
+\begin{split}
+ \ddot{\vct{x}}_i(t) &= \del_{x,y,z}U = 
+ \begin{bmatrix}
+  \prt{r}{x} & \prt{\phi}{x} & \prt{\lambda}{x}\\
+  \prt{r}{y} & \prt{\phi}{y} & \prt{\lambda}{y}\\
+  \prt{r}{z} & \prt{\phi}{z} & \prt{\lambda}{z}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prt{U}{r}\\
+  \prt{U}{\phi}\\
+  \prt{U}{\lambda}
+ \end{bmatrix}\\
+ &= \left[\prt{(r,\phi,\lambda)}{(x,y,z)}\right]^T\del_{r,\phi,\lambda}U.
+ \end{split}
+\end{equation}
+Note that, although the above equation does explicitely show a time dependence on the left side, the time variable has been supressed on the right to allow for more compact notation. In actual fact, the position coordinates do depend on time. More explicitely, the position of a body is given by $x(\tparm), y(\tparm), z(\tparm)$. Thus, to compute the derivative of the acceleration, one must compute
+\begin{equation}
+ \dddot{\vct{x}}_i(t) = \dtv{\del_{x,y,z}U}{\tparm} = 
+ \begin{bmatrix}
+ \prttwoa{U}{x} & \prttwob{U}{y}{x} & \prttwob{U}{z}{x}\\
+ \prttwob{U}{x}{y} & \prttwoa{U}{y} & \prttwob{U}{z}{y}\\
+ \prttwob{U}{x}{z} & \prttwob{U}{y}{z} & \prttwoa{U}{z}
+ \end{bmatrix}
+ \begin{bmatrix}
+ \dtv{x}{\tparm} \\ \dtv{y}{\tparm} \\ \dtv{z}{\tparm}  
+ \end{bmatrix}
+\end{equation}
+A representative component of the matrix in the above may be written as
+\begin{equation}
+\begin{split}
+ \prttwob{U}{x_i}{x_j} &= \prt{\prt{U}{x_j}}{x_i}\\
+ &=\prt{}{x_i}
+ \begin{bmatrix}
+  \prt{r}{x_j} & \prt{\phi}{x_j} & \prt{\lambda}{x_j}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prt{U}{r}\\
+  \prt{U}{\phi}\\
+  \prt{U}{\lambda}
+ \end{bmatrix}\\
+ &=\begin{bmatrix}
+  \prttwob{r}{x_i}{x_j} & \prttwob{\phi}{x_i}{x_j} & \prttwob{\lambda}{x_i}{x_j}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prt{U}{r}\\
+  \prt{U}{\phi}\\
+  \prt{U}{\lambda}
+ \end{bmatrix} +
+ \begin{bmatrix}
+  \prt{r}{x_j} & \prt{\phi}{x_j} & \prt{\lambda}{x_j}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prttwob{U}{x_i}{r}\\
+  \prttwob{U}{x_i}{\phi}\\
+  \prttwob{U}{x_i}{\lambda}
+ \end{bmatrix}\\
+ &=
+ \begin{bmatrix}
+  \prt{U}{r} & \prt{U}{\phi} & \prt{U}{\lambda}
+ \end{bmatrix}\begin{bmatrix}
+  \prttwob{r}{x_i}{x_j} \\ \prttwob{\phi}{x_i}{x_j} \\ \prttwob{\lambda}{x_i}{x_j}
+ \end{bmatrix} +
+ \begin{bmatrix}
+  \prt{r}{x_j} & \prt{\phi}{x_j} & \prt{\lambda}{x_j}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prttwoa{U}{r} & \prttwob{U}{\phi}{r} & \prttwob{U}{\lambda}{r}\\
+  \prttwob{U}{r}{\phi} & \prttwoa{U}{\phi} & \prttwob{U}{\lambda}{\phi}\\
+  \prttwob{U}{r}{\lambda} & \prttwob{U}{\phi}{\lambda} & \prttwoa{U}{\lambda}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prt{r}{x_i} \\ \prt{\phi}{x_i} \\ \prt{\lambda}{x_i}
+ \end{bmatrix}
+ \end{split}
+\end{equation}
+One can consolidate all the terms into matrix form via
+\begin{equation}
+\begin{split}
+ &\dddot{\vct{x}}_i(t) = \dtv{\del_{x,y,z}U}{\tparm} = \\
+ &\begin{bmatrix}
+  \prt{U}{r} & \prt{U}{\phi} & \prt{U}{\lambda} & 0 & 0 & 0 & 0 & 0 & 0\\
+  0 & 0 & 0 & \prt{U}{r} & \prt{U}{\phi} & \prt{U}{\lambda} & 0 & 0 & 0\\
+  0 & 0 & 0 & 0 & 0 & 0 & \prt{U}{r} & \prt{U}{\phi} & \prt{U}{\lambda} 
+ \end{bmatrix}\begin{bmatrix}
+  \prttwob{r}{x}{x} & \prttwob{r}{x}{y} & \prttwob{r}{x}{z}\\ 
+  \prttwob{\phi}{x}{x} & \prttwob{\phi}{x}{y} & \prttwob{\phi}{x}{z}\\ 
+  \prttwob{\lambda}{x}{x} & \prttwob{\lambda}{x}{y} & \prttwob{\lambda}{x}{z}\\
+  \prttwob{r}{y}{x} & \prttwob{r}{y}{y} & \prttwob{r}{y}{z}\\ 
+  \prttwob{\phi}{y}{x} & \prttwob{\phi}{y}{y} & \prttwob{\phi}{y}{z}\\ 
+  \prttwob{\lambda}{y}{x} & \prttwob{\lambda}{y}{y} & \prttwob{\lambda}{y}{z}\\
+  \prttwob{r}{z}{x} & \prttwob{r}{z}{y} & \prttwob{r}{z}{z}\\ 
+  \prttwob{\phi}{z}{x} & \prttwob{\phi}{z}{y} & \prttwob{\phi}{z}{z}\\ 
+  \prttwob{\lambda}{z}{x} & \prttwob{\lambda}{z}{y} & \prttwob{\lambda}{z}{z}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \dtv{x}{\tparm} \\ \dtv{y}{\tparm} \\ \dtv{z}{\tparm}  
+ \end{bmatrix}\\
+ +
+ &\begin{bmatrix}
+  \prt{r}{x} & \prt{\phi}{x} & \prt{\lambda}{x}\\
+  \prt{r}{y} & \prt{\phi}{y} & \prt{\lambda}{y}\\
+  \prt{r}{z} & \prt{\phi}{z} & \prt{\lambda}{z}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prttwoa{U}{r} & \prttwob{U}{\phi}{r} & \prttwob{U}{\lambda}{r}\\
+  \prttwob{U}{r}{\phi} & \prttwoa{U}{\phi} & \prttwob{U}{\lambda}{\phi}\\
+  \prttwob{U}{r}{\lambda} & \prttwob{U}{\phi}{\lambda} & \prttwoa{U}{\lambda}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \prt{r}{x} & \prt{r}{y} & \prt{r}{z}\\ 
+  \prt{\phi}{x} & \prt{\phi}{y} & \prt{\phi}{z}\\ 
+  \prt{\lambda}{x} & \prt{\lambda}{y} & \prt{\lambda}{z}
+ \end{bmatrix}
+ \begin{bmatrix}
+  \dtv{x}{\tparm} \\ \dtv{y}{\tparm} \\ \dtv{z}{\tparm}  
+ \end{bmatrix}
+ \end{split}
+\end{equation}

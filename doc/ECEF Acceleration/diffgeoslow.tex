@@ -1,0 +1,40 @@
+\subsection{Calculation of differential geometry parameters from position, velocity and acceleration}
+\label{sc:arcslow}
+Computation of pysical spacecraft parameters requires relating arclength to time. This section derives the relations between slow time and arclength using relations derived in \anref{an:vectorCalc}. In the text below, the satellite curve as a function of arclength, $\sats(\parm)$, is related to the same curve as a function of slow time $\satt(t)$. While $\sats'(\parm)$ denotes the derivative of the curve with respect to arclength, $\dot{\satt}(t)$ denotes the derivative of the curve with respect to slow time.
+\par
+Since
+\begin{equation}
+\vct{T}(\parm) = \frac{\d{\sats}}{\d{\parm}} = \frac{\d{\satt(t)}}{\d{t}}\frac{\d{t}}{\d{\parm}} = \frac{1}{\lvert\dx(t)\rvert}\dx(t) = \hat\dx(t).
+\end{equation}
+In the above and in the expressions below, the equation on the left, a function of $\parm$ is related to an expression on the right, a function of $t$, under the relation that $t$ is a function of $\parm$, i.e. $t = t(\parm)$.
+The tangent vector, $\vct{T}(\parm)$, is just the unit velocity vector. With $k(\parm) = \lvert \vct{T}'(\parm)\rvert$, and with the aid of \anref{an:vectorCalc}, one computes
+\begin{equation}
+ \frac{\d{\vct{T}(\parm)}}{\d{\parm}} = \frac{1}{\lvert\dx(t)\rvert}\frac{\d{\hat\dx(t)}}{\d{t}} = \frac{\mtx{P}_{\dx(t)}\ddx(t)}{\lvert\dx(t)\rvert^2}
+\end{equation}
+so that
+\begin{equation}
+ k(\parm) = \frac{\lvert\mtx{P}_{\dx(t)}\ddx(t)\rvert}{\lvert\dx(t)\rvert^2}.
+\end{equation}
+Recall that $\vct{N}(\parm)$ is defined as the unit vector in the direction of $\vct{T}'(\parm)$. With the previous expression, one finds that
+\begin{equation}
+ \vct{N}(\parm) = \frac{\mtx{P}_{\dx(t)}\ddx(t)}{\lvert\mtx{P}_{\dx(t)}\ddx(t)\rvert} = \hat{\vct{w}}(t),
+\end{equation}
+with $\vct{w}(t) = \mtx{P}_{\dx(t)}\ddx(t)$. This means that 
+\begin{equation}
+\vct{N}'(\parm) = \frac{1}{\lvert\dx(t)\rvert}\frac{\d{}}{\d{t}}\hat{\vct{w}}(t)=\frac{1}{\lvert\dx(t)\rvert}\frac{\mtx{P}_\vct{w}(t)\dot{\vct{w}}(t)}{\lvert\vct{w}(t)\rvert}.
+\end{equation}
+It is also possible to compute that
+\begin{equation}
+\begin{split}
+\dw(t) &= \frac{\d{\mtx{P}_{\dx(t)}\ddx(t)}}{\d{t}}\\ 
+&= -\frac{1}{\lvert\dx(t)\rvert}\left[\Pdx\ddx(t)\udx^T(t) + \udx(t)\ddx^T(t)\Pdx\right]\ddx(t) + \mtx{P}_{\dx(t)}\dddx(t).
+\end{split}
+\end{equation}
+Thus
+\begin{equation}
+\begin{split}
+\vct{N}'(\parm) &= \frac{1}{\lvert\dx(t)\rvert}\frac{\mtx{P}_\vct{w(t)}}{\lvert\vct{w}(t)\rvert}\biggl[-\frac{1}{\lvert\dx(t)\rvert}\left[\Pdx\ddx(t)\udx^T(t) + \udx(t)\ddx^T(t)\Pdx\right]\ddx(t)\\ 
+&+ \mtx{P}_{\dx(t)}\dddx(t)\biggr]
+\end{split}
+\end{equation}
+These expressions permit calculation of the tangent, normal and binormal vectors, the curvature and the torsion. 
