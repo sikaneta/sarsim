@@ -90,7 +90,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {7}End-to-end simulation}{47}{chapter.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.1}Simulated mutli-channel signal}{47}{section.7.1}%
+\contentsline {section}{\numberline {7.1}Simulated multi-channel signal}{47}{section.7.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {7.1.1}Generation of the raw signals}{48}{subsection.7.1.1}%
 \defcounter {refsection}{0}\relax 
@@ -100,26 +100,26 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{Residual phase correction}{54}{section*.33}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Sigal to noise ratio}{55}{section*.38}%
+\contentsline {subsubsection}{Signal to noise ratio}{55}{section*.38}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.2}Conclusion}{58}{section.7.2}%
+\contentsline {section}{\numberline {7.2}Conclusion}{59}{section.7.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {A}Appendix}{61}{appendix.A}%
+\contentsline {chapter}{\numberline {A}Appendix}{62}{appendix.A}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.1}Derivative of unit vectors}{61}{section.A.1}%
+\contentsline {section}{\numberline {A.1}Derivative of unit vectors}{62}{section.A.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.2}ECEF acceleration}{62}{section.A.2}%
+\contentsline {section}{\numberline {A.2}ECEF acceleration}{63}{section.A.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.2.1}ECEF equations of motion}{63}{subsection.A.2.1}%
+\contentsline {subsection}{\numberline {A.2.1}ECEF equations of motion}{64}{subsection.A.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.2.2}Rate of change of acceleration}{64}{subsection.A.2.2}%
+\contentsline {subsection}{\numberline {A.2.2}Rate of change of acceleration}{65}{subsection.A.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.3}Derivation of the arclength-paremterized range function}{65}{section.A.3}%
+\contentsline {section}{\numberline {A.3}Derivation of the arclength-paremterized range function}{66}{section.A.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.4}Numerical implementation of the Stolz interpolation}{67}{section.A.4}%
+\contentsline {section}{\numberline {A.4}Numerical implementation of the Stolz interpolation}{68}{section.A.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.4.1}Simplification for iterative root-finding}{68}{subsection.A.4.1}%
+\contentsline {subsection}{\numberline {A.4.1}Simplification for iterative root-finding}{69}{subsection.A.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.5}MIMO configuration}{69}{section.A.5}%
+\contentsline {section}{\numberline {A.5}MIMO configuration}{70}{section.A.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A.6}Antenna pattern angles}{72}{section.A.6}%
+\contentsline {section}{\numberline {A.6}Antenna pattern angles}{73}{section.A.6}%

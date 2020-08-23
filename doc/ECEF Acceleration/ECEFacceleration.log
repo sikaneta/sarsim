@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.2)  1 AUG 2020 08:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.2)  23 AUG 2020 09:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1236,32 +1236,32 @@ File: ueus.fd 2013/01/14 v3.01 Euler Script
 ) [6]) [7]
 Chapter 2.
 (./SURE_multichannel.tex (./fivechan.pdf_tex
-<fivechan.pdf, id=357, page=1, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=359, page=1, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 1>
 Package pdftex.def Info: fivechan.pdf , page1 used on input line 52.
 (pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=358, page=2, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=360, page=2, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 2>
 Package pdftex.def Info: fivechan.pdf , page2 used on input line 55.
 (pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=359, page=3, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=361, page=3, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 3>
 Package pdftex.def Info: fivechan.pdf , page3 used on input line 58.
 (pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=360, page=4, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=362, page=4, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 4>
 Package pdftex.def Info: fivechan.pdf , page4 used on input line 60.
 (pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=361, page=5, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=363, page=5, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 5>
 Package pdftex.def Info: fivechan.pdf , page5 used on input line 64.
 (pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=362, page=6, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=364, page=6, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 6>
 Package pdftex.def Info: fivechan.pdf , page6 used on input line 66.
@@ -1273,27 +1273,27 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [8
 
 ] (./antennaLengths.pdf_tex
-<antennaLengths.pdf, id=376, page=1, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=378, page=1, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 1>
 Package pdftex.def Info: antennaLengths.pdf , page1 used on input line 52.
 (pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=377, page=2, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=379, page=2, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 2>
 Package pdftex.def Info: antennaLengths.pdf , page2 used on input line 55.
 (pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=378, page=3, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=380, page=3, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 3>
 Package pdftex.def Info: antennaLengths.pdf , page3 used on input line 57.
 (pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=379, page=4, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=381, page=4, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 4>
 Package pdftex.def Info: antennaLengths.pdf , page4 used on input line 59.
 (pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=380, page=5, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=382, page=5, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 5>
 Package pdftex.def Info: antennaLengths.pdf , page5 used on input line 61.
@@ -1335,27 +1335,27 @@ ultiple pdfs with page group included in a single page
 pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
 ultiple pdfs with page group included in a single page
 >] (./equivalentHRWS.pdf_tex
-<equivalentHRWS.pdf, id=405, page=1, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=407, page=1, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 1>
 Package pdftex.def Info: equivalentHRWS.pdf , page1 used on input line 52.
 (pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=406, page=2, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=408, page=2, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 2>
 Package pdftex.def Info: equivalentHRWS.pdf , page2 used on input line 55.
 (pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=407, page=3, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=409, page=3, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 3>
 Package pdftex.def Info: equivalentHRWS.pdf , page3 used on input line 57.
 (pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=408, page=4, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=410, page=4, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 4>
 Package pdftex.def Info: equivalentHRWS.pdf , page4 used on input line 59.
 (pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=409, page=5, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=411, page=5, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 5>
 Package pdftex.def Info: equivalentHRWS.pdf , page5 used on input line 61.
@@ -1408,7 +1408,7 @@ Overfull \hbox (0.221pt too wide) in paragraph at lines 2--3
 
 pdfTeX warning: /usr/bin/pdflatex (file ./orbitMap.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<orbitMap.pdf, id=559, 753.81625pt x 458.71375pt>
+<orbitMap.pdf, id=561, 753.81625pt x 458.71375pt>
 File: orbitMap.pdf Graphic file (type pdf)
 <use orbitMap.pdf>
 Package pdftex.def Info: orbitMap.pdf  used on input line 15.
@@ -1526,14 +1526,15 @@ Overfull \hbox (13.46664pt too wide) in paragraph at lines 127--128
 
 ) [46]
 Chapter 7.
-(./simulation.tex [47
-
-]
-<sim.pdf, id=914, 351.3125pt x 190.7125pt>
+(./simulation.tex
+<sim.pdf, id=910, 351.3125pt x 190.7125pt>
 File: sim.pdf Graphic file (type pdf)
 <use sim.pdf>
 Package pdftex.def Info: sim.pdf  used on input line 47.
 (pdftex.def)             Requested size: 351.31163pt x 190.71202pt.
+ [47
+
+]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
 nput line 55.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
@@ -1545,13 +1546,13 @@ Overfull \hbox (16.93063pt too wide) in paragraph at lines 65--66
  []
 
 [48 <./sim.pdf>] (./subarray.pdf_tex
-<subarray.pdf, id=946, page=1, 578.17513pt x 297.58676pt>
+<subarray.pdf, id=948, page=1, 578.17513pt x 297.58676pt>
 File: subarray.pdf Graphic file (type pdf)
 <use subarray.pdf, page 1>
 Package pdftex.def Info: subarray.pdf , page1 used on input line 56.
 (pdftex.def)             Requested size: 578.17513pt x 297.60872pt.
 ) [49 <./subarray.pdf>]
-<simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png, id=964, 46
+<simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png, id=965, 46
 2.528pt x 346.896pt>
 File: simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -1559,7 +1560,7 @@ c file (type png)
 Package pdftex.def Info: simulation/40cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 110.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png, id=966, 46
+<simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png, id=967, 46
 2.528pt x 346.896pt>
 File: simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -1567,7 +1568,7 @@ c file (type png)
 Package pdftex.def Info: simulation/30cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 117.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png, id=967, 46
+<simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png, id=968, 46
 2.528pt x 346.896pt>
 File: simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -1575,7 +1576,7 @@ c file (type png)
 Package pdftex.def Info: simulation/25cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 124.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png, id=968, 46
+<simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png, id=969, 46
 2.528pt x 346.896pt>
 File: simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -1583,8 +1584,8 @@ c file (type png)
 Package pdftex.def Info: simulation/20cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 131.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png, id=96
-9, 462.528pt x 346.896pt>
+<simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png, id=97
+0, 462.528pt x 346.896pt>
 File: simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png G
 raphic file (type png)
 <use simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png>
@@ -1592,7 +1593,7 @@ Package pdftex.def Info: simulation/12cm/simulation_plots_full/wk_doppler_respo
 nse_amplitude.png  used on input line 138.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_amplitude
-.png, id=970, 462.528pt x 346.896pt>
+.png, id=971, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_ampl
 itude.png Graphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_ampli
@@ -1621,15 +1622,15 @@ lation/25cm/simulation_plots/wk_doppler_response_amplitude.png> <./simulation/2
 0cm/simulation_plots/wk_doppler_response_amplitude.png> <./simulation/12cm/simu
 lation_plots_full/wk_doppler_response_amplitude.png> <./simulation/10cm/simulat
 ion_plots_phase_corrected/wk_doppler_response_amplitude.png>]
-<simulation/40cm/simulation_plots/wk_response_32x32.png, id=999, 462.528pt x 34
-6.896pt>
+<simulation/40cm/simulation_plots/wk_response_32x32.png, id=1001, 462.528pt x 3
+46.896pt>
 File: simulation/40cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
 <use simulation/40cm/simulation_plots/wk_response_32x32.png>
 Package pdftex.def Info: simulation/40cm/simulation_plots/wk_response_32x32.png
   used on input line 159.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/30cm/simulation_plots/wk_response_32x32.png, id=1000, 462.528pt x 3
+<simulation/30cm/simulation_plots/wk_response_32x32.png, id=1002, 462.528pt x 3
 46.896pt>
 File: simulation/30cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -1637,7 +1638,7 @@ File: simulation/30cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/30cm/simulation_plots/wk_response_32x32.png
   used on input line 166.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/25cm/simulation_plots/wk_response_32x32.png, id=1001, 462.528pt x 3
+<simulation/25cm/simulation_plots/wk_response_32x32.png, id=1003, 462.528pt x 3
 46.896pt>
 File: simulation/25cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -1645,7 +1646,7 @@ File: simulation/25cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/25cm/simulation_plots/wk_response_32x32.png
   used on input line 173.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/20cm/simulation_plots/wk_response_32x32.png, id=1002, 462.528pt x 3
+<simulation/20cm/simulation_plots/wk_response_32x32.png, id=1004, 462.528pt x 3
 46.896pt>
 File: simulation/20cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -1653,7 +1654,7 @@ File: simulation/20cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/20cm/simulation_plots/wk_response_32x32.png
   used on input line 180.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/12cm/simulation_plots_full/wk_response_32x32.png, id=1003, 462.528p
+<simulation/12cm/simulation_plots_full/wk_response_32x32.png, id=1005, 462.528p
 t x 346.896pt>
 File: simulation/12cm/simulation_plots_full/wk_response_32x32.png Graphic file 
 (type png)
@@ -1661,7 +1662,7 @@ File: simulation/12cm/simulation_plots_full/wk_response_32x32.png Graphic file
 Package pdftex.def Info: simulation/12cm/simulation_plots_full/wk_response_32x3
 2.png  used on input line 187.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots/wk_response_32x32.png, id=1004, 462.528pt x 3
+<simulation/10cm/simulation_plots/wk_response_32x32.png, id=1006, 462.528pt x 3
 46.896pt>
 File: simulation/10cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -1691,7 +1692,7 @@ Overfull \hbox (2.22221pt too wide) in paragraph at lines 157--199
 s/wk_response_32x32.png> <./simulation/20cm/simulation_plots/wk_response_32x32.
 png> <./simulation/12cm/simulation_plots_full/wk_response_32x32.png> <./simulat
 ion/10cm/simulation_plots/wk_response_32x32.png>]
-<simulation/10cm/simulation_plots/wk_response_s_os_8.png, id=1022, 462.528pt x 
+<simulation/10cm/simulation_plots/wk_response_s_os_8.png, id=1024, 462.528pt x 
 346.896pt>
 File: simulation/10cm/simulation_plots/wk_response_s_os_8.png Graphic file (typ
 e png)
@@ -1700,7 +1701,7 @@ Package pdftex.def Info: simulation/10cm/simulation_plots/wk_response_s_os_8.pn
 g  used on input line 207.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png, id=102
-6, 462.528pt x 346.896pt>
+8, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png Gr
 aphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png>
@@ -1708,7 +1709,7 @@ Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
 sponse_32x32.png  used on input line 215.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png, id=10
-27, 462.528pt x 346.896pt>
+29, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png G
 raphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>
@@ -1716,7 +1717,7 @@ Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
 sponse_s_os_8.png  used on input line 222.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png, id=1
-030, 462.528pt x 346.896pt>
+032, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png 
 Graphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>
@@ -1728,8 +1729,8 @@ sponse_s_os_64.png  used on input line 232.
  <./simulation/10cm/simulation_plots/wk_response_s_os_8.png>] [55 <./simulation
 /10cm/simulation_plots_phase_corrected/wk_response_32x32.png>] [56 <./simulatio
 n/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>] [57 <./simulat
-ion/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>]) (./conclus
-ion.tex) [58
+ion/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>] [58]) (./co
+nclusion.tex) [59
 
 ]
 Overfull \hbox (1.12498pt too wide) in paragraph at lines 113--113
@@ -1743,19 +1744,19 @@ Overfull \hbox (0.88448pt too wide) in paragraph at lines 113--113
 olution Wide-
  []
 
-[59
+[60
 
-] [60]
+] [61]
 Appendix A.
-(./vectorcalc.tex) (./inertialtoecef.tex [61
+(./vectorcalc.tex) (./inertialtoecef.tex [62
 
-] [62]) (./rateofacceleration.tex
-[63]
+] [63]) (./rateofacceleration.tex
+[64]
 Overfull \hbox (29.38391pt too wide) detected at line 81
 []
  []
 
-[64]
+[65]
 Overfull \hbox (0.78197pt too wide) detected at line 124
 []
  []
@@ -1765,7 +1766,7 @@ Overfull \hbox (23.2246pt too wide) in paragraph at lines 1--1
 []\OT1/cmr/bx/n/14.4 Derivation of the arclength-paremterized range
  []
 
-[65]
+[66]
 Overfull \hbox (4.8093pt too wide) detected at line 21
 []
  []
@@ -1775,35 +1776,35 @@ Overfull \hbox (2.77779pt too wide) in alignment at lines 20--21
 [] []
  []
 
-[66]) (./stolz.tex [67] [68]) (./mimo.tex (./mimoconfig.pdf_tex
-<mimoconfig.pdf, id=1198, page=1, 480.5175pt x 243.95833pt>
+[67]) (./stolz.tex [68] [69]) (./mimo.tex (./mimoconfig.pdf_tex
+<mimoconfig.pdf, id=1210, page=1, 480.5175pt x 243.95833pt>
 File: mimoconfig.pdf Graphic file (type pdf)
 <use mimoconfig.pdf, page 1>
 Package pdftex.def Info: mimoconfig.pdf , page1 used on input line 56.
 (pdftex.def)             Requested size: 480.5175pt x 243.96516pt.
-) [69] [70 <./mimoconfig.pdf>] [71]) (./antennaanglesAppendix.tex
+) [70] [71 <./mimoconfig.pdf>] [72]) (./antennaanglesAppendix.tex
 Overfull \hbox (16.56163pt too wide) detected at line 21
 []
  []
 
-[72] [73]) [74]
+[73] [74]) [75]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 122.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 122.
  (./ECEFacceleration.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 122.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 122.
 Package rerunfilecheck Info: File `ECEFacceleration.out' has not changed.
-(rerunfilecheck)             Checksum: E70AE694F3A5E431A46BA1A2C0F2AE44;4434.
+(rerunfilecheck)             Checksum: 680C8C1B9AEC6F66B2CE756F6DB41BE8;4434.
 Package logreq Info: Writing requests to 'ECEFacceleration.run.xml'.
 \openout1 = `ECEFacceleration.run.xml'.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 122.
  ) 
 Here is how much of TeX's memory you used:
- 40710 strings out of 483183
- 935854 string characters out of 5966293
- 1716514 words of memory out of 5000000
- 54502 multiletter control sequences out of 15000+600000
+ 40719 strings out of 483183
+ 935975 string characters out of 5966293
+ 1716637 words of memory out of 5000000
+ 54506 multiletter control sequences out of 15000+600000
  549466 words of font info for 86 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  73i,24n,127p,1925b,1853s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1842,10 +1843,10 @@ ts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type
 ic/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/e
 uler/eusm10.pfb>
-Output written on ECEFacceleration.pdf (75 pages, 4394173 bytes).
+Output written on ECEFacceleration.pdf (76 pages, 4399209 bytes).
 PDF statistics:
- 1490 PDF objects out of 1728 (max. 8388607)
- 1283 compressed objects within 13 object streams
- 430 named destinations out of 1000 (max. 500000)
+ 1505 PDF objects out of 1728 (max. 8388607)
+ 1297 compressed objects within 13 object streams
+ 435 named destinations out of 1000 (max. 500000)
  633 words of extra memory for PDF output out of 10000 (max. 10000000)
 

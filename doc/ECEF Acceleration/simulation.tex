@@ -1,8 +1,8 @@
-\section{Simulated mutli-channel signal}
+\section{Simulated multi-channel signal}
 \label{sc:mysimulation}
-To demonstrate the signal processing approach, this section generates simulated signals at high resolution, ranging from 40cm down to 10cm. As mentioned, as the resolution decreases (i.e. improves) data capture and storage requirements rapidly increase which also means that hardware requirements for signal processing also increase. The highest resolution of 10cm, simulated in this section, required a significant amount of processing power, time and Random Access Memory (RAM). Simulations mode was produced by using the Vienna Supercomputing Cluster (VSC) for which the authors are deeply grateful. 
+To demonstrate the signal processing approach, this section generates simulated signals at resolutions ranging from 40cm down to 10cm. As already mentioned, the more the resolution decreases (i.e. improves) the greater the data capture, storage and signal processing requirements. The 12cm and 10cm modes required a significant amount of processing power, time and Random Access Memory (RAM). These modes were simulated by using the Vienna Super computing Cluster (VSC) for which the authors are deeply grateful. 
 \par
-The simulation, with parameters listed in \Tbref{tb:simulation}, was computed using the Numba, Numpy, and Scipy libraries of Python, with plots generated using Matplotlib.
+The simulations, with parameters listed in \Tbref{tb:simulation}, were developed using the Python libraries Numba, Numpy, Scipy and Matplotlib.
 % \begin{table}[ht!]
 % \begin{center}
 %  \caption{Simulation parameters}
@@ -80,7 +80,7 @@ The various azimuth look directions are defined according to the angular width o
 \par
 As illustrated in \fgref{fg:fivechansubaperture}, the simulation generates a data array for each subaperture/beam combination. The parameters for for each subaperture/beam combination are also read from the configuration file as illustrated in listing \ref{lst:configuration}. For each of these combinations, the configuration file defines an XML element called radarConfiguration which has a channel attribute given by ``channel$m$-$n$'', where $m$ corresponds to the subaperture while $n$ corresponds to the beam. The subaperture is defined using magnitude weights for each phased-array element on both transmit and receive. The set of wieghts used on transmit may be different from those used on receive. 
 \par
-The beam directions is controlled using true time-delays on both transmit and receive (although they are set to the same values in this simulation so that the transmit and receive beams are pointing in the same direction). Of course, a true time-delay approach rather than a phase-steered approach is required as we are considering a wide-band system rather than a narrow-band system.
+The beam directions are controlled by using true time-delays on both transmit and receive (although they are set to the same values in this simulation so that the transmit and receive beams are pointing in the same direction). Of course, a true time-delay approach rather than a phase-steered approach is required as we are considering a wide-band system rather than a narrow-band system.
 \begin{lstlisting}[caption={Channel/Beam configuration}, label={lst:configuration}]
 <radarConfiguration channel="channel0-0">
   <transmitConfiguration>
@@ -97,7 +97,7 @@ The beam directions is controlled using true time-delays on both transmit and re
   </receiveConfiguration>
 </radarConfiguration>
 \end{lstlisting}
-A set of data for each subaperture/beam combination is created with the data stored in the undersampled azimuth-wavenumber, range-time domain. The number of samples in each of the subaperture/beam combinations is sufficient in the range direction to cover all range-cell migration and sufficient in the azimuth direction to capture all angles covered by every beam. Since the number of beams equals the number of channels, the total numer of channels created is $\numberChannels = (\channelM+1)^2$.
+A data file for each subaperture/beam combination is created with the data stored in the undersampled azimuth-wavenumber, range-time domain. The number of samples in each of the subaperture/beam combinations is sufficient in the range direction to cover all range-cell migration and sufficient in the azimuth direction to capture all angles covered by every beam. Since the number of beams equals the number of channels, the total number of channels created is $\numberChannels = (\channelM+1)^2$.
 \par
 Note that in this simulation, the computed signals have no across-track baseline.
 \subsection{Multichannel processing}
@@ -201,7 +201,7 @@ The simulator then azimuth compresses multichannel reconstructed signal with the
 \end{figure}
 \clearpage
 \subsubsection{Residual phase correction}
-As the resolution increases, it becomes more important to compensate for the residual phase difference that arises from the discrepancy between the differential geometry approximation to the orbit and the true satellite orbit. If exmained closely, \fgref{fg:10cmPSF} shows an azimuth imbalance in the the PSF for the 10cm mode (this can also be seen in the 12cm mode and in the 20 cm mode). This imbalance is made clearer in the cross-section plot of \fgref{fg:azimuthCross10Unbalanced}
+As the resolution increases, it becomes more important to compensate for the residual phase difference that arises from the discrepancy between the differential geometry approximation to the orbit and the true satellite orbit. If examined closely, \fgref{fg:10cmPSF} shows an azimuth imbalance in the the PSF for the 10cm mode (this can also be seen in the 12cm mode and in the 20 cm mode). This imbalance is made clearer in the cross-section plot of \fgref{fg:azimuthCross10Unbalanced}
 \begin{figure}[ht!]
 \begin{center}
  \resizebox{\columnwidth}{!}{\includegraphics{simulation/10cm/simulation_plots/wk_response_s_os_8.png}}
@@ -213,7 +213,7 @@ After compensating for the residual phase using the computed phase compensation 
 \begin{figure}[ht!]
 \begin{center}
  \resizebox{\columnwidth}{!}{\includegraphics{simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png}}
- \caption{Point Spread Function of 10cm mode after phase compenstaion.}
+ \caption{Point Spread Function of 10cm mode after phase compensation.}
  \label{fg:10cmPSFBalanced}
  \end{center}
 \end{figure}
@@ -256,14 +256,35 @@ Over the wider range of azimuth values illustrated in \fgref{fg:azimuthCross10wi
 %  \label{fg:psf2}
 %  \end{center}
 % \end{figure}
-\subsubsection{Sigal to noise ratio}
-The PRFs selected for all simulations differ from the ``ideal'' PRF thus potentially adversely affecting the Signal to Noise Ratio (SNR). As a measure of the radiometrical resolution, the Noise Equaivalent Sigma Zero (NESZ) is computed for all modes. 
+\subsubsection{Signal to noise ratio}
+The PRFs selected for all simulations differ from the ``ideal'' PRF thus potentially adversely affecting the Signal to Noise Ratio (SNR). As a measure of the radiometrical resolution, the Noise Equivalent Sigma Zero (NESZ) is computed for all modes. 
 Based upon parameters in the simulation configuration file, the radar equation is used to generate a estimate of the simulated signal to noise ratio. 
+\par
+Assuming ideal antenna elements, each with area $D_aD_e$, where $D_a$ and $D_e$ are the azimuth and elevation lengths of the antenna, then the gain of each element as a function of directional cosine $u$ in the azimuth direction and $v$ in the elevation direction may be represented as
 \begin{equation}
- \frac{P_{av}\lambda_0}{(4\pi)^3r^4Lk_BT}
+ G_{T_x}(u,v) = G_{R_x}(u,v) = \frac{4\pi D_aD_e}{\lambda_0^2}\text{sinc}^2\left(\frac{uD_a}{\lambda_0}\right)\text{sinc}^2\left(\frac{vD_e}{\lambda_0}\right).
+ \label{eq:gainPattern}
 \end{equation}
-
-A test noise signal is also generated by the simulator. The SNR prior to filtering is compared with the SNR after filtering (but before azimuth compression) giving a change of about -0.4 dB. This shows that with the simulated parameters, the SNR does not change significantly.
+This expression is such that
+\begin{equation}
+ \int_{-1}^1G_{T_x}(u,v)\d{u}\d{v}=4\pi,
+\end{equation}
+which simply means that power is preserved; however, rather than the power being evenly distributed around a sphere, it is directed, preferentially, in the direction $u=v=0$.
+\par
+If $P_{T_x}$ is the transmit power of each transmit element, then the true-time-delay beamforming operation (consisting of $N_{T_x}$ elements) delivers a total of power of $P_{total} = P_{T_x}N_{T_x}$, and the received SNR can be expressed as
+\begin{equation}
+ \frac{P_{total}G_{T_x}(u,v)A_{R_x}}{(4\pi R^2)^2Lk_BTB}\crossSection
+\end{equation}
+where $A_{R_x}=N_{R_x}A_e$ is the effective receive area and $A_e=D_aD_e\alpha$. Here, $\alpha<1$ accounts for the ``effective'' antenna area of each T/R module. Finally, $\crossSection$ is the backscatter cross-section. If one considers only the maximum gain (i.e. the maximum of \eqref{eq:gainPattern}), the above becomes
+\begin{equation}
+ \frac{P_{total}N_{R_x}A_e}{(4\pi R^2)^2Lk_BTB}\frac{4\pi N_{T_x}A_e}{\lambda_0^2}\crossSection
+\end{equation}
+where $A_{T_x}=N_{T_x}A_e$ is the effective area of the transmit antenna. The pulse compression gain is approximately $\tau_pB$ (where $\tau_p$ is the pulse duration), so, after pulse compression, one computes an SNR of
+\begin{equation}
+ \SNR_s = \frac{P_{total}N_{R_x}N_{T_x}A_e^2\tau_p}{4\pi R^4 Lk_BT\lambda_0^2}\crossSection
+ \label{eq:pulseCompBeamFormedSNR}
+\end{equation}
+This is the SNR of each channel before multichannel and SAR processing. The simulation sets the amplitude of return signal to $\sqrt{\SNR_s}$ with $\crossSection=1$ and generates an additive zero-mean complex circular Gaussian noise signal with unit variance. This noise signal is passed though the multichannel and SAR processing steps with the same parameters used as for the signal thus simulating the processed noise. The NESZ is computed as the variance of this noise signal divided by the target signal (the maximum of the squared absolute value) yielding the results in \tbref{tb:nesz}. For all the modes simulated, the worst-case NESZ is -25 dB while the NESZ for the 10 cm mode is around -30 dB.
 \begin{table}[ht!]
 \begin{center}
  \caption{Computed NESZ}
@@ -274,10 +295,12 @@ A test noise signal is also generated by the simulator. The SNR prior to filteri
  {\bf 30 cm} & 5000.00 & -29.8\\\hline
  {\bf 25 cm} & 5142.86 & -29.7\\\hline
  {\bf 20 cm} & 6428.57 & -29.2\\\hline
+ {\bf 12 cm} & 7500.00 & -25.5\\\hline
+ {\bf 10 cm} & 8181.82 & -30.2\\\hline
  \end{tabular}
  \end{center}
 \end{table}
 \par
-In summary, the simulation demonstrates the suitability of the proposed signal processing algorithm and also shows how the generated PSF contains extra sidelobes that most likely result from the different shape of the signal response in the Doppler domain. If these sidelobes are intolerable, they can possibly be removed by modifying the phased-array beam tables; however, this is a topic for further research.
+In summary, the simulation demonstrates the suitability of the proposed signal processing algorithm and also shows how the generated PSF contains extra sidelobes that most likely result from the different shape of the signal response in the Doppler domain. If these sidelobes are intolerable, they can possibly be removed by modifying the phased-array beam tables; however, this is a topic for further research. The simulation further shows that this approach to SAR imaging generates responses of very high resolution not only geometrically, but also with favourable NESZ characteristics.
 \clearpage
 %\input{conclusion}

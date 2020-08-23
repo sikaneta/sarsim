@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=range.tex
+lastDocument=simulation.tex
 
 [document-settings,item:ECEFacceleration.tex]
 Bookmarks=
@@ -275,8 +275,8 @@ Mode=LaTeX
 Mode Set By User=false
 
 [item:ECEFacceleration.tex]
-open=false
-order=0
+open=true
+order=27
 
 [item:SURE_introduction.tex]
 open=true
@@ -615,12 +615,12 @@ TextFolding=[]
 ViMarks=.,12,101,[,12,101,],12,101
 
 [view-settings,view=0,item:simulation.tex]
-CursorColumn=30
-CursorLine=262
+CursorColumn=55
+CursorLine=271
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,262,29,[,262,29,],262,29
+ViMarks=.,262,11,[,262,10,],262,11
 
 [view-settings,view=0,item:stationaryphase.tex]
 CursorColumn=142
