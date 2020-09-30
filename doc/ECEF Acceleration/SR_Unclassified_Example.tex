@@ -1,0 +1,267 @@
+% This is an example of an unclassified Scientific Report typeset
+% using drdc-report.cls.
+\RequirePackage{pdf14}
+\documentclass[pdfa]{drdc-report}
+%\documentclass[draft]{drdc-report}
+%\documentclass[unpublished,pdfa,draft]{drdc-report}
+\usepackage{drdc-docctl}
+\usepackage{drdc-rtf-abstract}
+\usepackage{drdc-submission}
+
+% Use T1 fonts for correct French hyphenation
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\renewcommand\sfdefault{phv}
+
+% Load hyperref
+\definecolor{navy}{rgb}{0,0,0.5}
+\newcommand\mydriver{\ifpdf pdftex\else dvips,breaklinks\fi}
+\usepackage[\mydriver,draft=false,plainpages=false,
+    colorlinks=true,linkcolor=navy,anchorcolor=navy,citecolor=navy,
+    filecolor=navy,urlcolor=navy,raiselinks=true,
+    bookmarksnumbered=true]{hyperref}
+
+\newcommand\mytitle{A document title}
+\title{\mytitle}
+\subtitle{A subtitle}
+\docnumber{---Will be inserted by Publication Officer}
+\establishment{\DRDCCORA}
+\author{J.R.~Bloggs}
+\authors{J.R.~Bloggs[\establishmentname]%
+         Jean-Luc Picard[\DRDCCORA]}
+
+% These definitions are used by drdc-docctl.sty
+\projectnumber{42zz78}
+\addkeyword{DRDC Scientific Report}
+\addkeyword{example document}
+
+% Pass title, author and keywords to hyperref to put in the PDF Info.
+\makeinitializedauthors\mypdfauthors{; }
+\makeexpandedkeywords\mypdfkeywords{; }
+\hypersetup{
+  pdftitle={\mytitle},
+  pdfauthor={\mypdfauthors},
+  pdfkeywords={\mypdfkeywords}
+}
+\futuredistribution{Defence departments and their contractors}{None}
+
+%Public release
+%Defence departments
+%Defence departments and their contractors
+%Government departments/agencies
+%Government departments/agencies and their contractors
+%Further distribution done by approval from Defence Research and Development Canada’s Authority
+
+%\distribution
+
+\begin{document}
+
+% Add the cover page
+\makefrontcover
+
+\begin{abstract}
+  This is the English abstract.
+   blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. vh blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+   blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. vh blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+\end{abstract}
+
+\begin{significance}
+  This is the significance statement.  
+\end{significance}
+
+\begin{fabstract}
+  Ceci est le r\'esum\'e en fran\c{c}ais.
+  h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. vh blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+h blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah. 
+\end{fabstract}
+
+\begin{fsignificance}
+  Ceci est l'importance pour la d\'efense et la s\'ecurit\'e.
+\end{fsignificance}
+
+\tableofcontents\clearpage
+\listoffigures\clearpage
+\listoftables
+\begin{acknowledgements}
+The authors would like to thank $\ldots$
+\end{acknowledgements}
+\let\cleardoublepage\clearpage
+\section{Section heading}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.  Here is a citation\,\cite{EXAMPLE}.
+
+Here is a citation to a web page\,\cite{MAPLE}.  Look in the file
+\texttt{refs.bib} to see the \textsc{Bib}\TeX\ entry.
+%
+\begin{equation}
+ I = \int_{-\infty}^\infty e^{-x^2}\,dx = \sqrt{\pi}
+\end{equation}
+%
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+\subsection{Sub-section heading}
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+\begin{figure}[t]
+ \begin{center}\framebox{\sffamily This is a figure.}\end{center}
+ \caption{A figure.}
+\end{figure}
+
+\subsubsection{Sub-sub-section heading}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+\subsubsection*{Sub-sub-section heading with no number}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+\paragraph{Sub-sub-sub-section heading which shows a hanging indent
+because the heading is so long}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+ \paragraph*{Sub-sub-sub-section heading with no number}
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+Here is an \texttt{enumerate} environment:
+\begin{enumerate}
+ \item Item 1.
+ \item Item 2.
+ \item Item 3.
+ \begin{enumerate}
+   \item Sub-item 1.
+   \item Sub-item 2.
+   \item Sub-item 3.
+   \begin{enumerate}
+     \item Sub-sub-item 1.
+     \item Sub-sub-item 2.
+     \item Sub-sub-item 3.
+   \end{enumerate}
+ \end{enumerate}
+\end{enumerate}
+
+Here is an \texttt{itemize} environment:
+\begin{itemize}
+ \item Item 1.
+ \item Item 2.
+ \item Item 3.
+ \begin{itemize}
+   \item Sub-item 1.
+   \item Sub-item 2.
+   \item Sub-item 3.
+   \begin{itemize}
+     \item Sub-sub-item 1.
+     \item Sub-sub-item 2.
+     \item Sub-sub-item 3.
+   \end{itemize}
+ \end{itemize}
+\end{itemize}
+
+\section{Another Section heading}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+% Add the References section
+\clearpage
+\bibliography{refs}
+\bibliographystyle{drdc}
+ 
+% Add some annexes
+\appendix
+\annex{First annex}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+
+
+\annex{Second annex with a very long heading to show a hanging indent
+       even in the table of contents}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+\annex{Second annex with a very long heading to show a hanging indent
+       even in the table of contents}
+
+Blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+blah blah blah blah blah blah.
+% Make the DCD sheet
+\docctl
+
+% Add the back cover
+\makebackcover
+
+% Write the abstract and significance statement to sr-example.rtf
+%\RTFabstract
+
+% Make a partially completed DCGER
+%\DCGER{DCGER-template-2015-06-23.rtf}
+
+% Make a CSV file to help fill in the submission form.
+%\submission{Submission-template.csv}
+\end{document}

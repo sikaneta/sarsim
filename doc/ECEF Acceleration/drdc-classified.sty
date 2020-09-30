@@ -1,0 +1,825 @@
+%%
+%% This is file `drdc-classified.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drdc-classified.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{drdc-classified}
+              [2018/03/10 v3.0
+ Package for classified or protected DRDC reports]
+\newcommand\DRDC@classerror[1]{\PackageError{drdc-classified}{#1}{}}
+\RequirePackage{ifpdf}
+\@ifpackageloaded{graphics}{}{\RequirePackage[final]{graphics}}
+\@ifpackageloaded{xcolor}{}{\RequirePackage[rgb]{xcolor}}
+\newif\ifDRDC@abbrev\DRDC@abbrevfalse
+\DeclareOption{abbrev}{\DRDC@abbrevtrue}
+\ProcessOptions\relax
+\ifDRDC@abbrev
+  \ifDRDC@isfrench
+    \renewcommand*{\DRDC@DMCDterm}{MC}
+  \else
+    \renewcommand*{\DRDC@DMCDterm}{CG}
+  \fi
+  \renewcommand*{\DRDC@DMCQterm}{EC}
+\fi
+\def\DRDC@Unum{1}
+\def\DRDC@Rnum{2}
+\def\DRDC@PAnum{3}
+\def\DRDC@PBnum{4}
+\def\DRDC@PCnum{5}
+\def\DRDC@Cnum{6}
+\def\DRDC@PCCnum{7}
+\def\DRDC@Snum{8}
+\def\DRDC@Tnum{9}
+\newcounter{DRDC@classtemp}
+\newcommand\DRDC@classnum[1]{%
+  \setcounter{DRDC@classtemp}{\csname DRDC@#1num\endcsname}%
+}
+\newcounter{DRDC@classmax}
+\setcounter{DRDC@classmax}{\DRDC@Unum}
+\newcounter{DRDC@lastclassmax}
+\let\DRDC@lastmaxDMC\DRDC@DMCA
+\newif\ifDRDC@hasEC \DRDC@hasECfalse
+\newif\ifDRDC@lasthasEC \DRDC@lasthasECfalse
+\AtEndDocument{%
+  \immediate\write\@mainaux{%
+    \string\setcounter{DRDC@lastclassmax}{\the\value{DRDC@classmax}}}%
+  \immediate\write\@mainaux{%
+    \string\gdef\string\DRDC@lastmaxDMC{\DRDC@maxDMC}}
+  \ifDRDC@hasEC
+    \immediate\write\@mainaux{%
+      \string\global\string\DRDC@lasthasECtrue}%
+  \fi
+}
+\newcommand*\DRDC@CandPC[4]{%
+  \ifnum#1=\DRDC@Cnum
+    \ifnum#2=\DRDC@PCnum #3\else #4\fi
+  \else
+    \ifnum#1=\DRDC@PCnum
+      \ifnum#2=\DRDC@Cnum #3\else #4\fi
+    \else #4\fi
+  \fi
+}
+\newcommand*\DRDC@updateclassmax[1]{%
+  \DRDC@classnum{#1}%
+  \DRDC@CandPC{\the\value{DRDC@classmax}}{\the\value{DRDC@classtemp}}%
+              {\setcounter{DRDC@classmax}{\DRDC@PCCnum}}%
+              {\ifnum\the\value{DRDC@classtemp}>%
+                     \the\value{DRDC@classmax}%
+                 \setcounter{DRDC@classmax}{\value{DRDC@classtemp}}%
+               \fi}%
+}
+\newcommand*{\cpar}[3][]{\DRDC@showclass[#1]{#2} #3}
+\newcommand*{\tclassUe}{UNCLASSIFIED}
+\newcommand*{\tclassUf}{SANS CLASSIFICATION}
+\newcommand*{\tclassPAe}{PROTECTED~A}
+\newcommand*{\tclassPAf}{PROT\'EG\'E~A}
+\newcommand*{\tclassPBe}{PROTECTED~B}
+\newcommand*{\tclassPBf}{PROT\'EG\'E~B}
+\newcommand*{\tclassPCe}{PROTECTED~C}
+\newcommand*{\tclassPCf}{PROT\'EG\'E~C}
+\newcommand*{\tclassCe}{CONFIDENTIAL}
+\newcommand*{\tclassCf}{CONFIDENTIEL}
+\newcommand*{\tclassPCCe}{\tclassPCe\ -- \tclassCe}
+\newcommand*{\tclassPCCf}{\tclassPCf\ -- \tclassCf}
+\newcommand*{\tclassSe}{SECRET}
+\newcommand*{\tclassSf}{SECRET}
+\newcommand*{\tclassTe}{TOP SECRET}
+\newcommand*{\tclassTf}{TR\`ES SECRET}
+\ifDRDC@isfrench
+  \renewcommand*{\tclassU}{\tclassUf}
+  \newcommand*{\tclassPA}{\tclassPAf}
+  \newcommand*{\tclassPB}{\tclassPBf}
+  \newcommand*{\tclassPC}{\tclassPCf}
+  \newcommand*{\tclassC}{\tclassCf}
+  \newcommand*{\tclassS}{\tclassSf}
+  \newcommand*{\tclassT}{\tclassTf}
+\else
+  \renewcommand*{\tclassU}{\tclassUe}
+  \newcommand*{\tclassPA}{\tclassPAe}
+  \newcommand*{\tclassPB}{\tclassPBe}
+  \newcommand*{\tclassPC}{\tclassPCe}
+  \newcommand*{\tclassC}{\tclassCe}
+  \newcommand*{\tclassS}{\tclassSe}
+  \newcommand*{\tclassT}{\tclassTe}
+\fi
+\newcommand*{\tclassPCC}{\tclassPC\ -- \tclassC}
+\ifDRDC@isbrief\else
+  \addto{\captionsenglish}{%
+    \renewcommand*{\tclassU}{\tclassUe}%
+    \renewcommand*{\tclassPA}{\tclassPAe}%
+    \renewcommand*{\tclassPB}{\tclassPBe}%
+    \renewcommand*{\tclassPC}{\tclassPCe}%
+    \renewcommand*{\tclassC}{\tclassCe}%
+    \renewcommand*{\tclassT}{\tclassTe}%
+  }
+  \DRDC@addtofrench{%
+    \renewcommand*{\tclassU}{\tclassUf}%
+    \renewcommand*{\tclassPA}{\tclassPAf}%
+    \renewcommand*{\tclassPB}{\tclassPBf}%
+    \renewcommand*{\tclassPC}{\tclassPCf}%
+    \renewcommand*{\tclassC}{\tclassCf}%
+    \renewcommand*{\tclassT}{\tclassTf}%
+  }
+\fi
+\ifDRDC@isfrench
+  \newcommand\DRDC@classterm[1]{%
+    \ifcase#1{}\or\tclassUf\or{}\or\tclassPAf\or\tclassPBf
+               \or\tclassPCf\or\tclassCf\or\tclassPCC\or\tclassS
+               \or\tclassTf
+    \else\DRDC@classerror{Unknown classification or protection}%
+    \fi}
+\else
+  \newcommand\DRDC@classterm[1]{%
+    \ifcase#1{}\or\tclassUe\or{}\or\tclassPAe\or\tclassPBe
+               \or\tclassPCe\or\tclassCe\or\tclassPCC\or\tclassS
+               \or\tclassTe
+    \else\DRDC@classerror{Unknown classification or protection}%
+    \fi}
+\fi
+\let\secchar=\S
+\newcommand*\DRDC@classmarker[1]{%
+  \ifx#1TTS%
+  \else
+    \expandafter\ifx\csname#1\endcsname\PCC PC-C\else#1\fi
+  \fi
+}%
+\let\DRDC@markerformat\@firstofone
+\newcommand\DRDC@@marker[1]{%
+  \DRDC@markerformat{\DRDC@pup(#1\DRDC@pup)}}
+\newcommand*{\marker}[1]{\DRDC@@marker{\DRDC@classmarker{#1}}}
+\newcommand*{\twomarker}[2]{%
+  \DRDC@@marker{\DRDC@classmarker{#1}\doubleslashreplacement #2}}
+\newcommand*{\threemarker}[3]{%
+  \twomarker{#1}{#2\doubleslashreplacement #3}}
+\newcommand*{\fourmarker}[4]{%
+  \threemarker{#1}{#2}{#3\doubleslashreplacement #4}}
+\newcommand\DRDC@addtomarker[2]{%
+  {\def\DRDC@tempa{#2}%
+   \ifx\DRDC@tempa\@empty\else\g@addto@macro#1{ // #2}\fi}%
+}
+\newcommand*{\DRDC@smartmarker}[4]{%
+  \def\DRDC@temp{#2}%
+  \DRDC@addtomarker\DRDC@temp{#3}%
+  \DRDC@addtomarker\DRDC@temp{#4}%
+  \twomarker{#1}{\DRDC@temp}%
+}
+\newcommand*\DRDC@makeabbrevclass[1]{%
+  \edef\DRDC@abbrevclass{\DRDC@classmarker{#1}}}
+\providecommand\DRDC@expandedaddto[2]{%
+  \expandafter\g@addto@macro\expandafter#1\expandafter{#2}%
+}%
+\newcommand\DRDC@warntype{dissemination control}
+\newcommand*\DRDC@nowtermerror{%
+  {\def~{ }%
+   \DRDC@classerror{%
+     Extra fields not allowed for\MessageBreak
+     unclassified marker}}}
+\newcommand\doubleslashreplacement{\,//\,}
+\def\DRDC@makemarker#1#2{%
+  {%
+    \def\DRDC@marker{\DRDC@pup(}%
+    \DRDC@makeabbrevclass{#2}%
+    \DRDC@expandedaddto\DRDC@marker\DRDC@abbrevclass%
+    \edef\DRDC@temp{#1}%
+    \ifx\DRDC@temp\@empty\else
+      \DRDC@classnum{#2}%
+      \ifnum\the\value{DRDC@classtemp}<\DRDC@PAnum
+        \DRDC@nowtermerror\fi
+      \g@addto@macro\DRDC@marker{//}%
+      \DRDC@expandedaddto\DRDC@marker\DRDC@temp
+    \fi
+    \g@addto@macro\DRDC@marker{\DRDC@pup)}%
+  }%
+  \DRDC@replace\DRDC@marker{//}{\doubleslashreplacement}%
+}%
+\def\updatemaxDMCforCG#1CG#2\@nil{%
+  {\def\DRDC@temp{#2}%
+   \ifx\DRDC@temp\@empty\else\thispageDMCmin{\DRDC@DMCD}\fi}%
+}
+\def\updatemaxDMCforEC#1EC#2\@nil{%
+  {\def\DRDC@temp{#2}%
+   \ifx\DRDC@temp\@empty\else\thispageDMCmin{\DRDC@DMCQ}\fi}%
+}
+\def\DRDC@showclass[#1]#2{%
+  \DRDC@makemarker{#1}{#2}\DRDC@marker
+  \protect\DRDC@updateclassmax{#2}%
+  {\edef\DRDC@temp{#1}%
+   \expandafter\updatemaxDMCforEC\DRDC@temp EC\@nil
+   \expandafter\updatemaxDMCforCG\DRDC@temp CG\@nil}%
+}
+\def\DRDC@showclassfmt[#1]#2{%
+  \DRDC@markerformat{\DRDC@showclass[#1]{#2}}}
+\DeclareRobustCommand*{\Uclass}{%
+  \DRDC@markerformat{\DRDC@pup(U\DRDC@pup)}}
+\newcommand*{\PAclass}[1][]{\DRDC@showclassfmt[#1]{PA}}
+\newcommand*{\PBclass}[1][]{\DRDC@showclassfmt[#1]{PB}}
+\newcommand*{\PCclass}[1][]{\DRDC@showclassfmt[#1]{PC}}
+\newcommand*{\PCCclass}[1][]{\DRDC@showclassfmt[#1]{PCC}}
+\newcommand*{\Cclass}[1][]{\DRDC@showclassfmt[#1]{C}}
+\newcommand*{\Sclass}[1][]{\DRDC@showclassfmt[#1]{S}}
+\newcommand*{\Tclass}[1][]{\DRDC@showclassfmt[#1]{T}}
+\DeclareRobustCommand*{\U}{\Uclass\ }
+\newcommand*{\PA}[1][]{\PAclass[#1] \ignorespaces}
+\newcommand*{\PB}[1][]{\PBclass[#1] \ignorespaces}
+\newcommand*{\PC}[1][]{\PCclass[#1] \ignorespaces}
+\newcommand*{\C}[1][]{\Cclass[#1] \ignorespaces}
+\newcommand*{\PCC}[1][]{\PCCclass[#1] \ignorespaces}
+\renewcommand*{\S}[1][]{\Sclass[#1] \ignorespaces}
+\newcommand*{\T}[1][]{\Tclass[#1] \ignorespaces}
+\newif\ifDRDC@iswarning
+\newcommand\DRDC@fixclass[1]{
+  \DRDC@iswarningfalse
+  \def\DRDC@abbrevclass{U}
+  \DRDC@replaceclass#1\PA{PA}{ }%
+  \DRDC@replaceclass#1\PB{PB}{ }%
+  \DRDC@replaceclass#1\PC{PC}{ }%
+  \DRDC@replaceclass#1\C{C}{ }%
+  \DRDC@replaceclass#1\PCC{PCC}{ }%
+  \DRDC@replaceclass#1\S{S}{ }%
+  \DRDC@replaceclass#1\T{T}{ }%
+  \DRDC@replaceclass#1\PAclass{PA}{}%
+  \DRDC@replaceclass#1\PBclass{PB}{}%
+  \DRDC@replaceclass#1\PCclass{PC}{}%
+  \DRDC@replaceclass#1\Cclass{C}{}%
+  \DRDC@replaceclass#1\PCCclass{PCC}{}%
+  \DRDC@replaceclass#1\Sclass{S}{}%
+  \DRDC@replaceclass#1\Tclass{T}{}%
+}
+\long\def\DRDC@replaceclass#1#2#3#4{
+  \long\def\DRDC@@replaceclass##1#2##2[##3]##4\@nil{%
+    \g@addto@macro\DRDC@tempa{##1}%
+    \def\DRDC@tempb{##2}%
+    \ifx\DRDC@tempb\@empty % There is an optional argument
+      \def\DRDC@tempb{##3}%
+      \ifx\DRDC@tempb\@empty % The optional argument is empty
+        \def\DRDC@tempb{##4}%
+        \ifx\DRDC@tempb\@empty % We are at the end of the argument list
+        \else % We are not at the end of the argument list
+          \DRDC@makemarker{}{#3}%
+          \DRDC@expandedaddto\DRDC@tempa\DRDC@marker
+          \DRDC@@replaceclass##4\@nil
+        \fi
+      \else % The optional argument is not empty
+        \DRDC@makemarker{##3}{#3}%
+        \DRDC@expandedaddto\DRDC@tempa\DRDC@marker
+        \DRDC@iswarningtrue
+        \DRDC@@replaceclass##4\@nil
+      \fi
+    \else % No optional argument
+      \DRDC@makemarker{}{#3}%
+      \DRDC@expandedaddto\DRDC@tempa\DRDC@marker
+      \g@addto@macro\DRDC@tempa{#4}%
+      \DRDC@@replaceclass##2[##3]##4\@nil
+    \fi
+  }%
+  \def\DRDC@tempa{}%
+  \expandafter\DRDC@@replaceclass#1#2[]\@nil
+  \expandafter\def\expandafter#1\expandafter{\DRDC@tempa}%
+}
+\AtBeginDocument{
+  \@ifundefined{Hy@writebookmark}{}{%
+    \let\DRDC@Hy@writebookmark\Hy@writebookmark
+    \renewcommand\Hy@writebookmark[5]{%
+      \def\DRDC@tempc{#2}%
+      \DRDC@fixclass{\DRDC@tempc}%
+      \DRDC@Hy@writebookmark{#1}{\DRDC@tempc}{#3}{#4}{#5}}}}
+\@ifundefined{pdfstringdefPreHook}{\let\pdfstringdefPreHook\@empty}{}%
+\let\DRDC@bookhook\pdfstringdefPreHook
+\def\pdfstringdefPreHook{%
+  \let\DRDC@up\@firstofone
+  \let\ignorespaces\@empty
+  \DRDC@redefclassmarkers
+  \DRDC@bookhook}%
+\def\DRDC@redefclassmarkers{%
+  \def\DRDC@updateclassmax{}%
+  \def\Uclass{(\DRDC@classmarker{U})}%
+  \def\PAclass{(\DRDC@classmarker{PA})}%
+  \def\PBclass{(\DRDC@classmarker{PB})}%
+  \def\PCclass{(\DRDC@classmarker{PC})}%
+  \def\PCCclass{(\DRDC@classmarker{PCC})}%
+  \def\Cclass{(\DRDC@classmarker{C})}%
+  \def\Sclass{(\DRDC@classmarker{S})}%
+  \def\Tclass{(\DRDC@classmarker{T})}%
+}
+\def\CG{%
+  \DRDC@classerror{\string\CG, \string\CGclass, \noexpand\EC
+    and \noexpand\ECclass are no\MessageBreak longer used. Put CG or
+    EC in the handling\MessageBreak instructions field of the
+    classification\MessageBreak marker instead}}
+\def\CGclass{\CG}
+\def\EC{\CG}
+\def\ECclass{\CG}
+\newcommand*{\thispageDMCmin}[1]{%
+  \edef\DRDC@temp{#1}%
+  \ifx\DRDC@temp\DRDC@DMCD
+    \global\let\DRDC@maxDMC\DRDC@DMCD
+  \else
+    \ifx\DRDC@temp\DRDC@DMCQ
+      \global\DRDC@hasECtrue
+      \ifx\DRDC@maxDMC\DRDC@DMCD\else
+        \global\let\DRDC@maxDMC\DRDC@DMCQ
+      \fi
+    \fi
+  \fi
+}%
+\newcommand*{\CGpar}[3][]{%
+  \cpar[#1\doubleslashreplacement CG]{#2}{#3\thispageDMCmin{D}}}
+\newcommand*{\ECpar}[3][]{%
+  \cpar[#1\doubleslashreplacement EC]{#2}{#3\thispageDMCmin{Q}}}
+\newcommand\DRDC@makesecurityfield[1]{
+  \expandafter\def\csname DRDC@#1\endcsname{}
+  \expandafter\def\csname #1\endcsname##1{%
+    \def\DRDC@temp{##1}%
+    \ifx\DRDC@temp\@empty
+      \expandafter\def\csname DRDC@#1\endcsname{}%
+    \else
+      \expandafter\def\csname DRDC@#1\endcsname{%
+         \DRDC@subfieldbreak{\uppercase{##1}}}
+    \fi
+  }
+  \expandafter\def\csname addto#1\endcsname##1{%
+    \expandafter\ifx\csname DRDC@#1\endcsname\@empty
+       \csname #1\endcsname{##1}%
+    \else
+       \expandafter\g@addto@macro\csname DRDC@#1\endcsname{%
+         \ / \DRDC@subfieldbreak{\uppercase{##1}}}%
+    \fi}
+}
+\DRDC@makesecurityfield{controlsystem}
+\DRDC@makesecurityfield{disseminationcontrol}
+\DRDC@makesecurityfield{handlinginstructions}
+\newcommand\DRDC@subfieldbreak{\mbox}
+\newcommand\allowbreakinsecuritysubfield{%
+  \allowbreakinsecurityfield\renewcommand\DRDC@subfieldbreak{}}
+\AtBeginDocument{
+  \ifx\DRDC@lastmaxDMC\DRDC@DMCA
+    \addtohandlinginstructions{\DRDC@DMCAterm}%
+  \else\ifx\DRDC@lastmaxDMC\DRDC@DMCQ
+    \addtohandlinginstructions{\DRDC@DMCQterm}%
+  \else
+    \addtohandlinginstructions{\DRDC@DMCDterm}%
+  \fi\fi
+}
+\renewcommand*\DRDC@country{CAN}%
+\newcommand\country[1]{\gdef\DRDC@country{\uppercase{#1}}}
+\newcommand\DRDC@sensitivity{%
+  \DRDC@country\ \DRDC@classterm{\value{DRDC@lastclassmax}}}
+\defineheadfoot{%
+  \DRDC@fieldbreak{\DRDC@sensitivity}%
+  \ifx\DRDC@controlsystem\@empty\else
+    \ // \DRDC@fieldbreak{\DRDC@controlsystem}\fi
+  \ifx\DRDC@disseminationcontrol\@empty\else
+    \ // \DRDC@fieldbreak{\DRDC@disseminationcontrol}\fi
+  \ifx\DRDC@handlinginstructions\@empty\else
+    \ // \DRDC@fieldbreak{\DRDC@handlinginstructions}\fi
+}
+\newcommand*\DRDC@fieldbreak{\mbox}
+\newcommand\allowbreakinsecurityfield{\renewcommand*\DRDC@fieldbreak{}}
+\newcommand\DRDC@classformat[1]{#1}%
+\let\DRDC@oldaddsensstat\DRDC@addtosensitivitystatements
+\renewcommand\DRDC@addtosensitivitystatements[1]{%
+  \DRDC@oldaddsensstat{\mbox{\U}#1}}
+\let\DRDC@oldaddIPstat\DRDC@addtoIPstatements
+\renewcommand\DRDC@addtoIPstatements[1]{%
+  \DRDC@oldaddIPstat{\mbox{\U}#1}}
+\let\DRDC@oldaddrstat\DRDC@addtoreleasestatements
+\renewcommand\DRDC@addtoreleasestatements[1]{%
+  \DRDC@oldaddrstat{\mbox{\U}#1}}
+\let\DRDC@oldaddwarranties\DRDC@addtowarranties
+\renewcommand\DRDC@addtowarranties[1]{%
+  \DRDC@oldaddwarranties{\mbox{\U}#1}}
+\let\DRDC@oldadddisc\DRDC@addtodisclaimers
+\renewcommand\DRDC@addtodisclaimers[1]{%
+  \DRDC@oldadddisc{\mbox{\U}#1}}
+\let\DRDC@oldaddpstat\DRDC@addtoinfostatements
+\renewcommand\DRDC@addtoinfostatements[1]{%
+  \DRDC@oldaddpstat{\mbox{\U}#1}}
+\let\DRDC@oldaddainfo\DRDC@addtoadmininfo
+\renewcommand\DRDC@addtoadmininfo[1]{%
+  \DRDC@oldaddainfo{\mbox{\U}#1}}
+\let\DRDC@oldaddsclause\DRDC@addtostandardclauses
+\renewcommand\DRDC@addtostandardclauses[1]{%
+  \DRDC@oldaddsclause{\mbox{\U}#1}}
+\g@addto@macro\DRDC@infoheader{ \Uclass}
+\ifDRDC@isfrench
+  \AtBeginDocument{
+    \ifx\DRDC@lastmaxDMC\DRDC@DMCD
+      \renewcommand\DRDC@CGhandlingstatement{%
+        \textbf{\mbox{\U}Instructions relatives au
+                traitement\DRDC@colon}
+        En plus des exigences impos\'ees par les marquages de
+        s\'ecurit\'e, le pr\'esent document doit faire l'objet d'un
+        contr\^ole int\'egral en tout temps afin d'emp\^echer tout
+        acc\`es non autoris\'e.  Les proc\'edures d'\'elimination
+        doivent au moins \^etre conformes aux normes relatives \`a
+        l'\'elimination du mat\'eriel SECRET.  Au sein du minist\`ere
+        de la D\'efense nationale du Canada et des Forces canadiennes,
+        le pr\'esent document doit \^etre trait\'e et \'elimin\'e
+        conform\'ement aux dispositions pr\'evues dans la DOAD 3003.
+        \DRDC@needstranslation{Authorization is likely required prior
+          to retransfer to any party outside DND contact the LCMM for
+          details.}}%
+    \fi
+    \ifx\DRDC@lastmaxDMC\DRDC@DMCA\else
+      \g@addto@macro\DRDC@warranties{%
+        \mbox{\U}Le minist\`ere de la D\'efense nationale du Canada
+        assure qu'il a le droit de transf\'erer les donn\'ees
+        techniques contenues dans le pr\'esent document en vertu des
+        dispositions d'une ou de plusieurs accords d'\'echange
+        d'information entre le pays d'origine, le Canada et le ou les
+        pays destinataires.}%
+    \fi
+    \edef\DRDC@interests{\ifnum\the\c@DRDC@lastclassmax<\DRDC@Cnum
+                         des int\'er\^ets autres que \fi}%
+    \g@addto@macro\DRDC@sensitivitystatements{%
+      \mbox{\U}Le pr\'esent document contient des renseignements
+      sensibles qui concernent \DRDC@interests les int\'er\^ets
+      nationaux du Canada, dont l'acc\`es est restreint par la loi.
+      \ifx\DRDC@lastmaxDMC\DRDC@DMCA\else
+        L'exportation de ce document est r\'egie par la Loi sur les
+        licences d'exportation.
+        \DRDC@needstranslation{Retransfer inside Canada may require
+          foreign authorization.}
+      \fi
+      Il est fourni \`a un destinataire autoris\'e en vertu des
+      conditions indiqu\'ees dans
+      \ifx\DRDC@lastmaxDMC\DRDC@DMCD
+        la \textit{Loi sur la production de d\'efense}, L.R.C.\ 1985,
+      \else
+        les lois applicables,
+      \fi
+      en plus de celles contenues dans l'accord d'\'echange
+      d'information entre \RDDC\ (RDDC) et le destinataire.}%
+  }%
+\else
+  \AtBeginDocument{
+    \ifx\DRDC@lastmaxDMC\DRDC@DMCD
+      \renewcommand\DRDC@CGhandlingstatement{%
+        \textbf{\mbox{\U}Handling Instructions:} In addition to the
+        requirements imposed by the security markings, this document
+        must be under positive control at all times to prevent
+        unauthorized access.  Disposal procedures must conform to at
+        least the standards for disposal of SECRET material.  Within
+        the Department of National Defence of Canada and the Canadian
+        Armed Forces, this document must be handled and disposed of in
+        accordance with the provisions of DAOD 3003.  Authorization is
+        likely required prior to retransfer to any party outside DND.
+        Contact the LCMM for details.}%
+    \fi
+    \ifx\DRDC@lastmaxDMC\DRDC@DMCA\else
+      \g@addto@macro\DRDC@warranties{%
+        \mbox{\U}The Department of National Defence of Canada warrants
+        that it has the right to transfer the technical data contained
+        within this document under the provisions of one or more
+        information exchange agreements between the country of origin,
+        Canada and the recipient country(ies).}%
+    \fi
+    \edef\DRDC@interests{\ifnum\the\c@DRDC@lastclassmax<\DRDC@Cnum
+                         interests other than \fi}%
+    \g@addto@macro\DRDC@sensitivitystatements{%
+      \mbox{\U}This document contains sensitive information affecting
+      \DRDC@interests the national interests of Canada, access to
+      which is restricted by law.
+      \ifx\DRDC@lastmaxDMC\DRDC@DMCA\else
+        Its export is controlled by the Export and Import Permits Act.
+        Retransfer inside Canada may require foreign authorization.
+      \fi
+      It is provided to an authorized recipient under the conditions
+      identified in
+      \ifx\DRDC@lastmaxDMC\DRDC@DMCD
+        the \textit{Defence Production Act}, R.S.C.\ 1985,
+      \else
+        the applicable laws,
+      \fi
+      in addition to those contained in the information exchange
+      agreement between \DRDC\ (DRDC) and the transferee.}%
+  }%
+\fi
+\ifDRDC@isfrench
+  \renewcommand\protectIP[1][]{%
+    \DRDC@protectedIPtrue
+    \def\DRDC@IPowner{#1}%
+    \ifx\DRDC@IPowner\@empty
+      \addtoIPstatements{%
+        L'information contenue dans les pr\'esentes est la
+        propri\'et\'e de Sa Majest\'e et elle est communiqu\'ee en vue
+        d'un usage \`a des fins d'information et d'\'evaluation
+        seulement.  Toute utilisation commerciale, y compris pour la
+        fabrication, est interdite.}%
+    \else
+      \addtoIPstatements{%
+        Le pr\'esent document renferme des renseignements exclusifs.
+        Il est remis au destinataire \`a condition que le droit de
+        propri\'et\'e et le droit de brevet appartenant #1 ne
+        soient pas enfreints.}%
+    \fi}
+\else
+  \renewcommand\protectIP[1][]{%
+    \DRDC@protectedIPtrue
+    \def\DRDC@IPowner{#1}%
+    \ifx\DRDC@IPowner\@empty
+      \addtoIPstatements{%
+        The information contained herein is proprietary to Her Majesty
+        and is provided to the recipient on the understanding that it
+        will be used for information and evaluation purposes only.
+        Any commercial use including use for manufacture is
+        prohibited.}%
+    \else
+      \addtoIPstatements{%
+        This document contains proprietary information.  It is
+        provided to the recipient on the understanding that
+        proprietary and patent rights belonging to #1 are not
+        to be infringed.}%
+    \fi}
+\fi
+\renewcommand\DRDC@titlepagehook{
+  \global\let\DRDC@oldaddsensstat\relax
+  \global\let\DRDC@oldaddIPstat\relax
+  \global\let\DRDC@oldaddrstat\relax
+  \global\let\DRDC@oldaddwarranties\relax
+  \global\let\DRDC@oldadddisc\relax
+  \global\let\DRDC@oldaddpstat\relax
+  \global\let\DRDC@oldaddainfo\relax
+  \global\let\DRDC@oldaddsclause\relax
+  \global\let\recipients\relax
+  \global\let\DRDC@recipients\relax
+  \global\let\DRDC@ECnoticetext\relax
+  \global\let\DRDC@CGnoticetext\relax
+}
+\ifDRDC@isfrench
+  \newcommand*\CGreviewer{RDDC}
+  \renewcommand\DRDC@CGadvisorystatement{%
+    \U Le pr\'esent document a \'et\'e r\'evis\'e en r\'ef\'erence aux
+    marchandises contr\^ol\'ees par \CGreviewer\ \`a l'aide du
+    \textit{Guide des contr\^oles \`a l'exportation du Canada}.}
+\else
+  \newcommand*\CGreviewer{DRDC}
+  \renewcommand\DRDC@CGadvisorystatement{%
+    \U This document was reviewed for Controlled Goods by \CGreviewer
+    \ using the Schedule to the Defence Production Act.}
+\fi
+\renewcommand\DRDC@addCGlogo{
+  \vspace{3pt}%
+  \ifx     \DRDC@lastmaxDMC\DRDC@DMCD\CGstamp
+  \else\ifx\DRDC@lastmaxDMC\DRDC@DMCQ\ECstamp
+  \else                              \NCGstamp\fi\fi\par
+}
+\newcommand\CGjustify{\raggedright}
+\providecommand\DRDC@ext{\ifpdf pdf\else eps\fi}
+\newlength{\DRDC@CGindent}
+\setlength\DRDC@CGindent{0.5in}%
+\addtolength\DRDC@CGindent{-\fboxsep}%
+\addtolength\DRDC@CGindent{-\fboxrule}%
+\newcommand\DRDC@formatCGstamp[3]{%
+  \setlength\DRDC@templen{\textwidth}%
+  \addtolength\DRDC@templen{-2\fboxsep}%
+  \addtolength\DRDC@templen{-2\fboxrule}%
+  \fbox{\parbox{\DRDC@templen}{
+    \vspace*{5pt}%
+    \hspace*{\DRDC@CGindent}%
+    \parbox{1.65cm}{
+      \resizebox{1.65cm}{!}{\includegraphics{#1.\DRDC@ext}}}
+    \hfill
+    \addtolength\DRDC@templen{-2\DRDC@CGindent}%
+    \addtolength\DRDC@templen{-1.65cm}%
+    \addtolength\DRDC@templen{-0.25in}%
+    \parbox{\DRDC@templen}{
+      \color{#2}\bfseries
+      \addtolength\DRDC@templen{-1.65cm}%
+      \addtolength\DRDC@templen{-0.25in}%
+      \makebox[\DRDC@templen]{\ifDRDC@isfrench AVIS\else NOTICE\fi\ \U}%
+      \hfill\mbox{}\\[6pt]%
+      \CGjustify\U #3\par}%
+    \hspace*{\DRDC@CGindent}\mbox{}%
+    \vspace*{5pt}}}%
+}
+\ifDRDC@isfrench
+  \newcommand\CGstamp{%
+    \DRDC@formatCGstamp{CG}{red}{%
+      Le pr\'esent document a \'et\'e r\'evis\'e et il CONTIENT des
+      marchandises contr\^ol\'ees.  Il est assujetti \`a des exigences
+      particuli\`eres en mati\`ere de traitement qui sont d\'efinies
+      dans les \'enonc\'es ci-dessus.}}
+  \newcommand\ECstamp{%
+    \DRDC@formatCGstamp{EC}{violet}{%
+      Le pr\'esent document a \'et\'e r\'evis\'e et NE CONTIENT
+      PAS de marchandises contr\^ol\'ees.  Cependant, il est assujetti
+      aux contr\^oles \`a l'exportation, tels que d\'efinis par le
+      \textit{Guide des contr\^oles \`a l'exportation du Canada}, et
+      \`a ce titre, il est assujetti aux conditions d\'efinies dans
+      les \'enonc\'es ci-dessus.}}
+  \newcommand\NCGstamp{%
+    \DRDC@formatCGstamp{NCG}{green}{%
+      Le pr\'esent document a \'et\'e r\'evis\'e et il ne contient
+      pas de marchandises contr\^ol\'ees.}}
+\else
+  \newcommand\CGstamp{%
+    \DRDC@formatCGstamp{CG}{red}{%
+      This document has been reviewed and contains controlled
+      technical data.  It is subject to conditions that are defined
+      in the statements above.}}
+  \newcommand\ECstamp{%
+    \DRDC@formatCGstamp{EC}{violet}{%
+      This document has been reviewed and DOES NOT CONTAIN controlled
+      goods.  It is, however, subject to Export Controls as identified
+      by the \textit{Guide to Canada's Export Controls}, and as such
+      is subject to conditions that are defined in the statements
+      above.}}
+  \newcommand\NCGstamp{%
+    \DRDC@formatCGstamp{NCG}{green}{%
+      This document has been reviewed and does not contain controlled
+      technical data.}}
+\fi
+\ifDRDC@isfrench
+  \newcommand\DRDC@CGnoticehead{AVIS AU LECTEUR}
+  \newcommand\DRDC@ECnoticetext{%
+    \DRDC@needstranslation{%
+    The supplemental marking ``(EC)'' is used to identify technical
+    data that are deemed to be Export Controlled. Distribution of
+    these data outside of Canada must involve consultation which is
+    not permitted unless authorized by the Export and Import Permits
+    Act and occurs in consultation with Global Affairs Canada (GAC),
+    or through existing Memorandums of Understanding (MOUs) or
+    Information Exchange Agreements (IXAs).}}
+  \newcommand\DRDC@CGnoticetext{%
+    \DRDC@needstranslation{
+    The supplemental marking ``(CG)'' is used to identify
+    technical data that are deemed to be Controlled Goods.  In
+    accordance with the \textit{Defence Production Act}, access to
+    Controlled Goods in Canada is limited to persons that are either
+    registered with the Controlled Goods Directorate Program, or those
+    that are excluded or exempt from registration. Within DND, in
+    accordance with DAOD 3003-1, access to Controlled technical data
+    except operating instructions is specifically restricted to those
+    who possess a valid Level II Security Clearance and have a
+    `need-to-know'.}}
+\else
+  \newcommand\DRDC@CGnoticehead{NOTICE TO READER}
+  \newcommand\DRDC@ECnoticetext{%
+    The supplemental marking ``(EC)'' is used to identify technical
+    data that are deemed to be Export Controlled. Distribution of
+    these data outside of Canada must involve consultation which is
+    not permitted unless authorized by the Export and Import Permits
+    Act and occurs in consultation with Global Affairs Canada (GAC),
+    or through existing Memorandums of Understanding (MOUs) or
+    Information Exchange Agreements (IXAs).}
+  \newcommand\DRDC@CGnoticetext{%
+    The supplemental marking ``(CG)'' is used to identify
+    technical data that are deemed to be Controlled Goods.  In
+    accordance with the \textit{Defence Production Act}, access to
+    Controlled Goods in Canada is limited to persons that are either
+    registered with the Controlled Goods Directorate Program, or those
+    that are excluded or exempt from registration. Within DND, in
+    accordance with DAOD 3003-1, access to Controlled technical data
+    except operating instructions is specifically restricted to those
+    who possess a valid Level II Security Clearance and have a
+    `need-to-know'.}
+\fi
+\renewcommand\DRDC@CGnotice{
+  \ifx\DRDC@lastmaxDMC\DRDC@DMCD
+    \textbf{\DRDC@CGnoticehead\ \U}\par%
+    \ifDRDC@lasthasEC
+      \U\DRDC@CGnoticetext\par
+      \U\DRDC@ECnoticetext
+    \else
+      \U\DRDC@CGnoticetext
+    \fi
+    \par
+  \else
+    \ifDRDC@lasthasEC
+      \textbf{\DRDC@CGnoticehead\ \U}\par
+      \U\DRDC@ECnoticetext
+      \par
+    \fi
+  \fi
+}
+\renewcommand\fnum@figure{\figurename~\thefigure\ \Uclass}%
+\renewcommand\fnum@table{\tablename~\thetable\ \Uclass}%
+\def\thisfigclass{\@ifnextchar[%]
+  \DRDC@thisfloatclass{\DRDC@thisfloatclass[]}}%
+\newcommand\thistableclass{\thisfigclass}
+\def\DRDC@thisfloatclass[#1]#2{%
+  \ifx\@captype\@undefined
+    \DRDC@classerror{\noexpand\thisfigclass or \noexpand\thistableclass
+                     \MessageBreak outside float}%
+  \else\ifx #2U\else
+    \protect\DRDC@updateclassmax{#2}%
+    \expandafter\def\csname fnum@\@captype\endcsname{%
+      \csname\@captype name\endcsname~%
+      \csname the\@captype\endcsname\ %
+      \csname #2class\endcsname[#1]}%
+  \fi\fi
+}
+\newcommand\DRDC@thisfigclassCGorEC[3]{%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@empty
+    \thisfigclass[#2]{#3}%
+  \else
+    \thisfigclass[#1\doubleslashreplacement #2]{#3}%
+  \fi
+}
+\newcommand\thisfigclassCG[2][]{%
+  \DRDC@thisfigclassCGorEC{#1}{CG}{#2}}
+\def\thistableclassCG{\thisfigclassCG}
+\newcommand\thisfigclassEC[2][]{%
+  \DRDC@thisfigclassCGorEC{#1}{EC}{#2}}
+\def\thistableclassEC{\thisfigclassEC}
+\let\DRDC@unclassblanktext\DRDC@blanktext
+\renewcommand*\DRDC@blanktext{\U\DRDC@unclassblanktext}
+\ifDRDC@isfrench
+  \newcommand*{\DRDC@aggregationterm}{%
+    \ifDRDC@abbrev SiA\else SENSITIVE IN AGGREGATE\fi}%
+  \newcommand\aggregationname{%
+    Justification de marquage de s\'ecurit\'e}
+\else
+  \newcommand*{\DRDC@aggregationterm}{%
+    \ifDRDC@abbrev SiA\else SENSITIVE IN AGGREGATE\fi}
+  \newcommand\aggregationname{Justification of aggregation}
+\fi
+\let\DRDC@aggregationparagraph\@empty
+\newcommand\aggregation[3][]{%
+  \addtohandlinginstructions{\DRDC@aggregationterm}%
+  \def\DRDC@aggregationparagraph{%
+    \csname #2\endcsname[#1]%
+    \textbf{\aggregationname:} #3}}%
+\let\DRDC@oldsectionspecials\DRDC@sectionspecials
+\def\DRDC@sectionspecials{
+  \DRDC@oldsectionspecials
+  \ifnum\value{section}<\@ne
+    \ifx\DRDC@aggregationparagraph\@empty\else
+       \DRDC@aggregationparagraph\par
+    \fi
+  \fi
+}
+\newcommand\classification[1]{%
+  \DRDC@classerror{\string\classification\ and
+    \string\designation\ are no longer supported.  Use
+    \string\aggregation\ instead}
+}
+\newcommand\designation{\classification}
+\ifDRDC@isbrief
+  \expandafter\def\expandafter\refname\expandafter{\refname\ \U}%
+  \let\DRDC@oldpreparedfortext\DRDC@preparedfortext
+  \renewcommand\DRDC@preparedfortext{\U \DRDC@oldpreparedfortext}%
+\else
+  \addto{\captionsenglish}{%
+    \renewcommand*\abstractname{Abstract \U}%
+    \renewcommand*\contentsname{Table of contents \U}%
+    \renewcommand*\listfigurename{List of figures \U}%
+    \renewcommand*\listtablename{List of tables \U}%
+    \renewcommand*\acknowledgementname{Acknowledgements \U}%
+    \renewcommand*\refname{References \U}%
+    \renewcommand*\bibname{Bibliography \U}%
+    \renewcommand*\indexname{Index \U}%
+    \renewcommand*\significancename{\esignificancename\ \U}%
+  }
+  \DRDC@addtofrench{%
+    \renewcommand*\abstractname{R\'esum\'e \U}%
+    \renewcommand*\contentsname{Table des mati\`eres \U}%
+    \renewcommand*\listfigurename{Table des figures \U}%
+    \renewcommand*\listtablename{Liste des tableaux \U}%
+    \renewcommand*\acknowledgementname{Remerciements \U}%
+    \renewcommand*\refname{R\'ef\'erences \U}%
+    \renewcommand*\bibname{Bibliographie \U}%
+    \renewcommand*\indexname{Index \U}%
+    \renewcommand*\significancename{\fsignificancename\ \U}%
+  }
+\fi
+\newcommand\DRDC@writeclassproperties{%
+  \AtEndDocument{%
+    \ifDRDC@ishyperref
+      \begingroup
+        \let\uppercase\@firstofone
+        \let\mbox\@firstofone
+        \def~{ }%
+        \immediate\write\@mainaux{%
+          \string\renewcommand\string\DRDC@classproperties{%
+            \DRDC@headfootcontents}}%
+      \endgroup
+    \fi
+  }%
+}
+\DRDC@writeclassproperties
+\let\DRDC@writeclassproperties\relax
+\endinput
+%%
+%% End of file `drdc-classified.sty'.

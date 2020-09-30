@@ -1,0 +1,31 @@
+[0] Config.pm:304> INFO - This is Biber 2.14 (beta)
+[1] Config.pm:307> INFO - Logfile is 'DRDCArcSAR.blg'
+[104] biber:322> INFO - === Wed Sep 30, 2020, 15:54:54
+[121] Biber.pm:415> INFO - Reading 'DRDCArcSAR.bcf'
+[206] Biber.pm:943> INFO - Found 20 citekeys in bib section 0
+[224] Biber.pm:4256> INFO - Processing section 0
+[225] Utils.pm:75> INFO - Globbing data source '/home/ishuwa/Documents/bibliography/ishbib.bib'
+[225] Utils.pm:91> INFO - Globbed data source '/home/ishuwa/Documents/bibliography/ishbib.bib' to /home/ishuwa/Documents/bibliography/ishbib.bib
+[238] Biber.pm:4455> INFO - Looking for bibtex format file '/home/ishuwa/Documents/bibliography/ishbib.bib' for section 0
+[290] bibtex.pm:1653> INFO - LaTeX decoding ...
+[1268] bibtex.pm:1471> INFO - Found BibTeX data source '/home/ishuwa/Documents/bibliography/ishbib.bib'
+[1309] Utils.pm:293> WARN - Duplicate entry key: 'Meng2018' in file '/home/ishuwa/Documents/bibliography/ishbib.bib', skipping ...
+[1363] Utils.pm:293> WARN - month field 'July' in entry 'Porfilio2016' is not an integer - this will probably not sort properly.
+[1373] Utils.pm:293> WARN - month field 'June' in entry 'Mittermayer' is not an integer - this will probably not sort properly.
+[1386] Utils.pm:293> WARN - month field 'June' in entry 'Luo2014' is not an integer - this will probably not sort properly.
+[1391] Utils.pm:293> WARN - month field 'June' in entry 'CalabreseDiego2014' is not an integer - this will probably not sort properly.
+[1398] Utils.pm:293> WARN - month field 'Nov' in entry 'SikanetaGierullTGRS2015' is not an integer - this will probably not sort properly.
+[1467] Utils.pm:293> WARN - month field 'july' in entry 'Cumming2003' is not an integer - this will probably not sort properly.
+[1478] Utils.pm:293> WARN - month field 'May' in entry 'Raney1992' is not an integer - this will probably not sort properly.
+[1483] Utils.pm:293> WARN - month field 'July' in entry 'Bamler1992' is not an integer - this will probably not sort properly.
+[1487] Utils.pm:293> WARN - month field 'July' in entry 'EnderSignalTheoretic' is not an integer - this will probably not sort properly.
+[1499] Utils.pm:293> WARN - month field 'March' in entry 'Cafforio1991a' is not an integer - this will probably not sort properly.
+[1525] Utils.pm:293> WARN - month field 'Oct' in entry 'Krieger2004' is not an integer - this will probably not sort properly.
+[1531] Utils.pm:293> WARN - month field 'oct.' in entry 'Gebert2009b' is not an integer - this will probably not sort properly.
+[1569] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1570] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1570] Biber.pm:4084> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[1570] Biber.pm:4090> INFO - No sort tailoring available for locale 'en-US'
+[1592] bbl.pm:652> INFO - Writing 'DRDCArcSAR.bbl' with encoding 'UTF-8'
+[1608] bbl.pm:755> INFO - Output to DRDCArcSAR.bbl
+[1608] Biber.pm:128> INFO - WARNINGS: 13

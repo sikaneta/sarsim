@@ -1,0 +1,73 @@
+%%
+%% This is file `fix-zero-width.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% fix-zero-width.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{fix-zero-width}
+              [2010/11/01 v1.0
+ LaTeX package for replacing zero width characters in cmsy]
+\newcommand*\FZW@copysize[2]{%
+  \wd#1=\wd#2%
+  \ht#1=\ht#2%
+  \dp#1=\dp#2}
+\let\FZW@notsave\not
+\renewcommand*\not{%
+  \mathrel{\mathpalette\FZW@not{\mkern2.5mu\mathnormal{/}}}}
+\newsavebox\FZW@box
+\newsavebox\FZW@boxa
+\newcommand*\FZW@not[2]{%
+  \sbox\FZW@box{$#1#2$}%
+  \sbox\FZW@boxa{$#1\FZW@notsave$}%
+  \FZW@copysize\FZW@box\FZW@boxa
+  \usebox\FZW@box}
+\let\FZW@mapstocharsave\mapstochar
+\renewcommand*\mapstochar{%
+  \mathchoice{\FZW@mapstochar\tf@size\displaystyle}
+             {\FZW@mapstochar\tf@size\textstyle}
+             {\FZW@mapstochar\sf@size\scriptstyle}
+             {\FZW@mapstochar\ssf@size\scriptscriptstyle}}
+\newcommand*\FZW@mapstochar[2]{%
+  \sbox\FZW@boxa{$#2\FZW@mapstocharsave$}%
+  \edef\FZW@tempa{#1}%
+  \FZW@choosesize}
+\newcommand*\FZW@choosesize{%
+  \edef\FZW@tempb{5}\ifx\FZW@tempa\FZW@tempb % cmsy5
+    \FZW@@mapstochar{0.309}{0.1717}{0.1288}{0.9099}\else
+  \edef\FZW@tempb{6}\ifx\FZW@tempa\FZW@tempb % cmsy6
+    \FZW@@mapstochar{0.2351}{0.1724}{0.1254}{0.909}\else
+  \edef\FZW@tempb{7}\ifx\FZW@tempa\FZW@tempb % cmsy7
+    \FZW@@mapstochar{0.1927}{0.1779}{0.1260}{0.9341}\else
+  \edef\FZW@tempb{8}\ifx\FZW@tempa\FZW@tempb % cmsy8
+    \FZW@@mapstochar{0.1546}{0.1827}{0.1265}{0.9557}\else
+  \edef\FZW@tempb{9}\ifx\FZW@tempa\FZW@tempb % cmsy9
+    \FZW@@mapstochar{0.1518}{0.1863}{0.1104}{0.9471}\else % cmsy10
+  \FZW@@mapstochar{0.1499}{0.1908}{0.109}{0.9813}\fi\fi\fi\fi\fi
+}
+\newcommand*\FZW@@mapstochar[4]{%
+  \sbox\FZW@box{%
+    \hspace*{#1\ht\FZW@boxa}%
+    \rule[#2\ht\FZW@boxa]{#3\ht\FZW@boxa}{#4\ht\FZW@boxa}}%
+  \FZW@copysize\FZW@box\FZW@boxa
+  \mathrel{\usebox\FZW@box}}
+\endinput
+%%
+%% End of file `fix-zero-width.sty'.

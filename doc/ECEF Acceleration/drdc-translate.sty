@@ -1,0 +1,536 @@
+%%
+%% This is file `drdc-translate.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drdc-translate.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{drdc-translate}
+              [2014/11/21 v1.0
+ LaTeX package for Unicode translation]
+\let\DRDC@alttitle\relax
+\let\DRDC@altsubtitle\relax
+\newcommand\alttitle[1]{\gdef\DRDC@alttitle{#1}}%
+\newcommand\altsubtitle[1]{\gdef\DRDC@altsubtitle{#1}}%
+
+\long\def\DRDC@saveenv#1{%
+  \expandafter\gdef\csname DRDC@#1\endcsname{}%
+  \DRDC@@saveenv{#1}%
+}%
+\long\def\DRDC@@saveenv#1#2\end#3{%
+  \def\DRDC@tempa{#1}%
+  \def\DRDC@temp{#3}%
+  \ifx\DRDC@temp\DRDC@tempa
+    \expandafter\g@addto@macro\csname DRDC@#1\endcsname{#2}\end{#3}%
+  \else
+    \expandafter\g@addto@macro\csname DRDC@#1\endcsname{#2\end{#3}}%
+    \noexpand\DRDC@saveenv{#1}%
+  \fi
+}
+\newcommand\newsaveenvironment[1]{%
+  \expandafter\gdef\csname DRDC@#1\endcsname{}%
+  \newenvironment{#1}{\DRDC@saveenv{#1}}{}
+}
+\newsaveenvironment{altabstract}
+\gdef\DRDC@redefcharmacros{%
+  \let\DRDC@grave\`%
+  \def\`##1{%
+    \if      A##1\unicodechar{192}%
+    \else\if E##1\unicodechar{200}%
+    \else\if I##1\unicodechar{204}%
+    \else\if O##1\unicodechar{210}%
+    \else\if U##1\unicodechar{217}%
+    \else\if a##1\unicodechar{224}%
+    \else\if e##1\unicodechar{232}%
+    \else\if i##1\unicodechar{236}%
+    \else\if o##1\unicodechar{242}%
+    \else\if u##1\unicodechar{249}%
+    \else        \DRDC@grave{##1}%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \let\DRDC@acute\'%
+  \def\'##1{%
+    \if      A##1\unicodechar{193}%
+    \else\if E##1\unicodechar{201}%
+    \else\if I##1\unicodechar{205}%
+    \else\if O##1\unicodechar{211}%
+    \else\if U##1\unicodechar{218}%
+    \else\if Y##1\unicodechar{221}%
+    \else\if a##1\unicodechar{225}%
+    \else\if e##1\unicodechar{233}%
+    \else\if i##1\unicodechar{237}%
+    \else\if o##1\unicodechar{243}%
+    \else\if u##1\unicodechar{250}%
+    \else\if y##1\unicodechar{253}%
+    \else        \DRDC@acute{##1}%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \let\DRDC@circumflex\^%
+  \def\^##1{%
+    \if      A##1\unicodechar{194}%
+    \else\if E##1\unicodechar{202}%
+    \else\if I##1\unicodechar{206}%
+    \else\if O##1\unicodechar{212}%
+    \else\if U##1\unicodechar{219}%
+    \else\if Y##1\unicodechar{374}%
+    \else\if a##1\unicodechar{226}%
+    \else\if e##1\unicodechar{234}%
+    \else\if i##1\unicodechar{238}%
+    \else\if o##1\unicodechar{244}%
+    \else\if u##1\unicodechar{251}%
+    \else\if y##1\unicodechar{375}%
+    \else        \DRDC@circumflex{##1}%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \let\DRDC@tilde\~%
+  \def\~##1{%
+    \if      A##1\unicodechar{195}%
+    \else\if N##1\unicodechar{209}%
+    \else\if O##1\unicodechar{213}%
+    \else\if a##1\unicodechar{227}%
+    \else\if n##1\unicodechar{241}%
+    \else\if o##1\unicodechar{245}%
+    \else        \DRDC@tilde{##1}%
+    \fi\fi\fi\fi\fi\fi}%
+  \let\DRDC@umlaut\"%
+  \def\"##1{%
+    \if      A##1\unicodechar{196}%
+    \else\if E##1\unicodechar{203}%
+    \else\if I##1\unicodechar{207}%
+    \else\if O##1\unicodechar{214}%
+    \else\if U##1\unicodechar{220}%
+    \else\if Y##1\unicodechar{376}%
+    \else\if a##1\unicodechar{228}%
+    \else\if e##1\unicodechar{235}%
+    \else\if i##1\unicodechar{239}%
+    \else\if o##1\unicodechar{246}%
+    \else\if u##1\unicodechar{252}%
+    \else\if y##1\unicodechar{255}%
+    \else        \DRDC@umlaut{##1}%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}%
+  \let\DRDC@cedilla\c
+  \def\c##1{%
+    \if      C##1\unicodechar{199}%
+    \else\if c##1\unicodechar{231}%
+    \else    \DRDC@cedilla{##1}%
+    \fi\fi}%
+  \let\DRDC@ring\r
+  \def\r##1{%
+    \if      A##1\unicodechar{197}%
+    \else\if a##1\unicodechar{229}%
+    \else    \DRDC@ring{##1}%
+    \fi\fi}%
+  \def\{{\unicodechar{123}}%
+  \def\}{\unicodechar{125}}%
+  \def\\{^^J}%
+  \def\#{\unicodechar{35}}%
+  \def~{\unicodechar{160}}%
+  \def\dots{\unicodechar{8230}}%
+  \DRDC@redefnounicode
+  \def\nobreakspace{\unicodechar{160}}%
+  \def\textexclamdown{\unicodechar{161}}%
+  \def\textcent{\unicodechar{162}}%
+  \def\pounds{\unicodechar{163}}%
+  \def\textcurrency{\unicodechar{164}}%
+  \def\textyen{\unicodechar{165}}%
+  \def\textbrokenbar{\unicodechar{166}}%
+  \@ifundefined{secchar}
+               {\renewcommand\S{\unicodechar{167}}}
+               {\renewcommand\secchar{\unicodechar{167}}}%
+  \renewcommand\copyright{\unicodechar{169}}%
+  \@ifundefined{DRDCcopyright}{}{%
+    \renewcommand\DRDCcopyright{\copyright}}%
+  \def\textordfeminine{\unicodechar{170}}%
+  \def\guillemotleft{\unicodechar{171}}%
+  \def\neg{\unicodechar{172}}%
+  \let\lnot\neg
+  \def\textregistered{\unicodechar{174}}%
+  \def\textdegree{\unicodechar{176}}%
+  \renewcommand\pm{\unicodechar{177}}%
+  \def\mathtwosuperior{\unicodechar{178}}%
+  \def\maththreesuperior{\unicodechar{179}}%
+  \renewcommand\P{\unicodechar{182}}%
+  \def\textperiodcentered{\unicodechar{183}}%
+  \def\mathonesuperior{\unicodechar{185}}%
+  \def\textordmasculine{\unicodechar{186}}%
+  \def\guillemotright{\unicodechar{187}}%
+  \def\textonequarter{\unicodechar{188}}%
+  \def\textonehalf{\unicodechar{189}}%
+  \def\textthreequarters{\unicodechar{190}}%
+  \def\textquestiondown{\unicodechar{191}}%
+  \renewcommand\AA{\unicodechar{197}}%
+  \renewcommand\AE{\unicodechar{198}}%
+  \def\DH{\unicodechar{208}}%
+  \renewcommand\times{\unicodechar{215}}%
+  \renewcommand\O{\unicodechar{216}}%
+  \def\TH{\unicodechar{222}}%
+  \renewcommand\ss{\unicodechar{223}}%
+  \renewcommand\aa{\unicodechar{229}}%
+  \renewcommand\ae{\unicodechar{230}}%
+  \def\dh{\unicodechar{240}}%
+  \renewcommand\div{\unicodechar{247}}%
+  \renewcommand\o{\unicodechar{248}}%
+  \def\th{\unicodechar{254}}%
+  \renewcommand\OE{\unicodechar{338}}%
+  \renewcommand\oe{\unicodechar{339}}%
+  \renewcommand\alpha{\unicodechar{945}}%
+  \renewcommand\beta{\unicodechar{946}}%
+  \renewcommand\gamma{\unicodechar{947}}%
+  \renewcommand\delta{\unicodechar{948}}%
+  \renewcommand\epsilon{\unicodechar{1013}}%
+  \renewcommand\zeta{\unicodechar{950}}%
+  \renewcommand\eta{\unicodechar{951}}%
+  \renewcommand\theta{\unicodechar{952}}%
+  \renewcommand\iota{\unicodechar{953}}%
+  \renewcommand\kappa{\unicodechar{954}}%
+  \renewcommand\lambda{\unicodechar{955}}%
+  \renewcommand\mu{\unicodechar{956}}%
+  \renewcommand\nu{\unicodechar{957}}%
+  \renewcommand\xi{\unicodechar{958}}%
+  \renewcommand\pi{\unicodechar{960}}%
+  \renewcommand\rho{\unicodechar{961}}%
+  \renewcommand\sigma{\unicodechar{963}}%
+  \renewcommand\tau{\unicodechar{964}}%
+  \renewcommand\upsilon{\unicodechar{965}}%
+  \renewcommand\phi{\unicodechar{981}}%
+  \renewcommand\chi{\unicodechar{967}}%
+  \renewcommand\psi{\unicodechar{968}}%
+  \renewcommand\omega{\unicodechar{969}}%
+  \renewcommand\varepsilon{\unicodechar{949}}%
+  \renewcommand\vartheta{\unicodechar{977}}%
+  \renewcommand\varpi{\unicodechar{982}}%
+  \renewcommand\varrho{\unicodechar{1009}}%
+  \renewcommand\varsigma{\unicodechar{962}}%
+  \renewcommand\varphi{\unicodechar{966}}%
+  \renewcommand\Gamma{\unicodechar{915}}%
+  \renewcommand\Delta{\unicodechar{916}}%
+  \renewcommand\Theta{\unicodechar{920}}%
+  \renewcommand\Lambda{\unicodechar{923}}%
+  \renewcommand\Xi{\unicodechar{926}}%
+  \renewcommand\Pi{\unicodechar{928}}%
+  \renewcommand\Sigma{\unicodechar{931}}%
+  \renewcommand\Upsilon{\unicodechar{978}}%
+  \renewcommand\Phi{\unicodechar{934}}%
+  \renewcommand\Psi{\unicodechar{936}}%
+  \renewcommand\Omega{\unicodechar{937}}%
+}
+\newcommand\DRDC@redefnounicode{
+  \DRDC@redeffrenchpunct
+  \def\ {\space}%
+  \def\${\string $}%$
+  \def\_{\string _}%
+  \let\DRDC@up\@firstofone
+  \let\DRDC@pup\@firstofone
+  \let\DRDC@markerformat\@firstofone
+  \def\newline{^^J}%
+  \def\TeX{TeX\DRDC@transwarning}%
+  \def\LaTeX{La\TeX}%
+  \def\LaTeXe{\LaTeX2e}%
+  \def\eTeX{e-\TeX}%
+  \def\ieme{e }
+  \def\iemes{es }
+  \def\ier{er }
+  \def\iers{ers }
+  \def\iere{re }
+  \def\ieres{res }
+  \@ifundefined{xspace}
+       {\let\xspace\@empty}
+       {\let\xspace\space}%
+  \let\label\@gobble
+  \let\index\@gobble
+  \let\glossary\@gobble
+  \let\leavevmode\@empty
+  \let\/\@empty
+  \let\discretionary\@gobbletwo
+  \let\fussy\@empty
+  \let\sloppy\@empty
+  \let\scrollmode\@empty
+  \let\nonstopmode\@empty
+  \let\batchmode\@empty
+  \def\begin##1{\bgroup\csname ##1\endcsname}%
+  \def\end##1{\egroup}%
+  \DRDC@acronymtranslate
+}
+\activatepunctuation
+\ifDRDC@isfrench
+  \newcommand\DRDC@redeffrenchpunct{%
+    \def:{ \string :}%
+    \def;{ \string ;}%
+    \def?{ \string ?}%
+    \def!{ \string !}%
+  }%
+\else
+  \newcommand\DRDC@redeffrenchpunct{%
+    \def:{\string :}%
+    \def;{\string ;}%
+    \def?{\string ?}%
+    \def!{\string !}%
+  }%
+\fi
+\deactivatepunctuation
+\let\DRDC@acronymtranslate\@empty
+\AtBeginDocument{%
+  \@ifpackageloaded{acronym}{%
+    \renewcommand\DRDC@acronymtranslate{%
+      \csname AC@starredtrue\endcsname
+      \csname AC@footnotefalse\endcsname
+      \let\AC@hyperlink\@secondoftwo
+      \let\acsfont\@empty
+      \let\acffont\@empty
+      \let\acfsfont\@empty
+      \let\acused\@empty
+      \def\AChy@call##1##2{%
+        \ifx*##1\@empty
+          \expandafter ##2%
+        \else
+          ##2{##1}%
+        \fi
+      }%
+      \def\acs##1{\AChy@call{##1}\AC@acs}%
+      \def\acl##1{\AChy@call{##1}\@acl}%
+      \def\acf##1{\AChy@call{##1}\AChy@acf}%
+      \def\ac##1{\AChy@call{##1}\@ac}%
+      \def\acsp##1{\AChy@call{##1}\@acsp}%
+      \def\aclp##1{\AChy@call{##1}\@aclp}%
+      \def\acfp##1{\AChy@call{##1}\AChy@acfp}%
+      \def\acp##1{\AChy@call{##1}\@acp}%
+      \def\acfi##1{\AChy@call{##1}\AChy@acf}%
+      \let\acsu\acs
+      \let\aclu\acl
+      \def\AChy@acf##1{\AC@acl{##1} (\AC@acs{##1})}%
+      \def\AChy@acfp##1{\AC@aclp{##1} (\AC@acsp{##1})}%
+      \renewcommand*\AC@get[3]{%
+        \ifx##1\relax
+          ##3!%
+        \else
+          \expandafter##2##1%
+        \fi}
+    }%
+  }{}%
+}
+\newcommand\DRDC@replace[3]{%
+  \long\def\DRDC@@replace##1#2##2\@nil{%
+    \g@addto@macro\DRDC@tempa{##1}%
+    \def\DRDC@temp{##2}%
+    \ifx\DRDC@temp\@empty\else
+      \g@addto@macro\DRDC@tempa{#3}%
+      \DRDC@@replace##2\@nil
+    \fi
+  }%
+  \def\DRDC@tempa{}%
+  \expandafter\DRDC@@replace#1#2\@nil
+  \expandafter\def\expandafter#1\expandafter{\DRDC@tempa}%
+}
+\newcommand\DRDC@converthighchars[1]{%
+  \edef\DRDC@temp{#1}%
+  \def\DRDC@tempa{}%
+  \expandaftertwo\DRDC@convertwords\DRDC@temp\space\@nil
+  \let#1\DRDC@tempa
+}
+\def\DRDC@convertwords#1 #2\@nil{
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@empty\else
+    \DRDC@convertchars#1\@nil
+  \fi
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@empty\else
+    \g@addto@macro\DRDC@tempa{ }%
+    \DRDC@convertwords#2\@nil
+  \fi
+}
+\newcommand\DRDC@convertchars[1]{%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@nnil\else
+    \ifcat\relax\noexpand#1%
+      \g@addto@macro\DRDC@tempa{#1}%
+    \else
+      \edef\DRDC@temp{\number`#1}%
+      \ifnum159<\DRDC@temp
+        \edef\DRDC@tempc{\unicodechar{\DRDC@temp}}%
+        \DRDC@expandedaddto\DRDC@tempa{\DRDC@tempc}%
+      \else
+        \g@addto@macro\DRDC@tempa{#1}%
+      \fi
+    \fi
+    \DRDC@afterfi{\DRDC@convertchars}%
+  \fi
+}
+\newif\ifDRDC@approx \DRDC@approxfalse
+\newcommand\DRDC@macrowarn[1]{%
+  \edef\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@empty\else
+    \expandafter\DRDC@@macrowarn\DRDC@temp\@nil
+  \fi
+}
+\def\DRDC@afterfi#1\fi{\fi#1}
+\newcommand\DRDC@@macrowarn[1]{%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@nnil\else
+    \ifx\DRDC@temp\@empty\else
+      \ifcat\relax\noexpand#1%
+        \DRDC@metawarn{%
+          ^^J  Unexpanded macro \string#1\space in the text of the
+               \DRDC@tagdisplay{\DRDC@tag}
+          ^^J  in the file \DRDC@file}%
+      \fi
+    \fi
+    \DRDC@afterfi{\DRDC@@macrowarn}%
+  \fi
+}
+\def\DRDC@metawarn#1{%
+  \begingroup
+    \def\on@line{}%
+    \PackageWarning{drdc-translate}{#1}%
+  \endgroup
+}
+\let\DRDC@transwarning\relax
+\def\DRDC@transwarn#1{
+  \expandafter\DRDC@@transwarn#1\DRDC@transwarning\@nil
+  \def\DRDC@transwarning{}%
+  \edef\DRDC@temp{#1}%
+  \let#1\DRDC@temp
+  \let\DRDC@transwarning\relax
+}
+\let\DRDC@tagdisplay\@firstofone
+\def\DRDC@@transwarn#1\DRDC@transwarning#2\@nil{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@empty
+  \else
+    \ifDRDC@approx\else
+      \def\DRDC@temp{abstract}%
+      \ifx\DRDC@temp\DRDC@tag
+        \def\DRDC@tempa{.  Consider using the altabstract
+                        environment}%
+      \else
+        \def\DRDC@temp{title}%
+        \ifx\DRDC@temp\DRDC@tag
+          \def\DRDC@tempa{.  Consider using \string\alttitle}%
+        \else
+          \def\DRDC@temp{significance statement}%
+          \ifx\DRDC@temp\DRDC@tag
+            \def\DRDC@tempa{.  Consider using \string\altsignificance}%
+          \else
+            \def\DRDC@tempa{}%
+          \fi
+        \fi
+      \fi
+      \DRDC@metawarn{%
+        ^^J  Formatting of the text in the \DRDC@tagdisplay{\DRDC@tag}
+             has been lost in the
+        ^^J  file \DRDC@file\DRDC@tempa
+      }%
+      \DRDC@approxtrue
+    \fi
+  \fi
+}
+\def\DRDC@nobraces#1#2{
+  \def\DRDC@tempa{}%
+  \expandafter\DRDC@@nobraces#2{\@nil}%
+  \edef#1{\DRDC@tempa}
+}
+\def\DRDC@@nobraces#1#{
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@empty\else\g@addto@macro\DRDC@tempa{#1}\fi%
+  \DRDC@@@nobraces
+}
+\def\DRDC@@@nobraces#1{
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@nnil\else
+    \DRDC@@nobraces#1{\@nil}%
+    \DRDC@afterfi{\DRDC@@nobraces}%
+  \fi
+}
+\newcommand\DRDC@stripspaces[1]{%
+  \expandafter\DRDC@@stripspaces#1\@nil\@@
+  \let#1\DRDC@temp
+}
+\long\def\DRDC@@stripspaces#1#2\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@empty\else
+    \ifcat#1 \DRDC@@stripspaces#2\@@
+    \else\DRDC@stripnil#1#2%
+    \fi
+  \fi
+}
+\long\def\DRDC@stripnil#1\@nil{\def\DRDC@temp{#1}}
+\newcommand\DRDC@stripendspace[1]{%
+  \expandafter\expandafter\expandafter\DRDC@@stripendspace
+    \expandafter#1\expandafter\@nil\space\@nil\@nil
+  \let#1\DRDC@temp
+}
+\long\def\DRDC@@stripendspace#1 \@nil#2\@nil{
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\space
+    \def\DRDC@temp{#1}%
+    \let\DRDC@tempa\@gobble
+  \else\ifx\DRDC@temp\@empty
+    \DRDC@stripnil#1%
+    \let\DRDC@tempa\relax
+  \else
+    \PackageError{drdc-translate}{Programming error when stripping
+      spaces from line.}%
+  \fi\fi
+  \DRDC@tempa
+}
+\@ifundefined{DRDC@bothtitlesfalse}{%
+  \newif\ifDRDC@bothtitles\DRDC@bothtitlesfalse}{}
+\newcommand\DRDC@makeconstructtitle{%
+  \ifDRDC@isclassified
+    \gdef\DRDC@constructtitle{}%
+    \@ifundefined{DRDC@alttitle}
+       {\DRDC@expandedaddto\DRDC@constructtitle{\@title}}
+       {\DRDC@expandedaddto\DRDC@constructtitle{\DRDC@alttitle}}%
+    \ifDRDC@bothtitles
+      \g@addto@macro\DRDC@constructtitle{\DRDC@colon\ }%
+      \@ifundefined{DRDC@altsubtitle}
+        {\DRDC@expandedaddto\DRDC@constructtitle{\DRDC@subtitle}}
+        {\DRDC@expandedaddto\DRDC@constructtitle{\DRDC@altsubtitle}}%
+    \fi
+    \DRDC@fixclass{\DRDC@constructtitle}%
+  \else
+    \gdef\DRDC@constructtitle{%
+      \@ifundefined{DRDC@alttitle}{\@title}{\DRDC@alttitle}%
+      \ifDRDC@bothtitles
+        \DRDC@colon\
+        \@ifundefined{DRDC@altsubtitle}{\DRDC@subtitle}
+                                       {\DRDC@altsubtitle}%
+      \fi}%
+  \fi
+}
+\newcommand*{\DRDC@convertfile}[2]{%
+  \IfFileExists{#1}{%
+    \begingroup
+    \newread\DRDC@infile
+    \newwrite\DRDC@outfile
+    \immediate\openin\DRDC@infile #1%
+    \immediate\openout\DRDC@outfile #2%
+    \typeout{Writing to #2}%
+    \makeatletter
+    \loop
+      \immediate\read\DRDC@infile to\DRDC@line
+      \DRDC@stripendspace\DRDC@line
+      \immediate\write\DRDC@outfile{\DRDC@line}%
+      \ifeof\DRDC@infile\else
+    \repeat
+    \immediate\closein\DRDC@infile
+    \immediate\closeout\DRDC@outfile
+    \endgroup
+  }{\PackageError{drdc-translate}{Cannot open #1 or file is empty}{}}%
+}
+\endinput
+%%
+%% End of file `drdc-translate.sty'.

@@ -1,0 +1,727 @@
+%%
+%% This is file `drdc-docctl.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drdc-docctl.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{drdc-docctl}
+              [2018/01/18 v3.0
+ Generates DCD sheets for DRDC reports]
+\newcommand*\DRDC@projectnumber{%
+  \PackageError{drdc-docctl}{No \noexpand\projectnumber given}{}}
+\newcommand\projectnumber[1]{%
+  \renewcommand*{\DRDC@projectnumber}{#1}}
+\newcommand*\DRDC@origrepnumber{}
+\newcommand\origrepnumber[1]{%
+  \renewcommand*{\DRDC@origrepnumber}{#1}}
+\newcommand*\DRDC@otherrepnumber{}
+\newcommand\otherrepnumber[1]{%
+  \renewcommand*{\DRDC@otherrepnumber}{#1}}
+\newcommand*\DRDC@originator{\establishmentname}
+\newcommand\originator[1]{%
+  \renewcommand*{\DRDC@originator}{#1}}
+\newcommand*\DRDC@originatoraddress{\DRDC@establishmentaddress}
+\newcommand\originatoraddress[1]{%
+  \renewcommand*{\DRDC@originatoraddress}{#1}}
+\newcommand*\DRDC@contractnumber{}
+\newcommand\contractnumber[1]{%
+  \renewcommand*{\DRDC@contractnumber}{#1}}
+\newcommand\preparedbysep{\\}
+\newcommand\DRDC@preparedby{%
+  \DRDC@originator\preparedbysep\DRDC@originatoraddress}
+\newcommand*\DRDC@keywords{}
+\newcommand\keywords[1]{%
+  \renewcommand*{\DRDC@keywords}{#1}}
+\let\DRDC@keywordlist\@empty
+\newcommand\addkeyword[1]{%
+  \ifx\DRDC@keywordlist\@empty
+    \g@addto@macro\DRDC@keywordlist{\DRDC@firstcmd{#1}}
+  \else
+    \g@addto@macro\DRDC@keywordlist{\DRDC@cmd{#1}}
+  \fi
+  \renewcommand\DRDC@keywords{%
+    \let\DRDC@firstcmd\@firstofone
+    \def\DRDC@cmd####1{\DRDC@keyworddelim####1}%
+    \DRDC@keywordlist
+  }%
+}
+\newcommand\DRDC@keyworddelim{\DRDC@semicolon\ }
+\newcommand\keyworddelimiter[1]{\renewcommand\DRDC@keyworddelim{#1}}
+\newcommand\makeexpandedkeywords[2]{%
+  \begingroup
+    \gdef#1{}%
+    \let\DRDC@pup\@firstofone
+    \let\DRDC@markerformat\@firstofone
+    \@ifundefined{DRDC@fixclass}{\def\DRDC@fixclass##1{}}{}%
+    \def\DRDC@firstcmd##1{%
+      \def\DRDC@temp{##1}\DRDC@fixclass\DRDC@temp
+      \xdef#1{\DRDC@temp}}%
+    \def\DRDC@cmd##1{%
+      \def\DRDC@temp{##1}\DRDC@fixclass\DRDC@temp
+      \edef\DRDC@tempa{#2\DRDC@temp}%
+      \DRDC@expandedaddto#1{\DRDC@tempa}}%
+    \DRDC@keywordlist
+  \endgroup
+}
+\newcommand\DRDC@distributioninside{}
+\newcommand\DRDC@distributionoutside{}
+\newcommand\futuredistribution[2]{%
+  \renewcommand\DRDC@distributioninside{#1}%
+  \renewcommand\DRDC@distributionoutside{#2}%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@empty\else
+    \recipients{#1}%
+%    \AtBeginDocument{%
+%      \ifDRDC@isclassified%\else
+%        \addtoreleasestatements{\DRDC@termsofrelease}\fi}%
+  \fi
+}
+\newcommand\availability{
+  \PackageError{drdc-docctl}{The macros \noexpand\availability and
+    \noexpand\announcement are no longer needed.  Use
+    \noexpand\futuredistribution instead}{}}
+\let\announcement\availability
+\newcounter{DRDC@bibitems}
+\let\DRDC@oldbibitem\bibitem
+\def\bibitem{\stepcounter{DRDC@bibitems}\DRDC@oldbibitem}
+\def\DRDC@addtofirstnames#1{%
+  \g@addto@macro\DRDC@firstnames{\DRDC@cmd{#1}}}
+\def\DRDC@parsenames#1,#2,#3\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil
+    \DRDC@getnamesspace#1 \@nil\@@
+  \else
+    \def\DRDC@lastname{#1}%
+    \DRDC@addtofirstnamesspace#2 \@nil\@@
+  \fi
+}
+\def\DRDC@getnamesspace#1 #2\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil
+    \DRDC@getnamestilde#1~\@nil\@@
+  \else
+    \DRDC@addtofirstnamestilde#1~\@nil\@@
+    \DRDC@getnamesspace#2\@@
+  \fi
+}
+\def\DRDC@getnamestilde#1~#2\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil
+    \DRDC@getnamesperiod#1.\@nil\@@
+  \else
+    \DRDC@addtofirstnamesperiod#1.\@nil\@@
+    \DRDC@getnamestilde#2\@@
+  \fi
+}
+\def\DRDC@getnamesperiod#1.#2\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil
+    \DRDC@getnamescspace#1\ \@nil\@@
+  \else
+    \DRDC@addtofirstnamescspace#1\ \@nil\@@
+    \DRDC@getnamesperiod#2\@@
+  \fi
+}
+\def\DRDC@getnamescspace#1\ #2\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil
+    \def\DRDC@lastname{#1}%
+  \else
+    \def\DRDC@temp{#1}%
+    \ifx\DRDC@temp\empty\else\DRDC@addtofirstnames{#1}\fi
+    \DRDC@getnamescspace#2\@@
+  \fi
+}
+\def\DRDC@addtofirstnamesspace#1 #2\@@{%
+  \DRDC@addtofirstnamestilde#1~\@nil\@@
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil\else\DRDC@addtofirstnamesspace#2\@@\fi
+}
+\def\DRDC@addtofirstnamestilde#1~#2\@@{%
+  \DRDC@addtofirstnamesperiod#1.\@nil\@@
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil\else\DRDC@addtofirstnamestilde#2\@@\fi
+}
+\def\DRDC@addtofirstnamesperiod#1.#2\@@{%
+  \DRDC@addtofirstnamescspace#1\ \@nil\@@
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil\else\DRDC@addtofirstnamesperiod#2\@@\fi
+}
+\def\DRDC@addtofirstnamescspace#1\ #2\@@{%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\empty\else\DRDC@addtofirstnames{#1}\fi
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil\else\DRDC@addtofirstnamescspace#2\@@\fi
+}
+\def\DRDC@initialname#1#2\@@{#1.}
+\def\DRDC@initialhyphen#1-#2-#3\@@{%
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\@nnil
+    \def\DRDC@temp{\DRDC@idelimiter\DRDC@initialname#1\@nil\@@}%
+  \else
+    \def\DRDC@temp{#1}%
+    \ifx\DRDC@temp\empty
+      \def\DRDC@temp{-\DRDC@initialname#2\@nil\@@}%
+    \else
+      \def\DRDC@temp{\DRDC@idelimiter\DRDC@initialname#1\@nil\@@-%
+                     \DRDC@initialname#2\@nil\@@}%
+    \fi
+  \fi
+}
+\providecommand\DRDC@expandedaddto[2]{%
+  \expandafter\g@addto@macro\expandafter#1\expandafter{#2}%
+}%
+\newcommand\DRDC@idelimiter{~}
+\newcommand\DRDC@makeinitials[2]{%
+  \def\DRDC@lastname{}%
+  \def\DRDC@firstnames{}%
+  {\def~{ }\xdef\DRDC@uname{#2}}%
+  \expandafter\DRDC@parsenames\DRDC@uname,\@nil,\@nil\@@
+  \let\DRDC@uname\relax
+  \def\DRDC@temp{}\ifx\DRDC@lastname\DRDC@temp
+    \PackageError{drdc-docctl}{%
+      A last name was empty when initializing\MessageBreak
+      authors' names for the DCD sheet}{
+    Check that there are no spaces between each author and affiliation
+    in the\MessageBreak\noexpand\authors macro.}%
+    \def#1{}%
+  \else
+    \edef#1{\DRDC@lastname\DRDC@lastnamedelimiter}%
+    \def\DRDC@cmd##1{\DRDC@initialhyphen##1-\@nil-\@nil\@@%
+                     \DRDC@expandedaddto#1\DRDC@temp}%
+    \DRDC@firstnames
+    \let\DRDC@cmd\relax
+  \fi
+}
+\newcommand\DRDC@lastnamedelimiter{,}
+\newcommand\DRDC@initiallist{}
+\newcommand\addinitials[2]{%
+  \g@addto@macro\DRDC@initiallist{\DRDC@cmd{#1}{#2}}}
+\newif\ifDRDC@found
+\newcommand\DRDC@findinitials[2]{%
+  \DRDC@foundfalse
+  \def\DRDC@cmd##1##2{%
+    \edef\DRDC@tempa{#2}\edef\DRDC@tempb{##1}%
+    \ifx\DRDC@tempa\DRDC@tempb\def#1{##2}\DRDC@foundtrue\fi
+  }\DRDC@initiallist\let\DRDC@cmd\relax
+}
+\newcommand\DRDC@initialize[2]{%
+  \DRDC@findinitials#1{#2}%
+  \ifDRDC@found\else\DRDC@makeinitials#1{#2}\fi
+}
+\def\DRDC@docctlname#1#2{%
+  \DRDC@initialize\DRDC@iname{#1}\mbox{\DRDC@iname}}
+\newcommand\makeinitializedauthors[2]{
+  \begingroup
+    \def~{ }%
+    \def\DRDC@inamelist{}%
+    \DRDC@firstitemtrue
+    \def\DRDC@addiname##1##2{%
+       \ifDRDC@firstitem\DRDC@firstitemfalse\else
+         \g@addto@macro\DRDC@inamelist{#2}\fi
+       \DRDC@initialize\DRDC@iname{##1}%
+       \DRDC@expandedaddto\DRDC@inamelist\DRDC@iname}%
+    \DRDC@parseauthors\DRDC@addiname{}%
+    \xdef#1{\DRDC@inamelist}%
+  \endgroup
+}
+\newcommand\docctl{%
+  \DRDC@docctlsetup
+  \centering
+  \DRDC@docctlfirst
+  \ifDRDC@isbrief\else
+    \clearpage
+    \DRDC@docctlsecond
+  \fi
+  \DRDC@docctlcleanup
+}
+\newlength\DRDC@colone
+\newlength\DRDC@coltwo
+\newlength\DRDC@colthree
+\newlength\DRDC@colfour
+\newlength\DRDC@colfive
+\newlength\DRDC@colonetwo
+\newlength\DRDC@colonetothree
+\newlength\DRDC@colthreefour
+\newlength\DRDC@coltwotofour
+\newlength\DRDC@colthreetofive
+\newlength\DRDC@colfourfive
+\newlength\DRDC@colall
+\long\def\DRDC@gobbleabstract#1\end#2{%
+  \ifDRDC@isfrench
+    \def\DRDC@tempa{abstract}
+  \else
+    \def\DRDC@tempa{fabstract}
+  \fi
+  \def\DRDC@temp{#2}%
+  \ifx\DRDC@temp\DRDC@tempa\end{#2}
+  \else\noexpand\DRDC@gobbleabstract
+  \fi
+}
+\newcommand\DRDC@docctlsetup{
+  \clearpage
+  \addtocounter{DRDC@pages}{\value{page}}
+  \addtocounter{DRDC@pages}{-2}
+  \begingroup
+  \setlength\leftmargin{0.25in}
+  \normalsize\sffamily
+  \newcommand\DRDC@DCDusersize{%
+    \@setfontsize\DRDC@DCDusersize\@xpt\@xiipt}
+  \newcommand\DRDC@DCDtitlesize{%
+    \@setfontsize\DRDC@DCDtitlesize\@ixpt{11}}
+  \newcommand\DRDC@DCDtitledescsize{%
+    \@setfontsize\DRDC@DCDtitledescsize\@vipt\@viipt}
+  \newcommand\DRDC@DCDheadingsize{%
+    \@setfontsize\DRDC@DCDheadingsize\@viipt\@viiipt}
+  \renewcommand\arraystretch{1.0}
+  \setlength\DRDC@colone{0.32\textwidth}
+  \setlength\DRDC@coltwo{0.16\textwidth}
+  \ifDRDC@isfrench
+    \setlength\DRDC@colthree{0.045\textwidth}
+    \setlength\DRDC@colfour{0.115\textwidth}
+    \setlength\DRDC@colfive{0.32\textwidth}
+  \else
+    \setlength\DRDC@colthree{0.05\textwidth}
+    \setlength\DRDC@colfour{0.20\textwidth}
+    \setlength\DRDC@colfive{0.23\textwidth}
+  \fi
+  \setlength\DRDC@colonetwo{\DRDC@colone}
+  \addtolength\DRDC@colonetwo{\DRDC@coltwo}
+  \setlength\DRDC@colonetothree{\DRDC@colonetwo}
+  \addtolength\DRDC@colonetothree{\DRDC@colthree}
+  \setlength\DRDC@colthreefour{\DRDC@colthree}
+  \addtolength\DRDC@colthreefour{\DRDC@colfour}
+  \setlength\DRDC@coltwotofour{\DRDC@coltwo}
+  \addtolength\DRDC@coltwotofour{\DRDC@colthree}
+  \addtolength\DRDC@coltwotofour{\DRDC@colfour}
+  \setlength\DRDC@colfourfive{\DRDC@colfour}
+  \addtolength\DRDC@colfourfive{\DRDC@colfive}
+  \setlength\DRDC@colthreetofive{\DRDC@colfourfive}
+  \addtolength\DRDC@colthreetofive{\DRDC@colthree}
+  \setlength\DRDC@colall{\DRDC@colonetothree}
+  \addtolength\DRDC@colall{\DRDC@colfourfive}
+  \ifDRDC@isbrief\else
+    \ifDRDC@isfrench
+      \renewenvironment{abstract}{\DRDC@gobbleabstract}{}
+    \else
+      \renewenvironment{fabstract}{\DRDC@gobbleabstract}{}
+    \fi
+  \fi
+}
+
+\newcommand\DRDC@docctlcleanup{\endgroup}
+\newlength\DRDC@extraspace
+\setlength\DRDC@extraspace{\z@}
+\newlength\DRDC@pbsize
+\long\def\DRDC@field#1#2#3#4{%
+  \setlength\DRDC@pbsize{#1}\addtolength\DRDC@pbsize{-0.375in}
+  \DRDC@DCDheadingsize\raisebox{\ifDRDC@isfrench 2.0\p@\else 3.0\p@\fi}{
+ % \ifDRDC@isbrief
+  \makebox[0.25in][l]{~#2}\parbox[t]{\DRDC@pbsize}{
+  \ifDRDC@isbrief
+    {\raggedright #3\par\vskip2pt}\DRDC@DCDusersize
+     #4\vskip5pt
+     \else
+     {\raggedright #3\par\vskip2pt}\DRDC@DCDusersize
+     #4\vskip\DRDC@extraspace
+     
+     \fi}}%\vskip\DRDC@extraspace}}%%make the lenght shorter
+    \par
+}
+%\else
+% \makebox[0.25in][l]{~#2}\parbox[t]{\DRDC@pbsize}{
+%    {\raggedright #3\par\vskip2pt}\DRDC@DCDusersize
+%     #4\vskip\DRDC@extraspace}%
+%    \par
+%}
+%\fi
+\long\def\DRDC@fieldall#1#2#3{%
+  \multicolumn{5}{|@{}p{\DRDC@colall}@{}|}{%
+    \DRDC@field\DRDC@colall{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldone#1#2#3{%
+  \multicolumn{1}{|@{}p{\DRDC@colone}}{%
+    \DRDC@field\DRDC@colone{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldonetwo#1#2#3{%
+  \multicolumn{2}{|@{}p{\DRDC@colonetwo}}{%
+    \DRDC@field\DRDC@colonetwo{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldonetothree#1#2#3{%
+  \multicolumn{3}{|@{}p{\DRDC@colonetothree}}{%
+    \DRDC@field\DRDC@colonetothree{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldthreefour#1#2#3{%
+  \multicolumn{2}{|@{}p{\DRDC@colthreefour}}{%
+    \DRDC@field\DRDC@colthreefour{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldtwotofour#1#2#3{%
+  \multicolumn{3}{|@{}p{\DRDC@coltwotofour}}{%
+    \DRDC@field\DRDC@coltwotofour{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldthreetofive#1#2#3{%
+  \multicolumn{3}{|@{}p{\DRDC@colthreetofive}@{}|}{%
+    \DRDC@field\DRDC@colthreetofive{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldfive#1#2#3{%
+  \multicolumn{1}{|@{}p{\DRDC@colfive}@{}|}{%
+    \DRDC@field\DRDC@colfive{#1}{#2}{#3}%
+  }%
+}
+\long\def\DRDC@fieldfourfive#1#2#3#4#5{%
+  \multicolumn{2}{|@{}p{\DRDC@colfourfive}@{}|}{%
+    \DRDC@field\DRDC@colfourfive{#1a.}{#2}{#3}
+    \hfuzz=10pt%
+    \rule[-1pt]{0pt}{6pt}\rule{\hsize}{0.5pt}\rule{\tabcolsep}{0.5pt}
+    \DRDC@field\DRDC@colfourfive{#1b.}{#4}{#5}%
+  }%
+}
+\newcommand\DRDC@docctlfirst{%
+  \DRDC@calcextraspace
+  \ifdim\DRDC@extraspace>\z@ \divide\DRDC@extraspace by 11\relax
+  \else
+    \renewcommand\DRDC@DCDusersize{\DRDC@DCDtitlesize}%
+    \DRDC@calcextraspace
+    \ifdim\DRDC@extraspace>\z@ \divide\DRDC@extraspace by 11\relax
+    \else \setlength\DRDC@extraspace{\z@}%
+    \fi
+  \fi
+  \thispagestyle{empty}%
+  \noindent
+  \DRDC@@docctlfirst
+  \par
+}
+\newcommand\DRDC@calcextraspace{
+  \setlength\DRDC@extraspace{\z@}%
+  \setbox\DRDC@box\hbox{\DRDC@@docctlfirst}%
+  \setlength\DRDC@extraspace\textheight
+  \addtolength{\DRDC@extraspace}{-\ht\DRDC@box}%
+  \addtolength{\DRDC@extraspace}{-\dp\DRDC@box}%
+}
+\ifDRDC@isfrench
+  \newcommand\DRDC@keywordtext{
+    MOTS-CL\'ES, DESCRIPTEURS ou IDENTIFICATEURS (Termes ou courtes
+    phrases techniquement significatifs qui d\'ecrivent le document
+    et qui pourraient en faciliter le catalogage.  Choisir des
+    termes qui ne n\'ecessitent pas une classification de
+    s\'ecurit\'e.  Des identificateurs comme le mod\`ele, la
+    d\'esignation, la marque de commerce, le nom de code d'un projet
+    militaire et l'endroit peuvent aussi \^etre donn\'es.  Si cela
+    est possible, on tirera les termes choisis d'un th\'esaurus
+    publi\'e comme le Thesaurus of Engineering and Scientific Terms
+    (TEST) et on indiquera le th\'esaurus utilis\'e.  S'il n'est pas
+    possible d'utiliser des termes d'indexation sans classification,
+    la classification de chacun devrait \^etre indiqu\'ee comme
+    celle du titre.)
+  }
+\else
+  \newcommand\DRDC@keywordtext{
+     KEYWORDS, DESCRIPTORS or IDENTIFIERS (Use semi-colon as a delimiter.)
+  }
+\fi
+\newcommand\DRDC@@docctlfirst{%
+\begin{tabular}{|@{}p{\DRDC@colone}@{}|@{}p{\DRDC@coltwo}@{}|%
+@{}p{\DRDC@colthree}@{}|@{}p{\DRDC@colfour}@{}|@{}p{\DRDC@colfive}@{}|}
+\hline
+\multicolumn{5}{|c|}{\parbox[t]{5.5in}{\centering\DRDC@DCDtitlesize{
+\bfseries
+\ifDRDC@isfrench FICHE DE CONTR\^OLE DU DOCUMENT
+\else DOCUMENT CONTROL DATA\fi}\\[3pt]
+\DRDC@DCDtitledescsize
+\ifDRDC@isfrench
+(Le marquage de s\'ecurit\'e pour le titre, le r\'esum\'e et
+les renseignements d'indexation doit \^etre saisi lorsque le document
+est classifi\'e ou prot\'eg\'e.)
+\else *Security markings for  the title, authors, abstract and keywords must be entered when the document is sensitive\fi
+\vskip0.5\baselineskip}} \\
+\hline
+\DRDC@fieldonetothree{1.}{
+\ifDRDC@isfrench
+DEMANDEUR (Le nom et l'adresse de l'organisation qui a pr\'epar\'e le
+document.  Les organisations pour lesquelles le document a \'et\'e
+pr\'epar\'e, p.~ex., le Centre qui commande un rapport \`a un
+entrepreneur ou l'organisme \`a l'origine du document doivent figurer
+\`a la section 8.)
+\else
+ORIGINATOR
+(Name and address of the organization preparing the document. A DRDC Centre sponsoring a contractor's report, or a tasking agency, is entered in Section 8.)
+\fi}{\raggedright\DRDC@preparedby}
+&
+\DRDC@fieldfourfive{2}{%
+\ifDRDC@isfrench
+MARQUAGE DE S\'ECURIT\'E (Champs 1, 2 et 3.)
+\else
+SECURITY MARKING (Overall security marking of the document, including
+supplemental markings if applicable.)
+\fi}
+{\ifDRDC@isclassified
+   \raggedright
+   \DRDC@sensitivity
+   \ifx\DRDC@controlsystem\@empty\else
+    \ // \DRDC@controlsystem\fi
+  \ifx\DRDC@disseminationcontrol\@empty\else
+    \ // \DRDC@disseminationcontrol\fi
+ \else
+   \DRDC@country~\tclassU
+ \fi}
+{\ifDRDC@isfrench \DRDC@needstranslation{HANDLING INSTRUCTIONS (Field 4)}
+ \else CONTROLLED GOODS\fi}
+{\raggedright\DRDC@CGterm{\DRDC@maxDMC}\\%
+% \ifDRDC@isclassified\DRDC@handlinginstructions
+% \else\DRDC@CGterm{\DRDC@maxDMC}\\%
+% \fi
+ \ifDRDC@isfrench
+   CDM \DRDC@maxDMC\\%R\'EVISION%
+ \else
+   DMC \DRDC@maxDMC\\%REVIEW%
+ \fi
+}
+\\
+\hline
+\DRDC@fieldall{3.}{%
+\ifDRDC@isfrench
+TITRE (Titre au long du document qui figure sur la page titre. La
+classification du titre devrait \^etre indiqu\'ee \`a l'aide de
+l'abr\'eviation voulue [S, C, ou U], entre parenth\`eses, apr\`es
+le titre.)
+\else
+TITLE (The document title and sub-title as indicated on the title page.)
+\fi}
+%{\raggedright\@title\ifDRDC@bothtitles\DRDC@colon{} \DRDC@subtitle\fi}
+{\raggedright\@title\ifx\DRDC@subtitle\@empty\else
+  \DRDC@colon{} \DRDC@subtitle\fi}
+\\
+\hline
+\DRDC@fieldall{4.}{%
+\ifDRDC@isfrench
+AUTEURS (Nom de famille, puis initiales -- Ne pas mettre le grade, le
+titre, etc.)
+\else
+AUTHORS (Last name, followed by initials --  ranks, titles, etc.\ not
+to be used. Use semi-colon as delimiter)
+\fi}
+{\renewcommand*\rank[1]{}\raggedright
+ \DRDC@parseauthors\DRDC@docctlname{\DRDC@semicolon{} }}
+\\
+\hline
+\ifDRDC@isfrench
+\DRDC@fieldone{5.}{%
+DATE DE PUBLICATION \\ (Mois et ann\'ee de publication du document.)
+\\\mbox{}}
+{\DRDC@FDate}
+&
+\DRDC@fieldtwotofour{6a.}{%
+NOMBRE DE PAGES (Nombre total de pages contenant des renseignements, y
+compris les annexes, les appendices, etc.)}
+{\arabic{DRDC@pages}}
+&
+\DRDC@fieldfive{6b.}{%
+NOMBRE DE R\'EF\'ERENCES (Nombre total de r\'ef\'erences cit\'ees
+dans le document.)
+\\\mbox{}}{\arabic{DRDC@bibitems}}\\
+\else
+  \DRDC@fieldonetwo{5.}{%
+  DATE OF PUBLICATION (Month and year of publication of document.)
+  \\\mbox{}\\\mbox{}}
+  {\DRDC@edate}
+  &
+  \DRDC@fieldthreefour{6a.}{%
+  NO.\ OF PAGES (Total pages, including Annexes, excluding DCD, covering and verso pages.)}
+  {\arabic{DRDC@pages}}
+  &
+  \DRDC@fieldfive{6b.}{%
+  NO.\ OF REFS (Total cited in document.)\\
+  \mbox{}\\\mbox{}}{\arabic{DRDC@bibitems}}\\
+\fi
+\hline
+\DRDC@fieldall{7.}{%
+\ifDRDC@isfrench
+NOTES DESCRIPTIVES (Cat\'egorie du document, p.~ex., rapport, note ou
+m\'emorandum technique.  Indiquer s'il y a lieu s'il s'agit d'un
+rapport provisoire, p.~ex., d'un rapport d'\'etape, d'un rapport
+sommaire, d'un rapport annuel ou d'un rapport final. Si le document
+porte sur une p\'eriode pr\'ecise, indiquer les dates
+correspondantes.)
+\else
+DOCUMENT CATEGORY (e.g., Scientific Report, Contract Report, Scientific Letter)
+\fi}
+{\DRDC@doccategory}
+\\
+\hline
+\DRDC@fieldall{8.}{%
+\ifDRDC@isfrench
+RESPONSABLE (Nom et adresse du bureau de projet ou du laboratoire du
+Minist\`ere qui est responsable du travail de recherche et de
+d\'eveloppement.)
+\else
+SPONSORING CENTRE (The name and address of the department
+project or laboratory sponsoring the research and
+development.)
+\fi}{\raggedright\DRDC@preparedby}
+%{\raggedright\ifx\DRDC@client\@empty
+%   \establishmentname\\ \DRDC@establishmentaddress
+% \else\DRDC@preparedfor\fi}
+\\
+\hline
+\DRDC@fieldonetwo{9a.}{%
+\ifDRDC@isfrench
+\No\ DU PROJET OU DE LA SUBVENTION (Indiquer s'il y a lieu
+le num\'ero du projet ou de la subvention de recherche et de
+d\'eveloppement dans le cadre duquel le document a \'et\'e r\'edig\'e.
+Pr\'eciser s'il s'agit d'un projet ou d'une subvention.)
+\else
+PROJECT OR GRANT NO.\ (If appropriate, the applicable research and
+development project or grant number under which the document was
+written.  Please specify whether project or grant.)
+\fi}
+{\DRDC@projectnumber}
+&
+\DRDC@fieldthreetofive{9b.}{%
+\ifDRDC@isfrench
+\No\ DU CONTRAT (Indiquer s'il y a lieu le num\'ero du contrat dans le
+cadre duquel le document a \'et\'e r\'edig\'e.)
+\else
+CONTRACT NO.\ (If appropriate, the applicable contract number under
+which the document was written.)
+\fi\\ \mbox{} \\ \mbox{}}
+{\DRDC@contractnumber}
+\\
+\hline
+\DRDC@fieldonetwo{10a.}{%
+\ifDRDC@isfrench
+\No\ DE DOCUMENT DU DEMANDEUR (Num\'ero de document officiel par
+lequel le demandeur d\'esigne le document.  Ce num\'ero doit \^etre
+propre au document.)
+\else
+DRDC DOCUMENT  NUMBER 
+\fi}
+{\def\DRDC@temp{}%
+ \ifx\DRDC@origrepnumber\DRDC@temp
+     \DRDC@repnumber
+ \else\DRDC@origrepnumber
+ \fi}
+&
+\DRDC@fieldthreetofive{10b.}{%
+\ifDRDC@isfrench
+AUTRES N\up{\lowercase{os}}\kern+.2em DE DOCUMENT (Autres num\'eros
+qui pourraient avoir \'et\'e attribu\'es au document par le demandeur
+ou le responsable.)
+\else
+OTHER DOCUMENT NO(s).\ (Any other numbers which may be assigned this
+document either by the originator or by the sponsor.)\\\mbox{}
+\fi}
+{\def\DRDC@temp{}%
+ \ifx\DRDC@otherrepnumber\DRDC@temp
+   \ifx\DRDC@origrepnumber\DRDC@temp\else\DRDC@repnumber\fi
+ \else
+   \DRDC@otherrepnumber
+ \fi}
+\\
+\hline
+\DRDC@fieldall{11a.}{%
+\ifDRDC@isfrench
+\DRDC@needstranslation{FUTURE DISTRIBUTION (Any limitations on further
+  dissemination of the document, other than those imposed by security
+  classification.)}
+\else
+FUTURE DISTRIBUTION WITHIN CANADA (Approval for further dissemination of the document. Security classification must also be considered.)
+\fi}
+{\raggedright\DRDC@distributioninside}
+\\
+\hline
+\DRDC@fieldall{11b.}{%
+\ifDRDC@isfrench
+\DRDC@needstranslation{FUTURE DISTRIBUTION OUTSIDE CANADA (Any
+  limitations on further dissemination of the document, other than
+  those imposed by security classification.)}
+\else
+FUTURE DISTRIBUTION OUTSIDE CANADA (Approval for further dissemination of the document. Security classification must also be considered.)
+\fi}
+{\raggedright\DRDC@distributionoutside}
+\\
+\ifDRDC@isbrief
+  \hline
+  \DRDC@fieldall{12.}{\DRDC@keywordtext}{\DRDC@keywords}
+  \\
+  \hline
+  \DRDC@fieldall{13.}{ABSTRACT/R\'ESUM\'E (When available in the document, the French version of the abstract must be included here.)}{}
+  \\
+\fi
+\hline
+\end{tabular}
+}
+\newcommand\DRDC@docctlsecond{
+  \addtolength\DRDC@colall{12.5pt}%
+  \setlength\DRDC@extraspace{\z@}%
+  \sbox\DRDC@box{\hbox{\DRDC@@docctlsecond}}%
+  \setlength\DRDC@extraspace{\textheight}%
+  \addtolength{\DRDC@extraspace}{-\ht\DRDC@box}%
+  \addtolength{\DRDC@extraspace}{-\dp\DRDC@box}%
+  \ifdim\DRDC@extraspace>\z@ \divide\DRDC@extraspace by 2\relax
+  \else \setlength\DRDC@extraspace{\z@}%
+  \fi
+  \thispagestyle{empty}%
+  \noindent
+  \DRDC@@docctlsecond
+  \par
+}
+\newcommand\DRDC@@docctlsecond{%
+  \begin{tabular}{|@{}p{\DRDC@colall}@{}|}
+  \hline
+   \DRDC@field\DRDC@colall{12.}{\DRDC@keywordtext}
+                         {\DRDC@keywords}
+  \\
+  \hline
+  \DRDC@field\DRDC@colall{13.}{%
+    \ifDRDC@isfrench
+      R\'ESUM\'E (R\'esum\'e succinct du document.  Le r\'esum\'e peut
+      para\^itre ailleurs dans le corps du document.  Il est
+      \'eminemment souhaitable que le r\'esum\'e d'un document
+      classifi\'e soit sans classification.  Chaque paragraphe du
+      r\'esum\'e doit commencer par une indication de la
+      classification de s\'ecurit\'e des renseignements qu'il contient
+      [sauf si tout le document est sans
+      classification]\DRDC@semicolon\ utiliser les lettres
+      voulues\DRDC@colon\ S, C ou U. Il n'est pas n\'ecessaire de
+      mettre ici le r\'esum\'e dans les deux langues officielles, sauf
+      si le document est bilingue.)
+    \else
+      ABSTRACT/R\'ESUM\'E (When available in the document, the French version of the abstract must be included here.)\fi}
+  {\setlength{\parskip}{0.5\baselineskip}\DRDC@saveabstract\par
+    \DRDC@savefabstract}
+  \\
+  \hline
+%  \DRDC@field\DRDC@colall{13.}{\DRDC@keywordtext}
+%                         {\vskip\baselineskip\DRDC@keywords}
+%  \\
+%  \hline
+  \end{tabular}
+}
+\endinput
+%%
+%% End of file `drdc-docctl.sty'.

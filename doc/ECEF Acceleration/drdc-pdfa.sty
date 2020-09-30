@@ -1,0 +1,117 @@
+%%
+%% This is file `drdc-pdfa.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drdc-pdfa.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{drdc-pdfa}
+              [2013/11/08 v1.1
+ PDF/A support for DRDC documents]
+
+\RequirePackage{fix-zero-width}
+\RequirePackage{ifpdf}
+\ifpdf
+  \RequirePackage{xmpincl}
+\fi
+\RequirePackage[rgb]{xcolor}
+\@ifundefined{DRDC@toks}{\newtoks\DRDC@toks}{}
+\long\def\DRDC@prependto#1#2{%
+  \begingroup
+    \DRDC@toks={#2}%
+    \toks@\expandafter{#1}%
+    \xdef#1{\the\DRDC@toks\the\toks@}%
+  \endgroup}%
+\newcommand\DRDC@BeforeBeginDocument[1]{%
+  \DRDC@prependto\@begindocumenthook{#1}}
+\def\DRDC@afterfi#1\fi{\fi#1}
+\ifpdf
+  \@ifundefined{pdfminorversion}{}{\pdfminorversion=4}
+  \immediate\pdfobj stream attr{/N 4}  file{sRGBIEC1966-2.1.icm}
+  \edef\OBJ@RVT{\the\pdflastobj}
+  \pdfcatalog{%
+    /OutputIntents [ <<
+    /Type /OutputIntent
+    /S/GTS_PDFA1
+    /DestOutputProfile \OBJ@RVT\space 0 R
+    /OutputConditionIdentifier (sRGB IEC61966-2.1)
+    /Info(sRGB IEC61966-2.1)
+   >> ]}
+  \DRDC@BeforeBeginDocument\DRDC@xmpinclude
+  \newcommand\DRDC@ifundefinedorempty[2]{%
+    \@ifundefined{#1}{#2}{%
+      \expandafter\ifx\csname#1\endcsname\@empty #2\fi}}
+  \newcommand\DRDC@xmpinclude{%
+    \begingroup
+      \@ifundefined{@pdfproducer}{\def\@pdfproducer{pdfTeX}}{}%
+      \@ifundefined{@pdfcreator}{\def\@pdfcreator{TeX}}{}%
+      \DRDC@ifundefinedorempty{@pdfcreationdate}{%
+        \let\@pdfcreationdate\pdfcreationdate}%
+      \DRDC@ifundefinedorempty{@pdfmoddate}{%
+        \let\@pdfmoddate\@pdfcreationdate}%
+      \@ifpackageloaded{hyperref}{}{%
+        \pdfinfo{%
+          /Creator(\@pdfcreator)%
+          /Producer(\@pdfproducer)%
+          /CreationDate(\@pdfcreationdate)%
+          /ModDate(\@pdfmoddate)%
+        }%
+      }%
+      \makeatletter
+      \includexmp{drdc}%
+    \endgroup
+    \let\DRDC@xmpinclude\relax
+  }
+  \@onlypreamble\DRDC@xmpinclude
+  {\catcode`\D=12\gdef\drdc@dtwelve{D}}
+  \@ifundefined{pdfcreationdate}{
+    \newcount\DRDC@hours \DRDC@hours\time \divide\DRDC@hours by 60
+    \newcount\DRDC@minutes \DRDC@minutes=-\DRDC@hours
+    \multiply\DRDC@minutes by 60 \advance\DRDC@minutes by \time
+    \xdef\pdfcreationdate{%
+      \drdc@dtwelve:\the\year\two@digits{\the\month}%
+      \two@digits{\the\day}\two@digits{\the\DRDC@hours}%
+      \two@digits{\the\DRDC@minutes}00-00'00'}%
+  }{}
+  \newcommand\DRDC@convertDate[1]{\expandafter\DRDC@getdate #1}
+  \expandafter\gdef\expandafter\DRDC@getdate
+    \drdc@dtwelve:#1#2#3#4#5#6#7#8{#1#2#3#4-#5#6-#7#8T\DRDC@getTime}
+  \def\DRDC@getTime#1#2#3#4#5#6{#1#2:#3#4:#5#6\DRDC@getTZ}
+  \def\DRDC@getTZ#1{\if#1ZZ\else\DRDC@afterfi#1\DRDC@@getTZ\fi}
+  \def\DRDC@@getTZ#1'#2'{#1:#2}
+  \@ifundefined{pdfglyphtounicode}{}{
+    \input glyphtounicode.tex
+    \input glyphtounicode-cmr.tex
+    \pdfgentounicode=1\relax
+  }
+\else
+  \special{header=DRDCcolor.pro}
+  \newcommand\DRDC@emptytospace[1]{\ifx#1\@empty\let#1\space\fi}
+  \DRDC@BeforeBeginDocument{%
+    \@ifpackageloaded{hyperref}{%
+      \DRDC@emptytospace\@pdfauthor
+      \DRDC@emptytospace\@pdftitle
+      \DRDC@emptytospace\@pdfsubject
+      \DRDC@emptytospace\@pdfkeywords
+    }{}\let\DRDC@emptytospace\relax}
+\fi
+\endinput
+%%
+%% End of file `drdc-pdfa.sty'.

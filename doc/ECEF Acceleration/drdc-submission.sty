@@ -1,0 +1,342 @@
+%%
+%% This is file `drdc-submission.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drdc-submission.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{drdc-submission}
+              [2016/02/11 v1.0
+ LaTeX package for CSV submission form]
+\RequirePackage{drdc-translate}
+\edef\DRDC@@hash{\string\#}%
+\edef\DRDC@hash{\expandafter\@secondoftwo\DRDC@@hash}
+\gdef\DRDC@redefmacrosCSV{%
+  \DRDC@redefnounicode
+  \def\#{\DRDC@hash}%
+  \def\&{\string &}%
+  \def~{\space}%
+  \def\newline{\space\DRDC@transwarning}%
+  \def\\{\space\DRDC@transwarning}%
+  \def\emph##1{##1\DRDC@transwarning}%
+  \def\textbf{\DRDC@transwarning\@firstofone}%
+  \def\textit{\DRDC@transwarning\@firstofone}%
+  \def\textmd{\DRDC@transwarning\@firstofone}%
+  \def\textnormal{\DRDC@transwarning\@firstofone}%
+  \def\textrm{\DRDC@transwarning\@firstofone}%
+  \def\textsc{\DRDC@transwarning\@firstofone}%
+  \def\textsf{\DRDC@transwarning\@firstofone}%
+  \def\textsl{\DRDC@transwarning\@firstofone}%
+  \def\texttt{\DRDC@transwarning\@firstofone}%
+  \def\textup{\DRDC@transwarning\@firstofone}%
+  \def\ttfamily{\DRDC@transwarning\DRDC@transwarning}%
+  \def\sffamily{\DRDC@transwarning\DRDC@transwarning}%
+  \def\itshape{\DRDC@transwarning\DRDC@transwarning}%
+  \def\upshape{\DRDC@transwarning\DRDC@transwarning}%
+  \def\bfseries{\DRDC@transwarning\DRDC@transwarning}%
+  \def\rm{\DRDC@transwarning}%
+  \def\Huge{\DRDC@transwarning}%
+  \def\huge{\DRDC@transwarning}%
+  \def\LARGE{\DRDC@transwarning}%
+  \def\large{\DRDC@transwarning}%
+  \def\normalsize{\DRDC@transwarning}%
+  \def\footnotesize{\DRDC@transwarning}%
+  \def\scriptsize{\DRDC@transwarning}%
+  \def\small{\DRDC@transwarning}%
+  \def\tiny{\DRDC@transwarning}%
+  \def\textlatin{\DRDC@transwarning}%
+  \def\@hspace##1{\ifdim##1>\z@\space\fi}%
+  \def\@hspacer{\@hspace}%
+  \let\bgroup\@empty
+  \let\egroup\@empty
+  \def\uppercase{\@firstofone}%
+  \def\lowercase{\DRDC@transwarning\@firstofone}%
+  \def\textsuperscript{\@firstofone}%
+  \let\par\@empty
+  \def\textsuperscript{\DRDC@transwarning\@firstofone}%
+  \let\DRDC@up\@firstofone
+  \let\DRDC@pup\@firstofone
+  \let\DRDC@markerformat\@firstofone
+  \redefmacrosCSVhook
+}
+\newcommand\redefmacrosCSVhook{}
+\newcommand\DRDC@CSVstring[2]{%
+  {\let\GenericError\@gobblefour
+   \def\hbox{\@firstofone}
+   \xdef#1{#2}}%
+  \expandafter\DRDC@nobraces\expandafter#1\expandafter{#1}%
+  \DRDC@replace#1{---}{-}%
+  \DRDC@replace#1{--}{-}%
+  \DRDC@replace#1{``}{\DRDC@transwarning}%
+  \DRDC@replace#1{''}{\DRDC@transwarning}%
+  \DRDC@replace#1{$}{\DRDC@transwarning}%$
+  \DRDC@replace#1{\relax}{}%
+  \DRDC@replace#1{\protect}{}%
+  \DRDC@transwarn{#1}%
+  \DRDC@macrowarn{#1}%
+}
+\newcommand\DRDC@mainoralt[1]{%
+  \@ifundefined{DRDC@alt#1}
+               {\def\DRDC@XXX{\csname DRDC@#1\endcsname}}
+               {\def\DRDC@XXX{\csname DRDC@alt#1\endcsname}}
+  \def\DRDC@tag{#1}%
+  \ifDRDC@isclassified
+    \expandafter\expandafter\expandafter\DRDC@fixclass\DRDC@XXX
+  \fi
+  \expandafter\DRDC@CSVstring\csname DRDC@CSV#1\endcsname{\DRDC@XXX}
+}
+\newcommand\DRDC@makeCSVtitle{%
+  \let\DRDC@title\@title
+  \DRDC@mainoralt{title}%
+  \DRDC@mainoralt{subtitle}%
+}
+\newcommand\DRDC@makeauthor{%
+  \ifx\@author\@empty
+    \PackageError{drdc-submission}{The principal author has not been
+      identified.\MessageBreak  Use the \string\@author\space macro}{}%
+  \fi
+  \def\DRDC@tag{author}%
+  \DRDC@CSVstring\DRDC@CSVauthor{\@author}%
+}
+\newcommand*\DRDC@notprincipalauthor[2]{%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@temp\@author\else
+    \ifx\DRDC@@coauthors\@empty\else
+      \g@addto@macro\DRDC@@coauthors{; }\fi
+    \g@addto@macro\DRDC@@coauthors{#1}%
+  \fi}
+\newcommand\DRDC@makecoauthors{%
+  \ifx\@author\@empty
+    \PackageError{drdc-submission}{The principal author has not been
+      identified.\MessageBreak  Use the \string\@author\space macro}{}%
+  \fi
+  \let\DRDC@@coauthors\@empty
+  \DRDC@parseauthors{\DRDC@notprincipalauthor}{}%
+  \def\DRDC@tag{authors}%
+  \DRDC@CSVstring\DRDC@coauthors{\DRDC@@coauthors}%
+  \let\DRDC@@coauthors\relax
+}
+\newcounter{DRDC@mainpages}
+\@ifundefined{DRDC@docctlsetup}{}{%
+  \let\DRDC@olddocctlsetup\DRDC@docctlsetup
+  \renewcommand\DRDC@docctlsetup{%
+    \DRDC@olddocctlsetup
+    \setcounter{DRDC@mainpages}{\value{page}}%
+    \addtocounter{DRDC@mainpages}{-1}%
+  }%
+}%
+\@ifundefined{makebackcover}{}{%
+  \let\DRDC@oldmakebackcover\makebackcover
+  \renewcommand\makebackcover{%
+    \DRDC@oldmakebackcover
+    \ifnum\number\value{DRDC@mainpages}=0\relax
+      \setcounter{DRDC@mainpages}{\value{page}}%
+      \addtocounter{DRDC@mainpages}{-2}%
+    \fi
+  }%
+}
+\newcommand*\DRDC@makeclassification{%
+  \ifDRDC@isclassified
+    \DRDC@getmaxclass
+    \edef\DRDC@classification{%
+      \DRDC@classterm{\value{DRDC@classtemp}}}%
+  \else
+    \def\DRDC@classification{%
+      \ifDRDC@isfrench Non classifi\'e\else UNCLASSIFIED\fi
+    }
+  \fi
+}
+\newcommand*\DRDC@classification{%
+  \ifDRDC@isclassified
+    \DRDC@getmaxclass
+    \DRDC@classterm{\value{DRDC@classtemp}}%
+  \else
+    \ifDRDC@isfrench Non classifi\'e\else UNCLASSIFIED\fi
+  \fi
+}
+\ifDRDC@isfrench
+  \newcommand\DRDC@none{aucun}
+\else
+  \newcommand\DRDC@none{None}
+\fi
+\newcommand*\DRDC@smarkings{%
+  \ifDRDC@isclassified
+    \ifx\DRDC@warningterm\@empty
+      \ifx\DRDC@supplementalmarking\@empty
+        \DRDC@none
+      \else
+        \DRDC@supplementalmarking
+      \fi
+    \else
+      \ifx\DRDC@supplementalmarking\@empty
+        \DRDC@warningterm
+      \else
+        \DRDC@warningterm\ \DRDC@supplementalmarking
+      \fi
+    \fi
+  \else
+    \DRDC@none
+  \fi
+}
+\ifDRDC@isfrench
+  \newcommand\DRDC@Yes{Oui}
+  \newcommand\DRDC@No{Non}
+\else
+  \newcommand\DRDC@Yes{Yes}
+  \newcommand\DRDC@No{No}
+\fi
+\newcommand*\DRDC@aggregation{}%
+\AtBeginDocument{
+  \ifDRDC@isclassified
+    \let\DRDC@oldaggregation\aggregation
+    \renewcommand*\DRDC@aggregation{\DRDC@No}%
+    \renewcommand\aggregation{%
+      \renewcommand*\DRDC@aggregation{\DRDC@Yes}\DRDC@oldaggregation}%
+  \fi
+}
+
+\newcommand\DRDC@RCerror{
+  \PackageError{drdc-submission}
+               {No Research Centre defined. Please use\MessageBreak
+                \noexpand\establishment with one of \noexpand\DRDCA,
+                \noexpand\DRDCO\MessageBreak  etc. as its argument}
+               {}%
+  \gdef\DRDC@submissionRC{}%
+}
+\newcommand\DRDC@tempcase[2]{\case{#1}{\gdef\DRDC@submissionRC{#2}}}
+\ifDRDC@isfrench
+  \newcommand*\DRDC@makesubmissionRC{%
+    \begin{DRDC@switch}{\DRDC@festablishmentname}
+    \DRDC@tempcase{\RDDCA}{RDDC Atlantique}
+    \DRDC@tempcase{\RDDCO}{RDDC Ottawa}
+    \DRDC@tempcase{\RDDCS}{RDDC Suffield}
+    \DRDC@tempcase{\RDDCT}{RDDC Toronto}
+    \DRDC@tempcase{\RDDCV}{RDDC Valcartier}
+    \DRDC@tempcase{\RDDCCARO}{RDDC CARO}
+    \DRDC@tempcase{\RDDCCSS}{RDDC CSS}
+    \DRDC@tempcase{\RDDCDGRAPM}{DGRAPM}
+    \DRDC@tempcase{\RDDC}{Bureau principal}
+    \default{\DRDC@RCerror}
+    \end{DRDC@switch}
+  }
+\else
+  \newcommand*\DRDC@makesubmissionRC{%
+    \begin{DRDC@switch}{\DRDC@eestablishmentname}
+    \DRDC@tempcase{\DRDCA}{DRDC Atlantic}
+    \DRDC@tempcase{\DRDCO}{DRDC Ottawa}
+    \DRDC@tempcase{\DRDCS}{DRDC Suffield}
+    \DRDC@tempcase{\DRDCT}{DRDC Toronto}
+    \DRDC@tempcase{\DRDCV}{DRDC Valcartier}
+    \DRDC@tempcase{\DRDCCORA}{DRDC CORA}
+    \DRDC@tempcase{\DRDCCSS}{DRDC CSS}
+    \DRDC@tempcase{\DRDCDGMPRA}{DGMPRA}
+    \DRDC@tempcase{\DRDC}{Corporate office}
+    \default{\DRDC@RCerror}
+    \end{DRDC@switch}
+  }
+\fi
+\newcommand*\DRDC@submissionprojectnumber{%
+  \ifDRDC@isbrief\else
+    \DRDC@projectnumber
+    \ifx\DRDC@otherrepnumber\@empty\else, \DRDC@otherrepnumber\fi
+  \fi
+}
+\newcommand*\DRDC@makesubmissionavail{}
+\newcommand*\DRDC@submissionavailability{}
+\newcommand*\DRDC@other{}
+\newcommand*\DRDC@makesubmissionannounce{}
+\newcommand*\DRDC@submissionannouncement{}
+\newcommand*\DRDC@otherannouncement{}
+\ifDRDC@isbrief\else
+  \ifx\DRDC@doccat\DRDC@U\else
+    \newcommand*\DRDC@standardchoices[3]{%
+      \xdef#2{#1}\def#3{}%
+      \begin{DRDC@switch}{#1}
+      \case{\DRDC@unlimited}{}
+      \case{\DRDC@gocnameext}{}
+      \case{\DRDC@goccname}{}
+      \case{\DRDC@dndnameext}{}
+      \case{\DRDC@dndcname}{}
+      \case{\DRDC@ttcpname}{}
+      \case{\DRDC@ttcpcname}{}
+      \case{\DRDC@natoname}{}
+      \case{\DRDC@natocname}{}
+      \case{\DRDC@internalname}{}
+      \case{\DRDC@drdcname}{}
+      \default{\xdef#2{[\ifDRDC@isfrench Autre\else Other\fi]}%
+               \DRDC@CSVstring#3{#1}}%
+      \end{DRDC@switch}
+    }
+    \renewcommand*\DRDC@makesubmissionavail{%
+      \DRDC@standardchoices\DRDC@availability
+        \DRDC@submissionavailability\DRDC@other
+    }
+    \renewcommand*\DRDC@makesubmissionannounce{%
+      \DRDC@standardchoices\DRDC@announcement
+        \DRDC@submissionannouncement\DRDC@otherannouncement
+    }
+  \fi
+\fi
+\newcommand\DRDC@makeCSVkeywords{%
+  \@ifundefined{makeexpandedkeywords}
+               {\def\DRDC@submissionkeywords{}}
+               {\makeexpandedkeywords\DRDC@@submissionkeywords{; }%
+                \def\DRDC@tag{keywords}%
+                \DRDC@CSVstring\DRDC@submissionkeywords
+                  {\DRDC@@submissionkeywords}%
+               }%
+}
+\newcommand\submission{%
+  \def\DRDC@temp{\DRDC@submission}%
+  \ifx\DRDC@doccat\DRDC@U
+    \PackageError{drdc-submission}{\string\submission\space cannot
+      be used for an unpublished document.}{}%
+    \def\DRDC@temp{\@gobble}%
+  \fi
+  \DRDC@temp
+}
+\newcommand\DRDC@submission[1]{
+  \ifnum\number\value{DRDC@mainpages}=0\relax
+    \setcounter{DRDC@mainpages}{\value{page}}%
+  \fi
+  \begingroup
+    \DRDC@redefmacrosCSV
+    \def\DRDC@file{\jobname -submission.csv}%
+    \DRDC@makeCSVtitle
+    \DRDC@makeauthor
+    \DRDC@makecoauthors
+    \DRDC@makeclassification
+    \DRDC@makeCGterm\DRDC@@CGterm{\DRDC@maxDMC}%
+    \DRDC@makesubmissionRC
+    \DRDC@makeCSVkeywords
+    \DRDC@makesubmissionannounce
+    \DRDC@makesubmissionavail
+    \deactivatepunctuation
+    \IfFileExists{#1}{%
+      \renewcommand\GenericError[4]{}%
+      \DRDC@convertfile{#1}{\DRDC@file}%
+    }{\PackageError{drdc-submission}
+                   {Cannot open #1\MessageBreak or file is empty}{}}%
+  \endgroup
+}
+
+\endinput
+%%
+%% End of file `drdc-submission.sty'.

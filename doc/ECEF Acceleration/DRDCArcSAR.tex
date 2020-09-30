@@ -1,0 +1,224 @@
+\RequirePackage{pdf14}
+\documentclass[pdfa]{drdc-report}
+\usepackage{drdc-docctl}
+\usepackage{drdc-rtf-abstract}
+\usepackage{drdc-submission}
+
+% Use T1 fonts for correct French hyphenation
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\renewcommand\sfdefault{phv}
+
+\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{amsthm}
+% \ifx\pdftexversion\undefined
+%   \usepackage[dvips]{graphicx}
+% \else
+%   \usepackage[pdftex]{graphicx,hyperref}
+%   \hypersetup{backref,colorlinks=true,plainpages=false,pdfpagelabels}
+%   \hypersetup{%
+%     colorlinks=true,   % aktiviert farbige Referenzen
+%     linkcolor=black,    % Make the link colours blue
+%     citecolor=black,
+%     filecolor=black,
+%     pdfpagemode=UseNone,  % PDF-Viewer startet ohne Inhaltsverzeichnis et.al.
+%     pdfstartview=FitH} % PDF-Viewer benutzt beim Start bestimmte Seitenbreite
+%   
+%   \hypersetup{% Ä=\304; Ö=\326; Ü=\334; ä=\344; ö=\366; ü=\374; ß=\377
+%     pdftitle={Wavenumber domain representation of satellite signal},
+%     pdfauthor={Ishuwa C. Sikaneta},
+%     pdfsubject={Special Functions},
+%     pdfkeywords={Statistics, Product model, Stationarity, Gaussian, Non Gaussian, SAR, GMTI, CFAR}
+%   }
+% \fi
+% \usepackage[x11names, svgnames, rgb]{xcolor}
+%\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{snakes,arrows,shapes}
+
+\usepackage[mathscr]{euscript}
+\usepackage{subcaption}
+\usepackage{dblfloatfix}
+\usepackage{fixltx2e}
+\usepackage{color}
+\usepackage{array, hhline}
+\usepackage[normalem]{ulem}
+\usepackage{rotating}
+\usepackage{marvosym}
+\usepackage{multirow}
+\usepackage[mathscr]{euscript}
+\usepackage{listings}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+% \usepackage{svgnames}
+% \usepackage[svgnames]{xcolor}
+% \lstset{
+%   basicstyle=\ttfamily\small,
+%   columns=fullflexible,
+%   showstringspaces=false,
+%   %commentstyle=\color{gray}\upshape
+% }
+
+\lstdefinelanguage{XML}
+{
+  basicstyle=\tiny
+  morestring=[b]",
+  moredelim=[s][\bfseries\color{Maroon}]{<}{\ },
+  moredelim=[s][\bfseries\color{Maroon}]{</}{>},
+  moredelim=[l][\bfseries\color{Maroon}]{/>},
+  moredelim=[l][\bfseries\color{Maroon}]{>},
+  morecomment=[s]{<?}{?>},
+  morecomment=[s]{<!--}{-->},
+  commentstyle=\color{DarkOliveGreen},
+  stringstyle=\color{blue},
+  identifierstyle=\color{red}
+}
+
+\usepackage[bibstyle=nature, style=numeric, citestyle=numeric-comp, sorting=none, backend=biber]{biblatex}
+\bibliography{/home/ishuwa/Documents/bibliography/ishbib}
+% \usepackage[style=numeric, citestyle=numeric-comp, sorting=none, backend=biber]{biblatex}
+
+% Load hyperref
+\definecolor{navy}{rgb}{0,0,0.5}
+\definecolor{Maroon}{rgb}{0.6836,0.1953,0.2070}
+\newcommand\mydriver{\ifpdf pdftex\else dvips,breaklinks\fi}
+\usepackage[\mydriver,draft=false,plainpages=false,
+    colorlinks=true,linkcolor=navy,anchorcolor=navy,citecolor=navy,
+    filecolor=navy,urlcolor=navy,raiselinks=true,
+    bookmarksnumbered=true]{hyperref}
+
+\newcommand\mytitle{Super Resolution SAR}
+\title{\mytitle}
+\subtitle{Design and Signal Processing}
+\docnumber{---Will be inserted by Publication Officer}
+\establishment{\DRDCO}
+\author{C.H.~Gierull}
+\authors{C.H.~Gierull[\establishmentname]%
+         I.C.~Sikaneta[International Atomic Energy Agency - Vienna]}
+
+% These definitions are used by drdc-docctl.sty
+\projectnumber{42zz78}
+\addkeyword{SAR}
+\addkeyword{HRWS}
+\addkeyword{Multi-channel}
+\addkeyword{Orbit}
+\addkeyword{Differential geometry}
+\addkeyword{Multi-beam}
+\addkeyword{Spherical harmonics}
+\addkeyword{High-resolution}
+\addkeyword{Phased-array}
+\addkeyword{True time-delay}
+\addkeyword{Spotlight}
+
+% Pass title, author and keywords to hyperref to put in the PDF Info.
+\makeinitializedauthors\mypdfauthors{; }
+\makeexpandedkeywords\mypdfkeywords{; }
+\hypersetup{
+  pdftitle={\mytitle},
+  pdfauthor={\mypdfauthors},
+  pdfkeywords={\mypdfkeywords}
+}
+\futuredistribution{Defence departments and their contractors}{None}
+
+%Public release
+%Defence departments
+%Defence departments and their contractors
+%Government departments/agencies
+%Government departments/agencies and their contractors
+%Further distribution done by approval from Defence Research and Development Canada’s Authority
+
+%\distribution
+\input{ishCommands}
+\DeclareUnicodeCharacter{2212}{-}
+\pgfplotsset{compat=1.16}
+
+\begin{document}
+
+% Add the cover page
+\makefrontcover
+
+\begin{abstract}
+By presenting the design, configuration and required end-to-end signal processing, this report proposes a system for improved SAR imaging. Compared to conventional Spotlight SAR, the proposed system will generate imagery with equivalent or better resolution and significantly increased area coverage. The design and configuration are based upon a phased-array antenna in combination with the appropriate hardware to enable rapid electronic beam steering and to permit digitisation of multiple receive channels. The current state of technology is mature enough to construct all components of such a system. As a specific goal, the report proposes a system capable of imaging with 10 cm resolution, a swath width of around 3 km and unlimited azimuth extent.
+\par
+As the considered resolutions push the limits of known theory, the report also introduces an augmented theory that is needed to derive the signal processing algorithms.
+\end{abstract}
+
+\begin{significance}
+The material presented in this report provides the design and signal-processing framework for a Synthetic Aperture Radar (SAR) that can image with extremely high resolutions over wide areas. 
+\end{significance}
+
+\begin{fabstract}
+  Ceci est le r\'esum\'e en fran\c{c}ais.
+\end{fabstract}
+
+\begin{fsignificance}
+  Ceci est l'importance pour la d\'efense et la s\'ecurit\'e.
+\end{fsignificance}
+
+\tableofcontents\clearpage
+\listoffigures\clearpage
+\listoftables
+\begin{acknowledgements}
+The authors would like to thank the Technical University of Vienna for granting permission to use the Vienna Super Computing (VSC) cluster. Without this resource, the simulations could not have been pushed to the limit of 10 cm resolution.
+\end{acknowledgements}
+\let\cleardoublepage\clearpage
+\input{SURE_introduction}
+\input{multichannelmodel}
+% \chapter{System configuration}
+\input{SURE_multichannel}
+\input{SURE_transmit}
+% \chapter{Signal collection geometry}
+\input{orbiterror}
+\input{diffgeo}
+\input{diffgeoslow}
+\input{diffgeostategeoid}
+\input{orbit_demo}
+\input{range}
+% \chapter{Single channel measured signal}
+\input{sardiffgeo}
+\input{demodulation}
+% \chapter{Wavenumber processing}
+\input{stationaryphase}
+\input{newStationaryPhase}
+\input{antennaangles}
+% \chapter{Signal processing of multichannel signals}
+\input{introduction}
+\input{multichannel}
+% \chapter{End-to-end simulation}
+\input{simulation}
+\input{conclusion}
+
+% Add the References section
+\clearpage
+\printbibliography
+% \bibliography{refs}
+% \bibliographystyle{drdc}
+ 
+% Add some annexes
+\appendix
+\input{vectorcalc}
+\input{inertialtoecef}
+\input{rateofacceleration}
+\input{rangeAppendix}
+\input{stolz}
+\input{mimo}
+\input{antennaanglesAppendix}
+
+% Make the DCD sheet
+\docctl
+
+% Add the back cover
+%\makebackcover
+
+% Write the abstract and significance statement to sr-example.rtf
+%\RTFabstract
+
+% Make a partially completed DCGER
+%\DCGER{DCGER-template-2015-06-23.rtf}
+
+% Make a CSV file to help fill in the submission form.
+%\submission{Submission-template.csv}
+\end{document}

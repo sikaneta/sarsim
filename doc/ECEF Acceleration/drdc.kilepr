@@ -1,0 +1,31 @@
+[General]
+bib_extensions=.bib
+bibliographyBackendAutoDetected=
+bibliographyBackendUserOverride=
+def_graphic_ext=pdf
+img_extIsRegExp=false
+img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
+kileprversion=3
+kileversion=2.9.93
+masterDocument=
+name=drdc
+pkg_extIsRegExp=false
+pkg_extensions=.cls .sty .bbx .cbx .lbx
+src_extIsRegExp=false
+src_extensions=.tex .ltx .latex .dtx .ins
+
+[Tools]
+MakeIndex=
+QuickBuild=
+
+[item:DRDCArcSAR.tex]
+archive=true
+encoding=
+highlight=
+mode=
+
+[item:drdc.kilepr]
+archive=true
+encoding=
+highlight=
+mode=

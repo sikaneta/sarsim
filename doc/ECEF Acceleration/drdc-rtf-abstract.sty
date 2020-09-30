@@ -1,0 +1,330 @@
+%%
+%% This is file `drdc-rtf-abstract.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% drdc-rtf-abstract.dtx  (with options: `package')
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{drdc-rtf-abstract}
+              [2016/02/26 v1.0
+ LaTeX package for RTF abstract and DCGER]
+\RequirePackage{drdc-translate}
+\edef\DRDC@@lbrace{\string\{}%
+\edef\DRDC@lbrace{\expandafter\@secondoftwo\DRDC@@lbrace}
+\edef\DRDC@@rbrace{\string\}}%
+\edef\DRDC@rbrace{\expandafter\@secondoftwo\DRDC@@rbrace}
+\gdef\DRDC@redefmacrosRTF{%
+  \DRDC@redefcharmacros
+  \def\&{\string &}%
+  \def~{\string\~}%
+  \def\emph##1{##1\DRDC@transwarning}%
+  \def\textbf##1{\DRDC@lbrace\string\b\ ##1\DRDC@rbrace}%
+  \def\textit##1{\DRDC@lbrace\string\i\ ##1\DRDC@rbrace}%
+  \def\textmd##1{\DRDC@lbrace\string\b0\ ##1\DRDC@rbrace}%
+  \def\textnormal##1{\DRDC@lbrace\string\plain ##1\DRDC@rbrace}%
+  \def\textrm##1{\DRDC@lbrace\string\f0\ ##1\DRDC@rbrace}%
+  \def\textsc##1{\DRDC@lbrace\string\scaps\ ##1\DRDC@rbrace}%
+  \def\textsf##1{\DRDC@lbrace\string\f1\ ##1\DRDC@rbrace}%
+  \def\textsl##1{##1\DRDC@transwarning}%
+  \def\texttt##1{\DRDC@lbrace\string\f2\ ##1\DRDC@rbrace}%
+  \def\textup##1{\DRDC@lbrace\string\i0\ ##1\DRDC@rbrace}%
+  \def\ttfamily{\string\f2}%
+  \def\sffamily{\string\f1}%
+  \def\itshape{\string\i\DRDC@lbrace\DRDC@rbrace}%
+  \def\upshape{\string\i0\DRDC@lbrace\DRDC@rbrace}%
+  \def\bfseries{\string\b\DRDC@lbrace\DRDC@rbrace}%
+  \def\rm{\string\f0\DRDC@lbrace\DRDC@rbrace}%
+  \def\Huge{\string\fs50\DRDC@lbrace\DRDC@rbrace}%
+  \def\LARGE{\string\fs40\DRDC@lbrace\DRDC@rbrace}%
+  \def\Large{\string\fs34\DRDC@lbrace\DRDC@rbrace}%
+  \def\footnotesize{\string\fs20\DRDC@lbrace\DRDC@rbrace}%
+  \def\huge{\string\fs50\DRDC@lbrace\DRDC@rbrace}%
+  \def\large{\string\fs28\DRDC@lbrace\DRDC@rbrace}%
+  \def\normalsize{\string\fs24\DRDC@lbrace\DRDC@rbrace}%
+  \def\scriptsize{\string\fs16\DRDC@lbrace\DRDC@rbrace}%
+  \def\small{\string\fs18\DRDC@lbrace\DRDC@rbrace}%
+  \def\tiny{\string\fs12\DRDC@lbrace\DRDC@rbrace}%
+  \def\textlatin{\string\plain\DRDC@lbrace\DRDC@rbrace}%
+  \def\@hspace##1{%
+    \ifdim##1>\z@\space\fi\DRDC@transwarning}%
+  \let\@hspacer\@hspace
+  \let\bgroup\DRDC@lbrace
+  \let\egroup\DRDC@rbrace
+  \def\uppercase##1{\DRDC@lbrace\string\caps\ ##1\DRDC@rbrace}%
+  \def\lowercase##1{\DRDC@transwarning{##1}}%
+  \let\ignorespaces\@empty
+  \renewcommand\textsuperscript[1]{%
+    \DRDC@lbrace\string\super\ ##1\DRDC@rbrace}%
+  \def\par{\string\par^^J^^J\string\pard\string\qj\string\sb120\ }%
+  \def\section*##1{\string\tqr\string\tx8640
+                   \bgroup\bfseries\sffamily\LARGE
+                   \string\ul\ ##1\string\tab\egroup\par}%
+  \def\subsection*##1{\par\bgroup\bfseries##1\ifDRDC@isfrench\space\fi
+                      :\egroup}%
+  \redefmacrosRTFhook
+}
+\newcommand\redefmacrosRTFhook{}
+\newcommand\DRDC@RTFstring[2]{%
+  \ifDRDC@isclassified\DRDC@fixclass{#2}\fi
+  {\ifDRDC@isclassified
+     \DRDC@redefclassmarkers
+     \def\U{\Uclass\ }%
+     \def\PA{\PAclass\ }%
+     \def\PB{\PBclass\ }%
+     \def\PC{\PCclass\ }%
+     \def\PCC{\PCCclass\ }%
+     \def\C{\Cclass\ }%
+     \def\S{\Sclass\ }%
+     \def\T{\Tclass\ }%
+     \def\CG{\CGclass\ }%
+     \def\EC{\ECclass\ }%
+   \fi
+   \renewcommand\GenericError[4]{##2}%
+   \def\thispageclassmin{\@gobble}%
+   \def\thispageDMCmin{\@gobble}%
+   \let\hbox\@firstofone
+   \xdef#1{#2}}%
+  \expandafter\DRDC@nobraces\expandafter#1\expandafter{#1}%
+  \DRDC@converthighchars#1%
+  \DRDC@replace#1{---}{\string\emdash{}}%
+  \DRDC@replace#1{--}{\string\endash{}}%
+  \DRDC@replace#1{``}{\string\ldblquote{}}%
+  \DRDC@replace#1{''}{\string\rdblquote{}}%
+  \DRDC@replace#1{`}{\string\lquote{}}%
+  \DRDC@replace#1{'}{\string\rquote{}}%
+  \DRDC@replace#1{$}{\DRDC@transwarning}%$
+  \DRDC@replace#1{\relax}{}%
+  \DRDC@transwarn{#1}%
+  \DRDC@macrowarn{#1}%
+}
+\ifDRDC@isfrench
+  \global\let\DRDC@oldsignificance\fsignificance
+  \global\def\fsignificance{\DRDC@oldsignificance
+                           \DRDC@saveandquoteenv{fsignificance}}
+  \def\DRDC@savefsignificance{}
+\else
+  \global\let\DRDC@oldsignificance\significance
+  \global\def\significance{\DRDC@oldsignificance
+                          \DRDC@saveandquoteenv{significance}}
+  \def\DRDC@savesignificance{}
+\fi
+\newsaveenvironment{altsignificance}
+\newcommand\DRDC@RTFwrite[1]{%
+  \immediate\write\DRDC@RTFfile{#1}%
+}
+\newcommand\DRDC@RTFtranswrite[1]{%
+  \DRDC@RTFstring\DRDC@tempb{#1}%
+  \DRDC@RTFwrite{\DRDC@tempb}%
+}
+\newcommand\RTFabstract{
+  \begingroup
+  \def\unicodechar##1{\string\u##1?}%
+  \DRDC@redefmacrosRTF
+  \DRDC@RTFwritefile{\jobname.rtf}{\DRDC@RTFabstractonly}%
+  \endgroup
+}
+\newcommand\DRDC@RTFwritefile[2]{%
+  \begingroup
+  \newwrite\DRDC@RTFfile
+  \def\DRDC@file{#1}%
+  \immediate\openout\DRDC@RTFfile\DRDC@file\relax
+  \typeout{Writing to \DRDC@file}%
+  \DRDC@RTFheader
+  #2%
+  \DRDC@RTFtrailer
+  \immediate\closeout\DRDC@RTFfile
+  \endgroup
+}
+\newcommand\DRDC@RTFheader{
+  \DRDC@RTFwrite{\DRDC@lbrace\string\rtf1
+                 \string\ansi\string\ansicpg1252\string\uc1
+                 \string\deff0
+                 \DRDC@lbrace\string\fonttbl
+                   \DRDC@lbrace\string\f0 Times;\DRDC@rbrace
+                   \DRDC@lbrace\string\f1 Helvetica;\DRDC@rbrace
+                   \DRDC@lbrace\string\f2 Courier;\DRDC@rbrace
+                 \DRDC@rbrace
+                 \string\fs24}%
+}
+\newcommand\DRDC@RTFtrailer{\DRDC@RTFwrite{\DRDC@rbrace}}
+\newcommand\DRDC@RTFabstractonly{
+  \ifx\DRDC@altabstract\@empty
+    \ifDRDC@isfrench
+      \let\DRDC@XXX\DRDC@savefabstract
+    \else
+      \let\DRDC@XXX\DRDC@saveabstract
+    \fi
+  \else
+    \let\DRDC@XXX\DRDC@altabstract
+  \fi
+  \@ifundefined{DRDC@XXX}{%
+    \typeout{^^JPackage drdc-rtf-abstract Warning:
+             The abstract is not defined.^^J}%
+    \let\DRDC@XXX\@empty}{}
+  \def\DRDC@tag{abstract}%
+  \DRDC@RTFstring\DRDC@YYY{\DRDC@XXX}%
+  \DRDC@stripspaces\DRDC@YYY
+  \def\DRDC@XXX{\section*{\abstractname}}%
+  \DRDC@RTFtranswrite{\DRDC@XXX}%
+  \DRDC@RTFwrite{\DRDC@YYY\par}%
+  \ifx\DRDC@altsignificance\@empty
+    \ifDRDC@isfrench
+      \let\DRDC@XXX\DRDC@savefsignificance
+    \else
+      \let\DRDC@XXX\DRDC@savesignificance
+    \fi
+  \else
+    \let\DRDC@XXX\DRDC@altsignificance
+  \fi
+  \def\DRDC@tag{significance statement}%
+  \DRDC@RTFstring\DRDC@YYY{\DRDC@XXX}%
+  \DRDC@stripspaces\DRDC@YYY
+  \ifx\DRDC@YYY\@empty\else
+    \def\DRDC@XXX{\section*{\significancename}}%
+    \DRDC@RTFtranswrite{\DRDC@XXX}%
+    \DRDC@RTFwrite{\DRDC@YYY\par}%
+  \fi
+}
+\newcommand\convertRTF[2]{%
+  \begingroup
+  \deactivatepunctuation
+  \def\unicodechar##1{\string\u##1?}%
+  \DRDC@redefmacrosRTF
+  \let\par\@empty
+  \catcode`\{=11 \catcode`\}=11%
+  \catcode`\#=0 \catcode`\\=11%
+  \IfFileExists{#1}{%
+    \let\GenericError\@gobblefour
+    \DRDC@convertfile{#1}{\jobname-#2.rtf}%
+  }{\PackageError{drdc-rtf-abstract}
+                 {Cannot open #1 or file is empty}{}}%
+  \endgroup
+}
+\newif\ifDRDC@issensitive
+\newcommand\DRDC@checksensitivity[1]{%
+  \DRDC@issensitivefalse
+  \DRDC@@checksensitivity\PA{#1}%
+  \DRDC@@checksensitivity\PB{#1}%
+  \DRDC@@checksensitivity\PC{#1}%
+  \DRDC@@checksensitivity\PCC{#1}%
+  \DRDC@@checksensitivity\C{#1}%
+  \DRDC@@checksensitivity\T{#1}%
+}
+\newcommand\DRDC@@checksensitivity[2]{%
+  \def\DRDC@@@checksensitivity##1#1##2\@nil{%
+    \def\DRDC@temp{##2}%
+    \ifx\DRDC@temp\@empty\else\DRDC@issensitivetrue\fi}%
+  \expandafter\DRDC@@@checksensitivity#2#1\@nil
+}
+\newcommand\DCGER[1]{
+  \begingroup
+    \@ifundefined{DRDC@alttitle}
+       {\DRDC@checksensitivity\@title}
+       {\DRDC@checksensitivity\DRDC@alttitle}%
+    \ifDRDC@issensitive\else
+      \ifDRDC@bothtitles
+        \@ifundefined{DRDC@altsubtitle}
+           {\DRDC@checksensitivity\DRDC@subtitle}
+           {\DRDC@checksensitivity\DRDC@altsubtitle}%
+      \fi
+    \fi
+    \ifDRDC@issensitive\gdef\DRDC@constructtitle{}%
+    \else\DRDC@makeconstructtitle\fi
+    \@ifundefined{DRDC@getmaxclass}{%
+      \def\DRDC@Unum{1}
+      \def\DRDC@Rnum{2}
+      \def\DRDC@PAnum{3}
+      \def\DRDC@PBnum{4}
+      \def\DRDC@PCnum{5}
+      \def\DRDC@Cnum{6}
+      \def\DRDC@PCCnum{7}
+      \def\DRDC@Snum{8}
+      \def\DRDC@Tnum{9}
+      \newcounter{DRDC@classtemp}%
+      \setcounter{DRDC@classtemp}{\DRDC@Unum}%
+    }{\DRDC@getmaxclass}%
+    \ifnum\the\value{DRDC@classtemp}=\DRDC@PCCnum
+      \setcounter{DRDC@classtemp}{\DRDC@Cnum}
+    \fi
+    \DRDC@makeRTFclass{\DRDC@Unum}\DRDC@RTFU\DRDC@RTFUres
+    \DRDC@makeRTFclass{\DRDC@PAnum}\DRDC@RTFPA\DRDC@RTFPAres
+    \DRDC@makeRTFclass{\DRDC@PBnum}\DRDC@RTFPB\DRDC@RTFPBres
+    \DRDC@makeRTFclass{\DRDC@PCnum}\DRDC@RTFPC\DRDC@RTFPCres
+    \DRDC@makeRTFclass{\DRDC@Cnum}\DRDC@RTFC\DRDC@RTFCres
+    \DRDC@makeRTFclass{\DRDC@Snum}\DRDC@RTFS\DRDC@RTFSres
+    \DRDC@makeRTFclass{\DRDC@Tnum}\DRDC@RTFT\DRDC@RTFTres
+    \@ifundefined{DRDC@getmaxDMC}{%
+      \def\DRDC@CGtemp{A}
+    }{\DRDC@getmaxDMC}%
+    \DRDC@makeRTFDMC{A}\DRDC@RTFDMCA\DRDC@RTFDMCAres
+    \DRDC@makeRTFDMC{Q}\DRDC@RTFDMCQ\DRDC@RTFDMCQres
+    \DRDC@makeRTFDMC{D}\DRDC@RTFDMCD\DRDC@RTFDMCDres
+    \DRDC@makeRTFDMC{X}\DRDC@abstractDMCA\DRDC@abstractDMCAres
+    \DRDC@makeRTFDMC{X}\DRDC@abstractDMCQ\DRDC@abstractDMCQres
+    \DRDC@makeRTFDMC{X}\DRDC@abstractDMCD\DRDC@abstractDMCDres
+    \ifx\DRDC@doccat\DRDC@SB\else
+    \ifx\DRDC@doccat\DRDC@SL\else
+      \@ifundefined{DRDC@findthispageCG}{%
+        \def\DRDC@CGtemp{A}
+      }{\ifDRDC@isfrench\def\DRDC@pagevalue{2}%
+        \else\def\DRDC@pagevalue{1}\fi\def\DRDC@fronttype{f}%
+        \DRDC@findthispageCG\let\DRDC@CGtemp\DRDC@CG}
+      \DRDC@makeRTFDMC{A}\DRDC@abstractDMCA\DRDC@abstractDMCAres
+      \DRDC@makeRTFDMC{Q}\DRDC@abstractDMCQ\DRDC@abstractDMCQres
+      \DRDC@makeRTFDMC{D}\DRDC@abstractDMCD\DRDC@abstractDMCDres
+    \fi\fi
+    \begin{DRDC@switch}{\DRDC@eestablishmentname}
+    \case{\DRDCA}     {\gdef\DRDC@RTFRCres{1}}
+    \case{\DRDCCORA}  {\gdef\DRDC@RTFRCres{2}}
+    \case{\DRDC}      {\gdef\DRDC@RTFRCres{\ifDRDC@isfrench 5\else 3\fi}}
+    \case{\DRDCCSS}   {\gdef\DRDC@RTFRCres{\ifDRDC@isfrench 3\else 4\fi}}
+    \case{\DRDCDGMPRA}{\gdef\DRDC@RTFRCres{\ifDRDC@isfrench 4\else 5\fi}}
+    \case{\DRDCO}     {\gdef\DRDC@RTFRCres{6}}
+    \case{\DRDCS}     {\gdef\DRDC@RTFRCres{7}}
+    \case{\DRDCT}     {\gdef\DRDC@RTFRCres{8}}
+    \case{\DRDCV}     {\gdef\DRDC@RTFRCres{9}}
+    \default{\gdef\DRDC@RTFRCres{0}}
+    \end{DRDC@switch}
+    \renewcommand\redefmacrosRTFhook{\def~{\ }}%
+    \convertRTF{#1}{DCGER}
+  \endgroup
+}
+\newcommand\DRDC@makeRTFclass[3]{%
+  \ifnum\the\value{DRDC@classtemp}=#1%
+    \def#2{0}%
+    \def#3{1}%
+  \else
+    \def#2{6}%
+    \def#3{25}%
+  \fi
+}
+\newcommand\DRDC@makeRTFDMC[3]{%
+  \def\DRDC@temp{#1}%
+  \ifx\DRDC@CGtemp\DRDC@temp
+    \def#2{0}%
+    \def#3{1}%
+  \else
+    \def#2{6}%
+    \def#3{25}%
+  \fi
+}
+\endinput
+%%
+%% End of file `drdc-rtf-abstract.sty'.
