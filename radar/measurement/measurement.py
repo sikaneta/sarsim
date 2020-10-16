@@ -1,15 +1,15 @@
 import datetime
-from math import asin, atan, atan2, pi, fabs
-from scipy.integrate import odeint
+from math import asin, atan, atan2, pi
 from scipy.integrate import solve_ivp
-from scipy.special import lpmn
-from scipy import mat, multiply
+from scipy import mat
 import xml.etree.ElementTree as etree
 import numpy as np
-from numpy import meshgrid, arange, sqrt, zeros, cumprod, array, diag, matrix, cos, sin
+from numpy import meshgrid, arange, sqrt, zeros, cumprod, array, diag, cos, sin
 import os
 import math
 import share.resource as res
+from timeit import default_timer as timer
+from numba import jit, njit, prange
 
 egmFilePath = os.path.split(res.__file__)[0]
 
@@ -181,6 +181,8 @@ class state_vector(measurement):
     
     def loadSphericalHarmonics(self, filename, Nharmonics=None):
         self.egm96 = []
+        self.egmC = np.zeros((Nharmonics+1, Nharmonics+1), dtype=float)
+        self.egmS = np.zeros((Nharmonics+1, Nharmonics+1), dtype=float)
 
         # Determine the number of harmonics to load
         # This is a cute trick from stackoverflow. The or function
@@ -199,6 +201,8 @@ class state_vector(measurement):
         fields = row.split()
         while int(fields[0])<(self.NharmonicsToLoad+1):
             self.egm96.append([int(fields[0]),int(fields[1]),float(fields[2]),float(fields[3])])
+            self.egmC[int(fields[0]),int(fields[1])] = float(fields[2])
+            self.egmS[int(fields[0]),int(fields[1])] = float(fields[3])
             row = f.readline()
             if(row):
                 fields = row.split()
@@ -238,48 +242,70 @@ class state_vector(measurement):
         
     def d2r(self, deg):
         return deg/180.0*pi
-    
-    def egm96PotentialOlder(self, r, lat, lon):
-        GM = self.constEGM96.GM
-        a = self.constEGM96.aE
-
-        # Compute the coefficients for the gradient of the gravitational potential
-        D = 1.0*GM/r
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
-        for k in range(2,self.Nharmonics+1):
-            #mv=self.legendreNorm(k,sin(lat))
-            mv=normLegendreCoefficients[k,0:(k+1)]
-            egm = self.selectEGMNew(k)
-            cs = sum([mv[l]*(cosines[l]*egm[l, 0] + sines[l]*egm[l,1]) for l in range(0,k+1)])
-            D += 1.0*(GM/r)*cs*(a/r)**k
-
-        return D 
         
-    def egm96Potential(self, r, lat, lon):
+    # def egm96PotentialSlow(self, 
+    #                     r, 
+    #                     lat, 
+    #                     lon,
+    #                     normLegendreCoefficients = None,
+    #                     cosines = None,
+    #                     sines = None):
+    #     GM = self.constEGM96.GM
+    #     a = self.constEGM96.aE
+
+    #     # Compute the coefficients for the gradient of the gravitational potential
+    #     D = 1.0*GM/r
+    #     if normLegendreCoefficients is None:
+    #         normLegendreCoefficients = self.myLegendre(self.Nharmonics, 
+    #                                                 sin(lat))
+    #     #rt = np.exp(1j*lon)
+    #     #exprt = [rt**l for l in range (0, self.Nharmonics+1)]
+    #     #cosines = np.real(exprt)
+    #     #sines = np.imag(exprt)
+    #     if cosines is None:
+    #         cosines = [cos(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
+    #     if sines is None:
+    #         sines = [sin(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
+    #     for k in range(2,self.Nharmonics+1):
+    #         egmIndex = int((k-2)*(k+3)/2)
+    #         #mv=self.legendreNorm(k,sin(lat))
+    #         mv=normLegendreCoefficients[k,0:(k+1)]
+    #         #egm = self.selectEGMNew(k)
+    #         cs = np.sum([mv[l]*(cosines[l]*self.egm96[egmIndex+l][2] + sines[l]*self.egm96[egmIndex+l][3]) for l in range(0,k+1)])
+    #         D += 1.0*(GM/r)*cs*(a/r)**k
+
+    #     return D
+        
+    def egm96Potential(self, 
+                       r, 
+                       lat, 
+                       lon,
+                       normLegendreCoefficients = None,
+                       cosines = None,
+                       sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
 
         # Compute the coefficients for the gradient of the gravitational potential
         D = 1.0*GM/r
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        #rt = np.exp(1j*lon)
-        #exprt = [rt**l for l in range (0, self.Nharmonics+1)]
-        #cosines = np.real(exprt)
-        #sines = np.imag(exprt)
-        cosines = [cos(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
-        for k in range(2,self.Nharmonics+1):
-            egmIndex = int((k-2)*(k+3)/2)
-            #mv=self.legendreNorm(k,sin(lat))
-            mv=normLegendreCoefficients[k,0:(k+1)]
-            #egm = self.selectEGMNew(k)
-            cs = np.sum([mv[l]*(cosines[l]*self.egm96[egmIndex+l][2] + sines[l]*self.egm96[egmIndex+l][3]) for l in range(0,k+1)])
-            D += 1.0*(GM/r)*cs*(a/r)**k
-
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, 
+                                                   sin(lat))
+        if cosines is None:
+            cosines = [cos(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
+            
+        nterm = np.arange(2, self.Nharmonics+1)
+        rterm = (a/r)**nterm
+        D = 1.0*GM/r*(1.0 + 
+                      np.dot(rterm,
+                             (normLegendreCoefficients[2:,:]*
+                              self.egmC[2:,:]).dot(cosines)+
+                             (normLegendreCoefficients[2:,:]*
+                              self.egmS[2:,:]).dot(sines)))
         return D
-
+    
     def ellipsoidPotential(self, r, lat, lon):
         GM = self.constGRS80.GM
         a = self.constGRS80.aE
@@ -287,14 +313,64 @@ class state_vector(measurement):
         J = [self.constGRS80.J2, self.constGRS80.J4, self.constGRS80.J6, self.constGRS80.J8]
         
         # Compute the coefficients of the harmonic expansion
-        coeff = [-j/sqrt(2.0*l+1.0)*self.legendreNorm(l,sin(lat))[0,0]*(a/r)**l for j,l in zip(J, range(2,10,2))]
+        coeff = [-j/sqrt(2.0*l+1.0)*self.myLegendre(l,sin(lat))[-1,0]*(a/r)**l for j,l in zip(J, range(2,10,2))]
         
         # Add the very first term to the cumulative sum and multiple by physical constants
         D = GM/r*(1.0 + sum(coeff))
 
         return D 
-    
-    def egm96delR(self, r, lat, lon):
+
+    def egm96del(self, 
+                 r, 
+                 lat, 
+                 lon,
+                 normLegendreCoefficients = None,
+                 cosines = None,
+                 sines = None):
+        GM = self.constEGM96.GM
+        a = self.constEGM96.aE
+        u = sin(lat)
+        v = cos(lat)
+        rSquare = r**2
+
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = np.array([cos(l*lon) for l in range (0, self.Nharmonics+1)])
+        if sines is None:
+            sines = np.array([sin(l*lon) for l in range (0, self.Nharmonics+1)])
+        nterm = np.arange(2, self.Nharmonics+1)
+        mterm = np.arange(self.Nharmonics+1)
+        rterm = (a/r)**nterm
+        Dr = -1.0*GM/rSquare*(1.0 + 
+                              np.dot(rterm*(nterm+1),
+                                     (normLegendreCoefficients[2:,:]*
+                                      self.egmC[2:,:]).dot(cosines)+
+                                     (normLegendreCoefficients[2:,:]*
+                                      self.egmS[2:,:]).dot(sines)))
+        Dt = GM/r*(np.dot(rterm,
+                          (normLegendreCoefficients[2:,:]*
+                           self.egmC[2:,:]).dot(-mterm*sines)+
+                          (normLegendreCoefficients[2:,:]*
+                           self.egmS[2:,:]).dot(mterm*cosines)))
+        M,N = np.meshgrid(mterm, nterm)
+        M[M>N]=0
+        F1 = normLegendreCoefficients[2:,:]*u*N
+        F2 = normLegendreCoefficients[1:-1,:]*np.sqrt((N**2-M**2)*(N+0.5)/(N-0.5))
+        Du = v*GM/(u**2-1.0)/r*np.dot(rterm,
+                                      ((F1-F2)*
+                                       self.egmC[2:,:]).dot(cosines)+
+                                      ((F1-F2)*
+                                       self.egmS[2:,:]).dot(sines))
+        return Dr, Du, Dt
+        
+    def egm96delR(self, 
+                  r, 
+                  lat, 
+                  lon,
+                  normLegendreCoefficients = None,
+                  cosines = None,
+                  sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         rSquare = r**2
@@ -303,9 +379,12 @@ class state_vector(measurement):
         D = -1.0*GM/rSquare
         
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=normLegendreCoefficients[k,0:(k+1)]
@@ -314,7 +393,13 @@ class state_vector(measurement):
 
         return D 
     
-    def egm96delRdelR(self, r, lat, lon):
+    def egm96delRdelR(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         rCubed = r**3
@@ -323,9 +408,12 @@ class state_vector(measurement):
         D = 2.0*GM/rCubed
         
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=normLegendreCoefficients[k,0:(k+1)]
@@ -334,40 +422,101 @@ class state_vector(measurement):
 
         return D 
     
-    def egm96delROld(self, r, lat, lon):
+    def egm96deldel(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
+        
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
-        rSquare = r**2
+        u = sin(lat)
+        v = cos(lat)
+        rCubed = r**3
+        nterm = np.arange(2, self.Nharmonics+1)
+        mterm = np.arange(self.Nharmonics+1)
+        rterm = (a/r)**nterm
+        M,N = np.meshgrid(mterm, nterm)
+        DSQ1 = N**2-M**2
+        DSQ2 = (N-1)**2-M**2
+        DSQ1[DSQ1<0] = 0
+        DSQ2[DSQ2<0] = 0
 
-        # Compute the coefficients for the gradient of the gravitational potential
-        sphCoeff = []
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        for k in range(2,self.Nharmonics+1):
-            #mv=self.legendreNorm(k,sin(lat))
-            mv=matrix(normLegendreCoefficients[k,0:(k+1)])
-            egm = self.selectEGM(k)
-            cs = mat([[cos(l*lon), sin(l*lon)] for l in range(0,k+1)])
-            innerSum = mv*multiply(cs,egm)*mat([1,1]).H
-            sphCoeff.append(float(innerSum[0])/rSquare)
-
-        # Apply the formula
-        D = -1.0*GM/rSquare
-
-        for C,k in zip(sphCoeff, range(2, self.Nharmonics+1)):
-            D += -1.0*GM*C*(k+1.0)*(a/r)**k
-
-        return D 
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = np.array([cos(l*lon) for l in range (0, self.Nharmonics+1)])
+        if sines is None:
+            sines = np.array([sin(l*lon) for l in range (0, self.Nharmonics+1)])
+        
+        SQ1 = (N**2-M**2)*(N+0.5)/(N-0.5)
+        SQ2 = ((N-1)**2-M**2)*(N-0.5)/(N-1.5)
+        SQ1[SQ1<0] = 0.0
+        SQ2[SQ2<0] = 0.0
+        
+        F1 = normLegendreCoefficients[2:,:]*u*N
+        F2 = normLegendreCoefficients[1:-1,:]*np.sqrt(SQ1)
+        
+        G1 = normLegendreCoefficients[2:,:]*(u**2*N**2-N)/v**2
+        G2 = normLegendreCoefficients[1:-1,:]*np.sqrt(SQ1)*(1-N)*2*u/v**2
+        G3 = normLegendreCoefficients[0:-2,:]*np.sqrt(SQ1*SQ2)/v**2
+        
+        DrDr = 1.0*GM/rCubed*(2.0 + 
+                              np.dot(rterm*(nterm+1)*(nterm+2),
+                                     (normLegendreCoefficients[2:,:]*
+                                      self.egmC[2:,:]).dot(cosines)+
+                                     (normLegendreCoefficients[2:,:]*
+                                      self.egmS[2:,:]).dot(sines)))
+        
+        DrDu = -v*GM/r**2/(u**2-1.0)*(np.dot(rterm*(nterm+1),
+                                      ((F1-F2)*
+                                       self.egmC[2:,:]).dot(cosines)+
+                                      ((F1-F2)*
+                                       self.egmS[2:,:]).dot(sines)))
+        DrDt = -GM/r**2*(np.dot(rterm*(nterm+1),
+                                (normLegendreCoefficients[2:,:]*
+                                 self.egmC[2:,:]).dot(-mterm*sines)+
+                                (normLegendreCoefficients[2:,:]*
+                                 self.egmS[2:,:]).dot(mterm*cosines)))
+        DuDu = GM/r*np.dot(rterm,
+                           ((G1+G2+G3)*
+                             self.egmC[2:,:]).dot(cosines)+
+                           ((G1+G2+G3)*
+                             self.egmS[2:,:]).dot(sines))    
+        DuDt = v*GM/r/(u**2-1.0)*(np.dot(rterm,
+                                  ((F1-F2)*
+                                   self.egmC[2:,:]).dot(-mterm*sines)+
+                                  ((F1-F2)*
+                                   self.egmS[2:,:]).dot(mterm*cosines)))
+        DtDt = GM/r*(np.dot(rterm,
+                          (normLegendreCoefficients[2:,:]*
+                           self.egmC[2:,:]).dot(-mterm**2*cosines)+
+                          (normLegendreCoefficients[2:,:]*
+                           self.egmS[2:,:]).dot(-mterm**2*sines)))
+        
+        return DrDr, DrDu, DrDt, DuDu, DuDt, DtDt
     
     # T corresponds to longitude    
-    def egm96delT(self, r, lat, lon):
+    def egm96delT(self, 
+                  r, 
+                  lat, 
+                  lon,
+                  normLegendreCoefficients = None,
+                  cosines = None,
+                  sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=normLegendreCoefficients[k,0:(k+1)]
@@ -375,16 +524,25 @@ class state_vector(measurement):
             D += GM*cs*(a/r)**k/r
 
         return D 
-        
-    def egm96delTdelT(self, r, lat, lon):
+       
+    def egm96delTdelT(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=normLegendreCoefficients[k,0:(k+1)]
@@ -393,15 +551,24 @@ class state_vector(measurement):
 
         return D 
     
-    def egm96delTdelR(self, r, lat, lon):
+    def egm96delTdelR(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=normLegendreCoefficients[k,0:(k+1)]
@@ -409,31 +576,15 @@ class state_vector(measurement):
             D += -(k+1.0)*GM*cs*(a/r)**k/r**2
 
         return D 
-    
-    def egm96delTOld(self, r, lat, lon):
-        GM = self.constEGM96.GM
-        a = self.constEGM96.aE
-
-        # Compute the coefficients for the gradient of the gravitational potential
-        sphCoeff = []
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        for k in range(2,self.Nharmonics+1):
-            mv=matrix(normLegendreCoefficients[k,0:(k+1)])
-            egm = self.selectEGM(k)
-            cs = mat([[-l*sin(l*lon), l*cos(l*lon)] for l in range(0,k+1)])
-            innerSum = mv*multiply(cs,egm)*mat([1,1]).H
-            sphCoeff.append(float(innerSum[0])/r)
-
-        # Apply the formula
-        D = 0.0
-
-        for C,k in zip(sphCoeff, range(2, self.Nharmonics+1)):
-            D += 1.0*GM*C*(a/r)**k
-
-        return D 
 
     # U corresponds to latitude
-    def egm96delU(self, r, lat, lon):
+    def egm96delU(self, 
+                  r, 
+                  lat, 
+                  lon,
+                  normLegendreCoefficients = None,
+                  cosines = None,
+                  sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         u = sin(lat)
@@ -441,9 +592,12 @@ class state_vector(measurement):
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv1 = normLegendreCoefficients[k,0:(k+1)]
@@ -462,7 +616,13 @@ class state_vector(measurement):
         else:
             return 0.0
     
-    def egm96delUdelU(self, r, lat, lon):
+    def egm96delUdelU(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         u = sin(lat)
@@ -470,9 +630,12 @@ class state_vector(measurement):
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
             
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
@@ -488,7 +651,13 @@ class state_vector(measurement):
 
         return D
     
-    def egm96delUdelT(self, r, lat, lon):
+    def egm96delUdelT(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         u = sin(lat)
@@ -496,9 +665,12 @@ class state_vector(measurement):
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv1=normLegendreCoefficients[k,0:(k+1)]
@@ -511,7 +683,13 @@ class state_vector(measurement):
 
         return D 
 
-    def egm96delUdelR(self, r, lat, lon):
+    def egm96delUdelR(self, 
+                      r, 
+                      lat, 
+                      lon,
+                      normLegendreCoefficients = None,
+                      cosines = None,
+                      sines = None):
         GM = self.constEGM96.GM
         a = self.constEGM96.aE
         u = sin(lat)
@@ -519,9 +697,12 @@ class state_vector(measurement):
         D = 0.0
 
         # Compute the coefficients for the gradient of the gravitational potential
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        if normLegendreCoefficients is None:
+            normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        if cosines is None:
+            cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        if sines is None:
+            sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv1=normLegendreCoefficients[k,0:(k+1)]
@@ -531,32 +712,6 @@ class state_vector(measurement):
             
             cs = sum([(f1[l]-f2[l])*(cosines[l]*self.egm96[egmIndex+l][2] + sines[l]*self.egm96[egmIndex+l][3]) for l in range(0,k+1)])
             D+= -(k+1.0)*v*GM*cs*(a/r)**k/(u**2-1.0)/r**2
-
-        return D 
-
-    def egm96delUOld(self, r, lat, lon):
-        GM = self.constEGM96.GM
-        a = self.constEGM96.aE
-        u = sin(lat)
-
-        # Compute the coefficients for the gradient of the gravitational potential
-        sphCoeff = []
-        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
-        for k in range(2,self.Nharmonics+1):
-            mv1=matrix(normLegendreCoefficients[k,0:(k+1)])
-            mv2 = mat(matrix(normLegendreCoefficients[(k-1),0:k]).tolist()[0] + [0.0])
-            f1 = mat([u*k for l in range(0, k+1)])
-            f2 = mat([sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) for l in range(0, k+1)])
-            egm = self.selectEGM(k)
-            cs = mat([[cos(l*lon), sin(l*lon)] for l in range(0,k+1)])
-            innerSum = (multiply(mv1, f1)-multiply(mv2, f2))*multiply(cs,egm)*mat([1,1]).H
-            sphCoeff.append(float(innerSum[0])/r/(u**2-1.0))
-
-        # Apply the formula
-        D = 0.0
-
-        for C,k in zip(sphCoeff, range(2, self.Nharmonics+1)):
-            D += 1.0*GM*C*(a/r)**k
 
         return D 
 
@@ -578,9 +733,6 @@ class state_vector(measurement):
         p = np.sqrt(x**2 + y**2)
         
         Jtr = 1.0/r*np.eye(3) - 1.0/r**3*np.outer(X[0:3],X[0:3])
-#        Jtu = np.array([[-z*((r*y)**2-2.0*(x*p)**2), x*y*z*(2.0*p**2+r**2), -x*(p**4-(p*z)**2)],
-#                        [x*y*z*(2.0*p**2+r**2), -z*((r*x)**2-2.0*(y*p)**2), -y*(p**4-(z*p)**2)],
-#                        [-x*(p**4-(p*z)**2), -y*(p**4-(z*p)**2), -2.0*z*p**4]])/p**3/r**4
     
         Jtu = np.array([[-z*((r*y)**2-2.0*(x*p)**2), x*y*z*(2.0*p**2+r**2), -x*(p**4-(p*z)**2)],
                         [x*y*z*(2.0*p**2+r**2), -z*((r*x)**2-2.0*(y*p)**2), -y*(p**4-(z*p)**2)],
@@ -617,10 +769,34 @@ class state_vector(measurement):
         Xp = mat(X[0:3])
         Xv = mat(X[3:])
         
+        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         # Compute the component of the gradient due to r, theta, phi
-        delVdelR = self.egm96delR(r, lat, lon)
-        delVdelT = self.egm96delT(r, lat, lon)
-        delVdelU = self.egm96delU(r, lat, lon)
+        delVdelR, delVdelU, delVdelT = self.egm96del(r,
+                                                     lat,
+                                                     lon,
+                                                     normLegendreCoefficients,
+                                                     cosines = cosines,
+                                                     sines = sines)
+        # delVdelR = self.egm96delR(r, 
+        #                           lat, 
+        #                           lon,
+        #                           normLegendreCoefficients = normLegendreCoefficients,
+        #                           cosines = cosines,
+        #                           sines = sines)
+        # delVdelT = self.egm96delT(r, 
+        #                           lat, 
+        #                           lon,
+        #                           normLegendreCoefficients = normLegendreCoefficients,
+        #                           cosines = cosines,
+        #                           sines = sines)
+        # delVdelU = self.egm96delU(r, 
+        #                           lat, 
+        #                           lon,
+        #                           normLegendreCoefficients = normLegendreCoefficients,
+        #                           cosines = cosines,
+        #                           sines = sines)
 
 
         # Calculate factors to transform sperical polar to Cartesian derivatives
@@ -643,63 +819,54 @@ class state_vector(measurement):
     def isatEQM(self, t, X):
         return self.satEQM(X,t)
     
-    def oldExpandedState(self,X,t):
-        # Define some constants
-        wE = self.constGRS80.wE
-        
-        # Transform to lat/long/r spherical polar
-        llh = self.xyz2SphericalPolar(X)
-        lat = llh[0]/180.0*pi
-        lon = llh[1]/180.0*pi
-
-        # Compute the norm
-        r = llh[2]
-        p = X[0]**2 + X[1]**2
-        Xp = mat(X[0:3])
-        Xv = mat(X[3:])
-        
-        # Compute the component of the gradient due to r, theta, phi
-        delVdelR = self.egm96delR(r, lat, lon)
-        delVdelT = self.egm96delT(r, lat, lon)
-        delVdelU = self.egm96delU(r, lat, lon)
-
-
-        # Calculate factors to transform sperical polar to Cartesian derivatives
-        delVdelRX = delVdelR/r*mat(X[0:3])
-        delVdelUX = delVdelU*mat([-X[0]*X[2]/r**3, -X[1]*X[2]/r**3, p/r**3])
-        delVdelTX = delVdelT*mat([-X[1]/p, X[0]/p, 0.0])
-        inertial_ddX = delVdelRX + delVdelTX + delVdelUX
-        print(inertial_ddX)
-
-
-        # Compute some shifting matrices
-        I2 = mat([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.0]])
-        Q2 = mat([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 0.0]])        
-        
-        # Do the calculation
-        ecef_X = X[:3]
-        ecef_dX = X[3:]
-        ecef_ddX = wE**2*Xp*I2 + 2.0*wE*Xv*Q2 + inertial_ddX
-        #ecef_dddX = -wE**3*Xp*Q2 + 3.0*wE**2*Xv*I2 + 3.0*wE*ecef_ddX*Q2
-        #print("DEBUG")
-        #print(ecef_dddX)
-        inertial_dX = Xv-wE*Xp*Q2
-        wO = np.linalg.norm(inertial_dX)/np.linalg.norm(Xp)
-        ecef_dddX = 2.0*wE**3*Xp*Q2 - 3.0*wE**2*Xv*I2 + 3.0*wE*inertial_ddX*Q2 - wO**2*(Xv-wE*Xp*Q2)
-        
-        return np.array([ecef_X,
-                         ecef_dX,
-                         np.asarray(ecef_ddX).squeeze(),
-                         np.asarray(ecef_dddX).squeeze()])
-    
     def secondSphericalDerivative(self, r, lat, lon):
         # Calculate the U Hessian matrix
-        h11 = self.egm96delRdelR(r, lat, lon)
-        h12 = self.egm96delUdelR(r, lat, lon)
-        h13 = self.egm96delTdelR(r, lat, lon)
-        h22 = self.egm96delUdelU(r, lat, lon)
-        h23 = self.egm96delUdelT(r, lat, lon)
-        h33 = self.egm96delTdelT(r, lat, lon)
+        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        
+        h11, h12, h13, h22, h23, h33 = self.egm96deldel(r, 
+                                                        lat, 
+                                                        lon,
+                                                        normLegendreCoefficients = normLegendreCoefficients,
+                                                        cosines = cosines,
+                                                        sines = sines)
+        # h11 = self.egm96delRdelR(r, 
+        #                          lat, 
+        #                          lon,
+        #                          normLegendreCoefficients = normLegendreCoefficients,
+        #                          cosines = cosines,
+        #                          sines = sines)
+        # h12 = self.egm96delUdelR(r, 
+        #                          lat, 
+        #                          lon,
+        #                          normLegendreCoefficients = normLegendreCoefficients,
+        #                          cosines = cosines,
+        #                          sines = sines)
+        # h13 = self.egm96delTdelR(r, 
+        #                          lat, 
+        #                          lon,
+        #                          normLegendreCoefficients = normLegendreCoefficients,
+        #                          cosines = cosines,
+        #                          sines = sines)
+        # h22 = self.egm96delUdelU(r, 
+        #                          lat, 
+        #                          lon,
+        #                          normLegendreCoefficients = normLegendreCoefficients,
+        #                          cosines = cosines,
+        #                          sines = sines)
+        # h23 = self.egm96delUdelT(r, 
+        #                          lat, 
+        #                          lon,
+        #                          normLegendreCoefficients = normLegendreCoefficients,
+        #                          cosines = cosines,
+        #                          sines = sines)
+        # h33 = self.egm96delTdelT(r, 
+        #                          lat, 
+        #                          lon,
+        #                          normLegendreCoefficients = normLegendreCoefficients,
+        #                          cosines = cosines,
+        #                          sines = sines)
         return np.array([[h11, h12, h13],
                          [h12, h22, h23],
                          [h13, h23, h33]])
@@ -719,35 +886,63 @@ class state_vector(measurement):
         ecef_dX = X[3:]
         
         # Compute the component of the gradient due to r, theta, phi
-        d0 = self.egm96delR(r, lat, lon)
-        d1 = self.egm96delU(r, lat, lon)
-        d2 = self.egm96delT(r, lat, lon)
-        
-        #print("Inertial spherical acceleration")
+        normLegendreCoefficients = self.myLegendre(self.Nharmonics, sin(lat))
+        cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        # start = timer()
+        # d0 = self.egm96delR(r, 
+        #                     lat, 
+        #                     lon,
+        #                     normLegendreCoefficients = normLegendreCoefficients,
+        #                     cosines = cosines,
+        #                     sines = sines)
+        # d1 = self.egm96delU(r, 
+        #                     lat, 
+        #                     lon,
+        #                     normLegendreCoefficients = normLegendreCoefficients,
+        #                     cosines = cosines,
+        #                     sines = sines)
+        # d2 = self.egm96delT(r, 
+        #                     lat, 
+        #                     lon,
+        #                     normLegendreCoefficients = normLegendreCoefficients,
+        #                     cosines = cosines,
+        #                     sines = sines)
+        # end = timer()
+        # print(d0)
+        # print(d1)
+        # print(d2)
+        # print("1a: %0.4f" % (end-start))
+        # start = timer()
+        d0, d1, d2 = self.egm96del(r, 
+                                   lat, 
+                                   lon,
+                                   normLegendreCoefficients = normLegendreCoefficients,
+                                   cosines = cosines,
+                                   sines = sines)
+        # end = timer()
+        # print(d0)
+        # print(d1)
+        # print(d2)
+        # print("1: %0.4f" % (end-start))
         inertial_ddS = np.array([d0, d1, d2])
-        #print(inertial_ddS)
         
         # Compute an expanded ddS
-        #print("First derivative w.r.t. spherical polar:")
         exp_ddS = np.array([[d0, d1, d2, 0, 0, 0, 0, 0, 0],
                             [0, 0, 0, d0, d1, d2, 0, 0, 0],
                             [0, 0, 0, 0, 0, 0, d0, d1, d2]])
-        #print(exp_ddS)
         
         #print("Second derivative w.r.t. rxixj")
+        # start = timer()
         dtwosdx = self.secondDtve(X)
-        #print(dtwosdx)
+        # end = timer()
+        # print("2: %0.4f" % (end-start))
     
         # Calculate the U Hessian matrix
-#        h11 = self.egm96delRdelR(r, lat, lon)
-#        h12 = self.egm96delUdelR(r, lat, lon)
-#        h13 = self.egm96delTdelR(r, lat, lon)
-#        h22 = self.egm96delUdelU(r, lat, lon)
-#        h23 = self.egm96delUdelT(r, lat, lon)
-#        h33 = self.egm96delTdelT(r, lat, lon)
+        # start = timer()
         Hu = self.secondSphericalDerivative(r, lat, lon)
-        #print(Hu)
-
+        # end = timer()
+        # print("3: %0.4f" % (end-start))
 
 
         # Compute some shifting matrices
@@ -759,41 +954,23 @@ class state_vector(measurement):
                        [0.0, 0.0, 0.0]])        
         
         # Calculate factors to transform sperical polar to Cartesian derivatives
+        # start = timer()
         J = self.Jsx(ecef_X)
+        # end = timer()
+        # print("4: %0.4f" % (end-start))
         JT = J.T
         
         # Print the second derivatives
-        #print("Jacobian")
-        #print(J)
         F = exp_ddS.dot(dtwosdx) + JT.dot(Hu.dot(J))
-        #print("F")
-        #print(exp_ddS.dot(dtwosdx))
-        #print(JT.dot(Hu.dot(J)))
-        #print(F)
-        #print("Inertial velocity:")
         inertial_dX = ecef_dX - wE*np.dot(Q2, ecef_X)
-        #print(inertial_dX)
-        #print("Inertial acceleration:")
         inertial_ddX = np.dot(JT, inertial_ddS)
-        #print(inertial_ddX)
-        #print("New inertial dddX:")
         inertial_dddX = F.dot(inertial_dX)
-        #print(inertial_dddX)
 
-        # Do the calculation
+        # Calculate te seoncd derivative in ECEF
         ecef_ddX = wE**2*np.dot(I2,ecef_X) + 2.0*wE*np.dot(Q2, ecef_dX) + inertial_ddX
         
         
-        #print("DEBUG")
-        #print(ecef_dddX)
-        wO = np.linalg.norm(inertial_dX)/np.linalg.norm(ecef_X)
-        #print("Inertial Jerk approximation")
-        #print(-wO**2*inertial_dX)
-        #ecef_dddX = (2.0*wE**3*np.dot(Q2, ecef_X) 
-        #             - 3.0*wE**2*np.dot(I2, ecef_dX) 
-        #             + 3.0*wE*np.dot(Q2, inertial_ddX) 
-        #             - wO**2*inertial_dX)
-        
+        # Calculate the thrid derivative in ECEF
         ecef_dddX = (2.0*wE**3*np.dot(Q2, ecef_X) 
              - 3.0*wE**2*np.dot(I2, ecef_dX) 
              + 3.0*wE*np.dot(Q2, inertial_ddX) 
@@ -805,12 +982,8 @@ class state_vector(measurement):
                          ecef_ddX,
                          ecef_dddX])
     
-    def ratioOfFactorial(self, n, m):
-        if m==0:
-            return 1.0
-        return reduce(lambda x, y: float(x)/float(y), [1] + range(n+1-m,n+1+m))
     
-    def myLegendre(self, n0, t):
+    def myLegendre_old(self, n0, t):
         n0 += 1
         n = max(n0, 2)
         
@@ -842,16 +1015,11 @@ class state_vector(measurement):
             return p[0:n0, 0:n0]
             
         return p
-        
-        
     
-    def legendreNorm(self,n,x):
-        yval = lpmn(n,n,x)[0]
-        y = []
-        for m in range(0,n+1):
-            y.append((-1)**m*sqrt((2.0*n+1.0)*self.ratioOfFactorial(n,m))*yval[m,n])
-
-        return mat(y)
+    def myLegendre(self, n0, t):
+        p = np.zeros((n0+1, n0+1))
+        myLegendre_numba(p, n0, t)
+        return p
 
     def toInertial(self,mData, t):
         w = self.constWGS84.wE;
@@ -885,41 +1053,6 @@ class state_vector(measurement):
         else:
             y = solve_ivp(self.isatEQM, t, self.measurementData[k], t_eval=t_eval)
         return y
-#        istate = []
-#        for state, it in zip(y,t):
-#            istate.append(state)
-#        return istate
-    
-#    def integrate(self, t, k):
-#        y = odeint(self.satEQM, self.measurementData[k], t)
-#        istate = []
-#        for state, it in zip(y,t):
-#            istate.append(state)
-#        return istate
-        
-#    def estimateTimeRange(self, dtime):
-#        mnTime = sum([(tm - dtime[0]).total_seconds() for tm in dtime])/len(dtime)
-#        minK = self.findNearest(dtime[0] + datetime.timedelta(seconds=mnTime))
-#        integrationTimes = [(dt - self.measurementTime[minK]).total_seconds() for dt in dtime]
-#        
-#        # getintegration times
-#        pTimes = [0.0] + [tm for tm in integrationTimes if tm >= 0]
-#        nTimes = [tm for tm in integrationTimes if tm < 0] + [0.0]
-#        nTimes.reverse()
-#        
-#        pState = []
-#        nState = []
-#        
-#        # Integrate
-#        if(len(pTimes) > 1):
-#            pState = self.integrate(pTimes, minK)[1:]
-#            
-#        if(len(nTimes) > 1):
-#            nState = self.integrate(nTimes, minK)[1:]
-#            nState.reverse()
-#            
-#        # Create and return the output
-#        return nState + pState
         
     def estimateTimeRange(self, dtime, integrationTimes = None):
         if type(dtime[0]) == datetime.datetime:
@@ -938,43 +1071,25 @@ class state_vector(measurement):
                 
         
         # Perform the integration
-        #t_min = np.min(integrationTimes)
-        #t_max = np.max(integrationTimes)
-        #sol = self.integrate([t_min, t_max], minK, t_eval = integrationTimes)
-        #return sol.y, sol.t
-        
-        # getintegration times
+        # Get integration times
         pTimes = [0.0] + [tm for tm in integrationTimes if tm > 0]
         nTimes = [tm for tm in integrationTimes if tm < 0] + [0.0]
         nTimes.reverse()
-        
-        #pState = []
-        #nState = []
            
         if(len(nTimes) > 1):
-            #print(nTimes)
             nState = self.integrate([np.max(nTimes), np.min(nTimes)], minK, t_eval = nTimes)
-            #print(nState.t[0:5])
-            #print(nState.y[0:3,0:3].T)
-            #nState.reverse()
             
         # Integrate
         if(len(pTimes) > 1):
-            #print(pTimes)
             pState = self.integrate([np.min(pTimes), np.max(pTimes)], minK, t_eval = pTimes)
-            #print(pState.t[0:5])
          
             
         # Create and return the output
         if 0.0 in integrationTimes:
-            t_array = np.concatenate((np.flipud(nState.t[1:]), pState.t))
             y_array = np.concatenate((np.fliplr(nState.y[:,1:]), pState.y), axis=1).T
         else:
-            t_array = np.concatenate((np.flipud(nState.t[1:]), pState.t[1:]))
             y_array = np.concatenate((np.fliplr(nState.y[:,1:]), pState.y[:,1:]), axis=1).T
             
-        #print("Time array length avant integration: %d" % len(dtime))
-        #print("Time array length apres integration: %d" % len(t_array))
         return y_array
     
     def estimate(self, dtime):
@@ -987,14 +1102,6 @@ class state_vector(measurement):
         if not dtime in self.measurementTime:
             self.add(dtime, sol.y[:,-1])
         return sol.y[:,-1]
-
-#    def estimate(self, dtime):
-#        minK = self.findNearest(dtime)
-#        dT = [0.0, (dtime - self.measurementTime[minK]).total_seconds()]
-#        y = self.integrate(dT,minK)
-#        if not dtime in self.measurementTime:
-#            self.add(dtime, y[-1])
-#        return y[-1]
         
 class state_vector_TSX(state_vector):
     def readStateVectors(self, XMLfile):
@@ -1133,3 +1240,55 @@ class state_vector_Sarscape(state_vector):
                           float(vy.text),
                           float(vz.text)])
         return
+
+class state_vector_Dimap(state_vector):
+    def readStateVectors(self, dim):
+        dataPool = etree.parse(dim).getroot()
+        orbit = dataPool.find(".//MDElem[@name='Orbit_State_Vectors']")
+        svX = orbit.findall(".//MDATTR[@name='x_pos']")
+        svY = orbit.findall(".//MDATTR[@name='y_pos']")
+        svZ = orbit.findall(".//MDATTR[@name='z_pos']")
+        svVX = orbit.findall(".//MDATTR[@name='x_vel']")
+        svVY = orbit.findall(".//MDATTR[@name='y_vel']")
+        svVZ = orbit.findall(".//MDATTR[@name='z_vel']")
+        sTimeText = orbit.findall(".//MDATTR[@name='time']")
+        dformat = "%d-%b-%Y %H:%M:%S.%f"
+        sTimes = [datetime.datetime.strptime(d.text, dformat) for d in sTimeText]
+
+        # Populate the local data
+        for sv,x,y,z,vx,vy,vz in zip(sTimes,svX,svY,svZ,svVX,svVY,svVZ):
+            self.add(sv, [float(x.text),
+                          float(y.text),
+                          float(z.text),
+                          float(vx.text),
+                          float(vy.text),
+                          float(vz.text)])
+        return
+
+
+@njit
+def myLegendre_numba(p, n0, t):
+    #n0 += 1
+    N = max(n0+1, 2)
+    
+    # Define the diagonal p matrix (the m,m terms)
+    u = sqrt(1.0-t**2)
+    ff = np.array([1.0, u] + [u*sqrt((2*i+1)/(2*i)) for i in arange(2.0,float(N))])
+    gg = cumprod(ff)*sqrt(3.0)
+    gg[0] = 1.0
+    
+    # Define the A matrix
+    A = np.zeros((N, N))
+    B = np.zeros((N, N))
+    for m in prange(N):
+        p[m,m] = gg[m]
+        for n in range(m):
+            A[m,n] = sqrt((2*m-1)*(2*m+1)/(m-n)/(m+n))
+            B[m,n] = sqrt((2*m+1)*(m+n-1)*(m-n-1)/
+                          ((m-n)*(m+n)*(2*m-3)))
+
+    #p = diag(gg)
+    p[1,:] += t*A[1,:]*p[0,:]
+    
+    for k in range(2,N):
+        p[k,:] += t*A[k,:]*p[k-1,:] - B[k,:]*p[k-2,:]

@@ -1,6 +1,6 @@
 [General]
 bib_extensions=.bib
-bibliographyBackendAutoDetected=
+bibliographyBackendAutoDetected=Biber
 bibliographyBackendUserOverride=
 def_graphic_ext=pdf
 img_extIsRegExp=false
@@ -21,8 +21,8 @@ QuickBuild=
 [item:DRDCArcSAR.tex]
 archive=true
 encoding=
-highlight=
-mode=
+highlight=LaTeX
+mode=LaTeX
 
 [item:drdc.kilepr]
 archive=true
