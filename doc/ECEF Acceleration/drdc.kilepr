@@ -20,7 +20,7 @@ QuickBuild=
 
 [item:DRDCArcSAR.tex]
 archive=true
-encoding=
+encoding=UTF-8
 highlight=LaTeX
 mode=LaTeX
 

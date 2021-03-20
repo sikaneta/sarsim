@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.2)  23 AUG 2020 09:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.9.30)  10 MAR 2021 21:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -931,7 +931,7 @@ File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 \bibhang=\skip70
 \blx@bcfin=\read3
 \blx@bcfout=\write4
-\blx@langwohyphens=\language3
+\blx@langwohyphens=\language5
 \c@mincomprange=\count353
 \c@maxcomprange=\count354
 \c@mincompwidth=\count355
@@ -1801,10 +1801,10 @@ Package logreq Info: Writing requests to 'ECEFacceleration.run.xml'.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 122.
  ) 
 Here is how much of TeX's memory you used:
- 40719 strings out of 483183
- 935975 string characters out of 5966293
- 1716637 words of memory out of 5000000
- 54506 multiletter control sequences out of 15000+600000
+ 40719 strings out of 483154
+ 935975 string characters out of 5965023
+ 1717733 words of memory out of 5000000
+ 54515 multiletter control sequences out of 15000+600000
  549466 words of font info for 86 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  73i,24n,127p,1925b,1853s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1843,7 +1843,7 @@ ts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type
 ic/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/e
 uler/eusm10.pfb>
-Output written on ECEFacceleration.pdf (76 pages, 4399209 bytes).
+Output written on ECEFacceleration.pdf (76 pages, 4398761 bytes).
 PDF statistics:
  1505 PDF objects out of 1728 (max. 8388607)
  1297 compressed objects within 13 object streams

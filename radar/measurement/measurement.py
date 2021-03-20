@@ -1097,7 +1097,7 @@ class state_vector(measurement):
         if type(self.measurementTime[0]) == datetime.datetime:
             dT = [0.0, (dtime - self.measurementTime[minK]).total_seconds()]
         else:
-            dT = [0.0, (dtime - self.measurementTime[minK])/np.datetime64(1,'s')]
+            dT = [0.0, (dtime - self.measurementTime[minK])/np.timedelta64(1,'s')]
         sol = self.integrate(dT,minK)
         if not dtime in self.measurementTime:
             self.add(dtime, sol.y[:,-1])

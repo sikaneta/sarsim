@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.9.30)  30 SEP 2020 16:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.9.30)  10 MAR 2021 21:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1324,24 +1324,24 @@ File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 (./DRDCArcSAR.aux)
 \openout1 = `DRDCArcSAR.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 138.
-LaTeX Font Info:    ... okay on input line 138.
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 13
-8.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 140.
+LaTeX Font Info:    ... okay on input line 140.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 14
+0.
  (/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1372,9 +1372,9 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Info: Redefining \degres on input line 138.
-LaTeX Info: Redefining \dots on input line 138.
-LaTeX Info: Redefining \up on input line 138.
+LaTeX Info: Redefining \degres on input line 140.
+LaTeX Info: Redefining \dots on input line 140.
+LaTeX Info: Redefining \up on input line 140.
 
 (/usr/share/texlive/texmf-dist/tex/latex/tools/hhline.sty
 Package: hhline 2020/01/04 v2.04 Table rule package (DPC)
@@ -1399,7 +1399,7 @@ Package biblatex Info: ... file 'frenchb.lbx' not found.
 
 
 Package biblatex Warning: Language 'frenchb' not supported.
-(biblatex)                Using fallback language 'english' on input line 138.
+(biblatex)                Using fallback language 'english' on input line 140.
 
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Automatic encoding selection.
@@ -1409,10 +1409,10 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'DRDCArcSAR.bbl' found.
 (./DRDCArcSAR.bbl)
-Package biblatex Info: Reference section=0 on input line 138.
-Package biblatex Info: Reference segment=0 on input line 138.
+Package biblatex Info: Reference section=0 on input line 140.
+Package biblatex Info: Reference segment=0 on input line 140.
 \AtBeginShipoutBox=\box95
-Package hyperref Info: Link coloring ON on input line 138.
+Package hyperref Info: Link coloring ON on input line 140.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -1425,121 +1425,121 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count469
 )
-LaTeX Info: Redefining \ref on input line 138.
-LaTeX Info: Redefining \pageref on input line 138.
-LaTeX Info: Redefining \nameref on input line 138.
+LaTeX Info: Redefining \ref on input line 140.
+LaTeX Info: Redefining \pageref on input line 140.
+LaTeX Info: Redefining \nameref on input line 140.
 
 (./DRDCArcSAR.out) (./DRDCArcSAR.out)
 \@outlinefile=\write6
 \openout6 = `DRDCArcSAR.out'.
 
 LaTeX Font Info:    Trying to load font information for T1+phv on input line 14
-1.
+3.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 141.
+(Font)              scaled to size 10.40245pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 19.70294pt on input line 141.
+(Font)              scaled to size 19.70294pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 19.70294pt on input line 141.
+(Font)              scaled to size 19.70294pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 11.39996pt on input line 141.
+(Font)              scaled to size 11.39996pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 11.39996pt on input line 141.
+(Font)              scaled to size 11.39996pt on input line 143.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-41.
+43.
 
 (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-41.
+43.
 
 (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-141.
+143.
 
 (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-141.
+143.
 
 (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 141.
+(Font)              <10.95> on input line 143.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 141.
+(Font)              <8> on input line 143.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 141.
+(Font)              <6> on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 141.
+(Font)              scaled to size 9.49997pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 141.
+(Font)              scaled to size 7.59998pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 7.59998pt on input line 141.
+(Font)              scaled to size 7.59998pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.54997pt on input line 141.
+(Font)              scaled to size 8.54997pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 16.41594pt on input line 141.
+(Font)              scaled to size 16.41594pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 16.41594pt on input line 141.
+(Font)              scaled to size 16.41594pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 8.54997pt on input line 141.
+(Font)              scaled to size 8.54997pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 13.67995pt on input line 141.
+(Font)              scaled to size 13.67995pt on input line 143.
 <DRDC-FIP.pdf, id=260, 878.28125pt x 57.21375pt>
 File: DRDC-FIP.pdf Graphic file (type pdf)
 <use DRDC-FIP.pdf>
-Package pdftex.def Info: DRDC-FIP.pdf  used on input line 141.
+Package pdftex.def Info: DRDC-FIP.pdf  used on input line 143.
 (pdftex.def)             Requested size: 878.27911pt x 57.2136pt.
 <boxes.pdf, id=261, 225.84375pt x 202.7575pt>
 File: boxes.pdf Graphic file (type pdf)
 <use boxes.pdf>
-Package pdftex.def Info: boxes.pdf  used on input line 141.
+Package pdftex.def Info: boxes.pdf  used on input line 143.
 (pdftex.def)             Requested size: 225.84319pt x 202.757pt.
 <rule.pdf, id=262, 200.75pt x 20.075pt>
 File: rule.pdf Graphic file (type pdf)
 <use rule.pdf>
-Package pdftex.def Info: rule.pdf  used on input line 141.
+Package pdftex.def Info: rule.pdf  used on input line 143.
 (pdftex.def)             Requested size: 200.7495pt x 20.07494pt.
 <DRDC-RDDC-tech.pdf, id=263, 273.02pt x 54.2025pt>
 File: DRDC-RDDC-tech.pdf Graphic file (type pdf)
 <use DRDC-RDDC-tech.pdf>
-Package pdftex.def Info: DRDC-RDDC-tech.pdf  used on input line 141.
+Package pdftex.def Info: DRDC-RDDC-tech.pdf  used on input line 143.
 (pdftex.def)             Requested size: 273.01933pt x 54.20236pt.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 9.49997pt on input line 141.
+(Font)              scaled to size 9.49997pt on input line 143.
 <wordmark.pdf, id=264, 113.42375pt x 27.10126pt>
 File: wordmark.pdf Graphic file (type pdf)
 <use wordmark.pdf>
-Package pdftex.def Info: wordmark.pdf  used on input line 141.
+Package pdftex.def Info: wordmark.pdf  used on input line 143.
 (pdftex.def)             Requested size: 113.42346pt x 27.10118pt.
  [-1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
  <./DRDC-FIP.pdf> <./rule.pdf> <./boxes.pdf> <./DRDC-RDDC-tech.pdf> <./wordmark
 .pdf>]
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 11.39996pt on input line 141.
+(Font)              scaled to size 11.39996pt on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 141.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 143.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 7.59998pt on input line 141.
+(Font)              scaled to size 7.59998pt on input line 143.
 LaTeX Font Info:    Trying to load font information for TS1+phv on input line 1
-41.
+43.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2001/06/04 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 141.
+(Font)              scaled to size 7.59998pt on input line 143.
  [0] [1]
 Package biblatex Info: Trying to load language 'french'...
 Package biblatex Info: ... file 'french.lbx' found.
@@ -2163,19 +2163,19 @@ Package pdftex.def Info: mimoconfig.pdf , page1 used on input line 56.
 ] [70])
 [71]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 5.69998pt on input line 211.
+(Font)              scaled to size 5.69998pt on input line 213.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 211.
+(Font)              scaled to size 6.64998pt on input line 213.
  [72
 
 ] [73
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 224.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 224.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 226.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 226.
  (./DRDCArcSAR.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 224.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 224.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 226.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 226.
 Package rerunfilecheck Info: File `DRDCArcSAR.out' has not changed.
 (rerunfilecheck)             Checksum: 5231A532D5A4068E93891686533DACA7;4965.
 Package logreq Info: Writing requests to 'DRDCArcSAR.run.xml'.
@@ -2185,7 +2185,7 @@ Package logreq Info: Writing requests to 'DRDCArcSAR.run.xml'.
 Here is how much of TeX's memory you used:
  43033 strings out of 483154
  969215 string characters out of 5965023
- 1752188 words of memory out of 5000000
+ 1751189 words of memory out of 5000000
  56673 multiletter control sequences out of 15000+600000
  718550 words of font info for 145 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -2217,7 +2217,7 @@ ype1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtto10.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on DRDCArcSAR.pdf (84 pages, 4840563 bytes).
+Output written on DRDCArcSAR.pdf (84 pages, 4840557 bytes).
 PDF statistics:
  1679 PDF objects out of 1728 (max. 8388607)
  443 named destinations out of 1000 (max. 500000)
