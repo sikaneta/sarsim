@@ -149,6 +149,9 @@ if vv.validate_numerical:
              subset_times, (from_file[0,:]-subset_integrated[0,:]).T, 'x', 
              subset_times, (from_file[1,:]-subset_integrated[1,:]).T, '1', 
              subset_times, (from_file[2,:]-subset_integrated[2,:]).T, '+')
+    print("Difference at extremes")
+    print("="*80)
+    print(from_file[:,-1]-subset_integrated[:,-1])
     plt.grid()
     plt.xlabel('time (s)')
     plt.ylabel('difference (m)')
@@ -175,6 +178,8 @@ else:
 satRhat = npos/np.outer(np.ones((3,)), np.linalg.norm(npos, axis=0))
 satVhat = nvel/np.outer(np.ones((3,)), np.linalg.norm(nvel, axis=0))
 satBhat = np.cross(satRhat, satVhat, axis=0)
+bNorm = 1 - np.sum(satRhat*satVhat, axis=0)
+satBhat = satBhat/np.outer(np.ones((3,)), bNorm)
 
 # Calculate the 30 depression angle curve
 lookAngle = vv.depression_angle/180*np.pi
