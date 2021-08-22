@@ -3,6 +3,7 @@ from flask_restful import Api, Resource, reqparse
 import numpy as np
 from measurement.measurement import state_vector, myLegendre_numba
 from measurement.arclength import slow
+import json
 
 app = Flask(__name__)
 api = Api(app)
@@ -128,14 +129,22 @@ class Integrate(Resource):
         desiredSVUTC = measurementTime + dt*1e9*np.timedelta64(1, 'ns')
         
         integratedSV = sv.estimate(desiredSVUTC)
-        
+        format_string = "http://192.168.0.174:5000/item?timeUTC=%s&x=%0.6f&y=%0.6f&z=%0.6f&vx=%0.6f&vy=%0.6f&vz=%0.6f"
+        urlitem = format_string % (np.datetime_as_string(desiredSVUTC), 
+                                   integratedSV[0], 
+                                   integratedSV[1], 
+                                   integratedSV[2],  
+                                   integratedSV[3], 
+                                   integratedSV[4], 
+                                   integratedSV[5])
         newSV = {"timeUTC": np.datetime_as_string(desiredSVUTC), 
                  "x": integratedSV[0], 
                  "y": integratedSV[1],  
                  "z": integratedSV[2],  
                  "vx": integratedSV[3], 
                  "vy": integratedSV[4], 
-                 "vz": integratedSV[5]}
+                 "vz": integratedSV[5],
+                 "url": urlitem}
         return jsonify(integratedSV=newSV)
     
     def get(self):
@@ -159,6 +168,14 @@ class Integrate(Resource):
         desiredSVUTC = measurementTime + dt*1e9*np.timedelta64(1, 'ns')
         
         integratedSV = sv.estimate(desiredSVUTC)
+        format_string = "http://192.168.0.174:5000/item?timeUTC=%s&x=%0.6f&y=%0.6f&z=%0.6f&vx=%0.6f&vy=%0.6f&vz=%0.6f"
+        urlitem = format_string % (np.datetime_as_string(desiredSVUTC), 
+                                   integratedSV[0], 
+                                   integratedSV[1], 
+                                   integratedSV[2],  
+                                   integratedSV[3], 
+                                   integratedSV[4], 
+                                   integratedSV[5])
         
         newSV = {"timeUTC": np.datetime_as_string(desiredSVUTC), 
                  "x": integratedSV[0], 
@@ -166,7 +183,8 @@ class Integrate(Resource):
                  "z": integratedSV[2],  
                  "vx": integratedSV[3], 
                  "vy": integratedSV[4], 
-                 "vz": integratedSV[5]}
+                 "vz": integratedSV[5],
+                 "url": urlitem}
         
         return jsonify(integratedSV=newSV)
 
@@ -174,4 +192,4 @@ api.add_resource(Item, '/item')
 api.add_resource(Integrate, '/integrate')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host = '0.0.0.0')

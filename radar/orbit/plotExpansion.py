@@ -17,6 +17,7 @@ from measurement.measurement import state_vector_RSO
 from measurement.measurement import state_vector
 from measurement.arclength import slow
 import argparse
+from geoComputer.geoComputer import satGeometry as sG
 
 #%% Load the data
 purpose = """
@@ -47,6 +48,14 @@ parser.add_argument("--index",
                             a point of expansion""",
                     type=int,
                     default=20)
+parser.add_argument("--range",
+                    help="Range to a target on the ground (m)",
+                    type=float,
+                    default=800000.0)
+parser.add_argument("--hae",
+                    help="Height of the target oabove the ellipsoid (WGS84 in m)",
+                    type=float,
+                    default=0.0)
 parser.add_argument("--state-fs",
                     help="Sampling frequency of the propagated state vectors (Hz)",
                     type=float,
@@ -98,6 +107,15 @@ prf = vv.state_fs
 deltaT = 1.0/prf
 
 xState = myrd.expandedState(myrd.measurementData[0], 0.0)
+
+# Compute the boradside target position
+satG = sG()
+groundXYZ, error = satG.computeECEF(s_vect, 0.0, vv.range, vv.hae)
+print("Computed ground point:")
+print("==========================================")
+print(groundXYZ)
+print("==========================================")
+
 # reference_time = myrd.measurementTime[0]
 reference_time = np.datetime64(datetime.datetime.strftime(myrd.measurementTime[0], "%Y-%m-%dT%H:%M:%S.%f"))
 
@@ -109,6 +127,14 @@ print("Reference time:")
 print(reference_time)
 print("Pos, Vel, Acc, dAcc:")
 print(xState)
+format_string = "http://192.168.0.174:5000/item?timeUTC=%s&x=%0.6f&y=%0.6f&z=%0.6f&vx=%0.6f&vy=%0.6f&vz=%0.6f&dt=0"
+print(format_string % (reference_time, 
+                       xState[0,0],
+                       xState[0,1],
+                       xState[0,2],
+                       xState[1,0],
+                       xState[1,1],
+                       xState[1,2]))
 
 #%% Compute satellite geographic coordinates
 llh = sv.xyz2polar(sv.measurementData[s_idx][0:3])
@@ -192,6 +218,25 @@ plt.title('Projection of error onto the look direction\n(%0.1f depression angle)
 fname = ".".join([fname_head + "_%d_errorProjection_%0.1f" % (vv.index, 
                                                               vv.depression_angle),
                   fname_tail])
+if vv.interactive:
+    plt.show()
+else:
+    plt.savefig(fname)
+    plt.close()
+    
+#%% Plot the range as a function of sat position
+range_history = np.linalg.norm(npos - np.outer(groundXYZ, np.ones((npos.shape[1],))), axis=0)
+plt.figure()
+plt.plot(integration_times, range_history)
+plt.grid()
+plt.xlabel('time (s)')
+plt.ylabel('Range history (m)')
+plt.title('Range history with near range: %0.6f)' % vv.range)
+
+fname = ".".join([fname_head + "_%d_range_history_%0.6f" % (vv.index, 
+                                                            vv.range),
+                  fname_tail])
+                  
 if vv.interactive:
     plt.show()
 else:
