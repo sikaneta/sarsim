@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.9.30)  10 MAR 2021 21:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.5.9)  3 JUL 2021 21:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -866,987 +866,3139 @@ File: listings.cfg 2019/09/10 1.8c listings configuration
 ))
 Package: listings 2019/09/10 1.8c (Carsten Heinz)
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.sty
-Package: biblatex 2019/12/01 v3.14 programmable bibliographies (PK/MW)
 
-(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
-Package: etoolbox 2019/09/21 v2.5h e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count310
-)
-(/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.sty
-Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count311
+! LaTeX Error: File `biblatex.sty' not found.
 
-(/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.def
-File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
-))
-\c@tabx@nest=\count312
-\c@listtotal=\count313
-\c@listcount=\count314
-\c@liststart=\count315
-\c@liststop=\count316
-\c@citecount=\count317
-\c@citetotal=\count318
-\c@multicitecount=\count319
-\c@multicitetotal=\count320
-\c@instcount=\count321
-\c@maxnames=\count322
-\c@minnames=\count323
-\c@maxitems=\count324
-\c@minitems=\count325
-\c@citecounter=\count326
-\c@maxcitecounter=\count327
-\c@savedcitecounter=\count328
-\c@uniquelist=\count329
-\c@uniquename=\count330
-\c@refsection=\count331
-\c@refsegment=\count332
-\c@maxextratitle=\count333
-\c@maxextratitleyear=\count334
-\c@maxextraname=\count335
-\c@maxextradate=\count336
-\c@maxextraalpha=\count337
-\c@abbrvpenalty=\count338
-\c@highnamepenalty=\count339
-\c@lownamepenalty=\count340
-\c@maxparens=\count341
-\c@parenlevel=\count342
-\blx@tempcnta=\count343
-\blx@tempcntb=\count344
-\blx@tempcntc=\count345
-\blx@maxsection=\count346
-\blx@maxsegment@0=\count347
-\blx@notetype=\count348
-\blx@parenlevel@text=\count349
-\blx@parenlevel@foot=\count350
-\blx@sectionciteorder@0=\count351
-\blx@entrysetcounter=\count352
-\labelnumberwidth=\skip63
-\labelalphawidth=\skip64
-\biblabelsep=\skip65
-\bibitemsep=\skip66
-\bibnamesep=\skip67
-\bibinitsep=\skip68
-\bibparsep=\skip69
-\bibhang=\skip70
-\blx@bcfin=\read3
-\blx@bcfout=\write4
-\blx@langwohyphens=\language5
-\c@mincomprange=\count353
-\c@maxcomprange=\count354
-\c@mincompwidth=\count355
-Package biblatex Info: Trying to load biblatex default data model...
-Package biblatex Info: ... file 'blx-dm.def' found.
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-dm.def
-File: blx-dm.def 2019/12/01 v3.14 biblatex localization (PK/MW)
-)
-Package biblatex Info: Trying to load biblatex style data model...
-Package biblatex Info: ... file 'numeric.dbx' not found.
-Package biblatex Info: Trying to load biblatex custom data model...
-Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count356
-\c@savedafterword=\count357
-\c@annotator=\count358
-\c@savedannotator=\count359
-\c@author=\count360
-\c@savedauthor=\count361
-\c@bookauthor=\count362
-\c@savedbookauthor=\count363
-\c@commentator=\count364
-\c@savedcommentator=\count365
-\c@editor=\count366
-\c@savededitor=\count367
-\c@editora=\count368
-\c@savededitora=\count369
-\c@editorb=\count370
-\c@savededitorb=\count371
-\c@editorc=\count372
-\c@savededitorc=\count373
-\c@foreword=\count374
-\c@savedforeword=\count375
-\c@holder=\count376
-\c@savedholder=\count377
-\c@introduction=\count378
-\c@savedintroduction=\count379
-\c@namea=\count380
-\c@savednamea=\count381
-\c@nameb=\count382
-\c@savednameb=\count383
-\c@namec=\count384
-\c@savednamec=\count385
-\c@translator=\count386
-\c@savedtranslator=\count387
-\c@shortauthor=\count388
-\c@savedshortauthor=\count389
-\c@shorteditor=\count390
-\c@savedshorteditor=\count391
-\c@labelname=\count392
-\c@savedlabelname=\count393
-\c@institution=\count394
-\c@savedinstitution=\count395
-\c@lista=\count396
-\c@savedlista=\count397
-\c@listb=\count398
-\c@savedlistb=\count399
-\c@listc=\count400
-\c@savedlistc=\count401
-\c@listd=\count402
-\c@savedlistd=\count403
-\c@liste=\count404
-\c@savedliste=\count405
-\c@listf=\count406
-\c@savedlistf=\count407
-\c@location=\count408
-\c@savedlocation=\count409
-\c@organization=\count410
-\c@savedorganization=\count411
-\c@origlocation=\count412
-\c@savedoriglocation=\count413
-\c@origpublisher=\count414
-\c@savedorigpublisher=\count415
-\c@publisher=\count416
-\c@savedpublisher=\count417
-\c@language=\count418
-\c@savedlanguage=\count419
-\c@origlanguage=\count420
-\c@savedoriglanguage=\count421
-\c@pageref=\count422
-\c@savedpageref=\count423
-\shorthandwidth=\skip71
-\shortjournalwidth=\skip72
-\shortserieswidth=\skip73
-\shorttitlewidth=\skip74
-\shortauthorwidth=\skip75
-\shorteditorwidth=\skip76
-\locallabelnumberwidth=\skip77
-\locallabelalphawidth=\skip78
-\localshorthandwidth=\skip79
-\localshortjournalwidth=\skip80
-\localshortserieswidth=\skip81
-\localshorttitlewidth=\skip82
-\localshortauthorwidth=\skip83
-\localshorteditorwidth=\skip84
-Package biblatex Info: Trying to load compatibility code...
-Package biblatex Info: ... file 'blx-compat.def' found.
+Enter file name: 
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-compat.def
-File: blx-compat.def 2019/12/01 v3.14 biblatex compatibility (PK/MW)
-)
-Package biblatex Info: Trying to load generic definitions...
-Package biblatex Info: ... file 'biblatex.def' found.
+! LaTeX Error: Unknown option `bibstyle=nature' for package `biblatex'.
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.def
-File: biblatex.def 2019/12/01 v3.14 biblatex compatibility (PK/MW)
-\c@textcitecount=\count424
-\c@textcitetotal=\count425
-\c@textcitemaxnames=\count426
-\c@biburlbigbreakpenalty=\count427
-\c@biburlbreakpenalty=\count428
-\c@biburlnumpenalty=\count429
-\c@biburlucpenalty=\count430
-\c@biburllcpenalty=\count431
-\biburlbigskip=\muskip18
-\biburlnumskip=\muskip19
-\biburlucskip=\muskip20
-\biburllcskip=\muskip21
-\c@smartand=\count432
-)
-Package biblatex Info: Trying to load bibliography style 'numeric'...
-Package biblatex Info: ... file 'numeric.bbx' found.
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \bibliography
+                  {../bibliography/ishbib}
+? 
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/numeric.bbx
-File: numeric.bbx 2019/12/01 v3.14 biblatex bibliography style (PK/MW)
-Package biblatex Info: Trying to load bibliography style 'standard'...
-Package biblatex Info: ... file 'standard.bbx' found.
+! LaTeX Error: Unknown option `style=numeric' for package `biblatex'.
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
-File: standard.bbx 2019/12/01 v3.14 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count433
-\c@bbx:relatedtotal=\count434
-))
-Package biblatex Info: Trying to load citation style 'numeric-comp'...
-Package biblatex Info: ... file 'numeric-comp.cbx' found.
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \bibliography
+                  {../bibliography/ishbib}
+? 
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/cbx/numeric-comp.cbx
-File: numeric-comp.cbx 2019/12/01 v3.14 biblatex citation style (PK/MW)
-\c@cbx@tempcnta=\count435
-\c@cbx@tempcntb=\count436
-Package biblatex Info: Redefining '\cite'.
-Package biblatex Info: Redefining '\parencite'.
-Package biblatex Info: Redefining '\footcite'.
-Package biblatex Info: Redefining '\footcitetext'.
-Package biblatex Info: Redefining '\smartcite'.
-Package biblatex Info: Redefining '\supercite'.
-Package biblatex Info: Redefining '\textcite'.
-Package biblatex Info: Redefining '\textcites'.
-Package biblatex Info: Redefining '\cites'.
-Package biblatex Info: Redefining '\parencites'.
-Package biblatex Info: Redefining '\smartcites'.
-)
-Package biblatex Info: Trying to load configuration file...
-Package biblatex Info: ... file 'biblatex.cfg' found.
+! LaTeX Error: Unknown option `citestyle=numeric-comp' for package `biblatex'.
 
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.cfg
-File: biblatex.cfg 
-))
-(./ishCommands.tex
-\c@theorem=\count437
-\c@corollary=\count438
-\c@lemma=\count439
-\c@question=\count440
-\c@Definition=\count441
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \bibliography
+                  {../bibliography/ishbib}
+? 
+
+! LaTeX Error: Unknown option `sorting=none' for package `biblatex'.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \bibliography
+                  {../bibliography/ishbib}
+? 
+
+! LaTeX Error: Unknown option `backend=biber' for package `biblatex'.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \bibliography
+                  {../bibliography/ishbib}
+? 
+\bibdata{../bibliography/ishbib}
+(./ECEFacceleration.bbl
+! Undefined control sequence.
+l.20 \refsection
+                {0}
+? 
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.20 \refsection{0
+                  }
+? 
+! Undefined control sequence.
+l.21   \datalist
+                [entry]{none/global//global/global}
+? 
+! Undefined control sequence.
+l.22     \entry
+               {Brautigam2010}{inproceedings}{}
+? 
+! Undefined control sequence.
+l.23       \name
+                {author}{7}{}{%
+? 
+! Undefined control sequence.
+l.26            familyi={B\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.28            giveni={B\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.31            familyi={R\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.33            giveni={P\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.36            familyi={G\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.38            giveni={C\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.41            familyi={W\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.43            giveni={M\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.46            familyi={S\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.48            giveni={D\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.51            familyi={S\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.53            giveni={D\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.56            familyi={S\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.58            giveni={M\bibinitperiod
+                                       }}}%
+? 
+! Undefined control sequence.
+l.60       \strng
+                 {namehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+? 
+! Undefined control sequence.
+l.61       \strng
+                 {fullhash}{5b22e2fb570582741519eae1e7cadc3d}
+? 
+! Undefined control sequence.
+l.62       \strng
+                 {bibnamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+? 
+! Undefined control sequence.
+l.63       \strng
+                 {authorbibnamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+? 
+! Undefined control sequence.
+l.64       \strng
+                 {authornamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
+? 
+! Undefined control sequence.
+l.65       \strng
+                 {authorfullhash}{5b22e2fb570582741519eae1e7cadc3d}
+? 
+! Undefined control sequence.
+l.66       \field
+                 {sortinit}{1}
+? 
+! Undefined control sequence.
+l.67       \field
+                 {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.68       \field
+                 {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.69       \field
+                 {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.70       \field
+                 {abstract}{The TerraSAR-X satellite features an advanced X-...
+
+? 
+! Undefined control sequence.
+l.71       \field
+                 {booktitle}{{Geoscience and Remote Sensing Symposium (IGARS...
+
+? 
+! Undefined control sequence.
+l.72       \field
+                 {issn}{2153-6996}
+? 
+! Undefined control sequence.
+l.73       \field
+                 {title}{{SAR performance monitoring for TerraSAR-X mission}}
+? 
+! Undefined control sequence.
+l.74       \field
+                 {year}{2010}
+? 
+! Undefined control sequence.
+l.75       \field
+                 {pages}{3454\bibrangedash 3457}
+? 
+! Undefined control sequence.
+l.75       \field{pages}{3454\bibrangedash
+                                           3457}
+? 
+! Undefined control sequence.
+l.76       \range
+                 {pages}{4}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.77       \verb{doi}
+                     
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.78       \verb 10.1109/IGARSS.2010.5648907
+                                            
+? 
+! Undefined control sequence.
+l.79       \endverb
+                   
+? 
+! Undefined control sequence.
+l.80       \keyw
+                {artificial satellites; image resolution; phased array radar...
+
+? 
+! Undefined control sequence.
+l.81     \endentry
+                  
+? 
+! Undefined control sequence.
+l.82     \entry
+               {Fox2004}{article}{}
+? 
+! Undefined control sequence.
+l.83       \name
+                {author}{3}{}{%
+? 
+! Undefined control sequence.
+l.86            familyi={F\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.87            given={Peter\bibnamedelima
+                                           A},
+? 
+! Undefined control sequence.
+l.88            giveni={P\bibinitperiod
+                                       \bibinitdelim A\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.88 ...      giveni={P\bibinitperiod\bibinitdelim
+                                                   A\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.88 ...bibinitperiod\bibinitdelim A\bibinitperiod
+                                                  }}}%
+? 
+! Undefined control sequence.
+l.91            familyi={L\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.92            given={Anthony\bibnamedelima
+                                             P},
+? 
+! Undefined control sequence.
+l.93            giveni={A\bibinitperiod
+                                       \bibinitdelim P\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.93 ...      giveni={A\bibinitperiod\bibinitdelim
+                                                   P\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.93 ...bibinitperiod\bibinitdelim P\bibinitperiod
+                                                  }}}%
+? 
+! Undefined control sequence.
+l.96            familyi={T\bibinitperiod
+                                        },
+? 
+! Undefined control sequence.
+l.97            given={Alan\bibnamedelima
+                                          A},
+? 
+! Undefined control sequence.
+l.98            giveni={A\bibinitperiod
+                                       \bibinitdelim A\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.98 ...      giveni={A\bibinitperiod\bibinitdelim
+                                                   A\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.98 ...bibinitperiod\bibinitdelim A\bibinitperiod
+                                                  }}}%
+? 
+
+Overfull \hbox (259.69606pt too wide) in paragraph at lines 20--100
+[]\OT1/cmr/m/n/10 0 [en-try]none/global//global/global Brautigam2010inproceedin
+gs au-thor7hash=41f41ed7789ab3a0a9174163bcc4090dfamily=Brautigam,
+ []
+
+
+Overfull \hbox (42.77885pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 fam-i-lyi=B, given=B., giveni=Bhash=464d7f708777f392d63b94554eb
+1e7e4family=Rizzoli,
+ []
+
+
+Overfull \hbox (56.5983pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 fam-i-lyi=R, given=P., giveni=Phash=bb66bed957519b77fabb352b069
+47e45family=Gonzalez,
+ []
+
+
+Overfull \hbox (40.3482pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 fam-i-lyi=G, given=C., giveni=Chash=72914f3beab43de7181c84e974b
+74cc3family=Weigt,
+ []
+
+
+Overfull \hbox (60.3067pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 fam-i-lyi=W, given=M., giveni=Mhash=15b9f7a44001632b033b0a7b8b0
+ebb36family=Schrank,
+ []
+
+
+Overfull \hbox (40.27881pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 fam-i-lyi=S, given=D., giveni=Dhash=3afff803e100c42d52b3f286b32
+059c2family=Schulze,
+ []
+
+
+Overfull \hbox (51.41772pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 fam-i-lyi=S, given=D., giveni=Dhash=728ef903b8180ebcb5a746084bf
+d571ffamily=Schwerdt,
+ []
+
+
+Overfull \hbox (59.27885pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 full-hash5b22e2fb570582741519eae1e7cadc3d bib-name-hashbf7426d8
+73dcf4f594a3cf948dc0b22d
+ []
+
+
+Overfull \hbox (122.94574pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 au-thor-bib-name-hashbf7426d873dcf4f594a3cf948dc0b22d au-thor-n
+ame-hashbf7426d873dcf4f594a3cf948dc0b22d
+ []
+
+
+Overfull \hbox (123.64009pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 au-thor-full-hash5b22e2fb570582741519eae1e7cadc3d sor-tinit1 so
+r-tinithash50c6687d7fc80f50136d75228e3c59ba
+ []
+
+
+Overfull \hbox (44.08435pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 au-thor3hash=8d2a13b484d0e4ce2135c4fb3dcb866efamily=Fox, fam-i-
+lyi=F, given=PeterA,
+ []
+
+
+Overfull \hbox (16.02873pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 giveni=PAhash=4bcd73a3f45da11cbb7e3c53fc43c719family=Luscombe, 
+fam-i-lyi=L,
+ []
+
+
+Overfull \hbox (50.11208pt too wide) in paragraph at lines 20--100
+\OT1/cmr/m/n/10 given=AnthonyP, giveni=APhash=9ccceca586eed95fe491acddbcaa241bf
+amily=Thompson,
+ []
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.101         {N
+                RC Research Press Ottawa, Canada}%
+? 
+! Undefined control sequence.
+l.103       \strng
+                  {namehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+? 
+! Undefined control sequence.
+l.104       \strng
+                  {fullhash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+? 
+! Undefined control sequence.
+l.105       \strng
+                  {bibnamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+? 
+! Undefined control sequence.
+l.106       \strng
+                  {authorbibnamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+? 
+! Undefined control sequence.
+l.107       \strng
+                  {authornamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+? 
+! Undefined control sequence.
+l.108       \strng
+                  {authorfullhash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+? 
+! Undefined control sequence.
+l.109       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.110       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.111       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.112       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.113       \field
+                  {journaltitle}{Canadian journal of remote sensing}
+? 
+! Undefined control sequence.
+l.114       \field
+                  {number}{3}
+? 
+! Undefined control sequence.
+l.115       \field
+                  {title}{{{RADARSAT-2 {SAR}} modes development and utilizat...
+
+? 
+! Undefined control sequence.
+l.116       \field
+                  {volume}{30}
+? 
+! Undefined control sequence.
+l.117       \field
+                  {year}{2004}
+? 
+! Undefined control sequence.
+l.118       \field
+                  {pages}{258\bibrangedash 264}
+? 
+! Undefined control sequence.
+l.118       \field{pages}{258\bibrangedash
+                                           264}
+? 
+! Undefined control sequence.
+l.119       \range
+                  {pages}{7}
+? 
+! Undefined control sequence.
+l.120     \endentry
+                   
+? 
+! Undefined control sequence.
+l.121     \entry
+                {Porfilio2016}{inproceedings}{}
+? 
+! Undefined control sequence.
+l.122       \name
+                 {author}{4}{}{%
+? 
+! Undefined control sequence.
+l.125            familyi={P\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.127            giveni={M\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.130            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.132            giveni={S\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.135            familyi={F\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.136            given={C.\bibnamedelimi
+                                         A.\bibnamedelimi M.},
+? 
+! Undefined control sequence.
+l.136 ... given={C.\bibnamedelimi A.\bibnamedelimi
+                                                   M.},
+? 
+! Undefined control sequence.
+l.137            giveni={C\bibinitperiod
+                                        \bibinitdelim A\bibinitperiod\bibini...
+
+? 
+! Undefined control sequence.
+l.137 ...     giveni={C\bibinitperiod\bibinitdelim
+                                                   A\bibinitperiod\bibinitde...
+
+? 
+! Undefined control sequence.
+l.137 ...ibinitperiod\bibinitdelim A\bibinitperiod
+                                                  \bibinitdelim M\bibinitper...
+
+? 
+! Undefined control sequence.
+l.137 ...bibinitdelim A\bibinitperiod\bibinitdelim
+                                                   M\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.137 ...ibinitperiod\bibinitdelim M\bibinitperiod
+                                                  }}}%
+? 
+! Undefined control sequence.
+l.140            familyi={C\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.142            giveni={D\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.144       \strng
+                  {namehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+? 
+! Undefined control sequence.
+l.145       \strng
+                  {fullhash}{652c0569c3cb89cee7effe2a31f9ef3d}
+? 
+! Undefined control sequence.
+l.146       \strng
+                  {bibnamehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+? 
+! Undefined control sequence.
+l.147       \strng
+                  {authorbibnamehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+? 
+! Undefined control sequence.
+l.148       \strng
+                  {authornamehash}{f0d28ca4d0d2b18bba70fc4a21ce6de9}
+? 
+! Undefined control sequence.
+l.149       \strng
+                  {authorfullhash}{652c0569c3cb89cee7effe2a31f9ef3d}
+? 
+! Undefined control sequence.
+l.150       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.151       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.152       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.153       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.154       \field
+                  {booktitle}{2016 IEEE International Geoscience and Remote ...
+
+? 
+! Undefined control sequence.
+l.155       \field
+                  {month}{7}
+? 
+! Undefined control sequence.
+l.156       \field
+                  {title}{The acquisition modes of COSMO-Skymed di Seconda G...
+
+? 
+! Undefined control sequence.
+l.157       \field
+                  {year}{2016}
+? 
+! Undefined control sequence.
+l.158       \field
+                  {pages}{2082\bibrangedash 2085}
+? 
+! Undefined control sequence.
+l.158       \field{pages}{2082\bibrangedash
+                                            2085}
+? 
+! Undefined control sequence.
+l.159       \range
+                  {pages}{4}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.160       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.161       \verb 10.1109/IGARSS.2016.7729537
+                                             
+? 
+! Undefined control sequence.
+l.162       \endverb
+                    
+? 
+! Undefined control sequence.
+l.163       \keyw
+                 {data acquisition;remote sensing by radar;synthetic apertur...
+
+? 
+! Undefined control sequence.
+l.164     \endentry
+                   
+? 
+! Undefined control sequence.
+l.165     \entry
+                {Mittermayer}{article}{}
+? 
+! Undefined control sequence.
+l.166       \name
+                 {author}{4}{}{%
+? 
+! Undefined control sequence.
+l.169            familyi={M\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.171            giveni={J\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.174            familyi={W\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.176            giveni={S\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.179            familyi={P\bibinithyphendelim
+                                               I\bibinitperiod},
+? 
+! Undefined control sequence.
+l.179 ...lyi={P\bibinithyphendelim I\bibinitperiod
+                                                  },
+? 
+! Undefined control sequence.
+l.181            giveni={P\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.184            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.186            giveni={R\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.188       \strng
+                  {namehash}{cb3f71910742ffeed21f22a55f32a3e8}
+? 
+! Undefined control sequence.
+l.189       \strng
+                  {fullhash}{be1007f9ef69546ed0fdd406c387b206}
+? 
+! Undefined control sequence.
+l.190       \strng
+                  {bibnamehash}{cb3f71910742ffeed21f22a55f32a3e8}
+? 
+! Undefined control sequence.
+l.191       \strng
+                  {authorbibnamehash}{cb3f71910742ffeed21f22a55f32a3e8}
+? 
+! Undefined control sequence.
+l.192       \strng
+                  {authornamehash}{cb3f71910742ffeed21f22a55f32a3e8}
+? 
+! Undefined control sequence.
+l.193       \strng
+                  {authorfullhash}{be1007f9ef69546ed0fdd406c387b206}
+? 
+! Undefined control sequence.
+l.194       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.195       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.196       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.197       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.198       \field
+                  {abstract}{The paper investigates the possibility to enhan...
+
+? 
+! Undefined control sequence.
+l.199       \field
+                  {issn}{0196-2892}
+? 
+! Undefined control sequence.
+l.200       \field
+                  {journaltitle}{IEEE Transactions on Geoscience and Remote ...
+
+? 
+! Undefined control sequence.
+l.201       \field
+                  {month}{6}
+? 
+! Undefined control sequence.
+l.202       \field
+                  {number}{6}
+? 
+! Undefined control sequence.
+l.203       \field
+                  {title}{The TerraSAR-X Staring Spotlight Mode Concept}
+? 
+! Undefined control sequence.
+l.204       \field
+                  {volume}{52}
+? 
+! Undefined control sequence.
+l.205       \field
+                  {year}{2014}
+? 
+! Undefined control sequence.
+l.206       \field
+                  {pages}{3695\bibrangedash 3706}
+? 
+! Undefined control sequence.
+l.206       \field{pages}{3695\bibrangedash
+                                            3706}
+? 
+! Undefined control sequence.
+l.207       \range
+                  {pages}{12}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.208       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.209       \verb 10.1109/TGRS.2013.2274821
+                                           
+? 
+! Undefined control sequence.
+l.210       \endverb
+                    
+? 
+! Undefined control sequence.
+l.211       \keyw
+                 {geophysical techniques;image resolution;radar imaging;rada...
+
+? 
+! Undefined control sequence.
+l.212     \endentry
+                   
+? 
+! Undefined control sequence.
+l.213     \entry
+                {Luo2014}{article}{}
+? 
+! Undefined control sequence.
+l.214       \name
+                 {author}{6}{}{%
+? 
+! Undefined control sequence.
+l.217            familyi={L\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.219            giveni={Y\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.222            familyi={Z\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.224            giveni={B\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.227            familyi={H\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.229            giveni={X\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.232            familyi={W\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.234            giveni={R\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.237            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.239            giveni={H\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.242            familyi={D\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.244            giveni={Y\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.246       \strng
+                  {namehash}{f6b96f09224c246be0b806653e74b336}
+? 
+! Undefined control sequence.
+l.247       \strng
+                  {fullhash}{c4aec8961d4582e92285127b21966ec3}
+? 
+! Undefined control sequence.
+l.248       \strng
+                  {bibnamehash}{f6b96f09224c246be0b806653e74b336}
+? 
+! Undefined control sequence.
+l.249       \strng
+                  {authorbibnamehash}{f6b96f09224c246be0b806653e74b336}
+? 
+! Undefined control sequence.
+l.250       \strng
+                  {authornamehash}{f6b96f09224c246be0b806653e74b336}
+? 
+! Undefined control sequence.
+l.251       \strng
+                  {authorfullhash}{c4aec8961d4582e92285127b21966ec3}
+? 
+! Undefined control sequence.
+l.252       \field
+                  {sortinit}{3}
+? 
+! Undefined control sequence.
+l.253       \field
+                  {sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+? 
+! Undefined control sequence.
+l.254       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.255       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.256       \field
+                  {abstract}{High-resolution spaceborne synthetic aperture r...
+
+? 
+! Undefined control sequence.
+l.257       \field
+                  {issn}{1558-0644}
+? 
+! Undefined control sequence.
+l.258       \field
+                  {journaltitle}{IEEE Transactions on Geoscience and Remote ...
+
+? 
+! Undefined control sequence.
+l.259       \field
+                  {month}{6}
+? 
+! Undefined control sequence.
+l.260       \field
+                  {number}{6}
+? 
+! Undefined control sequence.
+l.261       \field
+                  {title}{A Novel High-Order Range Model and Imaging Approac...
+
+? 
+! Undefined control sequence.
+l.262       \field
+                  {volume}{52}
+? 
+! Undefined control sequence.
+l.263       \field
+                  {year}{2014}
+? 
+! Undefined control sequence.
+l.264       \field
+                  {pages}{3473\bibrangedash 3485}
+? 
+! Undefined control sequence.
+l.264       \field{pages}{3473\bibrangedash
+                                            3485}
+? 
+! Undefined control sequence.
+l.265       \range
+                  {pages}{13}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.266       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.267       \verb 10.1109/TGRS.2013.2273086
+                                           
+? 
+! Undefined control sequence.
+l.268       \endverb
+                    
+? 
+! Undefined control sequence.
+l.269       \keyw
+                 {Doppler radar;focusing;image resolution;radar imaging;rada...
+
+? 
+! Undefined control sequence.
+l.270     \endentry
+                   
+? 
+! Undefined control sequence.
+l.271     \entry
+                {CalabreseDiego2014}{inproceedings}{}
+? 
+! Undefined control sequence.
+l.272       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.275            familyi={C\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.277            giveni={D\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.279       \strng
+                  {namehash}{437b36bcdd3480d4173f682bc78812e7}
+? 
+! Undefined control sequence.
+l.280       \strng
+                  {fullhash}{437b36bcdd3480d4173f682bc78812e7}
+? 
+! Undefined control sequence.
+l.281       \strng
+                  {bibnamehash}{437b36bcdd3480d4173f682bc78812e7}
+? 
+! Undefined control sequence.
+l.282       \strng
+                  {authorbibnamehash}{437b36bcdd3480d4173f682bc78812e7}
+? 
+! Undefined control sequence.
+l.283       \strng
+                  {authornamehash}{437b36bcdd3480d4173f682bc78812e7}
+? 
+! Undefined control sequence.
+l.284       \strng
+                  {authorfullhash}{437b36bcdd3480d4173f682bc78812e7}
+? 
+! Undefined control sequence.
+l.285       \field
+                  {sortinit}{4}
+? 
+! Undefined control sequence.
+l.286       \field
+                  {sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
+? 
+! Undefined control sequence.
+l.287       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.288       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.289       \field
+                  {abstract}{A novel technique for design of Synthetic Apert...
+
+? 
+! Undefined control sequence.
+l.290       \field
+                  {booktitle}{{EUSAR 2014; 10th European Conference on Synth...
+
+? 
+! Undefined control sequence.
+l.291       \field
+                  {month}{6}
+? 
+! Undefined control sequence.
+l.292       \field
+                  {title}{{DIscrete Stepped Strip (DI2S)}}
+? 
+! Undefined control sequence.
+l.293       \field
+                  {year}{2014}
+? 
+! Undefined control sequence.
+l.294       \field
+                  {pages}{1\bibrangedash 4}
+? 
+! Undefined control sequence.
+l.294       \field{pages}{1\bibrangedash
+                                         4}
+? 
+! Undefined control sequence.
+l.295       \range
+                  {pages}{4}
+? 
+! Undefined control sequence.
+l.296     \endentry
+                   
+? 
+! Undefined control sequence.
+l.297     \entry
+                {SikanetaGierullTGRS2015}{article}{}
+? 
+! Undefined control sequence.
+l.298       \name
+                 {author}{2}{}{%
+? 
+! Undefined control sequence.
+l.301            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.303            giveni={I\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.306            familyi={G\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.308            giveni={C\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.310       \strng
+                  {namehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+? 
+! Undefined control sequence.
+l.311       \strng
+                  {fullhash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+? 
+! Undefined control sequence.
+l.312       \strng
+                  {bibnamehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+? 
+! Undefined control sequence.
+l.313       \strng
+                  {authorbibnamehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+? 
+! Undefined control sequence.
+l.314       \strng
+                  {authornamehash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+? 
+! Undefined control sequence.
+l.315       \strng
+                  {authorfullhash}{3639ba23f3c8ca5e5fa8b668c772bb31}
+? 
+! Undefined control sequence.
+l.316       \field
+                  {sortinit}{4}
+? 
+! Undefined control sequence.
+l.317       \field
+                  {sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
+? 
+! Undefined control sequence.
+l.318       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.319       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.320       \field
+                  {abstract}{This paper discusses the ability of a SAR to cr...
+
+? 
+! Undefined control sequence.
+l.321       \field
+                  {issn}{1939-1404}
+? 
+! Undefined control sequence.
+l.322       \field
+                  {journaltitle}{IEEE Journal of Selected Topics in Applied ...
+
+? 
+! Undefined control sequence.
+l.323       \field
+                  {month}{11}
+? 
+! Undefined control sequence.
+l.324       \field
+                  {number}{11}
+? 
+! Undefined control sequence.
+l.325       \field
+                  {title}{Phased-Array Beam-Diversity With Multiple Channels...
+
+? 
+! Undefined control sequence.
+l.326       \field
+                  {volume}{8}
+? 
+! Undefined control sequence.
+l.327       \field
+                  {year}{2015}
+? 
+! Undefined control sequence.
+l.328       \field
+                  {pages}{5106\bibrangedash 5115}
+? 
+! Undefined control sequence.
+l.328       \field{pages}{5106\bibrangedash
+                                            5115}
+? 
+! Undefined control sequence.
+l.329       \range
+                  {pages}{10}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.330       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.331       \verb 10.1109/JSTARS.2015.2483758
+                                             
+? 
+! Undefined control sequence.
+l.332       \endverb
+                    
+? 
+! Undefined control sequence.
+l.333       \keyw
+                 {antenna phased arrays;image resolution;radar imaging;radar...
+
+? 
+! Undefined control sequence.
+l.334     \endentry
+                   
+? 
+! Undefined control sequence.
+l.335     \entry
+                {Cumming2005}{book}{}
+? 
+! Undefined control sequence.
+l.336       \name
+                 {author}{2}{}{%
+? 
+! Undefined control sequence.
+l.339            familyi={C\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.340            given={I.\bibnamedelimi
+                                         G.},
+? 
+! Undefined control sequence.
+l.341            giveni={I\bibinitperiod
+                                        \bibinitdelim G\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.341 ...     giveni={I\bibinitperiod\bibinitdelim
+                                                   G\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.341 ...ibinitperiod\bibinitdelim G\bibinitperiod
+                                                  }}}%
+? 
+! Undefined control sequence.
+l.344            familyi={W\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.345            given={F.\bibnamedelimi
+                                         H.},
+? 
+! Undefined control sequence.
+l.346            giveni={F\bibinitperiod
+                                        \bibinitdelim H\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.346 ...     giveni={F\bibinitperiod\bibinitdelim
+                                                   H\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.346 ...ibinitperiod\bibinitdelim H\bibinitperiod
+                                                  }}}%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.348       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.351       \list{publisher}{1}
+                               {%
+? 
+! Undefined control sequence.
+l.354       \strng
+                  {namehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+? 
+! Undefined control sequence.
+l.355       \strng
+                  {fullhash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+? 
+! Undefined control sequence.
+l.356       \strng
+                  {bibnamehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+? 
+! Undefined control sequence.
+l.357       \strng
+                  {authorbibnamehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+? 
+! Undefined control sequence.
+l.358       \strng
+                  {authornamehash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+? 
+! Undefined control sequence.
+l.359       \strng
+                  {authorfullhash}{30c69bb6d8aa9d6c5a305d87dc09482f}
+? 
+! Undefined control sequence.
+l.360       \field
+                  {sortinit}{5}
+? 
+! Undefined control sequence.
+l.361       \field
+                  {sortinithash}{5dd416adbafacc8226114bc0202d5fdd}
+? 
+! Undefined control sequence.
+l.362       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.363       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.364       \field
+                  {isbn}{1-58053-058-3}
+? 
+! Undefined control sequence.
+l.365       \field
+                  {title}{{Digital Processing of Synthetic Aperture Radar Da...
+
+? 
+! Undefined control sequence.
+l.366       \field
+                  {year}{2005}
+? 
+! Undefined control sequence.
+l.367     \endentry
+                   
+? 
+! Undefined control sequence.
+l.368     \entry
+                {GebertPHD}{thesis}{}
+? 
+! Undefined control sequence.
+l.369       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.372            familyi={G\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.374            giveni={N\bibinitperiod
+                                        }}}%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.376       \list{institution}{1}
+                                 {%
+? 
+! Undefined control sequence.
+l.379       \strng
+                  {namehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+? 
+! Undefined control sequence.
+l.380       \strng
+                  {fullhash}{107d2211de0ae10ac5fa4635ce6a1c38}
+? 
+! Undefined control sequence.
+l.381       \strng
+                  {bibnamehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+? 
+! Undefined control sequence.
+l.382       \strng
+                  {authorbibnamehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+? 
+! Undefined control sequence.
+l.383       \strng
+                  {authornamehash}{107d2211de0ae10ac5fa4635ce6a1c38}
+? 
+! Undefined control sequence.
+l.384       \strng
+                  {authorfullhash}{107d2211de0ae10ac5fa4635ce6a1c38}
+? 
+! Undefined control sequence.
+l.385       \field
+                  {sortinit}{6}
+? 
+! Undefined control sequence.
+l.386       \field
+                  {sortinithash}{7851c86048328b027313775d8fbd2131}
+? 
+! Undefined control sequence.
+l.387       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.388       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.389       \field
+                  {title}{{Multi-Channel Azimuth Processing for High-Resolut...
+
+? 
+! Undefined control sequence.
+l.390       \field
+                  {type}{phdthesis}
+? 
+! Undefined control sequence.
+l.391       \field
+                  {year}{2009}
+? 
+! Undefined control sequence.
+l.392     \endentry
+                   
+? 
+! Undefined control sequence.
+l.393     \entry
+                {Shou2014}{article}{}
+? 
+! Undefined control sequence.
+l.394       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.397            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.399            giveni={H\bibinithyphendelim
+                                              N\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.399 ...eni={H\bibinithyphendelim N\bibinitperiod
+                                                  }}}%
+? 
+! Undefined control sequence.
+l.401       \strng
+                  {namehash}{2af4424d8b78a4e9318dd36d8a045594}
+? 
+! Undefined control sequence.
+l.402       \strng
+                  {fullhash}{2af4424d8b78a4e9318dd36d8a045594}
+? 
+! Undefined control sequence.
+l.403       \strng
+                  {bibnamehash}{2af4424d8b78a4e9318dd36d8a045594}
+? 
+! Undefined control sequence.
+l.404       \strng
+                  {authorbibnamehash}{2af4424d8b78a4e9318dd36d8a045594}
+? 
+! Undefined control sequence.
+l.405       \strng
+                  {authornamehash}{2af4424d8b78a4e9318dd36d8a045594}
+? 
+! Undefined control sequence.
+l.406       \strng
+                  {authorfullhash}{2af4424d8b78a4e9318dd36d8a045594}
+? 
+! Undefined control sequence.
+l.407       \field
+                  {sortinit}{7}
+? 
+! Undefined control sequence.
+l.408       \field
+                  {sortinithash}{f615fb9c6fba11c6f962fb3fd599810e}
+? 
+! Undefined control sequence.
+l.409       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.410       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.411       \field
+                  {journaltitle}{International Journal of Antennas and Propa...
+
+? 
+! Undefined control sequence.
+l.412       \field
+                  {title}{Orbit Propagation and Determination of Low Earth O...
+
+? 
+! Undefined control sequence.
+l.413       \field
+                  {year}{2014}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.414       \verb{urlraw}
+                         
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.415 ...\verb https://doi.org/10.1155/2014/903026
+                                                  
+? 
+! Undefined control sequence.
+l.416       \endverb
+                    
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.417       \verb{url}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.418 ...\verb https://doi.org/10.1155/2014/903026
+                                                  
+? 
+! Undefined control sequence.
+l.419       \endverb
+                    
+? 
+! Undefined control sequence.
+l.420     \endentry
+                   
+? 
+! Undefined control sequence.
+l.421     \entry
+                {Cumming2003}{inproceedings}{}
+? 
+! Undefined control sequence.
+l.422       \name
+                 {author}{3}{}{%
+? 
+! Undefined control sequence.
+l.425            familyi={C\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.427            giveni={I\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.430            familyi={N\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.432            giveni={Y\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.435            familyi={W\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.437            giveni={F\bibinitperiod
+                                        }}}%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.439       \list{location}{1}
+                              {%
+? 
+! Undefined control sequence.
+l.442       \strng
+                  {namehash}{2c9429498cbcc7706b6dd54942a58efa}
+? 
+! Undefined control sequence.
+l.443       \strng
+                  {fullhash}{2c9429498cbcc7706b6dd54942a58efa}
+? 
+! Undefined control sequence.
+l.444       \strng
+                  {bibnamehash}{2c9429498cbcc7706b6dd54942a58efa}
+? 
+! Undefined control sequence.
+l.445       \strng
+                  {authorbibnamehash}{2c9429498cbcc7706b6dd54942a58efa}
+? 
+! Undefined control sequence.
+l.446       \strng
+                  {authornamehash}{2c9429498cbcc7706b6dd54942a58efa}
+? 
+! Undefined control sequence.
+l.447       \strng
+                  {authorfullhash}{2c9429498cbcc7706b6dd54942a58efa}
+? 
+! Undefined control sequence.
+l.448       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.449       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.450       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.451       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.452       \field
+                  {booktitle}{{Geoscience and Remote Sensing Symposium, 2003...
+
+? 
+! Undefined control sequence.
+l.453       \field
+                  {month}{7}
+? 
+! Undefined control sequence.
+l.454       \field
+                  {title}{{Interpretations of the omega-K algorithm and comp...
+
+? 
+! Undefined control sequence.
+l.455       \field
+                  {volume}{3}
+? 
+! Undefined control sequence.
+l.456       \field
+                  {year}{2003}
+? 
+! Undefined control sequence.
+l.457       \field
+                  {pages}{1455\bibrangedash 1458}
+? 
+! Undefined control sequence.
+l.457       \field{pages}{1455\bibrangedash
+                                            1458}
+? 
+! Undefined control sequence.
+l.458       \range
+                  {pages}{4}
+? 
+! Undefined control sequence.
+l.459     \endentry
+                   
+? 
+! Undefined control sequence.
+l.460     \entry
+                {Franc99}{book}{}
+? 
+! Undefined control sequence.
+l.461       \name
+                 {author}{2}{}{%
+? 
+! Undefined control sequence.
+l.464            familyi={F\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.466            giveni={G\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.469            familyi={L\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.471            giveni={R\bibinitperiod
+                                        }}}%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.473       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.476       \list{publisher}{1}
+                               {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.476       \list{publisher}{1}
+                               {%
+? 
+! Undefined control sequence.
+l.479       \strng
+                  {namehash}{46f3f16f6bd7f1539120dbf64243198c}
+? 
+! Undefined control sequence.
+l.480       \strng
+                  {fullhash}{46f3f16f6bd7f1539120dbf64243198c}
+? 
+! Undefined control sequence.
+l.481       \strng
+                  {bibnamehash}{46f3f16f6bd7f1539120dbf64243198c}
+? 
+! Undefined control sequence.
+l.482       \strng
+                  {authorbibnamehash}{46f3f16f6bd7f1539120dbf64243198c}
+? 
+! Undefined control sequence.
+l.483       \strng
+                  {authornamehash}{46f3f16f6bd7f1539120dbf64243198c}
+? 
+! Undefined control sequence.
+l.484       \strng
+                  {authorfullhash}{46f3f16f6bd7f1539120dbf64243198c}
+? 
+! Undefined control sequence.
+l.485       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.486       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.487       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.488       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.489       \field
+                  {title}{{Synthetic Aperture Radar Processing}}
+? 
+! Undefined control sequence.
+l.490       \field
+                  {year}{1999}
+? 
+! Undefined control sequence.
+l.491     \endentry
+                   
+? 
+! Undefined control sequence.
+l.492     \entry
+                {Raney1992}{inproceedings}{}
+? 
+! Undefined control sequence.
+l.493       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.496            familyi={R\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.497            given={R.\bibnamedelimi
+                                         K.},
+? 
+! Undefined control sequence.
+l.498            giveni={R\bibinitperiod
+                                        \bibinitdelim K\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.498 ...     giveni={R\bibinitperiod\bibinitdelim
+                                                   K\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.498 ...ibinitperiod\bibinitdelim K\bibinitperiod
+                                                  }}}%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.500       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.500       \list{location}{1}
+                              {%
+? 
+! Undefined control sequence.
+l.503       \strng
+                  {namehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+? 
+! Undefined control sequence.
+l.504       \strng
+                  {fullhash}{89297a2599df8e9e50dc7d6cefd0ba03}
+? 
+! Undefined control sequence.
+l.505       \strng
+                  {bibnamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+? 
+! Undefined control sequence.
+l.506       \strng
+                  {authorbibnamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+? 
+! Undefined control sequence.
+l.507       \strng
+                  {authornamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
+? 
+! Undefined control sequence.
+l.508       \strng
+                  {authorfullhash}{89297a2599df8e9e50dc7d6cefd0ba03}
+? 
+! Undefined control sequence.
+l.509       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.510       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.511       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.512       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.513       \field
+                  {booktitle}{Geoscience and Remote Sensing Symposium, 1992....
+
+? 
+! Undefined control sequence.
+l.514       \field
+                  {month}{5}
+? 
+! Undefined control sequence.
+l.515       \field
+                  {title}{A New And Fundamental Fourier Transform Pair}
+? 
+! Undefined control sequence.
+l.516       \field
+                  {volume}{1}
+? 
+! Undefined control sequence.
+l.517       \field
+                  {year}{1992}
+? 
+! Undefined control sequence.
+l.518       \field
+                  {pages}{106\bibrangedash 107}
+? 
+! Undefined control sequence.
+l.518       \field{pages}{106\bibrangedash
+                                           107}
+? 
+! Undefined control sequence.
+l.519       \range
+                  {pages}{2}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.520       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.521       \verb 10.1109/IGARSS.1992.576640
+                                            
+? 
+! Undefined control sequence.
+l.522       \endverb
+                    
+? 
+! Undefined control sequence.
+l.523       \keyw
+                 {Azimuth;Equations;Fourier transforms;Frequency domain anal...
+
+? 
+! Undefined control sequence.
+l.524     \endentry
+                   
+? 
+! Undefined control sequence.
+l.525     \entry
+                {Bamler1992}{article}{}
+? 
+! Undefined control sequence.
+l.526       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.529            familyi={B\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.531            giveni={R\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.533       \strng
+                  {namehash}{a89e7fb258f55dd0d1b62199281587f0}
+? 
+! Undefined control sequence.
+l.534       \strng
+                  {fullhash}{a89e7fb258f55dd0d1b62199281587f0}
+? 
+! Undefined control sequence.
+l.535       \strng
+                  {bibnamehash}{a89e7fb258f55dd0d1b62199281587f0}
+? 
+! Undefined control sequence.
+l.536       \strng
+                  {authorbibnamehash}{a89e7fb258f55dd0d1b62199281587f0}
+? 
+! Undefined control sequence.
+l.537       \strng
+                  {authornamehash}{a89e7fb258f55dd0d1b62199281587f0}
+? 
+! Undefined control sequence.
+l.538       \strng
+                  {authorfullhash}{a89e7fb258f55dd0d1b62199281587f0}
+? 
+! Undefined control sequence.
+l.539       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.540       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.541       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.542       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.543       \field
+                  {abstract}{Focusing of SAR data requires a space-variant t...
+
+? 
+! Undefined control sequence.
+l.544       \field
+                  {journaltitle}{Geoscience and Remote Sensing, IEEE Transac...
+
+? 
+! Undefined control sequence.
+l.545       \field
+                  {month}{7}
+? 
+! Undefined control sequence.
+l.546       \field
+                  {number}{4}
+? 
+! Undefined control sequence.
+l.547       \field
+                  {title}{{A comparison of range-Doppler and wavenumber doma...
+
+? 
+! Undefined control sequence.
+l.548       \field
+                  {volume}{30}
+? 
+! Undefined control sequence.
+l.549       \field
+                  {year}{1992}
+? 
+! Undefined control sequence.
+l.550       \field
+                  {pages}{706\bibrangedash 713}
+? 
+! Undefined control sequence.
+l.550       \field{pages}{706\bibrangedash
+                                           713}
+? 
+! Undefined control sequence.
+l.551       \range
+                  {pages}{8}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.552       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.553       \verb 10.1109/36.158864
+                                   
+? 
+! Undefined control sequence.
+l.554       \endverb
+                    
+? 
+! Undefined control sequence.
+l.555     \endentry
+                   
+? 
+! Undefined control sequence.
+l.556     \entry
+                {EnderSignalTheoretic}{inproceedings}{}
+? 
+! Undefined control sequence.
+l.557       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.560            familyi={E\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.561            given={J.\bibnamedelimi
+                                         H\bibnamedelima G},
+? 
+! Undefined control sequence.
+l.561 ...  given={J.\bibnamedelimi H\bibnamedelima
+                                                   G},
+? 
+! Undefined control sequence.
+l.562            giveni={J\bibinitperiod
+                                        \bibinitdelim H\bibinitperiod\bibini...
+
+? 
+! Undefined control sequence.
+l.562 ...     giveni={J\bibinitperiod\bibinitdelim
+                                                   H\bibinitperiod\bibinitde...
+
+? 
+! Undefined control sequence.
+l.562 ...ibinitperiod\bibinitdelim H\bibinitperiod
+                                                  \bibinitdelim G\bibinitper...
+
+? 
+! Undefined control sequence.
+l.562 ...bibinitdelim H\bibinitperiod\bibinitdelim
+                                                   G\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.562 ...ibinitperiod\bibinitdelim G\bibinitperiod
+                                                  }}}%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.564       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.564       \list{location}{1}
+                              {%
+? 
+! Undefined control sequence.
+l.567       \strng
+                  {namehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+? 
+! Undefined control sequence.
+l.568       \strng
+                  {fullhash}{7cc07dbc72f0eb6fb7115c7108af547d}
+? 
+! Undefined control sequence.
+l.569       \strng
+                  {bibnamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+? 
+! Undefined control sequence.
+l.570       \strng
+                  {authorbibnamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+? 
+! Undefined control sequence.
+l.571       \strng
+                  {authornamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
+? 
+! Undefined control sequence.
+l.572       \strng
+                  {authorfullhash}{7cc07dbc72f0eb6fb7115c7108af547d}
+? 
+! Undefined control sequence.
+l.573       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.574       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.575       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.576       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.577       \field
+                  {abstract}{Not Available}
+? 
+! Undefined control sequence.
+l.578       \field
+                  {booktitle}{{Geoscience and Remote Sensing Symposium, 2003...
+
+? 
+! Undefined control sequence.
+l.579       \field
+                  {month}{7}
+? 
+! Undefined control sequence.
+l.580       \field
+                  {title}{{Signal theoretical aspects of bistatic SAR}}
+? 
+! Undefined control sequence.
+l.581       \field
+                  {volume}{3}
+? 
+! Undefined control sequence.
+l.582       \field
+                  {year}{2003}
+? 
+! Undefined control sequence.
+l.583       \field
+                  {pages}{1438\bibrangedash 1441}
+? 
+! Undefined control sequence.
+l.583       \field{pages}{1438\bibrangedash
+                                            1441}
+? 
+! Undefined control sequence.
+l.584       \range
+                  {pages}{4}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.585       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.586       \verb 10.1109/IGARSS.2003.1294137
+                                             
+? 
+! Undefined control sequence.
+l.587       \endverb
+                    
+? 
+! Undefined control sequence.
+l.588       \keyw
+                 {Geometry; History; Layout; Radar antennas; Radar polarimet...
+
+? 
+! Undefined control sequence.
+l.589     \endentry
+                   
+? 
+! Undefined control sequence.
+l.590     \entry
+                {Spiegel1964}{book}{}
+? 
+! Undefined control sequence.
+l.591       \name
+                 {author}{1}{}{%
+? 
+! Undefined control sequence.
+l.594            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.595            given={M.\bibnamedelimi
+                                         R.},
+? 
+! Undefined control sequence.
+l.596            giveni={M\bibinitperiod
+                                        \bibinitdelim R\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.596 ...     giveni={M\bibinitperiod\bibinitdelim
+                                                   R\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.596 ...ibinitperiod\bibinitdelim R\bibinitperiod
+                                                  }}}%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.598       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.598       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.601       \list{publisher}{1}
+                               {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.601       \list{publisher}{1}
+                               {%
+? 
+! Undefined control sequence.
+l.604       \strng
+                  {namehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+? 
+! Undefined control sequence.
+l.605       \strng
+                  {fullhash}{f8fde6c55a68984d84dc0b739b38d6fd}
+? 
+! Undefined control sequence.
+l.606       \strng
+                  {bibnamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+? 
+! Undefined control sequence.
+l.607       \strng
+                  {authorbibnamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+? 
+! Undefined control sequence.
+l.608       \strng
+                  {authornamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
+? 
+! Undefined control sequence.
+l.609       \strng
+                  {authorfullhash}{f8fde6c55a68984d84dc0b739b38d6fd}
+? 
+! Undefined control sequence.
+l.610       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.611       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.612       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.613       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.614       \field
+                  {title}{{Theory and Problems of Complex Variables}}
+? 
+! Undefined control sequence.
+l.615       \field
+                  {year}{1964}
+? 
+! Undefined control sequence.
+l.616     \endentry
+                   
+? 
+! Undefined control sequence.
+l.617     \entry
+                {Cafforio1991a}{article}{}
+? 
+! Undefined control sequence.
+l.618       \name
+                 {author}{3}{}{%
+? 
+! Undefined control sequence.
+l.621            familyi={C\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.623            giveni={C\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.626            familyi={P\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.628            giveni={C\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.631            familyi={R\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.633            giveni={F\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.635       \strng
+                  {namehash}{83db69cda12666637c9ccb5a46a37951}
+? 
+! Undefined control sequence.
+l.636       \strng
+                  {fullhash}{83db69cda12666637c9ccb5a46a37951}
+? 
+! Undefined control sequence.
+l.637       \strng
+                  {bibnamehash}{83db69cda12666637c9ccb5a46a37951}
+? 
+! Undefined control sequence.
+l.638       \strng
+                  {authorbibnamehash}{83db69cda12666637c9ccb5a46a37951}
+? 
+! Undefined control sequence.
+l.639       \strng
+                  {authornamehash}{83db69cda12666637c9ccb5a46a37951}
+? 
+! Undefined control sequence.
+l.640       \strng
+                  {authorfullhash}{83db69cda12666637c9ccb5a46a37951}
+? 
+! Undefined control sequence.
+l.641       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.642       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.643       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.644       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.645       \field
+                  {abstract}{The focusing of synthetic-aperture-radar (SAR) ...
+
+? 
+! Undefined control sequence.
+l.646       \field
+                  {journaltitle}{Aerospace and Electronic Systems, IEEE Tran...
+
+? 
+! Undefined control sequence.
+l.647       \field
+                  {month}{3}
+? 
+! Undefined control sequence.
+l.648       \field
+                  {number}{2}
+? 
+! Undefined control sequence.
+l.649       \field
+                  {title}{{SAR data focusing using seismic migration techniq...
+
+? 
+! Undefined control sequence.
+l.650       \field
+                  {volume}{27}
+? 
+! Undefined control sequence.
+l.651       \field
+                  {year}{1991}
+? 
+! Undefined control sequence.
+l.652       \field
+                  {pages}{194\bibrangedash 207}
+? 
+! Undefined control sequence.
+l.652       \field{pages}{194\bibrangedash
+                                           207}
+? 
+! Undefined control sequence.
+l.653       \range
+                  {pages}{14}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.654       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.655       \verb 10.1109/7.78293
+                                 
+? 
+! Undefined control sequence.
+l.656       \endverb
+                    
+? 
+! Undefined control sequence.
+l.657     \endentry
+                   
+? 
+! Undefined control sequence.
+l.658     \entry
+                {NovelRadar}{inbook}{}
+? 
+! Undefined control sequence.
+l.659       \name
+                 {author}{2}{}{%
+? 
+! Undefined control sequence.
+l.662            familyi={S\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.663            given={I.\bibnamedelimi
+                                         C.},
+? 
+! Undefined control sequence.
+l.664            giveni={I\bibinitperiod
+                                        \bibinitdelim C\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.664 ...     giveni={I\bibinitperiod\bibinitdelim
+                                                   C\bibinitperiod}}}%
+? 
+! Undefined control sequence.
+l.664 ...ibinitperiod\bibinitdelim C\bibinitperiod
+                                                  }}}%
+? 
+! Undefined control sequence.
+l.667            familyi={C\bibinithyphendelim
+                                               M\bibinitperiod},
+? 
+! Undefined control sequence.
+l.667 ...lyi={C\bibinithyphendelim M\bibinitperiod
+                                                  },
+? 
+! Undefined control sequence.
+l.669            giveni={D\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.671       \name
+                 {editor}{6}{}{%
+? 
+! Undefined control sequence.
+l.674            familyi={K\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.676            giveni={R\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.679            familyi={N\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.681            giveni={U\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.684            familyi={G\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.686            giveni={C\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.689            familyi={L\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.691            giveni={P\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.694            familyi={G\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.696            giveni={H\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.699            familyi={K\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.701            giveni={W\bibinitperiod
+                                        }}}%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.703       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.703       \list{location}{1}
+                              {%
+? 
+
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.706       \list{publisher}{1}
+                               {%
+? 
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.706       \list{publisher}{1}
+                               {%
+? 
+! Undefined control sequence.
+l.709       \strng
+                  {namehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+? 
+! Undefined control sequence.
+l.710       \strng
+                  {fullhash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+? 
+! Undefined control sequence.
+l.711       \strng
+                  {bibnamehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+? 
+! Undefined control sequence.
+l.712       \strng
+                  {authorbibnamehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+? 
+! Undefined control sequence.
+l.713       \strng
+                  {authornamehash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+? 
+! Undefined control sequence.
+l.714       \strng
+                  {authorfullhash}{2ff252ea5e57e2a7f7d641a1a325d4a9}
+? 
+! Undefined control sequence.
+l.715       \strng
+                  {editorbibnamehash}{5706d03ceee1f2ace3931c9eb197a558}
+? 
+! Undefined control sequence.
+l.716       \strng
+                  {editornamehash}{5706d03ceee1f2ace3931c9eb197a558}
+? 
+! Undefined control sequence.
+l.717       \strng
+                  {editorfullhash}{57b121221c064e26a8704ad9948d9692}
+? 
+! Undefined control sequence.
+l.718       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.719       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.720       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.721       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.722       \field
+                  {chapter}{{High-resolution wide-swath SAR}}
+? 
+! Undefined control sequence.
+l.723       \field
+                  {title}{Novel Radar Techniques and Applications}
+? 
+! Undefined control sequence.
+l.724       \field
+                  {year}{2017}
+? 
+! Undefined control sequence.
+l.725     \endentry
+                   
+? 
+! Undefined control sequence.
+l.726     \entry
+                {Krieger2004}{article}{}
+? 
+! Undefined control sequence.
+l.727       \name
+                 {author}{3}{}{%
+? 
+! Undefined control sequence.
+l.730            familyi={K\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.732            giveni={G\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.735            familyi={G\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.737            giveni={N\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.740            familyi={M\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.742            giveni={A\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.744       \strng
+                  {namehash}{843f580b4ffa79e2a8072cd28f10a20e}
+? 
+! Undefined control sequence.
+l.745       \strng
+                  {fullhash}{843f580b4ffa79e2a8072cd28f10a20e}
+? 
+! Undefined control sequence.
+l.746       \strng
+                  {bibnamehash}{843f580b4ffa79e2a8072cd28f10a20e}
+? 
+! Undefined control sequence.
+l.747       \strng
+                  {authorbibnamehash}{843f580b4ffa79e2a8072cd28f10a20e}
+? 
+! Undefined control sequence.
+l.748       \strng
+                  {authornamehash}{843f580b4ffa79e2a8072cd28f10a20e}
+? 
+! Undefined control sequence.
+l.749       \strng
+                  {authorfullhash}{843f580b4ffa79e2a8072cd28f10a20e}
+? 
+! Undefined control sequence.
+l.750       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.751       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.752       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.753       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.754       \field
+                  {abstract}{The displaced phase center (DPC) technique will...
+
+? 
+! Undefined control sequence.
+l.755       \field
+                  {issn}{1545-598X}
+? 
+! Undefined control sequence.
+l.756       \field
+                  {journaltitle}{Geoscience and Remote Sensing Letters, IEEE}
+? 
+! Undefined control sequence.
+l.757       \field
+                  {month}{10}
+? 
+! Undefined control sequence.
+l.758       \field
+                  {number}{4}
+? 
+! Undefined control sequence.
+l.759       \field
+                  {title}{{Unambiguous SAR signal reconstruction from nonuni...
+
+? 
+! Undefined control sequence.
+l.760       \field
+                  {volume}{1}
+? 
+! Undefined control sequence.
+l.761       \field
+                  {year}{2004}
+? 
+! Undefined control sequence.
+l.762       \field
+                  {pages}{260\bibrangedash 264}
+? 
+! Undefined control sequence.
+l.762       \field{pages}{260\bibrangedash
+                                           264}
+? 
+! Undefined control sequence.
+l.763       \range
+                  {pages}{5}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.764       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.765       \verb 10.1109/LGRS.2004.832700
+                                          
+? 
+! Undefined control sequence.
+l.766       \endverb
+                    
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.767       \verb{file}
+                       
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.768 ...:attachment\:KriegerGebertMoreira.pdf:PDF
+                                                  
+? 
+! Undefined control sequence.
+l.769       \endverb
+                    
+? 
+! Undefined control sequence.
+l.770       \keyw
+                 {Radarsat 2; TerraSAR-X; antenna length; azimuth resolution...
+
+? 
+! Undefined control sequence.
+l.771     \endentry
+                   
+? 
+! Undefined control sequence.
+l.772     \entry
+                {Gebert2009b}{article}{}
+? 
+! Undefined control sequence.
+l.773       \name
+                 {author}{2}{}{%
+? 
+! Undefined control sequence.
+l.776            familyi={G\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.778            giveni={N\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.781            familyi={K\bibinitperiod
+                                         },
+? 
+! Undefined control sequence.
+l.783            giveni={G\bibinitperiod
+                                        }}}%
+? 
+! Undefined control sequence.
+l.785       \strng
+                  {namehash}{421695b97053c2614014735b91601394}
+? 
+! Undefined control sequence.
+l.786       \strng
+                  {fullhash}{421695b97053c2614014735b91601394}
+? 
+! Undefined control sequence.
+l.787       \strng
+                  {bibnamehash}{421695b97053c2614014735b91601394}
+? 
+! Undefined control sequence.
+l.788       \strng
+                  {authorbibnamehash}{421695b97053c2614014735b91601394}
+? 
+! Undefined control sequence.
+l.789       \strng
+                  {authornamehash}{421695b97053c2614014735b91601394}
+? 
+! Undefined control sequence.
+l.790       \strng
+                  {authorfullhash}{421695b97053c2614014735b91601394}
+? 
+! Undefined control sequence.
+l.791       \field
+                  {sortinit}{1}
+? 
+! Undefined control sequence.
+l.792       \field
+                  {sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+? 
+! Undefined control sequence.
+l.793       \field
+                  {labelnamesource}{author}
+? 
+! Undefined control sequence.
+l.794       \field
+                  {labeltitlesource}{title}
+? 
+! Undefined control sequence.
+l.795       \field
+                  {abstract}{Synthetic aperture radar (SAR) systems with mul...
+
+? 
+! Undefined control sequence.
+l.796       \field
+                  {issn}{1545-598X}
+? 
+! Undefined control sequence.
+l.797       \field
+                  {journaltitle}{Geoscience and Remote Sensing Letters, IEEE}
+? 
+! Undefined control sequence.
+l.798       \field
+                  {month}{10}
+? 
+! Undefined control sequence.
+l.799       \field
+                  {number}{4}
+? 
+! Undefined control sequence.
+l.800       \field
+                  {title}{{Azimuth Phase Center Adaptation on Transmit for H...
+
+? 
+! Undefined control sequence.
+l.801       \field
+                  {volume}{6}
+? 
+! Undefined control sequence.
+l.802       \field
+                  {year}{2009}
+? 
+! Undefined control sequence.
+l.803       \field
+                  {pages}{782\bibrangedash 786}
+? 
+! Undefined control sequence.
+l.803       \field{pages}{782\bibrangedash
+                                           786}
+? 
+! Undefined control sequence.
+l.804       \range
+                  {pages}{5}
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.805       \verb{doi}
+                      
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.806       \verb 10.1109/LGRS.2009.2025245
+                                           
+? 
+! Undefined control sequence.
+l.807       \endverb
+                    
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.808       \verb{file}
+                       
+? 
+
+! LaTeX Error: \verb ended by end of line.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.809 ...tter.pdf:attachment\:GebertLetter.pdf:PDF
+                                                  
+? 
+! Undefined control sequence.
+l.810       \endverb
+                    
+? 
+! Undefined control sequence.
+l.811       \keyw
+                 {azimuth phase center adaptation; high-resolution wide-swat...
+
+? 
+! Undefined control sequence.
+l.812     \endentry
+                   
+? 
+! Undefined control sequence.
+l.813   \enddatalist
+                    
+? 
+! Undefined control sequence.
+l.814 \endrefsection
+                    
+? 
+) (./ishCommands.tex
+\c@theorem=\count310
+\c@corollary=\count311
+\c@lemma=\count312
+\c@question=\count313
+\c@Definition=\count314
 )
    defining Unicode char U+2212 (decimal 8722)
-\@quotelevel=\count442
-\@quotereset=\count443
 
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count444
+\l__kernel_color_stack_int=\count315
 \l__pdf_internal_box=\box87
 )
-(./ECEFacceleration.aux)
-\openout1 = `ECEFacceleration.aux'.
-
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-
-(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count445
-\scratchdimen=\dimen288
-\scratchbox=\box88
-\nofMPsegments=\count446
-\nofMParguments=\count447
-\everyMPshowfont=\toks46
-\MPscratchCnt=\count448
-\MPscratchDim=\dimen289
-\MPnumerator=\count449
-\makeMPintoPDFobject=\count450
-\everyMPtoPDFconversion=\toks47
-) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
-Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-
-(/usr/share/texlive/texmf-dist/tex/latex/grfext/grfext.sty
-Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
-)
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 504.
-
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
-\AtBeginShipoutBox=\box89
-Package hyperref Info: Link coloring ON on input line 82.
-
-(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
-Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
-
-(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
-Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
-Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
-)
-\c@section@level=\count451
-)
-LaTeX Info: Redefining \ref on input line 82.
-LaTeX Info: Redefining \pageref on input line 82.
-LaTeX Info: Redefining \nameref on input line 82.
-
-(./ECEFacceleration.out) (./ECEFacceleration.out)
-\@outlinefile=\write5
-\openout5 = `ECEFacceleration.out'.
-
-
-ABD: EveryShipout initializing macros
-Package pgfplots notification 'compat/show suggested version=true': document ha
-s been generated with the most recent feature set (\pgfplotsset{compat=1.16}).
-
-Package caption Info: Begin \AtBeginDocument code.
-Package caption Info: listings package is loaded.
-Package caption Info: rotating package is loaded.
-Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count452
-Package biblatex Info: Trying to load language 'english'...
-Package biblatex Info: ... file 'english.lbx' found.
-(/usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx
-File: english.lbx 2019/12/01 v3.14 biblatex localization (PK/MW)
-)
-Package biblatex Info: Input encoding 'utf8' detected.
-Package biblatex Info: Automatic encoding selection.
-(biblatex)             Assuming data encoding 'utf8'.
-\openout4 = `ECEFacceleration.bcf'.
-
-Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'ECEFacceleration.bbl' found.
-
-(./ECEFacceleration.bbl)
-Package biblatex Info: Reference section=0 on input line 82.
-Package biblatex Info: Reference segment=0 on input line 82.
- [1
-
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./ECEFacceleration.tocpdf
-TeX warning (ext4): destination with the same identifier (name{page.1}) has bee
-n already used, duplicate ignored
+(./ECEFacceleration.aux
+! Undefined control sequence.
+l.19 \abx@aux@refcontext
+                        {none/global//global/global}
+? 
+! Undefined control sequence.
+l.23 \abx@aux@cite
+                  {Brautigam2010}
+? 
+! Undefined control sequence.
+l.24 \abx@aux@segm
+                  {0}{0}{Brautigam2010}
+? 
+! Undefined control sequence.
+l.25 \abx@aux@cite
+                  {Fox2004}
+? 
+! Undefined control sequence.
+l.26 \abx@aux@segm
+                  {0}{0}{Fox2004}
+? 
+! Undefined control sequence.
+l.27 \abx@aux@cite
+                  {Porfilio2016}
+? 
+! Undefined control sequence.
+l.28 \abx@aux@segm
+                  {0}{0}{Porfilio2016}
+? 
+! Undefined control sequence.
+l.29 \abx@aux@cite
+                  {Mittermayer}
+? 
+! Undefined control sequence.
+l.30 \abx@aux@segm
+                  {0}{0}{Mittermayer}
+? 
+! Undefined control sequence.
+l.31 \abx@aux@cite
+                  {Mittermayer}
+? 
+! Interruption.
 <to be read again> 
-                   \relax 
-l.67 ...enna pattern angles}{39}{subsection.5.1.2}
-                                                  % [1
-
-])
-\tf@toc=\write6
-\openout6 = `ECEFacceleration.toc'.
-
- [2]
-Chapter 1.
-(./SURE_introduction.tex
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[3
-
-] [4]) (./multichannelmodel.tex [5]
-LaTeX Font Info:    Trying to load font information for U+eus on input line 12.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/ueus.fd
-File: ueus.fd 2013/01/14 v3.01 Euler Script
-) [6]) [7]
-Chapter 2.
-(./SURE_multichannel.tex (./fivechan.pdf_tex
-<fivechan.pdf, id=359, page=1, 740.63235pt x 706.78183pt>
-File: fivechan.pdf Graphic file (type pdf)
-<use fivechan.pdf, page 1>
-Package pdftex.def Info: fivechan.pdf , page1 used on input line 52.
-(pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=360, page=2, 740.63235pt x 706.78183pt>
-File: fivechan.pdf Graphic file (type pdf)
-<use fivechan.pdf, page 2>
-Package pdftex.def Info: fivechan.pdf , page2 used on input line 55.
-(pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=361, page=3, 740.63235pt x 706.78183pt>
-File: fivechan.pdf Graphic file (type pdf)
-<use fivechan.pdf, page 3>
-Package pdftex.def Info: fivechan.pdf , page3 used on input line 58.
-(pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=362, page=4, 740.63235pt x 706.78183pt>
-File: fivechan.pdf Graphic file (type pdf)
-<use fivechan.pdf, page 4>
-Package pdftex.def Info: fivechan.pdf , page4 used on input line 60.
-(pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=363, page=5, 740.63235pt x 706.78183pt>
-File: fivechan.pdf Graphic file (type pdf)
-<use fivechan.pdf, page 5>
-Package pdftex.def Info: fivechan.pdf , page5 used on input line 64.
-(pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-<fivechan.pdf, id=364, page=6, 740.63235pt x 706.78183pt>
-File: fivechan.pdf Graphic file (type pdf)
-<use fivechan.pdf, page 6>
-Package pdftex.def Info: fivechan.pdf , page6 used on input line 66.
-(pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-)
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[8
-
-] (./antennaLengths.pdf_tex
-<antennaLengths.pdf, id=378, page=1, 491.57176pt x 250.62636pt>
-File: antennaLengths.pdf Graphic file (type pdf)
-<use antennaLengths.pdf, page 1>
-Package pdftex.def Info: antennaLengths.pdf , page1 used on input line 52.
-(pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=379, page=2, 491.57176pt x 250.62636pt>
-File: antennaLengths.pdf Graphic file (type pdf)
-<use antennaLengths.pdf, page 2>
-Package pdftex.def Info: antennaLengths.pdf , page2 used on input line 55.
-(pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=380, page=3, 491.57176pt x 250.62636pt>
-File: antennaLengths.pdf Graphic file (type pdf)
-<use antennaLengths.pdf, page 3>
-Package pdftex.def Info: antennaLengths.pdf , page3 used on input line 57.
-(pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=381, page=4, 491.57176pt x 250.62636pt>
-File: antennaLengths.pdf Graphic file (type pdf)
-<use antennaLengths.pdf, page 4>
-Package pdftex.def Info: antennaLengths.pdf , page4 used on input line 59.
-(pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-<antennaLengths.pdf, id=382, page=5, 491.57176pt x 250.62636pt>
-File: antennaLengths.pdf Graphic file (type pdf)
-<use antennaLengths.pdf, page 5>
-Package pdftex.def Info: antennaLengths.pdf , page5 used on input line 61.
-(pdftex.def)             Requested size: 491.57176pt x 250.62955pt.
-) [9 <./fivechan.pdf> <./fivechan.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: multipl
-e pdfs with page group included in a single page
-> <./fivechan.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: multipl
-e pdfs with page group included in a single page
-> <./fivechan.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: multipl
-e pdfs with page group included in a single page
-> <./fivechan.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: multipl
-e pdfs with page group included in a single page
-> <./fivechan.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: multipl
-e pdfs with page group included in a single page
->] [10 <./antennaLengths.pdf> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
->] (./equivalentHRWS.pdf_tex
-<equivalentHRWS.pdf, id=407, page=1, 1349.72444pt x 445.3123pt>
-File: equivalentHRWS.pdf Graphic file (type pdf)
-<use equivalentHRWS.pdf, page 1>
-Package pdftex.def Info: equivalentHRWS.pdf , page1 used on input line 52.
-(pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=408, page=2, 1349.72444pt x 445.3123pt>
-File: equivalentHRWS.pdf Graphic file (type pdf)
-<use equivalentHRWS.pdf, page 2>
-Package pdftex.def Info: equivalentHRWS.pdf , page2 used on input line 55.
-(pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=409, page=3, 1349.72444pt x 445.3123pt>
-File: equivalentHRWS.pdf Graphic file (type pdf)
-<use equivalentHRWS.pdf, page 3>
-Package pdftex.def Info: equivalentHRWS.pdf , page3 used on input line 57.
-(pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=410, page=4, 1349.72444pt x 445.3123pt>
-File: equivalentHRWS.pdf Graphic file (type pdf)
-<use equivalentHRWS.pdf, page 4>
-Package pdftex.def Info: equivalentHRWS.pdf , page4 used on input line 59.
-(pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-<equivalentHRWS.pdf, id=411, page=5, 1349.72444pt x 445.3123pt>
-File: equivalentHRWS.pdf Graphic file (type pdf)
-<use equivalentHRWS.pdf, page 5>
-Package pdftex.def Info: equivalentHRWS.pdf , page5 used on input line 61.
-(pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-)) (./SURE_transmit.tex) [11 <./equivalentHRWS.pdf> <./equivalentHRWS.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./equivalentHRWS.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./equivalentHRWS.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./equivalentHRWS.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
->]
-Chapter 3.
-(./orbiterror.tex (./satOrbitRange.pgf) [12
-
-] [13] (./satOrbitVelocity.pgf)
-[14] (./arclengthTimeError.pgf) [15
-
-] [16] [17]) (./diffgeo.tex
-Overfull \hbox (1.91386pt too wide) in paragraph at lines 3--4
-[][]$\OT1/cmtt/m/n/10 http : / / homepages . math . uic . edu / []jwood / analy
-sis / Curvegeomrev . pdf$[][] \OT1/cmr/m/n/10 for a
- []
-
-[18
-
-]) (./diffgeoslow.tex
-Overfull \hbox (1.0403pt too wide) in paragraph at lines 1--1
-[]\OT1/cmr/bx/n/12 Calculation of dif-fer-en-tial ge-om-e-try pa-ram-e-ters fro
-m
- []
-
-[19]) (./diffgeostategeoid.tex [20] (./numericalDiffIntegationError.pgf))
-(./orbit_demo.tex
-Overfull \hbox (0.221pt too wide) in paragraph at lines 2--3
-\OT1/cmtt/m/n/10 sentinel1 . eo . esa . int / aux _ poeorb/$[][]\OT1/cmr/m/n/10
- , and rapid sci-ence or-bit files for Terrasar-
- []
-
-[21] [22]
-
-pdfTeX warning: /usr/bin/pdflatex (file ./orbitMap.pdf): PDF inclusion: found P
-DF version <1.6>, but at most version <1.5> allowed
-<orbitMap.pdf, id=561, 753.81625pt x 458.71375pt>
-File: orbitMap.pdf Graphic file (type pdf)
-<use orbitMap.pdf>
-Package pdftex.def Info: orbitMap.pdf  used on input line 15.
-(pdftex.def)             Requested size: 753.81442pt x 458.71263pt.
-
-Underfull \hbox (badness 2343) in paragraph at lines 16--16
-\OT1/cmr/m/n/10 that the ge-o-met-ric model is eval-u-ated. The satel-lite po-s
-i-tions were
- []
-
-(./tsx_28_error.pgf) (./tsx_28_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 21--33
-[]$[]$ $[]$ 
- []
-
-(./tsx_705_error.pgf) (./tsx_705_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 38--50
-[]$[]$ $[]$ 
- []
-
-(./tsx_1265_error.pgf) (./tsx_1265_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 55--67
-[]$[]$ $[]$ 
- []
-
-(./tsx_676_error.pgf) (./tsx_676_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 72--84
-[]$[]$ $[]$ 
- []
-
-(./tsx_1649_error.pgf) (./tsx_1649_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 89--101
-[]$[]$ $[]$ 
- []
-
-[23] [24 <./orbitMap.pdf>] [25] [26] (./sentinel_4590_error.pgf)
-(./sentinel_4590_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 108--120
-[]$[]$ $[]$ 
- []
-
-(./sentinel_1726_error.pgf) (./sentinel_1726_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 125--137
-[]$[]$ $[]$ 
- []
-
-(./sentinel_4417_error.pgf) (./sentinel_4417_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 142--154
-[]$[]$ $[]$ 
- []
-
-(./sentinel_5649_error.pgf) (./sentinel_5649_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 159--171
-[]$[]$ $[]$ 
- []
-
-(./sentinel_3724_error.pgf) (./sentinel_3724_errorProjection_45.0.pgf)
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 176--188
-[]$[]$ $[]$ 
- []
-
-[27
-
-] [28]) (./range.tex
-Overfull \hbox (0.36755pt too wide) in paragraph at lines 14--16
-\OT1/cmr/m/n/10 Appendix [][]A.3[][] uses ([][]3.13[][]) and the above co-or-di
--nate trans-for-ma-tion $\OT1/cmr/bx/n/10 x \OMS/cmsy/m/n/10 ! \OT1/cmr/m/n/10 
-(\OML/cmm/m/it/10 r; s[]; ^^^\OT1/cmr/m/n/10 )$
- []
-
-[29
-
-]) [30]
-Chapter 4.
-(./sardiffgeo.tex [31
-
-] [32]) (./demodulation.tex [33]
-Overfull \hbox (13.46664pt too wide) in paragraph at lines 27--28
- [] 
- []
-
-
-Overfull \hbox (5.99146pt too wide) in paragraph at lines 32--33
-\OT1/cmr/m/n/10 One can com-pen-sate for the range er-ror term througgh mul-ti-
-pli-ca-tion by $\OML/cmm/m/it/10 e[]$\OT1/cmr/m/n/10 .
- []
-
-) [34] [35]
-Chapter 5.
-(./stationaryphase.tex
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1.
-
-) (./newStationaryPhase.tex [36
-
-] [37] [38]) (./antennaangles.tex [39] [40]
-Overfull \hbox (13.46664pt too wide) in paragraph at lines 92--93
- [] 
- []
-
-[41]) [42]
-Chapter 6.
-(./introduction.tex) (./multichannel.tex [43
-
-]
-Overfull \hbox (13.46664pt too wide) in paragraph at lines 68--69
- [] 
- []
-
-[44] [45]
-Overfull \hbox (13.46664pt too wide) in paragraph at lines 127--128
- [] 
- []
-
-) [46]
-Chapter 7.
-(./simulation.tex
-<sim.pdf, id=910, 351.3125pt x 190.7125pt>
-File: sim.pdf Graphic file (type pdf)
-<use sim.pdf>
-Package pdftex.def Info: sim.pdf  used on input line 47.
-(pdftex.def)             Requested size: 351.31163pt x 190.71202pt.
- [47
-
-]
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 55.
-LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 56.
-
-Overfull \hbox (16.93063pt too wide) in paragraph at lines 65--66
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][] 
- []
-
-[48 <./sim.pdf>] (./subarray.pdf_tex
-<subarray.pdf, id=948, page=1, 578.17513pt x 297.58676pt>
-File: subarray.pdf Graphic file (type pdf)
-<use subarray.pdf, page 1>
-Package pdftex.def Info: subarray.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 578.17513pt x 297.60872pt.
-) [49 <./subarray.pdf>]
-<simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png, id=965, 46
-2.528pt x 346.896pt>
-File: simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
-c file (type png)
-<use simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png>
-Package pdftex.def Info: simulation/40cm/simulation_plots/wk_doppler_response_a
-mplitude.png  used on input line 110.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png, id=967, 46
-2.528pt x 346.896pt>
-File: simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
-c file (type png)
-<use simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png>
-Package pdftex.def Info: simulation/30cm/simulation_plots/wk_doppler_response_a
-mplitude.png  used on input line 117.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png, id=968, 46
-2.528pt x 346.896pt>
-File: simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
-c file (type png)
-<use simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png>
-Package pdftex.def Info: simulation/25cm/simulation_plots/wk_doppler_response_a
-mplitude.png  used on input line 124.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png, id=969, 46
-2.528pt x 346.896pt>
-File: simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
-c file (type png)
-<use simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png>
-Package pdftex.def Info: simulation/20cm/simulation_plots/wk_doppler_response_a
-mplitude.png  used on input line 131.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png, id=97
-0, 462.528pt x 346.896pt>
-File: simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png G
-raphic file (type png)
-<use simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png>
-Package pdftex.def Info: simulation/12cm/simulation_plots_full/wk_doppler_respo
-nse_amplitude.png  used on input line 138.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_amplitude
-.png, id=971, 462.528pt x 346.896pt>
-File: simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_ampl
-itude.png Graphic file (type png)
-<use simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_ampli
-tude.png>
-Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_do
-ppler_response_amplitude.png  used on input line 145.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 108--150
-[]$[]$ $[]$
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 108--150
-[]$ $[]$
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 108--150
-[]$ $[]$ 
- []
-
-[50] [51 <./simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png>
- <./simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png> <./simu
-lation/25cm/simulation_plots/wk_doppler_response_amplitude.png> <./simulation/2
-0cm/simulation_plots/wk_doppler_response_amplitude.png> <./simulation/12cm/simu
-lation_plots_full/wk_doppler_response_amplitude.png> <./simulation/10cm/simulat
-ion_plots_phase_corrected/wk_doppler_response_amplitude.png>]
-<simulation/40cm/simulation_plots/wk_response_32x32.png, id=1001, 462.528pt x 3
-46.896pt>
-File: simulation/40cm/simulation_plots/wk_response_32x32.png Graphic file (type
- png)
-<use simulation/40cm/simulation_plots/wk_response_32x32.png>
-Package pdftex.def Info: simulation/40cm/simulation_plots/wk_response_32x32.png
-  used on input line 159.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/30cm/simulation_plots/wk_response_32x32.png, id=1002, 462.528pt x 3
-46.896pt>
-File: simulation/30cm/simulation_plots/wk_response_32x32.png Graphic file (type
- png)
-<use simulation/30cm/simulation_plots/wk_response_32x32.png>
-Package pdftex.def Info: simulation/30cm/simulation_plots/wk_response_32x32.png
-  used on input line 166.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/25cm/simulation_plots/wk_response_32x32.png, id=1003, 462.528pt x 3
-46.896pt>
-File: simulation/25cm/simulation_plots/wk_response_32x32.png Graphic file (type
- png)
-<use simulation/25cm/simulation_plots/wk_response_32x32.png>
-Package pdftex.def Info: simulation/25cm/simulation_plots/wk_response_32x32.png
-  used on input line 173.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/20cm/simulation_plots/wk_response_32x32.png, id=1004, 462.528pt x 3
-46.896pt>
-File: simulation/20cm/simulation_plots/wk_response_32x32.png Graphic file (type
- png)
-<use simulation/20cm/simulation_plots/wk_response_32x32.png>
-Package pdftex.def Info: simulation/20cm/simulation_plots/wk_response_32x32.png
-  used on input line 180.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/12cm/simulation_plots_full/wk_response_32x32.png, id=1005, 462.528p
-t x 346.896pt>
-File: simulation/12cm/simulation_plots_full/wk_response_32x32.png Graphic file 
-(type png)
-<use simulation/12cm/simulation_plots_full/wk_response_32x32.png>
-Package pdftex.def Info: simulation/12cm/simulation_plots_full/wk_response_32x3
-2.png  used on input line 187.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots/wk_response_32x32.png, id=1006, 462.528pt x 3
-46.896pt>
-File: simulation/10cm/simulation_plots/wk_response_32x32.png Graphic file (type
- png)
-<use simulation/10cm/simulation_plots/wk_response_32x32.png>
-Package pdftex.def Info: simulation/10cm/simulation_plots/wk_response_32x32.png
-  used on input line 194.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 157--199
-[]$[]$ $[]$
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 157--199
-[]$ $[]$
- []
-
-
-Overfull \hbox (2.22221pt too wide) in paragraph at lines 157--199
-[]$ $[]$ 
- []
-
-[52
-
-] [53 <./simulation/40cm/simulation_plots/wk_response_32x32.png> <./simulation/
-30cm/simulation_plots/wk_response_32x32.png> <./simulation/25cm/simulation_plot
-s/wk_response_32x32.png> <./simulation/20cm/simulation_plots/wk_response_32x32.
-png> <./simulation/12cm/simulation_plots_full/wk_response_32x32.png> <./simulat
-ion/10cm/simulation_plots/wk_response_32x32.png>]
-<simulation/10cm/simulation_plots/wk_response_s_os_8.png, id=1024, 462.528pt x 
-346.896pt>
-File: simulation/10cm/simulation_plots/wk_response_s_os_8.png Graphic file (typ
-e png)
-<use simulation/10cm/simulation_plots/wk_response_s_os_8.png>
-Package pdftex.def Info: simulation/10cm/simulation_plots/wk_response_s_os_8.pn
-g  used on input line 207.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png, id=102
-8, 462.528pt x 346.896pt>
-File: simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png Gr
-aphic file (type png)
-<use simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png>
-Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
-sponse_32x32.png  used on input line 215.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png, id=10
-29, 462.528pt x 346.896pt>
-File: simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png G
-raphic file (type png)
-<use simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>
-Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
-sponse_s_os_8.png  used on input line 222.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png, id=1
-032, 462.528pt x 346.896pt>
-File: simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png 
-Graphic file (type png)
-<use simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>
-Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
-sponse_s_os_64.png  used on input line 232.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
- [54
-
- <./simulation/10cm/simulation_plots/wk_response_s_os_8.png>] [55 <./simulation
-/10cm/simulation_plots_phase_corrected/wk_response_32x32.png>] [56 <./simulatio
-n/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>] [57 <./simulat
-ion/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>] [58]) (./co
-nclusion.tex) [59
-
-]
-Overfull \hbox (1.12498pt too wide) in paragraph at lines 113--113
-[]\OT1/cmr/m/n/10 Peter A Fox, An-thony P Lus-combe, and Alan A Thomp-son. ``RA
-DARSAT-
- []
-
-
-Overfull \hbox (0.88448pt too wide) in paragraph at lines 113--113
-[]\OT1/cmr/m/n/10 N. Gebert. ``Multi-Channel Az-imuth Pro-cess-ing for High-Res
-olution Wide-
- []
-
-[60
-
-] [61]
-Appendix A.
-(./vectorcalc.tex) (./inertialtoecef.tex [62
-
-] [63]) (./rateofacceleration.tex
-[64]
-Overfull \hbox (29.38391pt too wide) detected at line 81
-[]
- []
-
-[65]
-Overfull \hbox (0.78197pt too wide) detected at line 124
-[]
- []
-
-) (./rangeAppendix.tex
-Overfull \hbox (23.2246pt too wide) in paragraph at lines 1--1
-[]\OT1/cmr/bx/n/14.4 Derivation of the arclength-paremterized range
- []
-
-[66]
-Overfull \hbox (4.8093pt too wide) detected at line 21
-[]
- []
-
-
-Overfull \hbox (2.77779pt too wide) in alignment at lines 20--21
-[] []
- []
-
-[67]) (./stolz.tex [68] [69]) (./mimo.tex (./mimoconfig.pdf_tex
-<mimoconfig.pdf, id=1210, page=1, 480.5175pt x 243.95833pt>
-File: mimoconfig.pdf Graphic file (type pdf)
-<use mimoconfig.pdf, page 1>
-Package pdftex.def Info: mimoconfig.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 480.5175pt x 243.96516pt.
-) [70] [71 <./mimoconfig.pdf>] [72]) (./antennaanglesAppendix.tex
-Overfull \hbox (16.56163pt too wide) detected at line 21
-[]
- []
-
-[73] [74]) [75]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 122.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 122.
- (./ECEFacceleration.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 122.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 122.
-Package rerunfilecheck Info: File `ECEFacceleration.out' has not changed.
-(rerunfilecheck)             Checksum: 680C8C1B9AEC6F66B2CE756F6DB41BE8;4434.
-Package logreq Info: Writing requests to 'ECEFacceleration.run.xml'.
-\openout1 = `ECEFacceleration.run.xml'.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 122.
- ) 
+                   {
+l.31 \abx@aux@cite{
+                   Mittermayer}
+? ^^X
+Type <return> to proceed, S to scroll future error messages,
+R to run without stopping, Q to run quietly,
+I to insert something, E to edit your file,
+H for help, X to quit.
+? x
+ 
 Here is how much of TeX's memory you used:
- 40719 strings out of 483154
- 935975 string characters out of 5965023
- 1717733 words of memory out of 5000000
- 54515 multiletter control sequences out of 15000+600000
- 549466 words of font info for 86 fonts, out of 8000000 for 9000
+ 31484 strings out of 483183
+ 757745 string characters out of 5966293
+ 1180925 words of memory out of 5000000
+ 45982 multiletter control sequences out of 15000+600000
+ 532612 words of font info for 26 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 73i,24n,127p,1925b,1853s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/ishuwa/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.60
-0pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx5.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
-7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib5.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl12.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/e
-uler/eusm10.pfb>
-Output written on ECEFacceleration.pdf (76 pages, 4398761 bytes).
+ 73i,1n,127p,1307b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.
 PDF statistics:
- 1505 PDF objects out of 1728 (max. 8388607)
- 1297 compressed objects within 13 object streams
- 435 named destinations out of 1000 (max. 500000)
- 633 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

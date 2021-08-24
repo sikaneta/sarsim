@@ -1049,11 +1049,12 @@ class state_vector(measurement):
 
     def integrate(self, t, k, t_eval=None):
         mymethod = 'RK45'
-        rtol = 1.0e-12
+        rtol = 3.0e-14
+        atol = 1.0e-14
         if t_eval is None:
             y = solve_ivp(self.isatEQM, t, self.measurementData[k], method=mymethod, rtol=rtol)
         else:
-            y = solve_ivp(self.isatEQM, t, self.measurementData[k], method=mymethod, t_eval=t_eval, rtol=rtol)
+            y = solve_ivp(self.isatEQM, t, self.measurementData[k], method=mymethod, t_eval=t_eval, rtol=rtol, atol=atol)
         return y
         
     def estimateTimeRange(self, dtime, integrationTimes = None):
