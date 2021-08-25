@@ -1,10 +1,10 @@
 \section{A closer look at SAR from an orbiting satellite}
-A quick review of data from currently orbiting systems shows that, when viewed from an Earth-Centered, Earth-Fixed (ECEF) coordinate system, Low Earth Orbit (LEO) SAR satellites do not travel with a constant velocity, nor do they orbit at a constant range. These satellites experience constant changes in the amplitudes of their accelerations, not only because they follow elliptical orbits, but also because of variations in the Earth's gravitational field. This is true not only globally, but also locally and means that as one attempts to produce higher and higher resolution imagery, one runs into limitations in SAR signal processing algorithms based upon circular orbits. Depending on the orbit, uniform slow-time sampling does not equate to uniform spatial sampling. This poses a potential problem for multi-channel SAR imaging systems that in some fashion depend upon uniform spatial samples. The following text expands on these issues.
+A review of data from currently orbiting systems shows that, when viewed from an \gls{ecef} coordinate system, \Index{\gls{leo}} SAR satellites do neither travel with a constant velocity, nor do they orbit at a constant range. These satellites experience a constant or time varying jerk, not only because they follow elliptical orbits, but also because of variations in the Earth's gravitational field. As shall be demonstrated, this is true not only globally, but also locally and means that as one attempts to produce higher and higher resolution imagery, one runs into limitations in SAR signal processing algorithms based upon circular orbits. Depending on the orbit, uniform slow-time sampling does not equate to uniform spatial sampling. {\em This means that the actual synthetic aperture that forms a beam is derived from a set of points that are not uniformly spatially-spaced}. We conjecture that this poses a potential problem for multi-channel SAR imaging systems that in some fashion depend upon uniform spatial samples. The following text expands on these issues.
 \subsection{A closer examination of locally circular orbits}
-Figures \ref{fg:ECEFRange} and \ref{fg:ECEFVelocity} illustrate real data extracted from precise orbit ephemerides computed for Sentinel-1 and sourced from \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/}. One sees that over a couple of seconds, the radius of the orbit has changed by several meters. As well, the velocity has changed by a tenth of a meter per second. These quantities are rather large when compared to the wavelength of (in this case for Sentinel-1) about 0.05 m.
+Figures \ref{fg:ECEFRange} and \ref{fg:ECEFVelocity} illustrate real data extracted from precise orbit ephemerides computed for Sentinel-1, sourced from \cite{SentinelPOD}. One sees that over a couple of seconds, the radius of the orbit has changed by several meters. As well, the velocity has changed by a tenth of a meter per second. These quantities are rather large when compared to the wavelength of (in this case for Sentinel-1) about 0.05 m.
 \begin{figure}
     \resizebox{\textwidth}{!}{\input{satOrbitRange.pgf}}
-	\caption{Non-constant satellite radius in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides. \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/}}
+	\caption{Non-constant satellite radius in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides.}
 	\label{fg:ECEFRange}
 \end{figure}
 \par
@@ -12,29 +12,29 @@ For the synthetic aperture lengths employed by Sentinel-1 and most commercial sy
 \par
 This work seeks to provide first-principles-based accounting for how to compute the SAR processing parameters. Such information could help with on-board SAR processing shemes where the data required to numerically calculate the required parameters is more difficult to obtain. 
 \par
-The document uses the theory of the differential goemetry of curves in three dimensions as a mathematical basis, and applies a physical model based upon the spherical harmonic model of the Earth's gravitational potential. Although a review of differential geometry is provided herein, a higly recommended reference can be found in \url{http://homepages.math.uic.edu/~jwood/analysis/Curvegeomrev.pdf}. Equally, a higly recommended reference for application of the spherical harmonic model to satellite motion can be found at \url{https://www.hindawi.com/journals/ijap/2014/903026/}. 
+The document uses the theory of the differential goemetry of curves in three dimensions as a mathematical basis, and applies a physical model based upon the spherical harmonic model of the Earth's gravitational potential. Although a review of differential geometry is provided herein, a higly recommended reference can be found in \cite{WoodDiffGeo}. Equally, a higly recommended reference for application of the spherical harmonic model to satellite motion can be found at \cite{Shou2014}. 
 \par
-As a final comment, note that calculations for the satellite positions have been made using the egm96 spherical harmonic expansions available at \url{https://nasa.site.egm96} through custom python code. 
+As a final comment, note that calculations for the satellite positions have been made using the egm96 spherical harmonic expansions available at \cite{NASAEGM86}, through custom python code that implements the method outlined in \cite{Shou2014}. 
 \begin{figure}
     \resizebox{\textwidth}{!}{\input{satOrbitVelocity.pgf}}
-	\caption{Non-constant satellite velocity in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides. \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/}}
+	\caption{Non-constant satellite velocity in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides.}
 	\label{fg:ECEFVelocity}
 \end{figure}
 \clearpage
 \subsection{Non-linearity between arclength and time}
-The previous section presented real data showing that target range and satellite velocity do not remain constant over time. This section derives a relationship between arclength and slow-time for the purpose of demonstrating that they are, in general, not linearly related. The actual synthetic aperture that forms a beam is derived from a set of points that are not uniformly spatially spaced.
+The previous section presented real data showing that target range and satellite velocity do not remain constant over time. This section derives a relationship between arclength and slow-time for the purpose of demonstrating that they are, in general, not linearly related. The actual synthetic aperture that forms a beam is derived from a set of points that are not uniformly spatially-spaced.
 \par
-To begin the derivation, denote the parameterized satellite position vector as $\sats(s)$, where the parameter $s$ denotes arc length. This position vector defines a curve in three dimensions. The relation between arclength and time $t$ is defined as
+To begin the derivation, denote the arc-length parameterized satellite position vector as $\sats(s)$, where the parameter $s$ denotes arc length. This position vector defines a curve in three dimensions. The relation between arclength and time $t$ is defined as
 \begin{equation}
- s=\int_0^t\lvert\dot{\satt}(\xi)\rvert\d{\xi}.
+ s=\int_0^t\lvert\dot{\satt}(\xi)\rvert\d{\xi},
 \end{equation}
-The dot notation, $\dot{\satt}(\xi)$, indicates the derivative with respect to time, so the above simply states that arc length is the integration of the amplitude of the intantanous satellite velocity over time\footnote{by definition, $\dot{\satt}(t)$ is the satellite velocity vector, $\ddot{\satt}(t)$ is the satellite acceleration vector, e.t.c.}. Rather than computing the exact integral, an expansion to third order suffices for most applicaitons. By applying the vector calculus relations outlined in \anref{an:vectorCalc}, one finds that
+where $\satt(\xi)$ denotes the slow-time parameterized satellite position vector and the dot notation, $\dot{\satt}(\xi)$, indicates the derivative with respect to time. The above simply states that arc length is the integration of the amplitude of the intantanous satellite velocity over time\footnote{by definition, $\dot{\satt}(t)$ is the satellite velocity vector, $\ddot{\satt}(t)$ is the satellite acceleration vector, e.t.c.}. Rather than computing the exact integral, an expansion to third order suffices for most applicaitons. By applying the vector calculus relations outlined in \anref{an:vectorCalc}, one finds that
 \begin{align}
- \dtv{s}{t} &= \lvert\dot{\satt}(t)\rvert\\
- \dtvtwo{s}{t} &= \htr{\hat{\dot{\satt}}}(t)\ddot{\satt}(t)\\
- \dtvthree{s}{t} &= \frac{\htr{\ddot{\satt}}(t)\mtx{P}_{\dot{\satt}(t)}\ddot{\satt}(t)}{\lvert\dot{\satt}(t)\rvert} + \htr{\hat{\dot{\satt}}}(t)\dddot{\satt}(t).
+ \dot{s} &= \lvert\dot{\satt}(t)\rvert\\
+ \ddot{s} &= \htr{\hat{\dot{\satt}}}(t)\ddot{\satt}(t)\\
+ \dddot{s} &= \frac{\htr{\ddot{\satt}}(t)\mtx{P}_{\dot{\satt}(t)}\ddot{\satt}(t)}{\lvert\dot{\satt}(t)\rvert} + \htr{\hat{\dot{\satt}}}(t)\dddot{\satt}(t).
 \end{align}
-In the above, the projection operator $\mtx{P}_{\vct{y}}$ applied on the vector $\vct{x}$ extracts the component of $\vct{x}$ that is perpendicular to the vector $\vct{y}$. The derivatives can be used to
+In the above, $\hat{\vct{x}}$ denotes the unit vector in the direction, $\vct{x}$ and the projection operator $\mtx{P}_{\vct{y}}$ applied on the vector $\vct{x}$ extracts the component of $\vct{x}$ that is perpendicular to the vector $\vct{y}$. The derivatives can be used to
 expand the expression for arclength around $t=0$:
 \begin{equation}
  s \approx \frac{t}{1!}\lvert\dot{\satt}(0)\rvert + \frac{t^2}{2!}\htr{\hat{\dot{\satt}}}(0)\ddot{\satt}(0) + \frac{t^3}{3!}\left[\frac{\htr{\ddot{\satt}}(0)\mtx{P}_{\dot{\satt}(0)}\ddot{\satt}(0)}{\lvert\dot{\satt}(0)\rvert} + \htr{\hat{\dot{\satt}}}(0)\dddot{\satt}(0)\right].
@@ -42,11 +42,11 @@ expand the expression for arclength around $t=0$:
 Disregarding the third order term in $t$, consideration of the above reveals that $s$ and $t$ are only proportional when the orbit is such that the velocity vector is perpendicular to the acceleration vector $\htr{\hat{\dot{\satt}}}(t)\ddot{\satt}(t)=0$, which, in general, is not the case. And if time and position are not proportional, then any synthetic aperture processing algorithm derived from uniform time samples is only approximately correct because the spatial samples are non-uniform. This is akin to using a phased-array radar with non-uniformly distributed array phase-centres.
 \begin{figure}
     \resizebox{\textwidth}{!}{\input{arclengthTimeError.pgf}}
-	\caption{Deviation of arclength from uniform samples in meters as a function of slow-time. That is, the arclengths deviates from from a linear realtionship with slow-time by the amount on the y-axis. Data extracted from Sentinel-1 Precise Orbit Ephemerides. \url{https://qc.sentinel1.eo.esa.int/aux\_poeorb/}}
+	\caption{Deviation of arclength from uniform samples in meters as a function of slow-time. That is, the arclengths deviates from from a linear realtionship with slow-time by the amount on the y-axis. Data extracted from Sentinel-1 Precise Orbit Ephemerides.}
 	\label{fg:ARCLengthError}
 \end{figure}
 \par
-\Fgref{fg:ARCLengthError} shows how arc length shrinks as a function of slow-time for real Sentinel-1 measurements. Only in the region of $\pm 1$ second is the arclength difference small enough to be ignored (0.009 m). By the time one arrives at two seconds, the arclength is $0.03 m$ shorter than expected from a linear realtionship between time and arclength, and in this region, one is already approaching the C- and X-band wavelengths.
+\Fgref{fg:ARCLengthError} shows how arc length shrinks as a function of slow-time for real Sentinel-1 measurements. Only in the region of $\pm 1$ second is the arclength difference small enough to be ignored (0.009 m). By the time one arrives at two seconds, the arclength is $0.03$m shorter than expected from a linear realtionship between time and arclength, and in this region, one is already approaching the C- and X-band wavelengths.
 \par
 From a physical point of view, this means that with a uniform PRF, spatial samples become increasingly non-uniform as the synthetic aperture length increases which, in turn, complicates Doppler domain multi-channel image processing since these generally rely upon uniform sampling. 
 \subsection{Arclength parameterization approach}

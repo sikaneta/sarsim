@@ -8,7 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \renewcommand\sfdefault{phv}
-
+\usepackage{glossaries}
 \usepackage{amsbsy}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -90,9 +90,9 @@
     filecolor=navy,urlcolor=navy,raiselinks=true,
     bookmarksnumbered=true]{hyperref}
 
-\newcommand\mytitle{Super Resolution SAR}
+\newcommand\mytitle{Super Resolution Synthetic Aperture Radar}
 \title{\mytitle}
-\subtitle{Design and Signal Processing}
+\subtitle{Design and Signal Processing of a Multi-Beam Multi-Channel Stripmap Mode}
 \docnumber{---Will be inserted by Publication Officer}
 \establishment{\DRDCO}
 %\author{C.H.~Gierull}
@@ -134,6 +134,7 @@
 
 %\distribution
 \input{ishCommands}
+\input{myGlossary}
 \DeclareUnicodeCharacter{2212}{-}
 \pgfplotsset{compat=1.16}
 
@@ -143,13 +144,13 @@
 \makefrontcover
 
 \begin{abstract}
-By presenting the design, configuration and required end-to-end signal processing, this report proposes a system for improved SAR imaging. Compared to conventional Spotlight SAR, the proposed system will generate imagery with equivalent or better resolution and significantly increased area coverage. The design and configuration are based upon a phased-array antenna in combination with the appropriate hardware to enable rapid electronic beam steering and to permit digitisation of multiple receive channels. The current state of technology is mature enough to construct all components of such a system. As a specific goal, the report proposes a system capable of imaging with 10 cm resolution, a swath width of around 3 km and unlimited azimuth extent.
+By presenting the design, configuration and required end-to-end signal processing, this report proposes a system for improved \Index{\gls{sar}} imaging. Compared to conventional Spotlight \gls{sar}, the proposed system will generate imagery with equivalent or better resolution and significantly increased area coverage. The design and configuration are based upon a phased-array antenna in combination with the appropriate hardware to enable rapid electronic beam steering and to permit digitisation of multiple receive channels. The current state of technology is mature enough to construct all components of such a system. As a specific goal, the report proposes a system capable of imaging with 10 cm resolution (azimuth and slant-range) over a ground swath of 5 km. Importantly, this mode can collect with unlimited azimuth extent, something that no other proposed system can achieve.
 \par
-As the considered resolutions push the limits of known theory, the report also introduces an augmented theory that is needed to derive the signal processing algorithms.
+As the considered resolutions push the limits of known theory, the report also introduces an augmented theory that is needed to derive the signal processing algorithms. The presented approach incorporates a physical model, based upon the spherical harmonic model of the Earth's gravitational potential, into the theory of differential geometry of curves in three dimensions. From the theory, a wavenumber-based \gls{sar} processing algorithm that extends current methods is developed and presented. The proposed algorithm relies only on accurate attitude data and a single accurate state vector. The approach is therefore suitable for on-board SAR processing if sensor instruments can measure these parameters while imaging.
 \end{abstract}
 
 \begin{significance}
-The material presented in this report provides the design and signal-processing framework for a Synthetic Aperture Radar (SAR) that can image with extremely high resolutions over wide areas. On the one hand, the novel proposed design offers improved SAR imaging without giving up any of the capabilities currently offered by national assets. On the other hand, the improvements meet or exceed current capability gaps in C4ISR requirements. The design (or some variant thereof) should be considered for future SAR missions.
+The material presented in this report provides the design and signal-processing framework for a \gls{sar} that can image with extremely high resolutions over wide areas. This capability does not exist for current systems, nor will it be possible with future systems, as currently planned. On the one hand, the novel proposed design offers improved SAR imaging without giving up any of the capabilities currently offered by national assets. On the other hand, the improvements meet or exceed current capability gaps in C4ISR requirements. The design (or some variant thereof) should be considered for future \gls{sar} missions.
 \end{significance}
 
 \begin{fabstract}
