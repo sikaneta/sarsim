@@ -26,7 +26,7 @@ The previous section presented real data showing that target range and satellite
 \par
 To begin the derivation, denote the arc-length parameterized satellite position vector as $\sats(s)$, where the parameter $s$ denotes arc length. This position vector defines a curve in three dimensions. The relation between arclength and time $t$ is defined as
 \begin{equation}
- s=\int_0^t\lvert\dot{\satt}(\xi)\rvert\d{\xi},
+ s(t)=\int_0^t\lvert\dot{\satt}(\xi)\rvert\d{\xi},
 \end{equation}
 where $\satt(\xi)$ denotes the slow-time parameterized satellite position vector and the dot notation, $\dot{\satt}(\xi)$, indicates the derivative with respect to time. The above simply states that arc length is the integration of the amplitude of the intantanous satellite velocity over time\footnote{by definition, $\dot{\satt}(t)$ is the satellite velocity vector, $\ddot{\satt}(t)$ is the satellite acceleration vector, e.t.c.}. Rather than computing the exact integral, an expansion to third order suffices for most applicaitons. By applying the vector calculus relations outlined in \anref{an:vectorCalc}, one finds that
 \begin{align}
@@ -37,22 +37,24 @@ where $\satt(\xi)$ denotes the slow-time parameterized satellite position vector
 In the above, $\hat{\vct{x}}$ denotes the unit vector in the direction, $\vct{x}$ and the projection operator $\mtx{P}_{\vct{y}}$ applied on the vector $\vct{x}$ extracts the component of $\vct{x}$ that is perpendicular to the vector $\vct{y}$. The derivatives can be used to
 expand the expression for arclength around $t=0$:
 \begin{equation}
- s \approx \frac{t}{1!}\lvert\dot{\satt}(0)\rvert + \frac{t^2}{2!}\htr{\hat{\dot{\satt}}}(0)\ddot{\satt}(0) + \frac{t^3}{3!}\left[\frac{\htr{\ddot{\satt}}(0)\mtx{P}_{\dot{\satt}(0)}\ddot{\satt}(0)}{\lvert\dot{\satt}(0)\rvert} + \htr{\hat{\dot{\satt}}}(0)\dddot{\satt}(0)\right].
+ s(t) \approx \frac{t}{1!}\lvert\dot{\satt}(0)\rvert + \frac{t^2}{2!}\htr{\hat{\dot{\satt}}}(0)\ddot{\satt}(0) + \frac{t^3}{3!}\left[\frac{\htr{\ddot{\satt}}(0)\mtx{P}_{\dot{\satt}(0)}\ddot{\satt}(0)}{\lvert\dot{\satt}(0)\rvert} + \htr{\hat{\dot{\satt}}}(0)\dddot{\satt}(0)\right].
 \end{equation}
 Disregarding the third order term in $t$, consideration of the above reveals that $s$ and $t$ are only proportional when the orbit is such that the velocity vector is perpendicular to the acceleration vector $\htr{\hat{\dot{\satt}}}(t)\ddot{\satt}(t)=0$, which, in general, is not the case. And if time and position are not proportional, then any synthetic aperture processing algorithm derived from uniform time samples is only approximately correct because the spatial samples are non-uniform. This is akin to using a phased-array radar with non-uniformly distributed array phase-centres.
 \begin{figure}
     \resizebox{\textwidth}{!}{\input{arclengthTimeError.pgf}}
-	\caption{Deviation of arclength from uniform samples in meters as a function of slow-time. That is, the arclengths deviates from from a linear realtionship with slow-time by the amount on the y-axis. Data extracted from Sentinel-1 Precise Orbit Ephemerides.}
+	\caption{Deviation of arclength from uniform samples in meters as a function of slow-time: $s(N\Delta t) - Ns(\Delta t)$. Data extracted from Sentinel-1 Precise Orbit Ephemerides.}
 	\label{fg:ARCLengthError}
 \end{figure}
 \par
-\Fgref{fg:ARCLengthError} shows how arc length shrinks as a function of slow-time for real Sentinel-1 measurements. Only in the region of $\pm 1$ second is the arclength difference small enough to be ignored (0.009 m). By the time one arrives at two seconds, the arclength is $0.03$m shorter than expected from a linear realtionship between time and arclength, and in this region, one is already approaching the C- and X-band wavelengths.
+\Fgref{fg:ARCLengthError} shows how arc length shrinks as a function of slow-time for real Sentinel-1 measurements. Specifically, for a time sampling period of $\Delta t$, the plot shows $s(N\Delta t) - Ns(\Delta t)$. Only in the region of $\pm 1$ second is the arclength difference small enough to be ignored (0.009 m). By the time one arrives at two seconds, the arclength is $0.03$m shorter than expected from a linear realtionship between time and arclength, and in this region, one is already approaching the C- and X-band wavelengths.
 \par
-From a physical point of view, this means that with a uniform PRF, spatial samples become increasingly non-uniform as the synthetic aperture length increases which, in turn, complicates Doppler domain multi-channel image processing since these generally rely upon uniform sampling. 
+From a physical point of view, this means that with a uniform PRF, spatial samples become increasingly non-uniform as the synthetic aperture length increases. This means that any definition of range as a function of slow-time needs to incorporate this non-linear effect in addition to the usual non-linear effect of the hyperbola (where a constant velocity is assumed). To achieve this, SAR processors typically fine-tune the effective velocity parameter through estimation from orbit measurements and raw data, \cite{Xiaojin2007, Wong2000, Liang2017}.
+% \par
+% In addition, this effect could complicate Doppler domain multi-channel image processing where, for instance, strict adherence to the DPCA condition is required. Although the effect 
 \subsection{Arclength parameterization approach}
 A potential solution, and the recommendation of this document, is to design satellite radar systems that vary their PRF in order to maintain uniform spatial sampling. This could possibly be achieved by triggering pulse transmission based upon a device that not only measures arclength through inertial measurements but also adjusts for non-inertial earth rotation effects.
 \par 
-Most space-based SAR literature develops the signal using fast-time, slow-time coordinates, but there are advantages to approaching the development using arclength instead of slow-time. These include a simplified (in the opinion of the authors) derivation, an approach that inherently assumes uniform spatial sampling and, perhaps most importantly, a means to apply a first-principles-based approach based upon the highly accurate gravitational model provided by the NGA/NIMA spherical harmonic libraries known as egm96 or egm2008.
+Most space-based SAR literature develops the signal using fast-time, slow-time coordinates, but there are advantages to approaching the development using arclength instead of slow-time. These include a simplified (in the opinion of the authors) derivation, an approach that inherently assumes uniform spatial sampling and, perhaps most importantly, a means to apply a first-principles-based approach based upon the highly accurate gravitational model provided by the NGA/NIMA spherical harmonic libraries known as egm96 or egm2008, \cite{NASAEGM86}.
 \par
 \Scref{sc:diffgeoreview} provides a brief review of some elementary differential geometry concepts and shows how they relate to physical quantities associated with SAR imaging. This is followed by \scref{sc:rangeHistory} which implements these concepts and derives the SAR signal as a function of range wavenumber and arclength wavenumber.
 \clearpage

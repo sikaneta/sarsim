@@ -1,4 +1,4 @@
-\section{Derivation of the arclength-paremterized range function}
+\section{Derivation of the arclength-parameterized range function}
 \label{an:rangeComputation}
 The range between the satellite and a target plays a critical role in SAR processing. This section presents an arclength parameterized expression for this range function. The final approximation of the section, \eqref{eq:rangeInvariant}, yields a version of the function that only weakly depends on the expansion point used to describe the satellite orbit.
 \par
@@ -13,9 +13,9 @@ One computes that
 \begin{split}
  \satp(\parm)-\vct\target &= \satp(\parm) - \satp(\targetxparm) - \targetrange\cos\targetdepression\vct{N}(\targetxparm) - \targetrange\sin\targetdepression\vct{B}(\targetxparm)\\
  &= (\parm-\targetxparm)\vct{T}_0 + \frac{(\parm-\parm_0)^2 - (\targetxparm - \parm_0)^2}{2}\kappa_0\vct{N}_0\\
- &+\frac{(\parm-\parm_0)^3 - (\targetxparm - \parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + \dot{\kappa}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\\
+ &+\frac{(\parm-\parm_0)^3 - (\targetxparm - \parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + {\kappa'}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\\
  &- \targetrange\cos\targetdepression\vct{N}(\targetxparm) - \targetrange\sin\targetdepression\vct{B}(\targetxparm)\\
- &= (a-b)\biggl[\vct{T}_0 + \frac{a+b}{2}\kappa_0\vct{N}_0 +\frac{a^2+ab+b^2}{6}[-\kappa^2_0\vct{T}_0 + \dot{\kappa}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\biggr]\\
+ &= (a-b)\biggl[\vct{T}_0 + \frac{a+b}{2}\kappa_0\vct{N}_0 +\frac{a^2+ab+b^2}{6}[-\kappa^2_0\vct{T}_0 + {\kappa'}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\biggr]\\
  &- \targetrange\cos\targetdepression\vct{N}(\targetxparm) - \targetrange\sin\targetdepression\vct{B}(\targetxparm)
  \end{split},
 \end{equation}
@@ -31,10 +31,10 @@ More succinctly, one can write
 where
 \begin{align}
  \alpha_T &= 1 - \kappa^2_0\frac{a^2+ab+b^2}{6}\\
- \alpha_N &= \kappa_0\frac{a+b}{2} + \dot{\kappa}_0\frac{a^2+ab+b^2}{6}\\
+ \alpha_N &= \kappa_0\frac{a+b}{2} + {\kappa'}_0\frac{a^2+ab+b^2}{6}\\
  \alpha_B &= \kappa_0\tau_0\frac{a^2+ab+b^2}{6}
 \end{align}
-From the Frenet-Serret equations, one can make the approximation that
+From the Frenet-Serret equations, \eqref{eq:FrenetSerret}, one can make the approximation that
 \begin{align}
  \targetrange\cos\targetdepression\vct{N}(\targetxparm)&\approx\targetrange\cos\targetdepression\vct{N}_0 + (\targetxparm-\parm_0)\targetrange\cos\targetdepression(-\kappa_0\vct{T}_0 + \tau_0\vct{B}_0)\\
  \targetrange\sin\targetdepression\vct{B}(\targetxparm)&\approx\targetrange\sin\targetdepression\vct{B}_0 - (\targetxparm-\parm_0)\targetrange\sin\targetdepression\tau_0\vct{N}_0
@@ -49,20 +49,20 @@ and since $\targetxparm-\parm_0 = b$, the range expression can be written as
 \end{equation}
 The computation of square of the above expression yields a polynomial in $(a-b) = (\parm-\targetxparm)$ (after using sagemath),
 \begin{equation}
- \lvert\satp(\parm)-\vct\target\rvert^2 = \sum_{k=0^5}\rcoeff_k(\parm-\targetxparm)^k
+ \lvert\satp(\parm)-\vct\target\rvert^2 = \sum_{k=0}^5\rcoeff_k(\parm-\targetxparm)^k
 \end{equation}
 with the following coefficients
 \begin{equation}
  \begin{split}
  \rcoeff_0 &= b^{2}\kappa_0^2\targetrange^2\cos^2\targetdepression + b^2\targetrange^{2}\tau_0^{2} + \targetrange^{2}\\
- \rcoeff_1 &= \frac{2b^2\tau_0\targetrange}{3}(b\dot{\kappa}_0 + 2\kappa_0)\sin\targetdepression - \frac{2b^2\targetrange}{3}(b\kappa_0\tau_0^2 + b\kappa_0^3 + \dot{\kappa}_0)\cos\targetdepression\\
- \rcoeff_2 &= 1 - [\kappa_0+b\dot{\kappa}_0 + b^2(\kappa_0^3 + \kappa_0\tau_0^2)]\targetrange\cos\targetdepression + b^2\dot{\kappa}_0\tau_0\targetrange\sin\targetdepression\\ 
- &+ \frac{b^4}{9}(\kappa_0^4+\kappa_0^2\tau_0^2 + \dot{\kappa}_0^2) + \frac{b^2\kappa_0}{3}(\kappa_0 + 2b\dot{\kappa}_0)\\
- \rcoeff_3 &= -\frac{\targetrange}{3}(\kappa_0\tau_0\sin\targetdepression + \dot{\kappa}_0\cos\targetdepression) + \frac{b^3}{3}(\kappa_0^4+\kappa_0^2\tau_0^2 + \dot{\kappa}_0^2) + \frac{4b^2}{3}\kappa_0\dot{\kappa}_0\\ 
- &+ \frac{b\targetrange}{3}[\dot{\kappa}_0\tau_0\sin\targetdepression - (\kappa_0\tau_0^2+\kappa_0^3)\cos\targetdepression]\\
- \rcoeff_4 &= -\frac{\kappa_0^2}{12} + \frac{13b^2}{36}(\kappa_0^4+\kappa_0^2\tau_0^2 + \dot{\kappa}_0^2) + \frac{5b\kappa_0\dot{\kappa}_0}{6}\\
- \rcoeff_5 &= \frac{b}{6}(\kappa_0^4+\kappa_0^2\tau_0^2 + \dot{\kappa}_0^2 + \kappa\dot{\kappa}_0)\\
- \rcoeff_6 &= \frac{1}{36}(\kappa_0^4+\kappa_0^2\tau_0^2 + \dot{\kappa}_0^2)
+ \rcoeff_1 &= \frac{2b^2\tau_0\targetrange}{3}(b{\kappa'}_0 + 2\kappa_0)\sin\targetdepression - \frac{2b^2\targetrange}{3}(b\kappa_0\tau_0^2 + b\kappa_0^3 + {\kappa'}_0)\cos\targetdepression\\
+ \rcoeff_2 &= 1 - [\kappa_0+b{\kappa'}_0 + b^2(\kappa_0^3 + \kappa_0\tau_0^2)]\targetrange\cos\targetdepression + b^2{\kappa'}_0\tau_0\targetrange\sin\targetdepression\\ 
+ &+ \frac{b^4}{9}(\kappa_0^4+\kappa_0^2\tau_0^2 + {\kappa'}_0^2) + \frac{b^2\kappa_0}{3}(\kappa_0 + 2b{\kappa'}_0)\\
+ \rcoeff_3 &= -\frac{\targetrange}{3}(\kappa_0\tau_0\sin\targetdepression + {\kappa'}_0\cos\targetdepression) + \frac{b^3}{3}(\kappa_0^4+\kappa_0^2\tau_0^2 + {\kappa'}_0^2) + \frac{4b^2}{3}\kappa_0{\kappa'}_0\\ 
+ &+ \frac{b\targetrange}{3}[{\kappa'}_0\tau_0\sin\targetdepression - (\kappa_0\tau_0^2+\kappa_0^3)\cos\targetdepression]\\
+ \rcoeff_4 &= -\frac{\kappa_0^2}{12} + \frac{13b^2}{36}(\kappa_0^4+\kappa_0^2\tau_0^2 + {\kappa'}_0^2) + \frac{5b\kappa_0{\kappa'}_0}{6}\\
+ \rcoeff_5 &= \frac{b}{6}(\kappa_0^4+\kappa_0^2\tau_0^2 + {\kappa'}_0^2 + \kappa{\kappa'}_0)\\
+ \rcoeff_6 &= \frac{1}{36}(\kappa_0^4+\kappa_0^2\tau_0^2 + {\kappa'}_0^2)
  \end{split}
  \label{eq:rangeVariant}
 \end{equation}
@@ -72,7 +72,7 @@ In the region of the chosen point of expansion, $\parm_0$, $b$ evaluates to a re
  \rcoeff_0 &= \targetrange^{2}\\
  \rcoeff_1 &= 0\\
  \rcoeff_2 &= 1 - \kappa_0\targetrange\cos\targetdepression\\
- \rcoeff_3 &= -\frac{\targetrange}{3}(\kappa_0\tau_0\sin\targetdepression + \dot{\kappa}_0\cos\targetdepression)\\
+ \rcoeff_3 &= -\frac{\targetrange}{3}(\kappa_0\tau_0\sin\targetdepression + {\kappa'}_0\cos\targetdepression)\\
  \rcoeff_4 &= -\frac{\kappa_0^2}{12}\\
  \rcoeff_5 &= 0\\
  \rcoeff_6 &= 0

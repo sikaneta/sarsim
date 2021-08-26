@@ -2,7 +2,7 @@
 \label{sc:hrws}
 With the signal represented in the 2-D frequency domain we are finally ready to derive the \gls{multi-channel} \Index{processing filters}.
 \par
-This section derives signal processing methods to reconstruct an optimal \Index{scalar spectrum} for \Index{\gls{wideband}} SAR imaging. It is assumed that the antennas are fixed relative to track - {\em i.e.}, that one can model the signal according to \eqref{eq:sparmft2}. Further, it is assumed that the antenna positions relative to track are known. The relative motion parameters are also known and the objective is to reproduce a high-resolution image from the multi-channel signal which is \Index{aliased} according to the PRF.
+This section derives signal processing methods to reconstruct an optimal \Index{scalar spectrum} for \Index{\gls{wideband}} SAR imaging. It is assumed that the antennas are fixed relative to track - {\em i.e.}, that one can model the signal according to \eqref{eq:sparmft3}. Further, it is assumed that the antenna positions relative to track are known. The relative motion parameters are also known and the objective is to reproduce a high-resolution image from the multi-channel signal which is \Index{aliased} according to the PRF.
 \subsection{Linear filtering to extract signal components}
 \label{sc:linearfilt}
 The \Index{linear filtering} approach applies a multi-dimensional filter in the wavenumber domain so that a scalar reconstructed signal, denoted by $\ZkZkR(\kr,\kparm)$, is created via 
@@ -15,7 +15,7 @@ The challenge is to find the vectors $\vct{b}_l(\kveczero)$ that yield the desir
 \end{equation}
 is as free from \Index{azimuth ambiguities} as possible and that it does not suffer catastrophic losses in \gls{snr}.
 \subsection{Matrix-vector model for the aliased signal}
-The derivation of the filters is aided by rewriting the multi-channel signal in matrix-vector notation.
+The derivation of the filters is aided by rewriting the multi-channel signal in matrix-vector notation, \cite{Sikaneta2014}.
 \par
 Recall that an $N$-channel system measurement can be represented as
 \begin{equation}
@@ -101,7 +101,7 @@ The minimum square error approach to computing $\hrwsFilterMatrix(\kargs)$ seeks
 \end{equation}
 where $\lvert\cdot\rvert^2$ denotes the \Index{Frobenius norm}. 
 \subsubsection{Amplified additive noise}
-Before attempting to find minimum values for $\costFunction{0}$, one should recognise that if we pre-multiply $\ZkZkM(\kveczero)$ by $\hrwsFilterMatrix(\kargs)$, then the additive noise term is also pre-multiplied by $\hrwsFilterMatrix(\kargs)$ and this might adversely change the \gls{snr}. Thus, one should simultaneously try to minimise the following cost function
+Before attempting to find minimum values for $\costFunction{0}$, one should recognise that if we pre-multiply $\ZkZkM(\kveczero)$ by $\hrwsFilterMatrix(\kargs)$, then the additive noise term is also pre-multiplied by $\hrwsFilterMatrix(\kargs)$ and this might reduce the \gls{snr}. Thus, one should simultaneously try to minimise the following cost function
 \begin{equation}
  \costFunction{1} = \expct{\lvert\hrwsFilterMatrix(\kargs)\NkNkMP(\kargs)\rvert^2}
 \end{equation}

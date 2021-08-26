@@ -55,21 +55,17 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {6.2.1}State vectors}{17}{subsubsection.6.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {6.2.2}Geopotential model}{17}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.2}Geopotential model}{18}{subsubsection.6.2.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {6.3}Demonstration of accuracy of the model}{20}{subsection.6.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Arclength-paremterized range function}{28}{section.7}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.1}Error in the range function}{29}{subsection.7.1}%
+\contentsline {section}{\numberline {7}Arclength-parameterized range function}{28}{section.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {8}The SAR signal in arclength space}{29}{section.8}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {8.1}Scene measurement through multiple antenna patterns}{30}{subsection.8.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {8.2}Demodulation}{32}{subsection.8.2}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {8.2.1}Range error compensation}{32}{subsubsection.8.2.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {8.3}Stationary phase approximation}{33}{subsection.8.3}%
 \defcounter {refsection}{0}\relax 
@@ -103,17 +99,17 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {12.1}Generation of the raw signals}{43}{subsection.12.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {12.2}Multichannel processing}{46}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.2}Multi-channel processing}{46}{subsection.12.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {12.3}Azimuth compression}{48}{subsection.12.3}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {12.3.1}Residual phase correction}{50}{subsubsection.12.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {12.3.2}Signal to noise ratio}{51}{subsubsection.12.3.2}%
+\contentsline {subsubsection}{\numberline {12.3.2}Signal-to-noise ratio}{51}{subsubsection.12.3.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {13}Conclusion}{55}{section.13}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{56}{section*.40}%
+\contentsline {section}{References}{56}{section*.42}%
 \defcounter {refsection}{0}\relax 
 \contentsline {annex}{\numberline {A}Derivative of unit vectors}{59}{annex.A}%
 \defcounter {refsection}{0}\relax 
@@ -123,12 +119,12 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subannex}{\numberline {B.2}Rate of change of acceleration}{62}{subannex.B.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {C}Derivation of the arclength-paremterized range function}{64}{annex.C}%
+\contentsline {annex}{\numberline {C}Derivation of the arclength-parameterized range function}{64}{annex.C}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {D}Numerical implementation of the Stolz interpolation}{66}{annex.D}%
+\contentsline {annex}{\numberline {D}Numerical implementation of the Stolz interpolation}{67}{annex.D}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subannex}{\numberline {D.1}Simplification for iterative root-finding}{66}{subannex.D.1}%
+\contentsline {subannex}{\numberline {D.1}Simplification for iterative root-finding}{67}{subannex.D.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {E}MIMO configuration}{68}{annex.E}%
+\contentsline {annex}{\numberline {E}MIMO configuration}{69}{annex.E}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {F}Antenna pattern angles}{71}{annex.F}%
+\contentsline {annex}{\numberline {F}Antenna pattern angles}{72}{annex.F}%

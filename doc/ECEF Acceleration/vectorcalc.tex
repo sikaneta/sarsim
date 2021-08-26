@@ -2,9 +2,9 @@
 \label{an:vectorCalc}
 This section provides a summary of well-known vector derivative relations. These relations can be used to tie together many of the mathematical derivations scattered throughout the document.
 \par
-Specifically, the section presents the derivatives of three forms of a parameterized vector with respect to the parameter. These forms include the derivative of the amplitude of the parameterized vector, the derivative of the parameterized unit vector and the derivative of the projection of a given parameterized vector in the direction perpendicular to another vector with the same parameterization.
+Specifically, we present the derivatives of three forms of a parameterized vector with respect to the parameter. These forms include the derivative of the amplitude of the parameterized vector, the derivative of the parameterized unit vector and the derivative of the projection of a given parameterized vector in the direction perpendicular to another vector with the same parameterization. In the following, $\hat{\cdot}$ denotes a unit vector and the dot notation denotes a derivative with respect to $t$
 \par
-Consider
+Consider some vector $\vct{f}$
 \begin{equation}
  \frac{\d{\lvert\vct{f}\rvert}}{\d{t}} = \uf^T\df
 \end{equation}
@@ -21,7 +21,7 @@ where
 \end{equation}
 where $\mtx{I}$ is the identity matrix. By inspection, one notes that pre-multiplication of a vector by the matrix $\mtx{P}_\vct{f}$ always yields the component of that vector that is perpendicular to $\vct{f}$.
 \par
-By using the above relations, one calculates the final relation that
+By using the above relations, one calculates, for vectors $\vct{f}$ and $\vct{g}$, the final relation that
 \begin{equation}
  \frac{\d{}}{\d{t}}\Pf\vct{g} = -\frac{1}{\lvert\vct{f}\rvert}\left[\Pf\df\uf^T + \uf\df^T\Pf\right]\vct{g} + \Pf\dot{\vct{g}}
 \end{equation}
