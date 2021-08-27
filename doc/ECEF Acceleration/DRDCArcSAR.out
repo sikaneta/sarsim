@@ -49,13 +49,14 @@
 \BOOKMARK [3][-]{subsubsection.12.3.1}{12.3.1 Residual phase correction}{subsection.12.3}% 49
 \BOOKMARK [3][-]{subsubsection.12.3.2}{12.3.2 Signal-to-noise ratio}{subsection.12.3}% 50
 \BOOKMARK [1][-]{section.13}{13 Conclusion}{}% 51
-\BOOKMARK [1][-]{section*.42}{References}{}% 52
+\BOOKMARK [1][-]{section*.43}{References}{}% 52
 \BOOKMARK [1][-]{annex.A}{Annex A Derivative of unit vectors}{}% 53
 \BOOKMARK [1][-]{annex.B}{Annex B ECEF acceleration}{}% 54
 \BOOKMARK [2][-]{subannex.B.1}{B.1 ECEF equations of motion}{annex.B}% 55
 \BOOKMARK [2][-]{subannex.B.2}{B.2 Rate of change of acceleration}{annex.B}% 56
 \BOOKMARK [1][-]{annex.C}{Annex C Derivation of the arclength-parameterized range function}{}% 57
-\BOOKMARK [1][-]{annex.D}{Annex D Numerical implementation of the Stolz interpolation}{}% 58
-\BOOKMARK [2][-]{subannex.D.1}{D.1 Simplification for iterative root-finding}{annex.D}% 59
-\BOOKMARK [1][-]{annex.E}{Annex E MIMO configuration}{}% 60
-\BOOKMARK [1][-]{annex.F}{Annex F Antenna pattern angles}{}% 61
+\BOOKMARK [1][-]{annex.D}{Annex D Iteration to the stationary point}{}% 58
+\BOOKMARK [1][-]{annex.E}{Annex E Numerical implementation of the Stolz interpolation}{}% 59
+\BOOKMARK [2][-]{subannex.E.1}{E.1 Simplification for iterative root-finding}{annex.E}% 60
+\BOOKMARK [1][-]{annex.F}{Annex F MIMO configuration}{}% 61
+\BOOKMARK [1][-]{annex.G}{Annex G Antenna pattern angles}{}% 62

@@ -1,4 +1,4 @@
-%% Creator: Inkscape inkscape 0.92.5, www.inkscape.org
+%% Creator: Inkscape 1.0.2 (e86c870879, 2021-01-15), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'iteration.pdf' (pdf, eps, ps)
 %%
@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{595.27559055bp}%
+    \setlength{\unitlength}{311.41163834bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,19 +50,16 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,1.41428571)%
+  \begin{picture}(1,0.72658927)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{iteration.pdf}}%
-    \put(0.06299603,1.08353175){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.30238095\unitlength}\raggedright \end{minipage}}}%
-    \put(0.10638974,1.03542451){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\frac{x}{g(s)} - s = 0$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=2]{iteration.pdf}}%
-    \put(0.61165641,1.06596959){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f_1(s) = s$\end{tabular}}}}%
-    \put(0.12929855,0.58870261){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f_2(s) = \frac{x}{g(s)}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=3]{iteration.pdf}}%
-    \put(0.52916667,0.67405752){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$s_0$\end{tabular}}}}%
-    \put(0.58766301,0.67405752){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$s_1$\end{tabular}}}}%
-    \put(0.61781108,0.70150575){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$s_2$\end{tabular}}}}%
-    \put(0.93598909,0.68623323){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$s$\end{tabular}}}}%
+    \put(0.6069439,0.65334436){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f_1(\parm)=\parm$\end{tabular}}}}%
+    \put(0.00792627,0.23061864){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f_2(\parm) = \frac{\xang}{\gfunc(\parm)}$\end{tabular}}}}%
+    \put(0.43350981,0.27089615){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\parm_0$\end{tabular}}}}%
+    \put(0.54532788,0.27089615){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\parm_1$\end{tabular}}}}%
+    \put(0.60295708,0.27038071){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\parm_2$\end{tabular}}}}%
+    \put(0.86301016,0.30127244){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$s$\end{tabular}}}}%
+    \put(-0.12288467,-0.73388416){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{2.18461636\unitlength}\raggedright \end{minipage}}}%
   \end{picture}%
 \endgroup%

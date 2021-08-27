@@ -8,7 +8,7 @@ As illustrated in \fgref{fg:mimo},
 	\caption{Configuration of transmit and receive. Each transmitted signal is received by all receivers}
 	\label{fg:mimo}
 \end{figure}
-assume that every transmission, from every element, is received and summed independently (i.e. assume superpostiion applies). Assume further that signals are transmitted at time $\fasttime$, but with different delays on transmission (programmed delays) for each T/R module
+assume that every transmission, from every element, is received and summed independently (i.e. assume superposition applies). Assume further that signals are transmitted at time $\fasttime$, but with different delays on transmission (programmed delays) for each T/R module
 and that the echoes of these signals are received at time $\fasttime + 2\targetrange(\parm)/c$, but with different Rx delays for each T/R module (programmed delays)
 \par
 Now, the time delay to irradiate a target depends on the position of the transmitter and the location of the target. In the model, we denote the target position as $\targetxparm$ and the position of each transmitter and receiver as $\anTx{\txn}$, $\txn\in\{0, \txN-1\}$ and $\anRx{\txm}$, $\txm\in\{0, \txM-1\}$, respectively. We also denote the transmitted waveform as 
@@ -21,8 +21,9 @@ where $\envelope(\fasttime)$ is some baseband waveform. With this notation, and 
 \end{equation}
 and the return signal is given by 
 \begin{equation}
-\pulse_{mn}(\fasttime, \parm) = \txAmp{\txn}\rxAmp{\txm}\pulse[\fasttime - \mnDelay(\parm)].
+\pulse_{mn}(\fasttime, \parm) = \txAmp{\txn}\rxAmp{\txm}\pulse[\fasttime - \mnDelay(\parm)],
 \end{equation}
+where $\txAmp{\txn}$ and $\rxAmp{\txm}$ denote the antenna gains for transmit and receive from channels $\txn,\txm$, respectively.
 Through the principle of superposition, the system measured signal is given by
 \begin{equation}
 \begin{split}

@@ -7,7 +7,7 @@
 \babel@toc {french}{}
 \babel@toc {english}{}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces Five channel schematic for design. Circles denote the phase-centre location while the angle denotes the direction of the transmit and receive beams.\relax }}{5}{figure.caption.11}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Five channel schematic for design. Circles denote the phase-centre location while the angle denotes the direction of the transmit and receive beams.\relax }}{6}{figure.caption.11}%
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {2}{\ignorespaces Antenna Lengths to achieve desired resolution for an example 11 channel system for a desired resolution of $\ensuremath {\delta _0}$.\relax }}{7}{figure.caption.12}%
 \defcounter {refsection}{0}\relax 
@@ -15,48 +15,52 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {4}{\ignorespaces Non-constant satellite radius in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides.\relax }}{10}{figure.caption.15}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {5}{\ignorespaces Non-constant satellite velocity in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides.\relax }}{11}{figure.caption.16}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Non-constant satellite velocity in the ECEF coordinate system. Data extracted from Sentinel-1 Precise Orbit Ephemerides.\relax }}{12}{figure.caption.16}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {6}{\ignorespaces Deviation of arclength from uniform samples in meters as a function of slow-time: $s(N\Delta t) - Ns(\Delta t)$. Data extracted from Sentinel-1 Precise Orbit Ephemerides.\relax }}{13}{figure.caption.17}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Deviation of arclength from uniform samples in meters as a function of slow-time: $s(N\Delta t) - Ns(\Delta t)$. Data extracted from Sentinel-1 Precise Orbit Ephemerides.\relax }}{14}{figure.caption.17}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {7}{\ignorespaces Comparison of numerical integration of the differential equation of satellite motion with recorded precise state vectors sourced from \cite {SentinelPOD}\relax }}{19}{figure.caption.18}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Illustration of differential geometry vectors\relax }}{16}{figure.caption.18}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {8}{\ignorespaces Locations of Sentinel-1 and Terrasar-X satellites at the times that the geometric model is evaluated. The satellite positions were sourced from \cite {SentinelPOD} and \cite {GFZ} for Sentinel and Terrasar-X respectivaely. Image basemap \textcopyright \url {https://www.openstreetmap.org}.\relax }}{21}{figure.caption.19}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Comparison of numerical integration of the differential equation of satellite motion with recorded precise state vectors sourced from \cite {SentinelPOD}\relax }}{21}{figure.caption.19}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {9}{\ignorespaces Terrasar-X 29: Argentina, descending\relax }}{22}{figure.caption.20}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Locations of Sentinel-1 and Terrasar-X satellites at the times that the geometric model is evaluated. The satellite positions were sourced from \cite {SentinelPOD} and \cite {GFZ} for Sentinel and Terrasar-X respectivaely. Image basemap \textcopyright \url {https://www.openstreetmap.org}.\relax }}{22}{figure.caption.20}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {10}{\ignorespaces Terrasar-X 706: Ukraine, ascending\relax }}{22}{figure.caption.21}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Terrasar-X 29: Argentina, descending\relax }}{23}{figure.caption.21}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {11}{\ignorespaces Terrasar-X 1266: Mid-Atlantic, ascending\relax }}{23}{figure.caption.22}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Terrasar-X 706: Ukraine, ascending\relax }}{23}{figure.caption.22}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {12}{\ignorespaces Terrasar-X 677: Tanzania, ascending\relax }}{23}{figure.caption.23}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Terrasar-X 1266: Mid-Atlantic, ascending\relax }}{24}{figure.caption.23}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {13}{\ignorespaces Terrasar-X 1650: United States, ascending\relax }}{24}{figure.caption.24}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Terrasar-X 677: Tanzania, ascending\relax }}{24}{figure.caption.24}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {14}{\ignorespaces Sentinel-1 4591: Canada, descending\relax }}{25}{figure.caption.25}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Terrasar-X 1650: United States, ascending\relax }}{25}{figure.caption.25}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {15}{\ignorespaces Sentinel-1 1727: Zambia, descending\relax }}{25}{figure.caption.26}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Sentinel-1 4591: Canada, descending\relax }}{26}{figure.caption.26}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {16}{\ignorespaces Sentinel-1 4418: India, ascending\relax }}{26}{figure.caption.27}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Sentinel-1 1727: Zambia, descending\relax }}{26}{figure.caption.27}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {17}{\ignorespaces Sentinel-1 5650: Russia, ascending\relax }}{26}{figure.caption.28}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Sentinel-1 4418: India, ascending\relax }}{27}{figure.caption.28}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {18}{\ignorespaces Sentinel-1 3725: Australia, ascending\relax }}{27}{figure.caption.29}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Sentinel-1 5650: Russia, ascending\relax }}{27}{figure.caption.29}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {19}{\ignorespaces Simulation of the SURE signal.\relax }}{44}{figure.caption.33}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Sentinel-1 3725: Australia, ascending\relax }}{28}{figure.caption.30}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {20}{\ignorespaces Schematic of 5 subapertures for the 40 cm mode.\relax }}{45}{figure.caption.34}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Simulation of the SURE signal.\relax }}{45}{figure.caption.34}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {21}{\ignorespaces Reconstructed signals in azimuth wavenumber domain.\relax }}{47}{figure.caption.35}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Schematic of 5 subapertures for the 40 cm mode.\relax }}{46}{figure.caption.35}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {22}{\ignorespaces Processed signal Point Spread Response.\relax }}{49}{figure.caption.36}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Reconstructed signals in azimuth wavenumber domain.\relax }}{48}{figure.caption.36}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {23}{\ignorespaces Azimuth cross-section of 10cm mode without residual phase correction.\relax }}{50}{figure.caption.37}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Processed signal Point Spread Response.\relax }}{50}{figure.caption.37}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {24}{\ignorespaces Point Spread Function of 10cm mode after phase compensation.\relax }}{51}{figure.caption.38}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Azimuth cross-section of 10cm mode without residual phase correction.\relax }}{51}{figure.caption.38}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {25}{\ignorespaces Azimuth cross-section of 10cm mode after residual phase correction.\relax }}{52}{figure.caption.39}%
+\contentsline {figure}{\numberline {25}{\ignorespaces Point Spread Function of 10cm mode after phase compensation.\relax }}{52}{figure.caption.39}%
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {26}{\ignorespaces Azimuth cross-section of 10cm mode after residual phase correction.\relax }}{53}{figure.caption.40}%
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {E.1}{\ignorespaces Configuration of transmit and receive. Each transmitted signal is received by all receivers\relax }}{69}{figure.caption.43}%
+\contentsline {figure}{\numberline {27}{\ignorespaces Azimuth cross-section of 10cm mode after residual phase correction.\relax }}{54}{figure.caption.41}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {D.1}{\ignorespaces Simple iterative procedure showing convergence to the stationary point\relax }}{69}{figure.caption.44}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {F.1}{\ignorespaces Configuration of transmit and receive. Each transmitted signal is received by all receivers\relax }}{73}{figure.caption.45}%

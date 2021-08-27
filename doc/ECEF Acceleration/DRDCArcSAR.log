@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2021.8.25)  26 AUG 2021 17:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Debian) (preloaded format=pdflatex 2021.8.25)  27 AUG 2021 11:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -237,6 +237,11 @@ Package: drdc-submission 2016/02/11 v1.0 LaTeX package for CSV submission form
 (/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2020/08/10 v2.0s Standard LaTeX package
 )
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2020/08/01 v1.3d Input encoding file
+\inpenc@prehook=\toks18
+\inpenc@posthook=\toks19
+)
 (/usr/share/texmf/tex/latex/lm/lmodern.sty
 Package: lmodern 2009/10/30 v1.6 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
@@ -280,8 +285,8 @@ Package: xkeyval 2020/11/20 v2.8 package option processing (HA)
 
 (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex
 (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-\XKV@toks=\toks18
-\XKV@tempa@toks=\toks19
+\XKV@toks=\toks20
+\XKV@tempa@toks=\toks21
 )
 \XKV@depth=\count268
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
@@ -293,8 +298,8 @@ Package: mfirstuc 2017/11/14 v2.06 (NLCT)
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count269
 )
-\@glsmfirst=\toks20
-\@glsmrest=\toks21
+\@glsmfirst=\toks22
+\@glsmrest=\toks23
 )
 (/usr/share/texlive/texmf-dist/tex/latex/textcase/textcase.sty
 Package: textcase 2019/09/14 v1.00 Text only upper/lower case changing (DPC)
@@ -315,7 +320,7 @@ Package: amstext 2000/06/29 v2.01 AMS text
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks22
+\@emptytoks=\toks24
 \ex@=\dimen149
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
@@ -345,21 +350,21 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 \dotsspace@=\muskip16
 \c@parentequation=\count277
 \dspbrk@lvl=\count278
-\tag@help=\toks23
+\tag@help=\toks25
 \row@=\count279
 \column@=\count280
 \maxfields@=\count281
-\andhelp@=\toks24
+\andhelp@=\toks26
 \eqnshift@=\dimen152
 \alignsep@=\dimen153
 \tagshift@=\dimen154
 \tagwidth@=\dimen155
 \totwidth@=\dimen156
 \lineht@=\dimen157
-\@envbody=\toks25
+\@envbody=\toks27
 \multlinegap=\skip84
 \multlinetaggap=\skip85
-\mathdisplay@stack=\toks26
+\mathdisplay@stack=\toks28
 LaTeX Info: Redefining \[ on input line 2923.
 LaTeX Info: Redefining \] on input line 2924.
 )
@@ -418,7 +423,7 @@ Package: fp-upn 1996/10/21
 (/usr/share/texlive/texmf-dist/tex/latex/fp/fp-eval.sty
 Package: fp-eval 1995/04/03
 )))
-\@dtl@toks=\toks27
+\@dtl@toks=\toks29
 \@dtl@tmpcount=\count294
 \dtl@tmplength=\skip86
 \dtl@sortresult=\count295
@@ -447,12 +452,12 @@ f
 File: glossaries-french.ldf 2016/12/12 v1.1
 )
 \gls@level=\count301
-\@gls@tmpb=\toks28
+\@gls@tmpb=\toks30
 \gls@tmplen=\skip87
-\glskeylisttok=\toks29
-\glslabeltok=\toks30
-\glsshorttok=\toks31
-\glslongtok=\toks32
+\glskeylisttok=\toks31
+\glslabeltok=\toks32
+\glsshorttok=\toks33
+\glslongtok=\toks34
 
 (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-hypernav.st
 y
@@ -479,7 +484,7 @@ Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
 \LT@rows=\count304
 \c@LT@tables=\count305
 \c@LT@chunks=\count306
-\LT@p@ftn=\toks33
+\LT@p@ftn=\toks35
 )
 \glsdescwidth=\skip93
 \glspagelistwidth=\skip94
@@ -511,21 +516,21 @@ Package: glossary-tree 2020/03/19 v4.46 (NLCT)
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty
 Package: amsthm 2020/05/29 v2.20.6
-\thm@style=\toks34
-\thm@bodyfont=\toks35
-\thm@headfont=\toks36
-\thm@notefont=\toks37
-\thm@headpunct=\toks38
+\thm@style=\toks36
+\thm@bodyfont=\toks37
+\thm@headfont=\toks38
+\thm@notefont=\toks39
+\thm@headpunct=\toks40
 \thm@preskip=\skip99
 \thm@postskip=\skip100
 \thm@headsep=\skip101
-\dth@everypar=\toks39
+\dth@everypar=\toks41
 )
 (/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
 (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
-\pgfutil@everybye=\toks40
+\pgfutil@everybye=\toks42
 \pgfutil@tempdima=\dimen169
 \pgfutil@tempdimb=\dimen170
 
@@ -549,12 +554,12 @@ Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
 Package: pgfsys 2020/12/27 v3.1.8b (3.1.8b)
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks41
-\pgfkeys@temptoks=\toks42
+\pgfkeys@pathtoks=\toks43
+\pgfkeys@temptoks=\toks44
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
 ex
-\pgfkeys@tmptoks=\toks43
+\pgfkeys@tmptoks=\toks45
 ))
 \pgf@x=\dimen173
 \pgf@y=\dimen174
@@ -572,9 +577,9 @@ ex
 \c@pgf@countb=\count309
 \c@pgf@countc=\count310
 \c@pgf@countd=\count311
-\t@pgf@toka=\toks44
-\t@pgf@tokb=\toks45
-\t@pgf@tokc=\toks46
+\t@pgf@toka=\toks46
+\t@pgf@tokb=\toks47
+\t@pgf@tokc=\toks48
 \pgf@sys@id@count=\count312
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
 File: pgf.cfg 2020/12/27 v3.1.8b (3.1.8b)
@@ -608,9 +613,9 @@ Package: pgfcore 2020/12/27 v3.1.8b (3.1.8b)
 \pgfmath@dimen=\dimen183
 \pgfmath@count=\count315
 \pgfmath@box=\box61
-\pgfmath@toks=\toks47
-\pgfmath@stack@operand=\toks48
-\pgfmath@stack@operation=\toks49
+\pgfmath@toks=\toks49
+\pgfmath@stack@operand=\toks50
+\pgfmath@stack@operation=\toks51
 )
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
@@ -754,8 +759,8 @@ Package: pgffor 2020/12/27 v3.1.8b (3.1.8b)
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
 \pgffor@iter=\dimen266
 \pgffor@skip=\dimen267
-\pgffor@stack=\toks50
-\pgffor@toks=\toks51
+\pgffor@stack=\toks52
+\pgffor@toks=\toks53
 ))
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
 Package: tikz 2020/12/27 v3.1.8b (3.1.8b)
@@ -801,9 +806,9 @@ Package: pgfplots 2020/02/29 v1.17 Data Visualization (1.17)
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotscore.code.tex
-\t@pgfplots@toka=\toks52
-\t@pgfplots@tokb=\toks53
-\t@pgfplots@tokc=\toks54
+\t@pgfplots@toka=\toks54
+\t@pgfplots@tokb=\toks55
+\t@pgfplots@tokc=\toks56
 \pgfplots@tmpa=\dimen277
 \c@pgfplots@coordindex=\count329
 \c@pgfplots@scanlineindex=\count330
@@ -830,7 +835,7 @@ x.code.tex)
 (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstableshare
 d.code.tex
 \c@pgfplotstable@counta=\count332
-\t@pgfplotstable@a=\toks55
+\t@pgfplotstable@a=\toks57
 )
 (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsdeque
 .code.tex)
@@ -1064,7 +1069,7 @@ Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
 \col@sep=\dimen299
 \ar@mcellbox=\box92
 \extrarowheight=\dimen300
-\NC@list=\toks56
+\NC@list=\toks58
 \extratabsurround=\skip102
 \backup@length=\skip103
 \ar@cellbox=\box93
@@ -1076,7 +1081,7 @@ Package: hhline 2020/01/04 v2.04 Table rule package (DPC)
 \UL@box=\box94
 \UL@hyphenbox=\box95
 \UL@skip=\skip104
-\UL@hook=\toks57
+\UL@hook=\toks59
 \UL@height=\dimen301
 \UL@pe=\count342
 \UL@pixel=\dimen302
@@ -1090,7 +1095,7 @@ Package: rotating 2016/08/11 v2.16d rotated objects in LaTeX
 \rotFPtop=\skip105
 \rotFPbot=\skip106
 \rot@float@box=\box97
-\rot@mess@toks=\toks58
+\rot@mess@toks=\toks60
 )
 (/usr/share/texlive/texmf-dist/tex/latex/marvosym/marvosym.sty
 Package: marvosym 2011/07/20 v2.2 Martin Vogel's Symbols font definitions
@@ -1105,7 +1110,7 @@ Package: multirow 2021/01/29 v2.7 Span multiple rows of a table
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count345
 \lst@gtempboxa=\box98
-\lst@token=\toks59
+\lst@token=\toks61
 \lst@length=\count346
 \lst@currlwidth=\dimen305
 \lst@column=\count347
@@ -1495,7 +1500,7 @@ Package biblatex Warning: 'babel/polyglossia' detected but 'csquotes' missing.
 \@quotelevel=\count497
 \@quotereset=\count498
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 14
-1.
+2.
 (/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1507,22 +1512,22 @@ File: l3backend-pdftex.def 2020-01-29 L3 backend support: PDF output (pdfTeX)
 (./DRDCArcSAR.aux)
 \openout1 = `DRDCArcSAR.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 141.
-LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 142.
+LaTeX Font Info:    ... okay on input line 142.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -1531,12 +1536,12 @@ LaTeX Font Info:    ... okay on input line 141.
 \scratchbox=\box101
 \nofMPsegments=\count501
 \nofMParguments=\count502
-\everyMPshowfont=\toks60
+\everyMPshowfont=\toks62
 \MPscratchCnt=\count503
 \MPscratchDim=\dimen314
 \MPnumerator=\count504
 \makeMPintoPDFobject=\count505
-\everyMPtoPDFconversion=\toks61
+\everyMPtoPDFconversion=\toks63
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -1546,9 +1551,9 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Info: Redefining \degres on input line 141.
-LaTeX Info: Redefining \dots on input line 141.
-LaTeX Info: Redefining \up on input line 141.
+LaTeX Info: Redefining \degres on input line 142.
+LaTeX Info: Redefining \dots on input line 142.
+LaTeX Info: Redefining \up on input line 142.
 
 (/usr/share/texlive/texmf-dist/tex/latex/tools/hhline.sty
 Package: hhline 2020/01/04 v2.04 Table rule package (DPC)
@@ -1572,7 +1577,7 @@ Package biblatex Info: ... file 'frenchb.lbx' not found.
 
 
 Package biblatex Warning: Language 'frenchb' not supported.
-(biblatex)                Using dummy definitions on input line 141.
+(biblatex)                Using dummy definitions on input line 142.
 
 Package biblatex Info: Trying to load language 'french'...
 Package biblatex Info: ... file 'french.lbx' found.
@@ -1604,9 +1609,9 @@ Package: blx-case-expl3 2020/12/31 v3.16 expl3 case changing code for biblatex
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'DRDCArcSAR.bbl' found.
  (./DRDCArcSAR.bbl)
-Package biblatex Info: Reference section=0 on input line 141.
-Package biblatex Info: Reference segment=0 on input line 141.
-Package hyperref Info: Link coloring ON on input line 141.
+Package biblatex Info: Reference section=0 on input line 142.
+Package biblatex Info: Reference segment=0 on input line 142.
+Package hyperref Info: Link coloring ON on input line 142.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -1619,9 +1624,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count507
 )
-LaTeX Info: Redefining \ref on input line 141.
-LaTeX Info: Redefining \pageref on input line 141.
-LaTeX Info: Redefining \nameref on input line 141.
+LaTeX Info: Redefining \ref on input line 142.
+LaTeX Info: Redefining \pageref on input line 142.
+LaTeX Info: Redefining \nameref on input line 142.
 
 (./DRDCArcSAR.out) (./DRDCArcSAR.out)
 \@outlinefile=\write5
@@ -1633,112 +1638,112 @@ LaTeX Info: Redefining \nameref on input line 141.
 
 <<drdc.xmpi>>
 LaTeX Font Info:    Trying to load font information for T1+phv on input line 14
-4.
+5.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 144.
+(Font)              scaled to size 10.40245pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 19.70294pt on input line 144.
+(Font)              scaled to size 19.70294pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 19.70294pt on input line 144.
+(Font)              scaled to size 19.70294pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 11.39996pt on input line 144.
+(Font)              scaled to size 11.39996pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 11.39996pt on input line 144.
+(Font)              scaled to size 11.39996pt on input line 145.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-44.
+45.
 
 (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-44.
+45.
 
 (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-144.
+145.
 
 (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-144.
+145.
 
 (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 144.
+(Font)              <10.95> on input line 145.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 144.
+(Font)              <8> on input line 145.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 144.
+(Font)              <6> on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 144.
+(Font)              scaled to size 9.49997pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 144.
+(Font)              scaled to size 7.59998pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 7.59998pt on input line 144.
+(Font)              scaled to size 7.59998pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.54997pt on input line 144.
+(Font)              scaled to size 8.54997pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 16.41594pt on input line 144.
+(Font)              scaled to size 16.41594pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 16.41594pt on input line 144.
+(Font)              scaled to size 16.41594pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 8.54997pt on input line 144.
+(Font)              scaled to size 8.54997pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 13.67995pt on input line 144.
-<DRDC-FIP.pdf, id=252, 878.28125pt x 57.21375pt>
+(Font)              scaled to size 13.67995pt on input line 145.
+<DRDC-FIP.pdf, id=256, 878.28125pt x 57.21375pt>
 File: DRDC-FIP.pdf Graphic file (type pdf)
 <use DRDC-FIP.pdf>
-Package pdftex.def Info: DRDC-FIP.pdf  used on input line 144.
+Package pdftex.def Info: DRDC-FIP.pdf  used on input line 145.
 (pdftex.def)             Requested size: 878.27911pt x 57.2136pt.
-<boxes.pdf, id=253, 225.84375pt x 202.7575pt>
+<boxes.pdf, id=257, 225.84375pt x 202.7575pt>
 File: boxes.pdf Graphic file (type pdf)
 <use boxes.pdf>
-Package pdftex.def Info: boxes.pdf  used on input line 144.
+Package pdftex.def Info: boxes.pdf  used on input line 145.
 (pdftex.def)             Requested size: 225.84319pt x 202.757pt.
-<rule.pdf, id=254, 200.75pt x 20.075pt>
+<rule.pdf, id=258, 200.75pt x 20.075pt>
 File: rule.pdf Graphic file (type pdf)
 <use rule.pdf>
-Package pdftex.def Info: rule.pdf  used on input line 144.
+Package pdftex.def Info: rule.pdf  used on input line 145.
 (pdftex.def)             Requested size: 200.7495pt x 20.07494pt.
-<DRDC-RDDC-tech.pdf, id=255, 273.02pt x 54.2025pt>
+<DRDC-RDDC-tech.pdf, id=259, 273.02pt x 54.2025pt>
 File: DRDC-RDDC-tech.pdf Graphic file (type pdf)
 <use DRDC-RDDC-tech.pdf>
-Package pdftex.def Info: DRDC-RDDC-tech.pdf  used on input line 144.
+Package pdftex.def Info: DRDC-RDDC-tech.pdf  used on input line 145.
 (pdftex.def)             Requested size: 273.01933pt x 54.20236pt.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 9.49997pt on input line 144.
-<wordmark.pdf, id=256, 113.42375pt x 27.10126pt>
+(Font)              scaled to size 9.49997pt on input line 145.
+<wordmark.pdf, id=260, 113.42375pt x 27.10126pt>
 File: wordmark.pdf Graphic file (type pdf)
 <use wordmark.pdf>
-Package pdftex.def Info: wordmark.pdf  used on input line 144.
+Package pdftex.def Info: wordmark.pdf  used on input line 145.
 (pdftex.def)             Requested size: 113.42346pt x 27.10118pt.
  [-1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
  <./DRDC-FIP.pdf> <./rule.pdf> <./boxes.pdf> <./DRDC-RDDC-tech.pdf> <./wordmark
 .pdf>]
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 11.39996pt on input line 144.
+(Font)              scaled to size 11.39996pt on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 144.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 145.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 7.59998pt on input line 144.
+(Font)              scaled to size 7.59998pt on input line 145.
 LaTeX Font Info:    Trying to load font information for TS1+phv on input line 1
-44.
+45.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 144.
+(Font)              scaled to size 7.59998pt on input line 145.
  [0] [1] [2
 
 ]
@@ -1751,13 +1756,13 @@ LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
 
  [5] (./DRDCArcSAR.lof
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
-4.
+6.
 
 (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
-4.
+6.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1802,12 +1807,12 @@ LaTeX Font Info:    Trying to load font information for U+eus on input line 12.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/ueus.fd
 File: ueus.fd 2013/01/14 v3.01 Euler Script
-))
+) [4])
 (./SURE_multichannel.tex (./fivechan.pdf_tex
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<fivechan.pdf, id=519, page=1, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=547, page=1, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 1>
 Package pdftex.def Info: fivechan.pdf , page1 used on input line 52.
@@ -1816,7 +1821,7 @@ Package pdftex.def Info: fivechan.pdf , page1 used on input line 52.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<fivechan.pdf, id=520, page=2, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=548, page=2, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 2>
 Package pdftex.def Info: fivechan.pdf , page2 used on input line 55.
@@ -1831,7 +1836,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<fivechan.pdf, id=521, page=3, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=549, page=3, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 3>
 Package pdftex.def Info: fivechan.pdf , page3 used on input line 58.
@@ -1840,7 +1845,7 @@ Package pdftex.def Info: fivechan.pdf , page3 used on input line 58.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<fivechan.pdf, id=522, page=4, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=550, page=4, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 4>
 Package pdftex.def Info: fivechan.pdf , page4 used on input line 60.
@@ -1849,7 +1854,7 @@ Package pdftex.def Info: fivechan.pdf , page4 used on input line 60.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<fivechan.pdf, id=523, page=5, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=551, page=5, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 5>
 Package pdftex.def Info: fivechan.pdf , page5 used on input line 64.
@@ -1858,12 +1863,16 @@ Package pdftex.def Info: fivechan.pdf , page5 used on input line 64.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<fivechan.pdf, id=524, page=6, 740.63235pt x 706.78183pt>
+<fivechan.pdf, id=552, page=6, 740.63235pt x 706.78183pt>
 File: fivechan.pdf Graphic file (type pdf)
 <use fivechan.pdf, page 6>
 Package pdftex.def Info: fivechan.pdf , page6 used on input line 66.
 (pdftex.def)             Requested size: 740.63234pt x 706.7801pt.
-) [4] [5 <./fivechan.pdf> <./fivechan.pdf
+)
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5] [6 <./fivechan.pdf> <./fivechan.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ./fivechan.pdf): PDF inclusion: multipl
 e pdfs with page group included in a single page
@@ -1887,7 +1896,7 @@ e pdfs with page group included in a single page
 
 pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<antennaLengths.pdf, id=556, page=1, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=585, page=1, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 1>
 Package pdftex.def Info: antennaLengths.pdf , page1 used on input line 52.
@@ -1896,7 +1905,7 @@ Package pdftex.def Info: antennaLengths.pdf , page1 used on input line 52.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<antennaLengths.pdf, id=557, page=2, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=586, page=2, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 2>
 Package pdftex.def Info: antennaLengths.pdf , page2 used on input line 55.
@@ -1905,7 +1914,7 @@ Package pdftex.def Info: antennaLengths.pdf , page2 used on input line 55.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<antennaLengths.pdf, id=558, page=3, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=587, page=3, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 3>
 Package pdftex.def Info: antennaLengths.pdf , page3 used on input line 57.
@@ -1914,7 +1923,7 @@ Package pdftex.def Info: antennaLengths.pdf , page3 used on input line 57.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<antennaLengths.pdf, id=559, page=4, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=588, page=4, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 4>
 Package pdftex.def Info: antennaLengths.pdf , page4 used on input line 59.
@@ -1923,7 +1932,7 @@ Package pdftex.def Info: antennaLengths.pdf , page4 used on input line 59.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<antennaLengths.pdf, id=560, page=5, 491.57176pt x 250.62636pt>
+<antennaLengths.pdf, id=589, page=5, 491.57176pt x 250.62636pt>
 File: antennaLengths.pdf Graphic file (type pdf)
 <use antennaLengths.pdf, page 5>
 Package pdftex.def Info: antennaLengths.pdf , page5 used on input line 61.
@@ -1932,27 +1941,11 @@ Package pdftex.def Info: antennaLengths.pdf , page5 used on input line 61.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6] [7 <./antennaLengths.pdf> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
-> <./antennaLengths.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
-ultiple pdfs with page group included in a single page
->] (./equivalentHRWS.pdf_tex
+(./equivalentHRWS.pdf_tex
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<equivalentHRWS.pdf, id=585, page=1, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=595, page=1, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 1>
 Package pdftex.def Info: equivalentHRWS.pdf , page1 used on input line 52.
@@ -1961,7 +1954,7 @@ Package pdftex.def Info: equivalentHRWS.pdf , page1 used on input line 52.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<equivalentHRWS.pdf, id=586, page=2, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=596, page=2, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 2>
 Package pdftex.def Info: equivalentHRWS.pdf , page2 used on input line 55.
@@ -1970,7 +1963,7 @@ Package pdftex.def Info: equivalentHRWS.pdf , page2 used on input line 55.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<equivalentHRWS.pdf, id=587, page=3, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=597, page=3, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 3>
 Package pdftex.def Info: equivalentHRWS.pdf , page3 used on input line 57.
@@ -1979,7 +1972,7 @@ Package pdftex.def Info: equivalentHRWS.pdf , page3 used on input line 57.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<equivalentHRWS.pdf, id=588, page=4, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=598, page=4, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 4>
 Package pdftex.def Info: equivalentHRWS.pdf , page4 used on input line 59.
@@ -1988,13 +1981,28 @@ Package pdftex.def Info: equivalentHRWS.pdf , page4 used on input line 59.
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: f
 ound PDF version <1.5>, but at most version <1.4> allowed
-<equivalentHRWS.pdf, id=589, page=5, 1349.72444pt x 445.3123pt>
+<equivalentHRWS.pdf, id=599, page=5, 1349.72444pt x 445.3123pt>
 File: equivalentHRWS.pdf Graphic file (type pdf)
 <use equivalentHRWS.pdf, page 5>
 Package pdftex.def Info: equivalentHRWS.pdf , page5 used on input line 61.
 (pdftex.def)             Requested size: 1349.7244pt x 445.33838pt.
-)) (./SURE_transmit.tex) (./orbiterror.tex [8 <./equivalentHRWS.pdf> <./equival
-entHRWS.pdf
+)) (./SURE_transmit.tex [7 <./antennaLengths.pdf> <./antennaLengths.pdf
+
+pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
+ultiple pdfs with page group included in a single page
+> <./antennaLengths.pdf
+
+pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
+ultiple pdfs with page group included in a single page
+> <./antennaLengths.pdf
+
+pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
+ultiple pdfs with page group included in a single page
+> <./antennaLengths.pdf
+
+pdfTeX warning: /usr/bin/pdflatex (file ./antennaLengths.pdf): PDF inclusion: m
+ultiple pdfs with page group included in a single page
+>] [8 <./equivalentHRWS.pdf> <./equivalentHRWS.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: m
 ultiple pdfs with page group included in a single page
@@ -2010,139 +2018,137 @@ ultiple pdfs with page group included in a single page
 
 pdfTeX warning: /usr/bin/pdflatex (file ./equivalentHRWS.pdf): PDF inclusion: m
 ultiple pdfs with page group included in a single page
->] (./satOrbitRange.pgf
+>]) (./orbiterror.tex (./satOrbitRange.pgf
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10> on input line 95.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 95.
-) (./satOrbitVelocity.pgf) [9] [10] [11]
-(./arclengthTimeError.pgf) [12
+) [9] [10] (./satOrbitVelocity.pgf)
+[11] [12] (./arclengthTimeError.pgf) [13
 
-] [13] [14]) (./diffgeo.tex [15
+] [14] [15]) (./diffgeo.tex
+(./diffvectors.pdf_tex
 
-])
-(./diffgeoslow.tex [16]) (./diffgeostategeoid.tex [17]
-(./numericalDiffIntegationError.pgf)) (./orbit_demo.tex
+pdfTeX warning: /usr/bin/pdflatex (file ./diffvectors.pdf): PDF inclusion: foun
+d PDF version <1.5>, but at most version <1.4> allowed
+<diffvectors.pdf, id=679, page=1, 642.12651pt x 535.41185pt>
+File: diffvectors.pdf Graphic file (type pdf)
+<use diffvectors.pdf, page 1>
+Package pdftex.def Info: diffvectors.pdf , page1 used on input line 56.
+(pdftex.def)             Requested size: 642.12651pt x 535.45955pt.
+) [16
 
-Package caption Warning: \label without proper reference on input line 25.
-See the caption package documentation for explanation.
-
-
-LaTeX Warning: Reference `fg:29a' on page 18 undefined on input line 2.
-
-[18] [19]
+ <./diffvectors.pdf>]) (./diffgeoslow.tex [17]) (./diffgeostategeoid.tex
+[18] [19] (./numericalDiffIntegationError.pgf)) (./orbit_demo.tex [20] [21]
 
 pdfTeX warning: /usr/bin/pdflatex (file ./orbitMap.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.4> allowed
-<orbitMap.pdf, id=722, 753.81625pt x 458.71375pt>
+<orbitMap.pdf, id=756, 753.81625pt x 458.71375pt>
 File: orbitMap.pdf Graphic file (type pdf)
 <use orbitMap.pdf>
 Package pdftex.def Info: orbitMap.pdf  used on input line 15.
 (pdftex.def)             Requested size: 753.81442pt x 458.71263pt.
-(./tsx_28_error.pgf) (./tsx_28_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 21--33
+(./tsx_28_error.pgf)
+Underfull \hbox (badness 10000) in paragraph at lines 22--24
+[][]
+ []
+
+(./tsx_28_errorProjection_45.0.pgf)
+Underfull \hbox (badness 10000) in paragraph at lines 26--28
+[][]
+ []
+
+
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 21--29
 []$[]$ $[]$ 
  []
 
 (./tsx_705_error.pgf) (./tsx_705_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 38--50
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 34--46
 []$[]$ $[]$ 
  []
 
 (./tsx_1265_error.pgf) (./tsx_1265_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 55--67
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 51--63
 []$[]$ $[]$ 
  []
 
 (./tsx_676_error.pgf) (./tsx_676_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 72--84
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 68--80
 []$[]$ $[]$ 
  []
 
 (./tsx_1649_error.pgf) (./tsx_1649_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 89--101
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 85--97
 []$[]$ $[]$ 
  []
 
-[20] [21 <./orbitMap.pdf>] [22] [23] [24] (./sentinel_4590_error.pgf)
+[22 <./orbitMap.pdf>] [23] [24] [25] (./sentinel_4590_error.pgf)
 (./sentinel_4590_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 108--120
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 104--116
 []$[]$ $[]$ 
  []
 
 (./sentinel_1726_error.pgf) (./sentinel_1726_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 125--137
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 121--133
 []$[]$ $[]$ 
  []
 
 (./sentinel_4417_error.pgf) (./sentinel_4417_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 142--154
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 138--150
 []$[]$ $[]$ 
  []
 
 (./sentinel_5649_error.pgf) (./sentinel_5649_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 159--171
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 155--167
 []$[]$ $[]$ 
  []
 
 (./sentinel_3724_error.pgf) (./sentinel_3724_errorProjection_45.0.pgf)
-Overfull \hbox (2.43333pt too wide) in paragraph at lines 176--188
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 172--184
 []$[]$ $[]$ 
  []
 
-[25
+[26
 
-] [26] [27]) (./range.tex [28
+] [27] [28]) (./range.tex [29
 
-]) (./sardiffgeo.tex [29] [30])
-(./demodulation.tex [31]
+]) (./sardiffgeo.tex [30] [31])
+(./demodulation.tex [32]
 Overfull \hbox (14.09998pt too wide) in paragraph at lines 27--28
  [] 
  []
 
-) (./stationaryphase.tex [32]) (./newStationaryPhase.tex [33] [34] [35])
-(./antennaangles.tex [36] [37]
+) (./stationaryphase.tex [33]) (./newStationaryPhase.tex [34] [35] [36])
+(./antennaangles.tex [37] [38]
 Overfull \hbox (14.09998pt too wide) in paragraph at lines 92--93
  [] 
  []
 
-[38]) (./introduction.tex) (./multichannel.tex [39]
-
-! Package glossaries Error: Glossary entry `multi-channel' has not been defined
-.
-
-See the glossaries package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.3 ...ly ready to derive the \gls{multi-channel} 
-                                                  \Index{processing filters}.
-You need to define a glossary entry before you can use it.
-
-[40]
+[39]) (./introduction.tex) (./multichannel.tex [40] [41]
 Overfull \hbox (14.09998pt too wide) in paragraph at lines 68--69
  [] 
  []
 
-[41]
+[42]
 Overfull \hbox (14.09998pt too wide) in paragraph at lines 127--128
  [] 
  []
 
-) (./simulation.tex [42]
+) (./simulation.tex [43]
 
 pdfTeX warning: /usr/bin/pdflatex (file ./sim.pdf): PDF inclusion: found PDF ve
 rsion <1.5>, but at most version <1.4> allowed
-<sim.pdf, id=1056, 351.3125pt x 190.7125pt>
+<sim.pdf, id=1083, 351.3125pt x 190.7125pt>
 File: sim.pdf Graphic file (type pdf)
 <use sim.pdf>
 Package pdftex.def Info: sim.pdf  used on input line 49.
 (pdftex.def)             Requested size: 351.31163pt x 190.71202pt.
-[43] (./subarray.pdf_tex
+[44] (./subarray.pdf_tex
 
 pdfTeX warning: /usr/bin/pdflatex (file ./subarray.pdf): PDF inclusion: found P
 DF version <1.5>, but at most version <1.4> allowed
-<subarray.pdf, id=1065, page=1, 578.17513pt x 297.58676pt>
+<subarray.pdf, id=1093, page=1, 578.17513pt x 297.58676pt>
 File: subarray.pdf Graphic file (type pdf)
 <use subarray.pdf, page 1>
 Package pdftex.def Info: subarray.pdf , page1 used on input line 56.
@@ -2151,8 +2157,8 @@ Package pdftex.def Info: subarray.pdf , page1 used on input line 56.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[44 <./sim.pdf>] [45 <./subarray.pdf>]
-<simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png, id=1120, 4
+[45 <./sim.pdf>] [46 <./subarray.pdf>]
+<simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png, id=1147, 4
 62.528pt x 346.896pt>
 File: simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -2160,7 +2166,7 @@ c file (type png)
 Package pdftex.def Info: simulation/40cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 112.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png, id=1122, 4
+<simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png, id=1149, 4
 62.528pt x 346.896pt>
 File: simulation/30cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -2168,7 +2174,7 @@ c file (type png)
 Package pdftex.def Info: simulation/30cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 119.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png, id=1123, 4
+<simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png, id=1150, 4
 62.528pt x 346.896pt>
 File: simulation/25cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -2176,7 +2182,7 @@ c file (type png)
 Package pdftex.def Info: simulation/25cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 126.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png, id=1124, 4
+<simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png, id=1151, 4
 62.528pt x 346.896pt>
 File: simulation/20cm/simulation_plots/wk_doppler_response_amplitude.png Graphi
 c file (type png)
@@ -2185,7 +2191,7 @@ Package pdftex.def Info: simulation/20cm/simulation_plots/wk_doppler_response_a
 mplitude.png  used on input line 133.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png, id=11
-25, 462.528pt x 346.896pt>
+52, 462.528pt x 346.896pt>
 File: simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png G
 raphic file (type png)
 <use simulation/12cm/simulation_plots_full/wk_doppler_response_amplitude.png>
@@ -2193,7 +2199,7 @@ Package pdftex.def Info: simulation/12cm/simulation_plots_full/wk_doppler_respo
 nse_amplitude.png  used on input line 140.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_amplitude
-.png, id=1126, 462.528pt x 346.896pt>
+.png, id=1153, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_ampl
 itude.png Graphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_ampli
@@ -2216,17 +2222,17 @@ Overfull \hbox (2.43333pt too wide) in paragraph at lines 110--152
 []$ $[]$ 
  []
 
-[46]
+[47]
 
-LaTeX Warning: Text page 47 contains only floats.
+LaTeX Warning: Text page 48 contains only floats.
 
-[47 <./simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png> <./s
+[48 <./simulation/40cm/simulation_plots/wk_doppler_response_amplitude.png> <./s
 imulation/30cm/simulation_plots/wk_doppler_response_amplitude.png> <./simulatio
 n/25cm/simulation_plots/wk_doppler_response_amplitude.png> <./simulation/20cm/s
 imulation_plots/wk_doppler_response_amplitude.png> <./simulation/12cm/simulatio
 n_plots_full/wk_doppler_response_amplitude.png> <./simulation/10cm/simulation_p
 lots_phase_corrected/wk_doppler_response_amplitude.png>]
-<simulation/40cm/simulation_plots/wk_response_32x32.png, id=1144, 462.528pt x 3
+<simulation/40cm/simulation_plots/wk_response_32x32.png, id=1171, 462.528pt x 3
 46.896pt>
 File: simulation/40cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -2234,7 +2240,7 @@ File: simulation/40cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/40cm/simulation_plots/wk_response_32x32.png
   used on input line 161.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/30cm/simulation_plots/wk_response_32x32.png, id=1145, 462.528pt x 3
+<simulation/30cm/simulation_plots/wk_response_32x32.png, id=1172, 462.528pt x 3
 46.896pt>
 File: simulation/30cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -2242,7 +2248,7 @@ File: simulation/30cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/30cm/simulation_plots/wk_response_32x32.png
   used on input line 168.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/25cm/simulation_plots/wk_response_32x32.png, id=1146, 462.528pt x 3
+<simulation/25cm/simulation_plots/wk_response_32x32.png, id=1173, 462.528pt x 3
 46.896pt>
 File: simulation/25cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -2250,7 +2256,7 @@ File: simulation/25cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/25cm/simulation_plots/wk_response_32x32.png
   used on input line 175.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/20cm/simulation_plots/wk_response_32x32.png, id=1147, 462.528pt x 3
+<simulation/20cm/simulation_plots/wk_response_32x32.png, id=1174, 462.528pt x 3
 46.896pt>
 File: simulation/20cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -2258,7 +2264,7 @@ File: simulation/20cm/simulation_plots/wk_response_32x32.png Graphic file (type
 Package pdftex.def Info: simulation/20cm/simulation_plots/wk_response_32x32.png
   used on input line 182.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/12cm/simulation_plots_full/wk_response_32x32.png, id=1148, 462.528p
+<simulation/12cm/simulation_plots_full/wk_response_32x32.png, id=1175, 462.528p
 t x 346.896pt>
 File: simulation/12cm/simulation_plots_full/wk_response_32x32.png Graphic file 
 (type png)
@@ -2266,7 +2272,7 @@ File: simulation/12cm/simulation_plots_full/wk_response_32x32.png Graphic file
 Package pdftex.def Info: simulation/12cm/simulation_plots_full/wk_response_32x3
 2.png  used on input line 189.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots/wk_response_32x32.png, id=1149, 462.528pt x 3
+<simulation/10cm/simulation_plots/wk_response_32x32.png, id=1176, 462.528pt x 3
 46.896pt>
 File: simulation/10cm/simulation_plots/wk_response_32x32.png Graphic file (type
  png)
@@ -2289,18 +2295,18 @@ Overfull \hbox (2.43333pt too wide) in paragraph at lines 159--201
 []$ $[]$ 
  []
 
-[48
+[49
 
 ]
 
-LaTeX Warning: Text page 49 contains only floats.
+LaTeX Warning: Text page 50 contains only floats.
 
-[49 <./simulation/40cm/simulation_plots/wk_response_32x32.png> <./simulation/30
+[50 <./simulation/40cm/simulation_plots/wk_response_32x32.png> <./simulation/30
 cm/simulation_plots/wk_response_32x32.png> <./simulation/25cm/simulation_plots/
 wk_response_32x32.png> <./simulation/20cm/simulation_plots/wk_response_32x32.pn
 g> <./simulation/12cm/simulation_plots_full/wk_response_32x32.png> <./simulatio
 n/10cm/simulation_plots/wk_response_32x32.png>]
-<simulation/10cm/simulation_plots/wk_response_s_os_8.png, id=1166, 462.528pt x 
+<simulation/10cm/simulation_plots/wk_response_s_os_8.png, id=1194, 462.528pt x 
 346.896pt>
 File: simulation/10cm/simulation_plots/wk_response_s_os_8.png Graphic file (typ
 e png)
@@ -2308,8 +2314,8 @@ e png)
 Package pdftex.def Info: simulation/10cm/simulation_plots/wk_response_s_os_8.pn
 g  used on input line 209.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
-<simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png, id=117
-0, 462.528pt x 346.896pt>
+<simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png, id=119
+8, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png Gr
 aphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_response_32x32.png>
@@ -2317,7 +2323,7 @@ Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
 sponse_32x32.png  used on input line 217.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png, id=11
-71, 462.528pt x 346.896pt>
+99, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png G
 raphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>
@@ -2325,97 +2331,88 @@ Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
 sponse_s_os_8.png  used on input line 224.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 <simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png, id=1
-174, 462.528pt x 346.896pt>
+202, 462.528pt x 346.896pt>
 File: simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png 
 Graphic file (type png)
 <use simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>
 Package pdftex.def Info: simulation/10cm/simulation_plots_phase_corrected/wk_re
 sponse_s_os_64.png  used on input line 234.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
- [50
+ [51
 
- <./simulation/10cm/simulation_plots/wk_response_s_os_8.png>] [51 <./simulation
-/10cm/simulation_plots_phase_corrected/wk_response_32x32.png>] [52 <./simulatio
-n/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>] [53 <./simulat
-ion/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>] [54]) (./co
-nclusion.tex
+ <./simulation/10cm/simulation_plots/wk_response_s_os_8.png>] [52 <./simulation
+/10cm/simulation_plots_phase_corrected/wk_response_32x32.png>] [53 <./simulatio
+n/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png>] [54 <./simulat
+ion/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png>] [55]) (./co
+nclusion.tex) [56
 
-LaTeX Warning: Citation 'SikanetaCeruttiKlareGierullIGARSS2014' on page 55 unde
-fined on input line 8.
+] [57
 
-
-LaTeX Warning: Citation 'Cerutti-Maori2010b' on page 55 undefined on input line
- 8.
+]
+[58] [59] [60] (./vectorcalc.tex) (./inertialtoecef.tex [61
 
 
-LaTeX Warning: Citation 'Gierull2012' on page 55 undefined on input line 8.
-
-
-LaTeX Warning: Citation 'Chiu2004' on page 55 undefined on input line 8.
-
-)
-Overfull \hbox (57.21837pt too wide) in paragraph at lines 8--196
-\T1/lmr/m/n/10.95 get In-di-ca-tion, [[], [], [],
- []
-
-[55
-
-] [56
-
-] [57] [58] (./vectorcalc.tex) (./inertialtoecef.tex [59
-
-
-] [60
+] [62
 
 ])
-(./rateofacceleration.tex [61] [62]) (./rangeAppendix.tex [63] [64
+(./rateofacceleration.tex [63] [64]) (./rangeAppendix.tex [65] [66
 
 ])
-(./stolz.tex [65] [66] [67
+(./stationaryIteration.tex [67] [68] (./iteration.pdf_tex
 
-]) (./mimo.tex [68] (./mimoconfig.pdf_tex
+pdfTeX warning: /usr/bin/pdflatex (file ./iteration.pdf): PDF inclusion: found 
+PDF version <1.5>, but at most version <1.4> allowed
+<iteration.pdf, id=1396, page=1, 312.57945pt x 227.11687pt>
+File: iteration.pdf Graphic file (type pdf)
+<use iteration.pdf, page 1>
+Package pdftex.def Info: iteration.pdf , page1 used on input line 56.
+(pdftex.def)             Requested size: 312.57942pt x 227.1267pt.
+) [69
+
+ <./iteration.pdf>]) (./stolz.tex [70] [71
+
+]) (./mimo.tex [72]
+(./mimoconfig.pdf_tex
 
 pdfTeX warning: /usr/bin/pdflatex (file ./mimoconfig.pdf): PDF inclusion: found
  PDF version <1.5>, but at most version <1.4> allowed
-<mimoconfig.pdf, id=1393, page=1, 480.5175pt x 243.95833pt>
+<mimoconfig.pdf, id=1451, page=1, 480.5175pt x 243.95833pt>
 File: mimoconfig.pdf Graphic file (type pdf)
 <use mimoconfig.pdf, page 1>
 Package pdftex.def Info: mimoconfig.pdf , page1 used on input line 56.
 (pdftex.def)             Requested size: 480.5175pt x 243.96516pt.
-) [69
+) [73
 
- <./mimoconfig.pdf>] [70]) (./antennaanglesAppendix.tex [71] [72
+ <./mimoconfig.pdf>] [74]) (./antennaanglesAppendix.tex [75] [76
 
-] [73])
-[74]
+] [77])
+[78]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 5.69998pt on input line 214.
+(Font)              scaled to size 5.69998pt on input line 216.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 214.
- [75
+(Font)              scaled to size 6.64998pt on input line 216.
+ [79
 
-] [76
+] [80
 
 ] (./DRDCArcSAR.aux)
 
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `DRDCArcSAR.out' has not changed.
-(rerunfilecheck)             Checksum: 119888058DE5262678B4420653069107;4795.
+(rerunfilecheck)             Checksum: 865394BE15EF22CF67FAA8B78E30F10D;4870.
 
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                DRDCArcSAR
-(biblatex)                and rerun LaTeX afterwards.
+Package biblatex Warning: Please rerun LaTeX.
 
 Package logreq Info: Writing requests to 'DRDCArcSAR.run.xml'.
 \openout1 = `DRDCArcSAR.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 51046 strings out of 480641
- 1133004 string characters out of 5898244
- 2058854 words of memory out of 5000000
- 66459 multiletter control sequences out of 15000+600000
+ 51151 strings out of 480641
+ 1136491 string characters out of 5898244
+ 2060220 words of memory out of 5000000
+ 66533 multiletter control sequences out of 15000+600000
  590383 words of font info for 150 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
  102i,24n,131p,1919b,3194s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2446,9 +2443,9 @@ ype1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtto10.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on DRDCArcSAR.pdf (87 pages, 4865232 bytes).
+Output written on DRDCArcSAR.pdf (91 pages, 4881325 bytes).
 PDF statistics:
- 1739 PDF objects out of 2073 (max. 8388607)
- 466 named destinations out of 1000 (max. 500000)
- 714 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1802 PDF objects out of 2073 (max. 8388607)
+ 485 named destinations out of 1000 (max. 500000)
+ 732 words of extra memory for PDF output out of 10000 (max. 10000000)
 

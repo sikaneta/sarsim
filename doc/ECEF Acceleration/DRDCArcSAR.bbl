@@ -21,8 +21,8 @@
   \datalist[entry]{none/global//global/global}
     \entry{Brautigam2010}{inproceedings}{}
       \name{author}{7}{}{%
-        {{hash=41f41ed7789ab3a0a9174163bcc4090d}{%
-           family={Brautigam},
+        {{hash=6ff4178f1cb4d1b3742f1786e429f497}{%
+           family={Bräutigam},
            familyi={B\bibinitperiod},
            given={B.},
            giveni={B\bibinitperiod}}}%
@@ -57,12 +57,12 @@
            given={M.},
            giveni={M\bibinitperiod}}}%
       }
-      \strng{namehash}{bf7426d873dcf4f594a3cf948dc0b22d}
-      \strng{fullhash}{5b22e2fb570582741519eae1e7cadc3d}
-      \strng{bibnamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
-      \strng{authorbibnamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
-      \strng{authornamehash}{bf7426d873dcf4f594a3cf948dc0b22d}
-      \strng{authorfullhash}{5b22e2fb570582741519eae1e7cadc3d}
+      \strng{namehash}{050489d599f7e852fde263793dc3806d}
+      \strng{fullhash}{7074c93c5a7f6785013c4b629dbfc57d}
+      \strng{bibnamehash}{050489d599f7e852fde263793dc3806d}
+      \strng{authorbibnamehash}{050489d599f7e852fde263793dc3806d}
+      \strng{authornamehash}{050489d599f7e852fde263793dc3806d}
+      \strng{authorfullhash}{7074c93c5a7f6785013c4b629dbfc57d}
       \field{sortinit}{4}
       \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
@@ -81,31 +81,31 @@
     \endentry
     \entry{Fox2004}{article}{}
       \name{author}{3}{}{%
-        {{hash=8d2a13b484d0e4ce2135c4fb3dcb866e}{%
+        {{hash=b4b7ccb5ec80fd0236bf4c7c3d64e586}{%
            family={Fox},
            familyi={F\bibinitperiod},
-           given={Peter\bibnamedelima A},
+           given={P.\bibnamedelimi A.},
            giveni={P\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
-        {{hash=4bcd73a3f45da11cbb7e3c53fc43c719}{%
+        {{hash=bcbf1ef6eda2e48bbf42c026088ad811}{%
            family={Luscombe},
            familyi={L\bibinitperiod},
-           given={Anthony\bibnamedelima P},
+           given={A.\bibnamedelimi P.},
            giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
-        {{hash=9ccceca586eed95fe491acddbcaa241b}{%
+        {{hash=9006c71fc48493166c52a801652592fc}{%
            family={Thompson},
            familyi={T\bibinitperiod},
-           given={Alan\bibnamedelima A},
+           given={A.\bibnamedelimi A.},
            giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
       }
       \list{publisher}{1}{%
         {NRC Research Press Ottawa, Canada}%
       }
-      \strng{namehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
-      \strng{fullhash}{7cb18a6d9148e983b3f0c8a2359ede0c}
-      \strng{bibnamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
-      \strng{authorbibnamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
-      \strng{authornamehash}{7cb18a6d9148e983b3f0c8a2359ede0c}
-      \strng{authorfullhash}{7cb18a6d9148e983b3f0c8a2359ede0c}
+      \strng{namehash}{c889982cd38e27e39bba72dd895487bb}
+      \strng{fullhash}{c889982cd38e27e39bba72dd895487bb}
+      \strng{bibnamehash}{c889982cd38e27e39bba72dd895487bb}
+      \strng{authorbibnamehash}{c889982cd38e27e39bba72dd895487bb}
+      \strng{authornamehash}{c889982cd38e27e39bba72dd895487bb}
+      \strng{authorfullhash}{c889982cd38e27e39bba72dd895487bb}
       \field{sortinit}{4}
       \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
@@ -369,85 +369,6 @@
       \endverb
       \keyw{radar imaging;series (mathematics);spaceborne radar;synthetic aperture radar;transfer functions;transforms;high resolution spaceborne SAR processing;analytic decomposed transfer function;spaceborne synthetic aperture radar processing;stationary phase approximation;Taylor series expansion;large Doppler centroid variations;range cell migration correction;secondary range compression;azimuth compression;higher order effects;fourth order DTF algorithm;DTF4 algorithm;fifth order DTF algorithm;DTF5 algorithm;image quality;Transfer functions;Azimuth;History;Doppler effect;Synthetic aperture radar;Approximation algorithms;Mathematical model}
     \endentry
-    \entry{Prats2014}{article}{}
-      \name{author}{10}{}{%
-        {{hash=89db8e91ab9594cf4e03042e69fb5ad6}{%
-           family={{Prats-Iraola}},
-           familyi={P\bibinitperiod},
-           given={P.},
-           giveni={P\bibinitperiod}}}%
-        {{hash=cdde3a7e240c6f7860db74659078cd5d}{%
-           family={{Scheiber}},
-           familyi={S\bibinitperiod},
-           given={R.},
-           giveni={R\bibinitperiod}}}%
-        {{hash=f737f6067c68e3a90cc3720fb8462ee2}{%
-           family={{Rodriguez-Cassola}},
-           familyi={R\bibinitperiod},
-           given={M.},
-           giveni={M\bibinitperiod}}}%
-        {{hash=89722277c2d288e97198fbd6bbc0e7a4}{%
-           family={{Mittermayer}},
-           familyi={M\bibinitperiod},
-           given={J.},
-           giveni={J\bibinitperiod}}}%
-        {{hash=768ced179aad640998a1be23b4bb404e}{%
-           family={{Wollstadt}},
-           familyi={W\bibinitperiod},
-           given={S.},
-           giveni={S\bibinitperiod}}}%
-        {{hash=8d00ba58439048373af65b9d4af66538}{%
-           family={{De Zan}},
-           familyi={D\bibinitperiod},
-           given={F.},
-           giveni={F\bibinitperiod}}}%
-        {{hash=6ff4178f1cb4d1b3742f1786e429f497}{%
-           family={{Bräutigam}},
-           familyi={B\bibinitperiod},
-           given={B.},
-           giveni={B\bibinitperiod}}}%
-        {{hash=728ef903b8180ebcb5a746084bfd571f}{%
-           family={{Schwerdt}},
-           familyi={S\bibinitperiod},
-           given={M.},
-           giveni={M\bibinitperiod}}}%
-        {{hash=f02cfc472cdfcf85cb9d93b968ef0eab}{%
-           family={{Reigber}},
-           familyi={R\bibinitperiod},
-           given={A.},
-           giveni={A\bibinitperiod}}}%
-        {{hash=dcbc8560e9d8a385ed9b9de21d5f5d9c}{%
-           family={{Moreira}},
-           familyi={M\bibinitperiod},
-           given={A.},
-           giveni={A\bibinitperiod}}}%
-      }
-      \strng{namehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
-      \strng{fullhash}{16c94d9f004b0d5b9cee4bc339785018}
-      \strng{bibnamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
-      \strng{authorbibnamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
-      \strng{authornamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
-      \strng{authorfullhash}{16c94d9f004b0d5b9cee4bc339785018}
-      \field{extraname}{1}
-      \field{sortinit}{6}
-      \field{sortinithash}{7851c86048328b027313775d8fbd2131}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{This paper addresses several important aspects that need to be considered for the processing of spaceborne synthetic aperture radar (SAR) data with resolutions in the decimeter range. In particular, it will be shown how the motion of the satellite during the transmission/reception of the chirp signal and the effect of the troposphere deteriorate the impulse response function if not properly considered. Further aspects that have been investigated include the curved orbit, the array pattern for electronically steered antennas, and several considerations within the processing itself. For each aspect, a solution is proposed, and the complete focusing methodology is expounded and validated using simulated point targets and staring spotlight data acquired by TerraSAR-X with 16-cm azimuth resolution and 300-MHz range bandwidth.}
-      \field{issn}{1558-0644}
-      \field{journaltitle}{IEEE Transactions on Geoscience and Remote Sensing}
-      \field{month}{10}
-      \field{number}{10}
-      \field{title}{On the Processing of Very High Resolution Spaceborne SAR Data}
-      \field{volume}{52}
-      \field{year}{2014}
-      \field{pages}{6003\bibrangedash 6016}
-      \range{pages}{14}
-      \verb{doi}
-      \verb 10.1109/TGRS.2013.2294353
-      \endverb
-      \keyw{radar antennas;remote sensing by radar;synthetic aperture radar;very high resolution spaceborne SAR data;synthetic aperture radar;decimeter range;satellite motion;chirp signal;troposphere effect;electronically steered antennas;complete focusing methodology;TerraSAR-X;bandwidth 300 MHz;Azimuth;Orbits;Synthetic aperture radar;Bandwidth;Satellites;Terrestrial atmosphere;Geometry;SAR processing;spotlight SAR;stop-and-go approximation;synthetic aperture radar (SAR);troposphere;SAR processing;spotlight SAR;stop-and-go approximation;synthetic aperture radar (SAR);troposphere}
-    \endentry
     \entry{Zhao2014}{article}{}
       \name{author}{6}{}{%
         {{hash=b79936295c8c242b778091b6c73c89fc}{%
@@ -564,37 +485,89 @@
       \endverb
       \keyw{radar resolution;spaceborne radar;synthetic aperture radar;very high resolution spaceborne sliding spotlight SAR data;velocity scaling;spaceborne synthetic aperture radar;large azimuth scene size;equivalent acceleration range model;Azimuth;Orbits;Image resolution;Imaging;Spaceborne radar;Satellites;Synthetic aperture radar;Large azimuth scene size;sliding spotlight SAR;synthetic aperture radar (SAR);very high resolution;Large azimuth scene size;sliding spotlight SAR;synthetic aperture radar (SAR);very high resolution}
     \endentry
+    \entry{Wang2015}{article}{}
+      \name{author}{5}{}{%
+        {{hash=f94399510b1be6d7fab7d889d00b68d8}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=d8525af2f6ab588f2e4d6e5abd42ca8b}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+        {{hash=38241eaee18102cab15a125b0654c7da}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=6845aa4ff1d324a4bc8ed30e7a333c79}{%
+           family={Niu},
+           familyi={N\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=a92eb4fd877c8f4d491b4056f8346127}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b4ba204dbe548373613f21acd13adf70}
+      \strng{fullhash}{20afef68c2a7065d00c335fcde367567}
+      \strng{bibnamehash}{b4ba204dbe548373613f21acd13adf70}
+      \strng{authorbibnamehash}{b4ba204dbe548373613f21acd13adf70}
+      \strng{authornamehash}{b4ba204dbe548373613f21acd13adf70}
+      \strng{authorfullhash}{20afef68c2a7065d00c335fcde367567}
+      \field{sortinit}{6}
+      \field{sortinithash}{7851c86048328b027313775d8fbd2131}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Two challenges have been faced in signal processing of ultrahigh-resolution spaceborne synthetic aperture radar (SAR). The first challenge is constructing a precise range model, and the second one is to develop an efficient imaging algorithm since traditional algorithms fail to process ultrahigh-resolution spaceborne SAR data effectively. In this paper, a novel high-order imaging algorithm for high-resolution spaceborne SAR is presented. First, a modified equivalent squint range model (MESRM) is developed by introducing equivalent radar acceleration into the equivalent squint range model, and it is more suitable for high-resolution spaceborne SAR. The signal model based on the MESRM is also presented. Second, a novel high-order imaging algorithm is derived. The insufficient pulse-repetition frequency problem is solved by an improved subaperture method, and accurate focusing is achieved through an extended hybrid correlation algorithm. Simulations are performed to validate the presented algorithm.}
+      \field{issn}{1558-0644}
+      \field{journaltitle}{IEEE Transactions on Geoscience and Remote Sensing}
+      \field{month}{3}
+      \field{number}{3}
+      \field{title}{A High-Order Imaging Algorithm for High-Resolution Spaceborne SAR Based on a Modified Equivalent Squint Range Model}
+      \field{volume}{53}
+      \field{year}{2015}
+      \field{pages}{1225\bibrangedash 1235}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/TGRS.2014.2336241
+      \endverb
+    \endentry
     \entry{RodriguezCassola2019}{inproceedings}{}
       \name{author}{4}{}{%
-        {{hash=61faebcf1b44f08cf3302ec08f87ab58}{%
+        {{hash=f737f6067c68e3a90cc3720fb8462ee2}{%
            family={Rodriguez-Cassola},
            familyi={R\bibinithyphendelim C\bibinitperiod},
-           given={Marc},
+           given={M.},
            giveni={M\bibinitperiod}}}%
-        {{hash=03240f6518403c39f39b3ae7c006efdb}{%
+        {{hash=89db8e91ab9594cf4e03042e69fb5ad6}{%
            family={Prats-Iraola},
            familyi={P\bibinithyphendelim I\bibinitperiod},
-           given={Pau},
+           given={P.},
            giveni={P\bibinitperiod}}}%
-        {{hash=8c3dd43c7ff2f62f4bc7b41252005be0}{%
+        {{hash=e0a2391fdc3512f1b96d9b8746d1c3ff}{%
            family={Krieger},
            familyi={K\bibinitperiod},
-           given={Gerhard},
+           given={G.},
            giveni={G\bibinitperiod}}}%
-        {{hash=0ee7a8a9224e1825b385412de48a5ed5}{%
+        {{hash=dcbc8560e9d8a385ed9b9de21d5f5d9c}{%
            family={Moreira},
            familyi={M\bibinitperiod},
-           given={Alberto},
+           given={A.},
            giveni={A\bibinitperiod}}}%
       }
-      \strng{namehash}{9767bb1593ea611de10d0ca1adf22a74}
-      \strng{fullhash}{52a405bd7d0a04277cd1d74606b74679}
-      \strng{bibnamehash}{9767bb1593ea611de10d0ca1adf22a74}
-      \strng{authorbibnamehash}{9767bb1593ea611de10d0ca1adf22a74}
-      \strng{authornamehash}{9767bb1593ea611de10d0ca1adf22a74}
-      \strng{authorfullhash}{52a405bd7d0a04277cd1d74606b74679}
-      \field{sortinit}{7}
-      \field{sortinithash}{f615fb9c6fba11c6f962fb3fd599810e}
+      \strng{namehash}{d84b9c7938883a94424f2c91f360b20f}
+      \strng{fullhash}{a39a41db7cd447c54b212d5b1211dfc3}
+      \strng{bibnamehash}{d84b9c7938883a94424f2c91f360b20f}
+      \strng{authorbibnamehash}{d84b9c7938883a94424f2c91f360b20f}
+      \strng{authornamehash}{d84b9c7938883a94424f2c91f360b20f}
+      \strng{authorfullhash}{a39a41db7cd447c54b212d5b1211dfc3}
+      \field{sortinit}{8}
+      \field{sortinithash}{1b24cab5087933ef0826a7cd3b99e994}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{This paper discusses the relevance and use of efficient focusing in the time domain in spaceborne SAR. With the increasing number of space-variant corrections required by higher resolution and wide swath observations, the efficiency of SAR focusing algorithms in the Fourier domain drops significantly. The main sources of space variance to be faced in future spaceborne SAR missions and their implications on the complexity of the focusing process are discussed. The paper also presents a direct comparison between time-domain and frequency-domain approaches, providing an estimate of the computational burden of a fast-factorized backprojection algorithm compared to a sophisticated numerical ωk, identifying the operation areas where the the former may show an efficiency advantage.}
@@ -608,6 +581,85 @@
       \verb{doi}
       \verb 10.1109/IGARSS.2019.8900230
       \endverb
+    \endentry
+    \entry{Prats2014}{article}{}
+      \name{author}{10}{}{%
+        {{hash=89db8e91ab9594cf4e03042e69fb5ad6}{%
+           family={{Prats-Iraola}},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=cdde3a7e240c6f7860db74659078cd5d}{%
+           family={{Scheiber}},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f737f6067c68e3a90cc3720fb8462ee2}{%
+           family={{Rodriguez-Cassola}},
+           familyi={R\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=89722277c2d288e97198fbd6bbc0e7a4}{%
+           family={{Mittermayer}},
+           familyi={M\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=768ced179aad640998a1be23b4bb404e}{%
+           family={{Wollstadt}},
+           familyi={W\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=8d00ba58439048373af65b9d4af66538}{%
+           family={{De Zan}},
+           familyi={D\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=6ff4178f1cb4d1b3742f1786e429f497}{%
+           family={{Bräutigam}},
+           familyi={B\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=728ef903b8180ebcb5a746084bfd571f}{%
+           family={{Schwerdt}},
+           familyi={S\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=f02cfc472cdfcf85cb9d93b968ef0eab}{%
+           family={{Reigber}},
+           familyi={R\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=dcbc8560e9d8a385ed9b9de21d5f5d9c}{%
+           family={{Moreira}},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
+      \strng{fullhash}{16c94d9f004b0d5b9cee4bc339785018}
+      \strng{bibnamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
+      \strng{authorbibnamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
+      \strng{authornamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
+      \strng{authorfullhash}{16c94d9f004b0d5b9cee4bc339785018}
+      \field{extraname}{1}
+      \field{sortinit}{9}
+      \field{sortinithash}{54047ffb55bdefa0694bbd554c1b11a0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This paper addresses several important aspects that need to be considered for the processing of spaceborne synthetic aperture radar (SAR) data with resolutions in the decimeter range. In particular, it will be shown how the motion of the satellite during the transmission/reception of the chirp signal and the effect of the troposphere deteriorate the impulse response function if not properly considered. Further aspects that have been investigated include the curved orbit, the array pattern for electronically steered antennas, and several considerations within the processing itself. For each aspect, a solution is proposed, and the complete focusing methodology is expounded and validated using simulated point targets and staring spotlight data acquired by TerraSAR-X with 16-cm azimuth resolution and 300-MHz range bandwidth.}
+      \field{issn}{1558-0644}
+      \field{journaltitle}{IEEE Transactions on Geoscience and Remote Sensing}
+      \field{month}{10}
+      \field{number}{10}
+      \field{title}{On the Processing of Very High Resolution Spaceborne SAR Data}
+      \field{volume}{52}
+      \field{year}{2014}
+      \field{pages}{6003\bibrangedash 6016}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1109/TGRS.2013.2294353
+      \endverb
+      \keyw{radar antennas;remote sensing by radar;synthetic aperture radar;very high resolution spaceborne SAR data;synthetic aperture radar;decimeter range;satellite motion;chirp signal;troposphere effect;electronically steered antennas;complete focusing methodology;TerraSAR-X;bandwidth 300 MHz;Azimuth;Orbits;Synthetic aperture radar;Bandwidth;Satellites;Terrestrial atmosphere;Geometry;SAR processing;spotlight SAR;stop-and-go approximation;synthetic aperture radar (SAR);troposphere;SAR processing;spotlight SAR;stop-and-go approximation;synthetic aperture radar (SAR);troposphere}
     \endentry
     \entry{Jakowatz1996}{book}{}
       \name{author}{5}{}{%
@@ -659,18 +711,18 @@
     \endentry
     \entry{CalabreseDiego2014}{inproceedings}{}
       \name{author}{1}{}{%
-        {{hash=437b36bcdd3480d4173f682bc78812e7}{%
+        {{hash=688c6a49491c503c7e843003e7ca6dec}{%
            family={Calabrese},
            familyi={C\bibinitperiod},
-           given={Diego},
+           given={D.},
            giveni={D\bibinitperiod}}}%
       }
-      \strng{namehash}{437b36bcdd3480d4173f682bc78812e7}
-      \strng{fullhash}{437b36bcdd3480d4173f682bc78812e7}
-      \strng{bibnamehash}{437b36bcdd3480d4173f682bc78812e7}
-      \strng{authorbibnamehash}{437b36bcdd3480d4173f682bc78812e7}
-      \strng{authornamehash}{437b36bcdd3480d4173f682bc78812e7}
-      \strng{authorfullhash}{437b36bcdd3480d4173f682bc78812e7}
+      \strng{namehash}{688c6a49491c503c7e843003e7ca6dec}
+      \strng{fullhash}{688c6a49491c503c7e843003e7ca6dec}
+      \strng{bibnamehash}{688c6a49491c503c7e843003e7ca6dec}
+      \strng{authorbibnamehash}{688c6a49491c503c7e843003e7ca6dec}
+      \strng{authornamehash}{688c6a49491c503c7e843003e7ca6dec}
+      \strng{authorfullhash}{688c6a49491c503c7e843003e7ca6dec}
       \field{sortinit}{1}
       \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
       \field{labelnamesource}{author}
@@ -833,20 +885,20 @@
     \endentry
     \entry{Shou2014}{article}{}
       \name{author}{1}{}{%
-        {{hash=2af4424d8b78a4e9318dd36d8a045594}{%
+        {{hash=87653fcd1c611f733286b56844959824}{%
            family={Shou},
            familyi={S\bibinitperiod},
-           given={Ho-Nien},
+           given={H.-N.},
            giveni={H\bibinithyphendelim N\bibinitperiod}}}%
       }
-      \strng{namehash}{2af4424d8b78a4e9318dd36d8a045594}
-      \strng{fullhash}{2af4424d8b78a4e9318dd36d8a045594}
-      \strng{bibnamehash}{2af4424d8b78a4e9318dd36d8a045594}
-      \strng{authorbibnamehash}{2af4424d8b78a4e9318dd36d8a045594}
-      \strng{authornamehash}{2af4424d8b78a4e9318dd36d8a045594}
-      \strng{authorfullhash}{2af4424d8b78a4e9318dd36d8a045594}
-      \field{sortinit}{1}
-      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \strng{namehash}{87653fcd1c611f733286b56844959824}
+      \strng{fullhash}{87653fcd1c611f733286b56844959824}
+      \strng{bibnamehash}{87653fcd1c611f733286b56844959824}
+      \strng{authorbibnamehash}{87653fcd1c611f733286b56844959824}
+      \strng{authornamehash}{87653fcd1c611f733286b56844959824}
+      \strng{authorfullhash}{87653fcd1c611f733286b56844959824}
+      \field{sortinit}{2}
+      \field{sortinithash}{ed39bb39cf854d5250e95b1c1f94f4ed}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{International Journal of Antennas and Propagation}
@@ -878,8 +930,8 @@
       \strng{authorbibnamehash}{1f99771bc3e23e6097509a331544ab65}
       \strng{authornamehash}{1f99771bc3e23e6097509a331544ab65}
       \strng{authorfullhash}{1f99771bc3e23e6097509a331544ab65}
-      \field{sortinit}{1}
-      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{sortinit}{2}
+      \field{sortinithash}{ed39bb39cf854d5250e95b1c1f94f4ed}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{{EGM96, The NASA GSFC and NIMA Joint Geopotential Model}}
@@ -892,30 +944,30 @@
     \endentry
     \entry{Xiaojin2007}{inproceedings}{}
       \name{author}{3}{}{%
-        {{hash=ed950417495a99f47ac5817c9838cceb}{%
-           family={Shi},
+        {{hash=a1575ccc7b8ecff86443b4b5d9a274ef}{%
+           family={S.},
            familyi={S\bibinitperiod},
            given={Xiaojin},
            giveni={X\bibinitperiod}}}%
-        {{hash=c84c7f446a262e505543c93451aefbc3}{%
-           family={Zhang},
+        {{hash=e4cba2e7410301678f9d7066c3709ceb}{%
+           family={Z.},
            familyi={Z\bibinitperiod},
            given={Yunhua},
            giveni={Y\bibinitperiod}}}%
-        {{hash=9873e2d05d6f228a8ed2cdb40dfe3759}{%
-           family={Zhai},
+        {{hash=c8973a81ab57225a3c5bebd95ba1d23e}{%
+           family={Z.},
            familyi={Z\bibinitperiod},
            given={Wenshuai},
            giveni={W\bibinitperiod}}}%
       }
-      \strng{namehash}{f322c06d786769bbbecbf51980fc7f41}
-      \strng{fullhash}{f322c06d786769bbbecbf51980fc7f41}
-      \strng{bibnamehash}{f322c06d786769bbbecbf51980fc7f41}
-      \strng{authorbibnamehash}{f322c06d786769bbbecbf51980fc7f41}
-      \strng{authornamehash}{f322c06d786769bbbecbf51980fc7f41}
-      \strng{authorfullhash}{f322c06d786769bbbecbf51980fc7f41}
-      \field{sortinit}{1}
-      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \strng{namehash}{3bf95dfc9aa5b12bfce81cfba62edf4e}
+      \strng{fullhash}{3bf95dfc9aa5b12bfce81cfba62edf4e}
+      \strng{bibnamehash}{3bf95dfc9aa5b12bfce81cfba62edf4e}
+      \strng{authorbibnamehash}{3bf95dfc9aa5b12bfce81cfba62edf4e}
+      \strng{authornamehash}{3bf95dfc9aa5b12bfce81cfba62edf4e}
+      \strng{authorfullhash}{3bf95dfc9aa5b12bfce81cfba62edf4e}
+      \field{sortinit}{2}
+      \field{sortinithash}{ed39bb39cf854d5250e95b1c1f94f4ed}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{2007 1st Asian and Pacific Conference on Synthetic Aperture Radar}
@@ -951,8 +1003,8 @@
       \strng{authorbibnamehash}{f77f3bbe5d9e849cc79864c85ebb6ec3}
       \strng{authornamehash}{f77f3bbe5d9e849cc79864c85ebb6ec3}
       \strng{authorfullhash}{f77f3bbe5d9e849cc79864c85ebb6ec3}
-      \field{sortinit}{1}
-      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \field{sortinit}{2}
+      \field{sortinithash}{ed39bb39cf854d5250e95b1c1f94f4ed}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{This paper presents a direct and simple method to determine the "effective" velocity in the hyperbolic slant range equation used in processing of space-borne SAR data. The algorithm first uses the orbit state vector to generate the actual instantaneous slant range as a function of azimuth time, for a selected point on the ground. This is followed by fitting the set of slant ranges with a hyperbolic model, which is used in most SAR processing algorithms.}
@@ -969,30 +1021,30 @@
     \endentry
     \entry{Liang2017}{article}{}
       \name{author}{3}{}{%
-        {{hash=300cf39366d9c28e44c7a87b24c8967e}{%
+        {{hash=6587106ca27dcf172f1020b0a53885f9}{%
            family={Liang},
            familyi={L\bibinitperiod},
-           given={Cunren},
+           given={C.},
            giveni={C\bibinitperiod}}}%
-        {{hash=24ec5c113a57cc8cf58a3f2e78bf8170}{%
+        {{hash=441b50d5327a6d34bc13b3501dbfe5b9}{%
            family={Fielding},
            familyi={F\bibinitperiod},
-           given={Eric\bibnamedelima J.},
+           given={E.\bibnamedelimi J.},
            giveni={E\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
-        {{hash=ee0f690156a01a67917325d3cfd602fd}{%
+        {{hash=79b7a84318846ee607e39b1b99d905e1}{%
            family={Huang},
            familyi={H\bibinitperiod},
-           given={Mong-Han},
+           given={M.-H.},
            giveni={M\bibinithyphendelim H\bibinitperiod}}}%
       }
-      \strng{namehash}{c6b153d838a5c9e717b6196998dd0255}
-      \strng{fullhash}{c6b153d838a5c9e717b6196998dd0255}
-      \strng{bibnamehash}{c6b153d838a5c9e717b6196998dd0255}
-      \strng{authorbibnamehash}{c6b153d838a5c9e717b6196998dd0255}
-      \strng{authornamehash}{c6b153d838a5c9e717b6196998dd0255}
-      \strng{authorfullhash}{c6b153d838a5c9e717b6196998dd0255}
-      \field{sortinit}{1}
-      \field{sortinithash}{50c6687d7fc80f50136d75228e3c59ba}
+      \strng{namehash}{a7fc50065178db6d2d2617c1070085a8}
+      \strng{fullhash}{a7fc50065178db6d2d2617c1070085a8}
+      \strng{bibnamehash}{a7fc50065178db6d2d2617c1070085a8}
+      \strng{authorbibnamehash}{a7fc50065178db6d2d2617c1070085a8}
+      \strng{authornamehash}{a7fc50065178db6d2d2617c1070085a8}
+      \strng{authorfullhash}{a7fc50065178db6d2d2617c1070085a8}
+      \field{sortinit}{2}
+      \field{sortinithash}{ed39bb39cf854d5250e95b1c1f94f4ed}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{Estimating azimuth offset with double-difference interferometric (DDI) phase, which is called multiple-aperture interferometric synthetic aperture radar (InSAR) or spectral diversity, is increasingly used in recent years to measure azimuth deformation or to accurately coregister a pair of InSAR images. We analyze the effect of frequency modulation (FM) rate error in focusing on the DDI phase with an emphasis on the azimuth direction. We first comprehensively analyze the errors in various focusing results caused by the FM rate error. We then derive the DDI phase error considering different acquisition modes including stripmap, ScanSAR, and TOPS modes. For stripmap mode, typical DDI phase error is a range ramp, while for burst modes including ScanSAR and TOPS modes it is an azimuth ramp within a burst. The correction methods for the DDI phase error are suggested for different acquisition modes.}
@@ -1011,18 +1063,18 @@
     \endentry
     \entry{GFZ}{misc}{}
       \name{author}{1}{}{%
-        {{hash=9b5edc71219810747799d070618a4a5a}{%
+        {{hash=aec10a515550f8f7e1d8dfcff8a3780e}{%
            family={Potsdam},
            familyi={P\bibinitperiod},
-           given={Helpmoltz\bibnamedelima Centre},
+           given={Helmholtz\bibnamedelima Centre},
            giveni={H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
       }
-      \strng{namehash}{9b5edc71219810747799d070618a4a5a}
-      \strng{fullhash}{9b5edc71219810747799d070618a4a5a}
-      \strng{bibnamehash}{9b5edc71219810747799d070618a4a5a}
-      \strng{authorbibnamehash}{9b5edc71219810747799d070618a4a5a}
-      \strng{authornamehash}{9b5edc71219810747799d070618a4a5a}
-      \strng{authorfullhash}{9b5edc71219810747799d070618a4a5a}
+      \strng{namehash}{aec10a515550f8f7e1d8dfcff8a3780e}
+      \strng{fullhash}{aec10a515550f8f7e1d8dfcff8a3780e}
+      \strng{bibnamehash}{aec10a515550f8f7e1d8dfcff8a3780e}
+      \strng{authorbibnamehash}{aec10a515550f8f7e1d8dfcff8a3780e}
+      \strng{authornamehash}{aec10a515550f8f7e1d8dfcff8a3780e}
+      \strng{authorfullhash}{aec10a515550f8f7e1d8dfcff8a3780e}
       \field{sortinit}{3}
       \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
       \field{labelnamesource}{author}
@@ -1095,8 +1147,8 @@
       \strng{authornamehash}{1695ccf1a8298a4b2c8617c8cddd9d6f}
       \strng{authorfullhash}{16c94d9f004b0d5b9cee4bc339785018}
       \field{extraname}{2}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{This paper addresses several important aspects that need to be considered for the processing of spaceborne synthetic aperture radar (SAR) data with resolutions in the decimeter range. In particular, it will be shown how the motion of the satellite during the transmission/reception of the chirp signal and the effect of the troposphere deteriorate the impulse response function if not properly considered. Further aspects that have been investigated include the curved orbit, the array pattern for electronically steered antennas, and several considerations within the processing itself. For each aspect, a solution is proposed, and the complete focusing methodology is expounded and validated using simulated point targets and staring spotlight data acquired by TerraSAR-X with 16-cm azimuth resolution and 300-MHz range bandwidth.}
@@ -1141,8 +1193,8 @@
       \strng{authorbibnamehash}{2c9429498cbcc7706b6dd54942a58efa}
       \strng{authornamehash}{2c9429498cbcc7706b6dd54942a58efa}
       \strng{authorfullhash}{2c9429498cbcc7706b6dd54942a58efa}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{{Geoscience and Remote Sensing Symposium, 2003. IGARSS '03. Proceedings. 2003 IEEE International}}
@@ -1178,8 +1230,8 @@
       \strng{authorbibnamehash}{46f3f16f6bd7f1539120dbf64243198c}
       \strng{authornamehash}{46f3f16f6bd7f1539120dbf64243198c}
       \strng{authorfullhash}{46f3f16f6bd7f1539120dbf64243198c}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{{Synthetic Aperture Radar Processing}}
@@ -1202,8 +1254,8 @@
       \strng{authorbibnamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
       \strng{authornamehash}{89297a2599df8e9e50dc7d6cefd0ba03}
       \strng{authorfullhash}{89297a2599df8e9e50dc7d6cefd0ba03}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Geoscience and Remote Sensing Symposium, 1992. IGARSS '92. International}
@@ -1232,8 +1284,8 @@
       \strng{authorbibnamehash}{a89e7fb258f55dd0d1b62199281587f0}
       \strng{authornamehash}{a89e7fb258f55dd0d1b62199281587f0}
       \strng{authorfullhash}{a89e7fb258f55dd0d1b62199281587f0}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{Focusing of SAR data requires a space-variant two-dimensional correlation. Different algorithms are compared with each other in terms of their focusing quality and their ability to handle the space-variance of the correlation kernel: the range-Doppler approach with and without secondary range compression, modified range-Doppler algorithms, and four versions of the wavenumber domain processor. The phase aberrations of the different algorithms are given in analytic form. Numerical examples are presented for Seasat and ERS-1. A novel systems theoretical derivation of the wavenumber domain algorithm is presented}
@@ -1266,8 +1318,8 @@
       \strng{authorbibnamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
       \strng{authornamehash}{7cc07dbc72f0eb6fb7115c7108af547d}
       \strng{authorfullhash}{7cc07dbc72f0eb6fb7115c7108af547d}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{Not Available}
@@ -1303,8 +1355,8 @@
       \strng{authorbibnamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
       \strng{authornamehash}{f8fde6c55a68984d84dc0b739b38d6fd}
       \strng{authorfullhash}{f8fde6c55a68984d84dc0b739b38d6fd}
-      \field{sortinit}{3}
-      \field{sortinithash}{a37a8ef248a93c322189792c34fc68c9}
+      \field{sortinit}{4}
+      \field{sortinithash}{e071e0bcb44634fab398d68ad04e69f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{{Theory and Problems of Complex Variables}}
@@ -1572,6 +1624,163 @@
       \field{labeltitlesource}{title}
       \field{title}{{Radar Handbook}}
       \field{year}{1990}
+    \endentry
+    \entry{SikanetaCeruttiKlareGierullIGARSS2014}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=41b11ca50624f7d7a41c39c697340d0e}{%
+           family={Sikaneta},
+           familyi={S\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+        {{hash=b3f0d10e55fdb355e6ecbc9108dea188}{%
+           family={Cerutti-Maori},
+           familyi={C\bibinithyphendelim M\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=f753c4a3d3dbbd54285d02bf28dd14bc}{%
+           family={Klare},
+           familyi={K\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=e264b975a11891d712521a933b4aa13a}{%
+           family={Gierull},
+           familyi={G\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{73086e938ce4655e1cc2a087d50f6628}
+      \strng{fullhash}{6eefafa52479aa3b261030d82e5c617d}
+      \strng{bibnamehash}{73086e938ce4655e1cc2a087d50f6628}
+      \strng{authorbibnamehash}{73086e938ce4655e1cc2a087d50f6628}
+      \strng{authornamehash}{73086e938ce4655e1cc2a087d50f6628}
+      \strng{authorfullhash}{6eefafa52479aa3b261030d82e5c617d}
+      \field{sortinit}{5}
+      \field{sortinithash}{5dd416adbafacc8226114bc0202d5fdd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This paper compares the imaging quality of several multichannel processing methods that have been proposed for high-resolution wide-swath (HRWS) synthetic aperture radar (SAR) systems. A review of the different reconstruction methods is performed and their imaging performances are investigated for an exemplary multi-channel HRWS SAR.}
+      \field{booktitle}{2014 IEEE Geoscience and Remote Sensing Symposium}
+      \field{issn}{2153-6996}
+      \field{month}{7}
+      \field{title}{Comparison of multi-channel high-resolution wide-swath SAR processing methods}
+      \field{year}{2014}
+      \field{pages}{3834\bibrangedash 3837}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/IGARSS.2014.6947320
+      \endverb
+      \keyw{image reconstruction;radar imaging;radar resolution;remote sensing by radar;synthetic aperture radar;high-resolution wide-swath synthetic aperture radar systems;imaging performances;imaging quality;multichannel HRWS SAR;multichannel high-resolution wide-swath SAR processing methods;reconstruction methods;Azimuth;Imaging;Signal resolution;Signal to noise ratio;Synthetic aperture radar;Vectors;HRWS radar;MIMO radar;Multichannel radar signal processing;SAR}
+    \endentry
+    \entry{Cerutti-Maori2010b}{article}{}
+      \name{author}{3}{}{%
+        {{hash=b3f0d10e55fdb355e6ecbc9108dea188}{%
+           family={Cerutti-Maori},
+           familyi={C\bibinithyphendelim M\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=7f6e5d02bf572b882dfea5054765aec4}{%
+           family={Gierull},
+           familyi={G\bibinitperiod},
+           given={C.H.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7cc07dbc72f0eb6fb7115c7108af547d}{%
+           family={Ender},
+           familyi={E\bibinitperiod},
+           given={J.H.G.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1bac6e18c743ee462a4551c84821cc84}
+      \strng{fullhash}{1bac6e18c743ee462a4551c84821cc84}
+      \strng{bibnamehash}{1bac6e18c743ee462a4551c84821cc84}
+      \strng{authorbibnamehash}{1bac6e18c743ee462a4551c84821cc84}
+      \strng{authornamehash}{1bac6e18c743ee462a4551c84821cc84}
+      \strng{authorfullhash}{1bac6e18c743ee462a4551c84821cc84}
+      \field{sortinit}{5}
+      \field{sortinithash}{5dd416adbafacc8226114bc0202d5fdd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Recently, theoretical investigations have shown that switching between parts of the transmit and/or receive aperture in a pulse-to-pulse cycle may improve the ground moving target indication (GMTI) performance of a two-channel radar system. This paper intends to verify these findings experimentally for the switching concept for the first time. Accordingly, six different GMTI modes were implemented in the system PAMIR (phased-array multifunctional imaging radar) of the Fraunhofer Institute for High Frequency Physics and Radar Techniques (Fraunhofer FHR) including three switching modes. An experiment was conducted using six cooperative vehicles following a predefined scenario to compare the GMTI performance and, in particular, the positioning accuracy of the different GMTI modes. The results of this experiment as well as the underlying signal processing are presented in this paper. The analysis is based on a multilook constant false-alarm rate detection scheme. Due to the heterogenous nature of the considered scene, the well-known test statistic for homogeneous terrain had to be extended accordingly, and a novel test statistics is proposed.}
+      \field{issn}{0196-2892}
+      \field{journaltitle}{Geoscience and Remote Sensing, IEEE Transactions on}
+      \field{month}{4}
+      \field{number}{4}
+      \field{title}{{Experimental Verification of SAR-GMTI Improvement Through Antenna Switching}}
+      \field{volume}{48}
+      \field{year}{2010}
+      \field{pages}{2066\bibrangedash 2075}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/TGRS.2009.2037010
+      \endverb
+      \keyw{Fraunhofer FHR; Fraunhofer Institute for High Frequency Physics and Radar Techniques; PAMIR system; SAR-GMTI improvement; antenna switching; ground moving target indication; homogeneous terrain; multilook constant false-alarm rate detection; part switching; phased-array multifunctional imaging radar; positioning accuracy; pulse-to-pulse cycle; receive aperture; signal processing; test statistics; transmit aperture; two-channel radar system; geophysical signal processing; geophysical techniques; phased array radar; radar antennas; radar detection; radar imaging; radar tracking; synthetic aperture radar}
+    \endentry
+    \entry{Gierull2012}{article}{}
+      \name{author}{3}{}{%
+        {{hash=7f6e5d02bf572b882dfea5054765aec4}{%
+           family={Gierull},
+           familyi={G\bibinitperiod},
+           given={C.\bibnamedelimi H.},
+           giveni={C\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=41b11ca50624f7d7a41c39c697340d0e}{%
+           family={Sikaneta},
+           familyi={S\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+        {{hash=b3f0d10e55fdb355e6ecbc9108dea188}{%
+           family={Cerutti-Maori},
+           familyi={C\bibinithyphendelim M\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{7a72f83deb6c0ea38a35e98700f1d700}
+      \strng{fullhash}{7a72f83deb6c0ea38a35e98700f1d700}
+      \strng{bibnamehash}{7a72f83deb6c0ea38a35e98700f1d700}
+      \strng{authorbibnamehash}{7a72f83deb6c0ea38a35e98700f1d700}
+      \strng{authornamehash}{7a72f83deb6c0ea38a35e98700f1d700}
+      \strng{authorfullhash}{7a72f83deb6c0ea38a35e98700f1d700}
+      \field{sortinit}{5}
+      \field{sortinithash}{5dd416adbafacc8226114bc0202d5fdd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Ground moving target indication (GMTI) from space has currently raised interest from wide area traffic monitoring as well as for military surveillance activities. This paper presents theoretical and real data GMTI results of RADARSAT-2's Moving Object Detection Experiment based on data gathered during the commissioning phase in February 2008. The proposed constant false alarm rate target detection is based on a novel and thorough analysis of the multilook test statistics. The practical and relevant case in which a target, for instance a passenger car, occurs in only $l$-out-of-$n$ ground resolution multilook cells is analyzed. This general case is analyzed for the determination of adequate detection thresholds as well as the anticipated probability of detection $P_{rm d}$ particularly with regard to a varying degree of terrain heterogeneity and target characteristics. The overall false alarm rate $P_{rm fa}$ is significantly reduced by a complementary detection step using the along-track interferometric phase. The validity of these theoretical findings are corroborated by real two-channel space-based synthetic aperture radar-GMTI data of civilian vehicles of opportunity, whose main parameters have been estimated and compared with the derived Cramér Rao Bounds.}
+      \field{issn}{0196-2892}
+      \field{journaltitle}{Geoscience and Remote Sensing, IEEE Transactions on}
+      \field{number}{99}
+      \field{title}{{Two-Step Detector for RADARSAT-2's Experimental GMTI Mode}}
+      \field{volume}{PP}
+      \field{year}{2012}
+      \field{pages}{1\bibrangedash 19}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1109/TGRS.2012.2201729
+      \endverb
+    \endentry
+    \entry{Chiu2004}{article}{}
+      \name{author}{2}{}{%
+        {{hash=92ab1cd91879394e3bc55004cf451604}{%
+           family={Chiu},
+           familyi={C\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d965f0b6cfe13c8601e087854bd43efa}{%
+           family={Sikaneta},
+           familyi={S\bibinitperiod},
+           given={I.\bibnamedelimi C.},
+           giveni={I\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{2d63052ec92379b1676adfa4b2d051d6}
+      \strng{fullhash}{2d63052ec92379b1676adfa4b2d051d6}
+      \strng{bibnamehash}{2d63052ec92379b1676adfa4b2d051d6}
+      \strng{authorbibnamehash}{2d63052ec92379b1676adfa4b2d051d6}
+      \strng{authornamehash}{2d63052ec92379b1676adfa4b2d051d6}
+      \strng{authorfullhash}{2d63052ec92379b1676adfa4b2d051d6}
+      \field{sortinit}{5}
+      \field{sortinithash}{5dd416adbafacc8226114bc0202d5fdd}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proc. 2004 EuSAR conf.}
+      \field{title}{{Applying fractional {F}ourier transfrom to two-aperture {SAR-GMTI}}}
+      \field{year}{2004}
     \endentry
   \enddatalist
 \endrefsection
