@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=DRDCArcSAR.tex
+lastDocument=ishCommands.tex
 
 [document-settings,item:DRDCArcSAR.tex]
 Bookmarks=
@@ -487,12 +487,12 @@ TextFolding=[]
 ViMarks=.,25,42,[,25,42,],25,42
 
 [view-settings,view=0,item:inertialtoecef.tex]
-CursorColumn=88
-CursorLine=29
+CursorColumn=2
+CursorLine=64
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,29,87,[,29,46,],29,87
+ViMarks=.,64,1,[,64,1,],64,1
 
 [view-settings,view=0,item:introduction.tex]
 CursorColumn=815
@@ -503,12 +503,12 @@ TextFolding=[]
 ViMarks=.,5,89,[,5,89,],5,100
 
 [view-settings,view=0,item:ishCommands.tex]
-CursorColumn=0
-CursorLine=265
+CursorColumn=1
+CursorLine=304
 Dynamic Word Wrap=false
 JumpList=
 TextFolding=[]
-ViMarks=.,265,0,[,265,0,],265,0
+ViMarks=.,304,1,[,304,1,],304,1
 
 [view-settings,view=0,item:mimo.tex]
 CursorColumn=38
