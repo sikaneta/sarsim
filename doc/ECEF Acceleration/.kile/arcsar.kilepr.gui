@@ -407,16 +407,16 @@ open=true
 order=8
 
 [view-settings,view=0,item:ECEFacceleration.tex]
-CursorColumn=0
-CursorLine=110
+CursorColumn=16
+CursorLine=70
 Dynamic Word Wrap=false
 JumpList=
 TextFolding=[]
 ViMarks=.,109,18,[,110,0,],-1,-1
 
 [view-settings,view=0,item:SURE_introduction.tex]
-CursorColumn=591
-CursorLine=26
+CursorColumn=0
+CursorLine=7
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
@@ -615,8 +615,8 @@ TextFolding=[]
 ViMarks=.,12,101,[,12,101,],12,101
 
 [view-settings,view=0,item:simulation.tex]
-CursorColumn=55
-CursorLine=271
+CursorColumn=0
+CursorLine=55
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]

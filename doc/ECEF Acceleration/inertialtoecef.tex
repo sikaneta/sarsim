@@ -13,8 +13,8 @@ and
 where
 \begin{equation}
  \mtx{M}(t)=\begin{bmatrix}
-             \ct & -\st & 0\\
-             \st & \ct  & 0\\
+             \ct & \st & 0\\
+             -\st & \ct  & 0\\
              0   & 0    & 1
             \end{bmatrix},
 \end{equation}
@@ -27,26 +27,26 @@ where $\omega_e$ is the rotation rate of the earth.
 %              0   & 0    & 1
 %             \end{bmatrix}
 % \end{equation}
-Calculation of derivatives yields
+Calculation of derivatives, up to third order as required to compute the satellite jerk, yields
 \begin{equation}
  \dot{\mtx{M}}(t) = \omega_e\begin{bmatrix}
-             -\st & -\ct & 0\\
-             \ct & -\st  & 0\\
+             -\st & \ct & 0\\
+             -\ct & -\st  & 0\\
              0   & 0    & 0
             \end{bmatrix},
 \end{equation}
 \begin{equation}
  \ddot{\mtx{M}}(t) = -\omega^2_e\begin{bmatrix}
-             \ct & -\st & 0\\
-             \st & \ct  & 0\\
+             \ct & \st & 0\\
+             -\st & \ct  & 0\\
              0   & 0    & 0
             \end{bmatrix},
 \end{equation}
 and
 \begin{equation}
  \dddot{\mtx{M}}(t) = -\omega^3_e\begin{bmatrix}
-             -\st & -\ct & 0\\
-             \ct & -\st  & 0\\
+             -\st & \ct & 0\\
+             -\ct & -\st  & 0\\
              0   & 0    & 0
             \end{bmatrix}.
 \end{equation}
@@ -61,8 +61,8 @@ To simplfy notation, let
 and
 \begin{equation}
  \Qtwo=\begin{bmatrix}
- 0 & -1 & 0\\
- 1 & 0 & 0\\
+ 0 & 1 & 0\\
+ -1 & 0 & 0\\
  0 & 0 & 0
 \end{bmatrix}.
 \end{equation}
