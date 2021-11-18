@@ -1,0 +1,244 @@
+\documentclass{beamer}
+%\usepackage{emoji}
+\usepackage{fontawesome}
+\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{pgfplots}
+\usetikzlibrary{snakes,arrows,shapes}
+
+\usepackage[mathscr]{euscript}
+\usepackage{subcaption}
+\usepackage{dblfloatfix}
+\usepackage{fixltx2e}
+\usepackage{color}
+\usepackage{array, hhline}
+\usepackage[normalem]{ulem}
+\usepackage{rotating}
+\usepackage{marvosym}
+\usepackage{multirow}
+\usepackage[mathscr]{euscript}
+\usepackage{listings}
+\usepackage{color}
+
+\usetheme{Boadilla}
+\title{My Presentation}
+\subtitle{Using Beamer}
+\author{Joe Bloggs}
+\institute{University of ShareLaTeX}
+\date{\today}
+
+
+\input{ishCommands}
+
+\begin{document}
+\begin{frame}
+\frametitle{Classic Stripmap SAR}
+\begin{itemize}
+\item SAR azimuth antenna length $\antennaLengthDesired$ and azimuth resolution $\resxDesired$ related by
+\begin{equation}
+ \antennaLengthDesired = 2\resxDesired.
+\end{equation}
+\item View $\resxDesired$ as a function of required beamwidth (for wavelength $\wavelength$),
+\begin{equation}
+ \threeDBDesired \approx \frac{\wavelength}{\antennaLengthDesired} = \frac{\wavelength}{2\resxDesired}.
+\end{equation}
+\item Required spatial sampling is $\resxDesired$ which means, for platform velocity $\satv$, we need a PRF of
+\begin{equation}
+ \prfEffective = \frac{\satv}{\resxDesired}.
+\end{equation}
+\item To minimize $\resxDesired$, minimize $\antennaLengthDesired$ which maximizes $\threeDBDesired$.
+\end{itemize}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Maximize azimuth beamwidth}
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{!}{0.4\textheight}{\input{increaseLookAngles.pdf_tex}}
+ \caption{Spotlight mode to increase range of look angles.}
+ \label{fg:fivechan}
+ \end{center}
+\end{figure}
+\begin{itemize}
+\item It's not the beamwidth but the fact that the target/scene is viewed from a wide range of azimuth angles. 
+\item A wide beamwidth is one way to achieve this.
+\item Spotlighting (mechanical or electronic) is another 
+\end{itemize}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Approach}
+\begin{itemize}
+\item Divide total beamwidth into $\myChannelM$ parts
+\begin{equation}
+ \threeDBEffective = \frac{\threeDBDesired}{\myChannelM}=\frac{\wavelength}{2\myChannelM\resxDesired}.
+\end{equation}
+\item Each part needs an antenna of length
+\begin{equation}
+ \antennaLengthEffective = 2\myChannelM\resxDesired,
+\end{equation}
+\item and a PRF of
+\begin{equation}
+ \prfEffective = \frac{2\satv}{\wavelength}\threeDBEffective = \frac{2\satv}{\antennaLengthEffective} = \frac{\satv}{\myChannelM\resxDesired},
+ \label{eq:requiredPRF}
+\end{equation}
+\item Arrange a set of antennas of length $\antennaLengthEffective$ in the azimuth direction and change the beam direction from pulse to pulse
+\end{itemize}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Five channel example with ideal PRF}
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{!}{0.7\textheight}{\input{fivechan.pdf_tex}}
+ \caption{Five channel example. Circles denote the phase-centre location while the angle denotes the direction of the Tx and Rx patterns.}
+ \label{fg:fivechan}
+ \end{center}
+\end{figure}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Azimuth antenna configuration}
+\begin{itemize}
+\item Arrange a set of subarrays in the along track direction as illustrated. 
+\item Two-way phase-centre separation will be $\phaseSep=\myChannelM\resxDesired$
+\item With each subarray of length $2\myChannelM\resxDesired$, the total array length is
+\begin{equation}
+ \antennaLength = \myChannelM\antennaLengthEffective = 2\myChannelM^2\resxDesired.
+\end{equation}
+\end{itemize}
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{0.4\columnwidth}{!}{\input{antennaLengths.pdf_tex}}
+ \caption{Antenna Lengths to achieve desired resolution for an example 11 channel system for a desired resolution of $\resxDesired$.}
+ \label{fg:antennaLenghts}
+ \end{center}
+\end{figure}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Example antenna lengths}
+\begin{table}[h!]
+\begin{center}
+\caption{System parameters for $\resxDesired=0.1 \text{m}$ and $\satv=7500 \text{m/s}$. The swath is the simply related to the time between pulses without consideration of pulse length and margins.}
+\label{tb:Simulation}
+ \begin{tabular}{r|c|c|c|c}\\\hline
+  {\bf $\channelM$} & {\bf $\antennaLengthEffective$ m} & {\bf $\antennaLength$ m} & {\bf $\prfEffective$ Hz} & {\bf Swath (slant-range Km)}\\\hline 
+1 & 0.20 & 0.20 & 75000 & 2.00\\\hline
+3 & 0.60 & 1.80 & 25000 & 6.00\\\hline
+5 & 1.00 & 5.00 & 15000 & 10.00\\\hline
+7 & 1.40 & 9.80 & 10710 & 14.00\\\hline
+9 & 1.80 & 16.20 & 8330 & 18.00\\\hline
+{\bf 11} & {\bf 2.20} & {\bf 24.20} & {\bf 6810} & {\bf 22.00}\\\hline
+13 & 2.60 & 33.80 & 5760 & 26.00\\\hline
+15 & 3.00 & 45.00 & 5000 & 30.00\\\hline
+ \end{tabular}
+ \end{center}
+\end{table}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Signal processing}
+\begin{figure}[h!]
+\begin{center}
+ \resizebox{0.9\textwidth}{!}{\input{equivalentHRWS.pdf_tex}}
+ \caption{Equivalent HRWS system.}
+ \label{fg:equivHRWS}
+ \end{center}
+\end{figure}
+\begin{itemize}
+\item Have to generalize to non-ideal PRFs.
+\item Similar approach to non-uniform sampling for HRWS mode.
+\item Number of samples grows as $1/\resxDesired^2$ in both azimuth and range.
+\item Developed a wavenumber processing approach
+\begin{itemize}
+\item Based on paramterisation by arclength
+\item Generalised Stolt interpolation
+\end{itemize}
+\end{itemize}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Simulation}
+\begin{table}[ht!]
+\begin{center}
+ \caption{Simulation parameters}
+ \label{tb:simulation}
+ \begin{tabular}{r|l|l|l|l|l|l|l}
+  {} & {\bf $f_p$} & {\bf $\antennaLength$} & {\bf $\antennaLengthEffective$} & {\bf $M$} & {Swath} & {\bf $\carrier$} & {\bf $B$}\\
+ {mode}      & {Hz}    & m    & m   &   & km   & GHz  & MHz\\\hline
+ {\bf 40 cm} & 4500.00 & 20.0 & 4.0 & 5 & 16.5 & 9.65 & 374.74\\\hline
+ {\bf 30 cm} & 5000.00 & 21.4 & 3.6 & 6 & 13.5 & 9.65 & 499.65\\\hline
+ {\bf 25 cm} & 5142.86 & 24.4 & 3.5 & 7 & 12.7 & 9.65 & 599.58\\\hline
+ {\bf 20 cm} & 6428.57 & 19.6 & 2.8 & 7 & 7.5  & 9.65 & 749.48\\\hline
+ {\bf 12 cm} & 7500.00 & 24.0 & 2.4 & 10 & 4.5 & 9.65 & 1249.14\\\hline
+ {\bf 10 cm} & 8181.82 & 24.2 & 2.2 & 11 & 3.0 & 9.65 & 1498.96\\\hline
+ \end{tabular}
+ \end{center}
+\end{table}
+\begin{itemize}
+\item swath width has been computed in the slant-range.
+\begin{equation}
+ \text{Swath}(f_p; \tau_p) = \left(1/f_p - 2*\tau_p\right)*\frac{c}{2}\times 90\%
+\end{equation}
+\item $\tau_p$ is the pulse duration, selected as $\tau_p=50\times10^{-6}$ s. 
+\item 10\% margin incorporated.
+\end{itemize}
+\end{frame}
+%
+\begin{frame}
+\frametitle{Processed signal}
+\begin{figure}[ht!]
+\begin{center}
+\begin{subfigure}{0.4\textwidth}
+ \resizebox{\columnwidth}{!}{\includegraphics{simulation/10cm/simulation_plots_phase_corrected/wk_doppler_response_amplitude.png}}
+ \caption{10 cm mode.}
+ \label{fg:10cmreconstructed}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+ \resizebox{\columnwidth}{!}{\includegraphics{simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_8.png}}
+ \caption{Azimuth cross-section of 10cm mode.}
+ \label{fg:azimuthCross10}
+\end{subfigure}
+\end{center}
+\caption{Reconstructed signals in azimuth wavenumber domain.}
+\label{fg:reconstructed}
+\end{figure}
+\end{frame}
+%
+\begin{frame}
+\frametitle{PSF}
+\begin{itemize}
+\item Over the wider azimuth range, one observes a different generation of sidelobes with a peak rising to around -18dB. 
+\item A Doppler weighting could suppress these at the expense of resolution.
+\end{itemize}
+\begin{figure}[ht!]
+\begin{center}
+ \resizebox{0.6\columnwidth}{!}{\includegraphics{simulation/10cm/simulation_plots_phase_corrected/wk_response_s_os_64.png}}
+ \caption{Azimuth cross-section of 10cm mode.}
+ \label{fg:azimuthCross10wide}
+ \end{center}
+\end{figure}
+\end{frame}
+%
+\begin{frame}
+\frametitle{NESZ}
+\begin{table}[ht!]
+\begin{center}
+ \caption{Computed NESZ}
+ \label{tb:nesz}
+ \begin{tabular}{r|l|l}
+ {\bf Mode} & {\bf $f_p$} (Hz)& {\bf NESZ} (dB)\\\hline
+ {\bf 40 cm} & 4500.00 & -30.9\\\hline
+ {\bf 30 cm} & 5000.00 & -29.8\\\hline
+ {\bf 25 cm} & 5142.86 & -29.7\\\hline
+ {\bf 20 cm} & 6428.57 & -29.2\\\hline
+ {\bf 12 cm} & 7500.00 & -25.5\\\hline
+ {\bf 10 cm} & 8181.82 & -30.2\\\hline
+ \end{tabular}
+ \end{center}
+\end{table}
+\end{frame}
+\end{document}
