@@ -44,7 +44,11 @@ def df(x, p0, p1, p2, p3, p4, r, a2, a3, a4):
 #%% simplified version
 @jit(forceobj=True)
 def interpolatePulsesCxSimple(y, YY, Xnew, oversample, yupidx):
-    """This function interpolates the values of the matrix Y and writes
+    """
+    This function interpolates the rows in the matix y at the points
+    given by the vector Xnew
+    
+    This function interpolates the values of the matrix y and writes
     the interpolated values into the matrix YY. Y and YY are matrices
     that represent range in the row direction and pulse in the column
     direction. The matrix Xnew and the sample numbers (double) at which
@@ -52,7 +56,28 @@ def interpolatePulsesCxSimple(y, YY, Xnew, oversample, yupidx):
     Y and YY. The vector Yos (os -> oversample) is a workspace in which
     to story temporary oversampled FFT values. while the vector Yos_idx
     provides the indeces for populating this oversampled vector in the
-    frequency domain."""
+    frequency domain.
+
+    Parameters
+    ----------
+    y : `numpy.ndarray`, (range, azimuth)
+        The input array to be interpolated. Rows correspond to range, columns
+        to azimuth
+    YY : `numpy.ndarray`, (range, azimuth)
+        The interpolated array. Rows correspond to range, columns to azimuth.
+    Xnew : `numpy.ndarray`, (range, azimuth)
+        The values at which the rows should be interpolated for each azimuth
+        column.
+    oversample : `int`
+        A factor by which to increase sampling in the range direction so as
+        to aid in interpolation.
+    yupidx : `numpy.ndarray`, (range,)
+        Indeces that sort the kr array so that we include the carrier.
+
+    Returns
+    -------
+    None.
+    """
     
     rows, cols  = Xnew.shape
     

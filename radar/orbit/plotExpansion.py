@@ -17,7 +17,12 @@ from measurement.measurement import state_vector_RSO
 from measurement.measurement import state_vector
 from measurement.arclength import slow
 import argparse
+<<<<<<< HEAD
 from geoComputer.geoComputer import satGeometry as sG
+=======
+orbpath = "C:/Users/Ishuwa.Sikaneta/local/sarsim/radar/orbit"
+orbfile = "S1B_OPER_AUX_POEORB_OPOD_20180825T110641_V20180804T225942_20180806T005942.EOF"
+>>>>>>> 1998465c1355fd575e73239869f044f550e404d8
 
 #%% Load the data
 purpose = """
@@ -37,7 +42,7 @@ parser = argparse.ArgumentParser(description=purpose)
 
 parser.add_argument("--orbit-file", 
                     help="The orbit file containing ground truth data", 
-                    default = "/home/ishuwa/local/src/Python/sarsim/radar/orbit/S1B_OPER_AUX_POEORB_OPOD_20180825T110641_V20180804T225942_20180806T005942.EOF",
+                    default = os.path.join(orbpath, orbfile),
                     )
 parser.add_argument("--plot-name",
                     help="A name signature for the output plots",
@@ -47,6 +52,7 @@ parser.add_argument("--index",
                     help="""Index into the state vector array to use as
                             a point of expansion""",
                     type=int,
+<<<<<<< HEAD
                     default=20)
 parser.add_argument("--range",
                     help="Range to a target on the ground (m)",
@@ -56,6 +62,9 @@ parser.add_argument("--hae",
                     help="Height of the target oabove the ellipsoid (WGS84 in m)",
                     type=float,
                     default=0.0)
+=======
+                    default=100)
+>>>>>>> 1998465c1355fd575e73239869f044f550e404d8
 parser.add_argument("--state-fs",
                     help="Sampling frequency of the propagated state vectors (Hz)",
                     type=float,
@@ -63,7 +72,7 @@ parser.add_argument("--state-fs",
 parser.add_argument("--period",
                     help="Time duration over which to propagate vectors (s)",
                     type=float,
-                    default=40.0)
+                    default=6000.0)
 parser.add_argument("--depression-angle",
                     help="""The depression angle to use for projection of 
                             error onto line-of-sight (in degrees)""",
@@ -72,11 +81,11 @@ parser.add_argument("--depression-angle",
 parser.add_argument("--interactive",
                     help="Interactive mode. Program halts until figures are closed",
                     action="store_true",
-                    default=False)
+                    default=True)
 parser.add_argument("--validate-numerical",
                     help="Plot the difference between integration and the data on file",
                     action="store_true",
-                    default=False)
+                    default=True)
 
 
 #%% Parse the arguments           
@@ -84,6 +93,7 @@ vv = parser.parse_args()
 fname_split = vv.plot_name.split(".")
 fname_head = ".".join(fname_split[0:-1])
 fname_tail = fname_split[-1]
+
 #%% Load the state vectors
 if "EOF" in vv.orbit_file:
     sv = state_vector_ESAEOD(vv.orbit_file)

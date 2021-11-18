@@ -2,7 +2,7 @@
 kile_livePreviewEnabled=true
 kile_livePreviewStatusUserSpecified=false
 kile_livePreviewTool=LivePreview-PDFLaTeX
-lastDocument=stolz.tex
+lastDocument=DRDCArcSAR.tex
 
 [document-settings,item:DRDCArcSAR.tex]
 Bookmarks=
@@ -130,6 +130,15 @@ Indentation Mode=normal
 Mode=LaTeX
 Mode Set By User=false
 
+[document-settings,item:mimo.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
 [document-settings,item:multichannel.tex]
 Bookmarks=
 Encoding=UTF-8
@@ -229,6 +238,15 @@ Indentation Mode=normal
 Mode=LaTeX
 Mode Set By User=false
 
+[document-settings,item:stationaryIteration.tex]
+Bookmarks=40
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
 [document-settings,item:stationaryphase.tex]
 Bookmarks=
 Encoding=UTF-8
@@ -262,7 +280,7 @@ order=0
 
 [item:SURE_introduction.tex]
 open=true
-order=1
+order=2
 
 [item:SURE_multichannel.tex]
 open=true
@@ -317,8 +335,8 @@ open=true
 order=3
 
 [item:mimo.tex]
-open=false
-order=-1
+open=true
+order=27
 
 [item:multichannel.tex]
 open=true
@@ -358,11 +376,15 @@ order=23
 
 [item:sardiffgeo.tex]
 open=true
-order=2
+order=1
 
 [item:simulation.tex]
 open=true
 order=10
+
+[item:stationaryIteration.tex]
+open=true
+order=28
 
 [item:stationaryphase.tex]
 open=true
@@ -377,20 +399,20 @@ open=true
 order=15
 
 [view-settings,view=0,item:DRDCArcSAR.tex]
-CursorColumn=322
-CursorLine=148
+CursorColumn=9
+CursorLine=100
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,148,321,[,148,312,],148,321
+ViMarks=.,102,67,[,102,67,],102,67
 
 [view-settings,view=0,item:SURE_introduction.tex]
-CursorColumn=51
-CursorLine=0
+CursorColumn=600
+CursorLine=34
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,0,50,[,0,48,],0,50
+ViMarks=.,31,0,[,31,0,],31,1
 
 [view-settings,view=0,item:SURE_multichannel.tex]
 CursorColumn=34
@@ -417,12 +439,12 @@ TextFolding=[]
 ViMarks=.,125,241,[,125,238,],125,241
 
 [view-settings,view=0,item:antennaanglesAppendix.tex]
-CursorColumn=159
-CursorLine=42
+CursorColumn=252
+CursorLine=82
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,42,148,[,42,148,],42,158
+ViMarks=.,82,249,[,82,249,],82,249
 
 [view-settings,view=0,item:conclusion.tex]
 CursorColumn=407
@@ -441,12 +463,12 @@ TextFolding=[]
 ViMarks=.,1,126,[,1,112,],1,126
 
 [view-settings,view=0,item:diffgeo.tex]
-CursorColumn=23
-CursorLine=41
+CursorColumn=56
+CursorLine=14
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,61,100,[,61,100,],61,110
+ViMarks=.,13,17,[,13,17,],13,17
 
 [view-settings,view=0,item:diffgeoslow.tex]
 CursorColumn=35
@@ -488,6 +510,14 @@ JumpList=
 TextFolding=[]
 ViMarks=.,265,0,[,265,0,],265,0
 
+[view-settings,view=0,item:mimo.tex]
+CursorColumn=38
+CursorLine=25
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,25,37,[,25,37,],25,37
+
 [view-settings,view=0,item:multichannel.tex]
 CursorColumn=38
 CursorLine=101
@@ -505,36 +535,36 @@ TextFolding=[]
 ViMarks=.,27,124,[,27,124,],27,124
 
 [view-settings,view=0,item:myGlossary.tex]
-CursorColumn=16
-CursorLine=16
-Dynamic Word Wrap=false
-JumpList=
-TextFolding=[]
-ViMarks=.,16,15,[,16,12,],16,15
-
-[view-settings,view=0,item:newStationaryPhase.tex]
-CursorColumn=0
-CursorLine=0
+CursorColumn=126
+CursorLine=43
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=
+ViMarks=.,43,125,[,43,107,],43,125
+
+[view-settings,view=0,item:newStationaryPhase.tex]
+CursorColumn=250
+CursorLine=79
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,79,249,[,79,247,],79,249
 
 [view-settings,view=0,item:orbit_demo.tex]
-CursorColumn=1124
+CursorColumn=1436
 CursorLine=1
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,1,1123,[,1,1123,],1,1123
+ViMarks=.,1,1125,[,1,1125,],1,1125
 
 [view-settings,view=0,item:orbiterror.tex]
-CursorColumn=349
-CursorLine=14
+CursorColumn=847
+CursorLine=3
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,56,532,[,56,530,],56,547
+ViMarks=.,3,240,[,3,231,],3,240
 
 [view-settings,view=0,item:range.tex]
 CursorColumn=19
@@ -554,7 +584,7 @@ ViMarks=.,51,51,[,51,51,],51,51
 
 [view-settings,view=0,item:rateofacceleration.tex]
 CursorColumn=16
-CursorLine=5
+CursorLine=30
 Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
@@ -576,21 +606,29 @@ JumpList=
 TextFolding=[]
 ViMarks=.,305,34,[,305,27,],305,34
 
+[view-settings,view=0,item:stationaryIteration.tex]
+CursorColumn=0
+CursorLine=23
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,1,28,[,1,7,],1,28,a,40,9
+
 [view-settings,view=0,item:stationaryphase.tex]
-CursorColumn=292
-CursorLine=15
-Dynamic Word Wrap=false
+CursorColumn=3
+CursorLine=21
+Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
 ViMarks=.,15,291,[,15,218,],15,291
 
 [view-settings,view=0,item:stolz.tex]
-CursorColumn=4
-CursorLine=13
-Dynamic Word Wrap=false
+CursorColumn=166
+CursorLine=73
+Dynamic Word Wrap=true
 JumpList=
 TextFolding=[]
-ViMarks=.,13,3,[,13,3,],13,3
+ViMarks=.,73,165,[,73,164,],73,165
 
 [view-settings,view=0,item:vectorcalc.tex]
 CursorColumn=421

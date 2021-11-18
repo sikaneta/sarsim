@@ -8,12 +8,13 @@ from measurement.measurement import state_vector
 from measurement.arclength import slow
 from geoComputer.geoComputer import satGeometry as sG
 from common.utils import FFT_freq
+from space.planets import earth as body
 import utils.fileio as fio
 import omegak.omegak as wk
 import omegak.nbomegak as nbwk
 import omegak.omegakappa as wkap
 import omegak.stolz as stlz
-from scipy.constants import Boltzmann, c
+import scipy.constants as constants
 from scipy import interpolate
 import os
 import pickle
@@ -27,11 +28,6 @@ else:
 
 homedir = 'E:\\' #os.environ['HOMEPATH']
 defaultConfig = u'E:\\Python\\myrdr2\\radar\\XML\\sureConfig.xml'
-
-class physical:
-    c = 299792458.0
-    mass_EARTH = 5.97219e24
-    G = 6.67384e-11
     
 #%matplotlib notebook
 
@@ -134,7 +130,7 @@ class stringConverters:
             return np.array([self.distu[el.get('unit').lower()](float(elt)) for elt in el.text.split()])
         except KeyError as ke:
             try:
-                return np.array([self.timeu[el.get('unit').lower()](float(elt))*physical.c for elt in el.text.split()])
+                return np.array([self.timeu[el.get('unit').lower()](float(elt))*constants.c for elt in el.text.split()])
             except KeyError as kte:
                 return np.array([float(elt) for elt in el.text.split()])
        
@@ -146,7 +142,7 @@ class stringConverters:
             return np.array([self.timeu[el.get('unit').lower()](float(elt)) for elt in el.text.split()])
         except KeyError as ke:
             try:
-                return np.array([self.distu[el.get('unit').lower()](float(elt))/physical.c for elt in el.text.split()])
+                return np.array([self.distu[el.get('unit').lower()](float(elt))/constants.c for elt in el.text.split()])
             except KeyError as kte:
                 return np.array([float(elt) for elt in el.text.split()])
     
@@ -211,9 +207,9 @@ def loadConfigurationRaw(configFile = None):
     ref = radar[0]['acquisition']
     np_prf = np.timedelta64(int(np.round(1e9/ref['prf'])),'ns')
     svTime = ref['startTime'] + np_prf*ref['numAzimuthSamples']/2.0
-    #rng = (ref['nearRangeTime'] + ref['numRangeSamples']*ref['rangeSampleSpacing'])*physical.c/2.0
+    #rng = (ref['nearRangeTime'] + ref['numRangeSamples']*ref['rangeSampleSpacing'])*constants.c/2.0
     
-    platform['orbit']['period'] = np.sqrt(4.0*np.pi**2/(physical.G*physical.mass_EARTH)*platform['orbit']['semiMajorAxis']**3)
+    platform['orbit']['period'] = np.sqrt(4.0*np.pi**2/(body.GM)*platform['orbit']['semiMajorAxis']**3)
     
     # Compute a state vector or read from XML file
     platform['stateVectors'] = orbit2state(platform['orbit'], platform['longitude'], svTime)
@@ -245,7 +241,7 @@ def loadConfigurationRaw(configFile = None):
 def computeReferenceGroundPoint(radar, radarIDX=None, rTargetIndex=None, sTargetIndex=None):
     if rTargetIndex is None:
         rTargetIndex = 400
-    rngs = [(ref['acquisition']['nearRangeTime'] + rTargetIndex*ref['acquisition']['rangeSampleSpacing'])*physical.c/2.0 for ref in radar]
+    rngs = [(ref['acquisition']['nearRangeTime'] + rTargetIndex*ref['acquisition']['rangeSampleSpacing'])*constants.c/2.0 for ref in radar]
     rng = np.min(rngs)
     if radarIDX is None:
         radarIDX = np.argmin(rngs)
@@ -283,7 +279,7 @@ def readPlatformParametersElement(xmlroot):
                                    sconv.toDouble('.//stateVector/vz', xmlroot)]},
                 'longitude': sconv.toAngle('.//platformLongitude', xmlroot)}
     antenna = {'fc': sconv.toFrequency('.//carrierFrequency', xmlroot),
-               'wavelength': physical.c/sconv.toFrequency('.//carrierFrequency', xmlroot),
+               'wavelength': constants.c/sconv.toFrequency('.//carrierFrequency', xmlroot),
                'azimuthPositions': sconv.toDistanceArray('.//azimuthPositions', xmlroot),
                'azimuthLengths': sconv.toDistanceArray('.//azimuthElementLengths', xmlroot),
                'transmitPowers': sconv.toPowerArray('.//transmitPowers', xmlroot),
@@ -585,7 +581,7 @@ def generateTimeDomainSignal(rad, pointXYZ):
     antennaWeight = twoWayArrayPattern(targetAngles, rad)
     fastTime = ref['nearRangeTime'] + np.arange(float(ref['numRangeSamples']))*ref['rangeSampleSpacing']
     allFastTimes = (npmat.repmat(fastTime,len(rangeMagnitudes),1).T
-                    - 2.0/physical.c*npmat.repmat(rangeMagnitudes,len(fastTime),1))
+                    - 2.0/constants.c*npmat.repmat(rangeMagnitudes,len(fastTime),1))
     chirp = chirpWaveform(rad['chirp']['pulseBandwidth'], rad['chirp']['length'])
     signal = chirp.sample(allFastTimes, rad['antenna']['fc'])*npmat.repmat(antennaWeight,len(fastTime),1)
     return signal
@@ -663,7 +659,7 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
         velocityVectors = ref['satellitePositions'][1][:,3:]
         velocityMagnitudes = np.sqrt(np.sum(velocityVectors*velocityVectors, axis=1))
         lookDirections = np.sum(rangeVectors*velocityVectors, axis=1)/ranges/velocityMagnitudes
-        r2t = 2.0/c
+        r2t = 2.0/constants.c
         rangeTimes = ranges*r2t
         
         #% Define the fast time values
@@ -675,13 +671,13 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
         # The following was quite wrong. I don't know where the logic came from
         # radarEq1 = np.sqrt((rad['antenna']['wavelength'])
         #             *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
-        #             /np.sqrt(Boltzmann*rad['antenna']['systemTemperature'])
+        #             /np.sqrt(constants.Boltzmann*rad['antenna']['systemTemperature'])
         #             /np.sqrt(rad['antenna']['systemLosses']))/(fastTimes/r2t)**2
         
         
         radarEq1 = ((rad['antenna']['wavelength'])
                     *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
-                    /np.sqrt(Boltzmann*rad['antenna']['systemTemperature']*rad['chirp']['pulseBandwidth'])
+                    /np.sqrt(constants.Boltzmann*rad['antenna']['systemTemperature']*rad['chirp']['pulseBandwidth'])
                     /np.sqrt(rad['antenna']['systemLosses'])
                     )/(fastTimes/r2t)**2
         
@@ -700,7 +696,7 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
                         rangeTimes[pulseIDX],
                         lookDirections[pulseIDX],
                         np.min(rad['antenna']['azimuthLengths']),
-                        rad['antenna']['azimuthPositions']/c,
+                        rad['antenna']['azimuthPositions']/constants.c,
                         rad['mode']['txMagnitude'],
                         rad['mode']['rxMagnitude'],
                         rad['mode']['txDelay'],
@@ -741,10 +737,10 @@ class radar_system:
         self.prf = ref['prf']
         self.nearRangeTime = rad['acquisition']['nearRangeTime']
         self.r = (self.nearRangeTime + 
-                  np.arange(self.Nr, dtype=np.double)/self.fs)*c/2.0
-        self.near_range = self.nearRangeTime*c/2.0
-        self.mid_range = (self.nearRangeTime + (self.Nr/2-1)/self.fs)*c/2.0
-        self.far_range = (self.nearRangeTime + (self.Nr-1)/self.fs)*c/2.0
+                  np.arange(self.Nr, dtype=np.double)/self.fs)*constants.c/2.0
+        self.near_range = self.nearRangeTime*constants.c/2.0
+        self.mid_range = (self.nearRangeTime + (self.Nr/2-1)/self.fs)*constants.c/2.0
+        self.far_range = (self.nearRangeTime + (self.Nr-1)/self.fs)*constants.c/2.0
         center_sat_index = int(self.Na/2)
         sv = state_vector()
         xState = sv.expandedState(ref['satellitePositions'][1][center_sat_index], 0.0)
@@ -766,7 +762,7 @@ class radar_system:
         # Note that since the chirp was mixed to based band, we have the 
         # following expression for the fast time frequency rather than
         # self.kr = (4.0*np.pi/c)*FFT_freq(self.Nr, self.fs, self.f0)
-        self.kr = 4.0*np.pi/c*(FFT_freq(self.Nr, self.fs, 0.0) + self.f0)
+        self.kr = 4.0*np.pi/constants.c*(FFT_freq(self.Nr, self.fs, 0.0) + self.f0)
         self.kridx = np.argsort(self.kr)
         self.kridx_inv = np.argsort(self.kridx)
         self.kr_sorted = self.kr[self.kridx]
@@ -1152,7 +1148,7 @@ def wkProcessNumba(procData,
     baseband_mix = 2.0*np.pi*np.mod(r_sys.mid_range, swath)/swath
     # baseband_mix = 2.0*np.pi*0.5/r_sys.Nr
         
-    r2t = 2.0/c
+    r2t = 2.0/constants.c
     cols = len(r_sys.kr_sorted)
     rows = len(ks)
     
@@ -1166,7 +1162,7 @@ def wkProcessNumba(procData,
                  for k in range(len(row_ticks)-1)]
     
     wk_processed = np.zeros((rows,mem_cols), dtype=np.complex128)
-    yupkr = 4.0*np.pi/c*(FFT_freq(cols*os_factor, r_sys.fs, 0) + r_sys.f0)
+    yupkr = 4.0*np.pi/constants.c*(FFT_freq(cols*os_factor, r_sys.fs, 0) + r_sys.f0)
     yupidx = np.argsort(yupkr)
     
     for span in row_spans:
