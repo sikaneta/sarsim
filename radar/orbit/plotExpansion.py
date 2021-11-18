@@ -48,7 +48,7 @@ parser.add_argument("--index",
                     help="""Index into the state vector array to use as
                             a point of expansion""",
                     type=int,
-                    default=100)
+                    default=300)
 parser.add_argument("--state-fs",
                     help="Sampling frequency of the propagated state vectors (Hz)",
                     type=float,
