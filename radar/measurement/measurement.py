@@ -41,6 +41,7 @@ class measurement:
     
     """
     def __init__(self, mTime=[], mData=[]):
+        self.reference_time = datetime.datetime.now()
         if(mTime):
             self.measurementTime.append(mTime)
             self.measurementData.append(mData)
@@ -172,6 +173,7 @@ class state_vector(measurement):
     
     
     def __init__(self, svFile=None, harmonicsfile=None, harmonicsCoeff=360):
+        self.reference_time = datetime.datetime.now()
         harmonicsFile = harmonicsfile or planet.sphericalHarmonicsFile
         if(os.path.exists(harmonicsFile) and harmonicsCoeff):
             try:
@@ -1223,7 +1225,8 @@ class state_vector(measurement):
                               [0,0,1,0,0,0,0,0,0],
                               [0,0,0,0,0,1,0,0,0],
                               [0,0,0,0,0,0,0,0,1]])
-        return reshuffle.dot(np.array(list(Jtr)+list(Jtu)+list(Jtt)))
+        #return reshuffle.dot(np.array(list(Jtr)+list(Jtu)+list(Jtt)))
+        return reshuffle.dot(np.concatenate((Jtr, Jtu, Jtt)))
     
         
     def satEQM(self,X,t):
@@ -1247,6 +1250,9 @@ class state_vector(measurement):
         # Define some constants
         wE = planet.w
         
+        # Get n-body positions
+        masses, positions = planet.nbody(self.reference_time, ["Sun", "Moon"])
+        
         # Transform to lat/long/r spherical polar
         llh = self.xyz2SphericalPolar(X)
         lat = llh[0]/180.0*pi
@@ -1266,11 +1272,11 @@ class state_vector(measurement):
         # sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         # Compute the component of the gradient due to r, theta, phi
         delVdelR, delVdelU, delVdelT = self.harmonicsdel(r,
-                                                     lat,
-                                                     lon,
-                                                     nmLegendreCoeffs,
-                                                     cosines = cosines,
-                                                     sines = sines)
+                                                      lat,
+                                                      lon,
+                                                      nmLegendreCoeffs,
+                                                      cosines = cosines,
+                                                      sines = sines)
 
         # Calculate factors to transform sperical polar to Cartesian derivatives
         delVdelRX = delVdelR/r*mat(X[0:3])
@@ -1294,6 +1300,86 @@ class state_vector(measurement):
         
         # Do the calculation
         return np.array(X[3:]*XM + (wE**2*Xp*I2 + 2.0*wE*Xv*Q2 + delVdelRX + delVdelTX + delVdelUX)*VM).flatten()
+    
+            
+    def satEQMNew(self,X,t):
+        """
+        Return the satellite equations of motion for the given state vector
+        X
+        
+        Return M from the first-order system of differential equations such 
+        that dX/dt = MX
+        Parameters
+        ----------
+        X : `numpy.ndarray`, (6,)
+            Six element array describing the state vector.
+        t : `float`
+            The time of the state vector information in s.
+        Returns
+        -------
+        `numpy.ndarray`, (6,)
+            DESCRIPTION.
+        """
+        # Define some constants
+        wE = planet.w
+        
+        # Get n-body positions
+        # masses, positions = planet.nbody(self.reference_time, ["Sun", "Moon"])
+        
+        # Transform to lat/long/r spherical polar
+        llh = self.xyz2SphericalPolar(X)
+        lat = llh[0]/180.0*pi
+        lon = llh[1]/180.0*pi
+
+        # Compute the norm
+        r = llh[2]
+        p = np.sqrt(X[0]**2 + X[1]**2)
+        Xp = X[0:3]
+        Xv = X[3:]
+
+        nmLegendreCoeffs, cosines, sines = self._getLCS(lat, lon)
+        
+        
+        # nmLegendreCoeffs = self.myLegendre(self.Nharmonics, sin(lat))
+        # cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+        # sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+        # Compute the component of the gradient due to r, theta, phi
+        delVdelR, delVdelU, delVdelT = self.harmonicsdel(r,
+                                                     lat,
+                                                     lon,
+                                                     nmLegendreCoeffs,
+                                                     cosines = cosines,
+                                                     sines = sines)
+
+        # Calculate factors to transform sperical polar to Cartesian derivatives
+        delVdelRX = delVdelR/r*X[0:3]
+        delVdelUX = delVdelU*np.array([-X[0]*X[2]/r**2/p, 
+                                       -X[1]*X[2]/r**2/p, 
+                                       p/r**2])
+        delVdelTX = delVdelT*np.array([-X[1]/p**2, 
+                                       X[0]/p**2, 
+                                       0.0])
+
+
+        # Compute some shifting matrices
+        I2 = np.array([[1.0, 0.0, 0.0], 
+                       [0.0, 1.0, 0.0], 
+                       [0.0, 0.0, 0.0]])
+        Q2 = np.array([[0.0, 1.0, 0.0], 
+                       [-1.0, 0.0, 0.0], 
+                       [0.0, 0.0, 0.0]])
+        
+        XM = np.concatenate((np.eye(3), np.zeros((3,3))))
+        VM = np.concatenate((np.zeros((3,3)), np.eye(3)))
+        
+        
+        # Do the calculation
+        return XM.dot(Xv) + VM.dot(wE**2*I2.dot(Xp) 
+                                   + 2.0*wE*Q2.dot(Xv) 
+                                   + delVdelRX 
+                                   + delVdelTX 
+                                   + delVdelUX)
+    
     
     def isatEQM(self, t, X):
         """
@@ -1349,42 +1435,7 @@ class state_vector(measurement):
                                                         nmLegendreCoeffs = nmLegendreCoeffs,
                                                         cosines = cosines,
                                                         sines = sines)
-        # h11 = self.egm96delRdelR(r, 
-        #                          lat, 
-        #                          lon,
-        #                          nmLegendreCoeffs = nmLegendreCoeffs,
-        #                          cosines = cosines,
-        #                          sines = sines)
-        # h12 = self.egm96delUdelR(r, 
-        #                          lat, 
-        #                          lon,
-        #                          nmLegendreCoeffs = nmLegendreCoeffs,
-        #                          cosines = cosines,
-        #                          sines = sines)
-        # h13 = self.egm96delTdelR(r, 
-        #                          lat, 
-        #                          lon,
-        #                          nmLegendreCoeffs = nmLegendreCoeffs,
-        #                          cosines = cosines,
-        #                          sines = sines)
-        # h22 = self.egm96delUdelU(r, 
-        #                          lat, 
-        #                          lon,
-        #                          nmLegendreCoeffs = nmLegendreCoeffs,
-        #                          cosines = cosines,
-        #                          sines = sines)
-        # h23 = self.egm96delUdelT(r, 
-        #                          lat, 
-        #                          lon,
-        #                          nmLegendreCoeffs = nmLegendreCoeffs,
-        #                          cosines = cosines,
-        #                          sines = sines)
-        # h33 = self.egm96delTdelT(r, 
-        #                          lat, 
-        #                          lon,
-        #                          nmLegendreCoeffs = nmLegendreCoeffs,
-        #                          cosines = cosines,
-        #                          sines = sines)
+
         return np.array([[h11, h12, h13],
                          [h12, h22, h23],
                          [h13, h23, h33]])
@@ -1426,11 +1477,11 @@ class state_vector(measurement):
         nmLegendreCoeffs, cosines, sines = self._getLCS(lat, lon)
         
         d0, d1, d2 = self.harmonicsdel(r, 
-                                   lat, 
-                                   lon,
-                                   nmLegendreCoeffs = nmLegendreCoeffs,
-                                   cosines = cosines,
-                                   sines = sines)
+                                       lat, 
+                                       lon,
+                                       nmLegendreCoeffs = nmLegendreCoeffs,
+                                       cosines = cosines,
+                                       sines = sines)
         
         inertial_ddS = np.array([d0, d1, d2])
         
@@ -1477,7 +1528,7 @@ class state_vector(measurement):
         ecef_ddX = wE**2*np.dot(I2,ecef_X) + 2.0*wE*np.dot(Q2, ecef_dX) + inertial_ddX
         
         
-        # Calculate the thrid derivative in ECEF
+        # Calculate the third derivative in ECEF
         ecef_dddX = (2.0*wE**3*np.dot(Q2, ecef_X) 
              - 3.0*wE**2*np.dot(I2, ecef_dX) 
              + 3.0*wE*np.dot(Q2, inertial_ddX) 
@@ -1680,6 +1731,7 @@ class state_vector(measurement):
             The computed/estimated state vector.
         """
         minK = self.findNearest(dtime)
+        self.reference_time = dtime
         if type(self.measurementTime[0]) == datetime.datetime:
             dT = [0.0, (dtime - self.measurementTime[minK]).total_seconds()]
         else:

@@ -56,7 +56,7 @@ parser.add_argument("--state-fs",
 parser.add_argument("--period",
                     help="Time duration over which to propagate vectors (s)",
                     type=float,
-                    default=6000.0)
+                    default=60.0)
 parser.add_argument("--depression-angle",
                     help="""The depression angle to use for projection of 
                             error onto line-of-sight (in degrees)""",

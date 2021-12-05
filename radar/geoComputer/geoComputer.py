@@ -1,32 +1,33 @@
 import numpy as np
 
 #from DEM.DEM import DEM
-from measurement.measurement import WGS84 as eM
+from space.planets import earth
 import datetime
 
 
 class satGeometry:
     # Function to compute the ECEF coordinates
-    c = 299792458.0
     orbitFile = u"r:/SARorbits.xml"
     
-    def __init__(self):
-        self.eS = np.array([eM.aE, eM.aE, eM.bE])
+    def __init__(self, planet = earth):
+        self.body = planet or earth
 
     # Compute the vector of functions
     def sysEq(self, X, range, u, h, sX, sV):
         # Return a vector of the value sof the system of 
         # euqations
         
-        return np.array([((X/self.eS)**2).sum() - (X*X).sum()/(np.linalg.norm(X)-h)**2,
-                    1.0-((X-sX)*(X-sX)).sum()/range**2,
-                    np.dot(X - sX, sV) - range*np.linalg.norm(sV)*u])
+        return np.array([((X/self.eS)**2).sum() 
+                         - (X*X).sum()/(np.linalg.norm(X)-h)**2,
+                         1.0-((X-sX)*(X-sX)).sum()/range**2,
+                         np.dot(X - sX, sV) - range*np.linalg.norm(sV)*u])
                     
 
     def sysJac(self, X, range, h, sX, sV):
         # Define and return the Jacobian matrix
-        return np.array([2.0*(X/self.eS)/self.eS+ 2.0*X*h/(np.linalg.norm(X)-h)**3,
-        2.0*(sX-X)/range**2, sV])
+        return np.array([2.0*(X/self.eS)/self.eS
+                         + 2.0*X*h/(np.linalg.norm(X)-h)**3,
+                         2.0*(sX-X)/range**2, sV])
         
         
     def computeECEF(self, sVec, u, range, h, X = None):
@@ -39,12 +40,14 @@ class satGeometry:
             su = su/np.linalg.norm(su)
             
             # Calculate a dummy variable
-            srange = np.sqrt(range**2-(np.linalg.norm(sX) - eM.aE/2.0 - eM.bE/2.0)**2 )
+            srange = np.sqrt(range**2-(np.linalg.norm(sX) 
+                                       - self.body.a/2.0 
+                                       - self.body.b/2.0)**2 )
             
             # Generate an intial guess
             wP = sX - np.cos(u)*su*srange
             # wP = sX - su*srange
-            X =  wP*(eM.aE/2.0 + eM.bE/2.0)/np.linalg.norm(wP)
+            X =  wP*(self.body.a/2.0 + self.body.b/2.0)/np.linalg.norm(wP)
         
         # Now apply the Newton Raphson method
         for j in np.arange(10):
@@ -58,12 +61,18 @@ class satGeometry:
         
         return (X, error)
        
-    def computeLLHwithDEM(self, sVec, u, range, dem = None, geoidHeightFunction=None, X=None):
+    def computeLLHwithDEM(self, 
+                          sVec, 
+                          u, 
+                          range, 
+                          dem = None, 
+                          geoidHeightFunction=None, 
+                          X=None):
         # Start with a height of zero
         demH = 0.0
         
         # Define a default dem
-        dem = dem or DEM()
+        # dem = dem or DEM()
         
         # Variable to hold potential geoid height compensation
         gHeight = 0.0
@@ -97,7 +106,7 @@ class satGeometry:
         
     def geoF(self, llh, X):
         # Compute the flattening factor
-        f = (eM.aE-eM.bE)/eM.aE
+        f = (self.body.a-self.body.b)/self.body.a
         lat = llh[0]
         lon = llh[1]
         h = llh[2]
@@ -106,13 +115,13 @@ class satGeometry:
         C = 1.0/np.sqrt( np.cos(lat)**2 + (1.0-f)**2*np.sin(lat)**2 )
         S = (1.0-f)**2*C
         
-        return np.array([(eM.aE*C+h)*np.cos(lat)*np.cos(lon) - X[0], 
-                                 (eM.aE*C+h)*np.cos(lat)*np.sin(lon) - X[1],
-                                 (eM.aE*S+h)*np.sin(lat) - X[2]])
+        return np.array([(self.body.a*C+h)*np.cos(lat)*np.cos(lon) - X[0], 
+                         (self.body.a*C+h)*np.cos(lat)*np.sin(lon) - X[1],
+                         (self.body.a*S+h)*np.sin(lat) - X[2]])
 
     def geoJ(self, llh):
         # Compute the flattening factor
-        f = (eM.aE-eM.bE)/eM.aE
+        f = (self.body.a-self.body.b)/self.body.a
         lat = llh[0]
         lon = llh[1]
         h = llh[2]
@@ -130,13 +139,13 @@ class satGeometry:
         slon = np.sin(lon)
         
         # Define the Jacobian elements
-        J11 = eM.aE*dCdLat*clat*clon - (eM.aE*C+h)*slat*clon
-        J12 = -1.0*(eM.aE*C+h)*clat*slon
+        J11 = self.body.a*dCdLat*clat*clon - (self.body.a*C+h)*slat*clon
+        J12 = -1.0*(self.body.a*C+h)*clat*slon
         J13 = clat*clon
-        J21 = eM.aE*dCdLat*clat*slon - (eM.aE*C+h)*slat*slon
-        J22 = (eM.aE*C+h)*clat*clon
+        J21 = self.body.a*dCdLat*clat*slon - (self.body.a*C+h)*slat*slon
+        J22 = (self.body.a*C+h)*clat*clon
         J23 = clat*slon
-        J31 = eM.aE*dSdLat*slat + (eM.aE*S+h)*clat
+        J31 = self.body.a*dSdLat*slat + (self.body.a*S+h)*clat
         J32 = 0.0
         J33 = slat
         
@@ -145,7 +154,8 @@ class satGeometry:
         
     def xyz2polar(self, X):
         # Convert to spherical polar
-        llh = np.array([np.arctan(X[2]/np.sqrt(X[0]**2+X[1]**2)), np.arctan2(X[1],X[0]), 0.0])
+        llh = np.array([np.arctan(X[2]/np.sqrt(X[0]**2+X[1]**2)), 
+                        np.arctan2(X[1],X[0]), 0.0])
         
             
         # Now apply the Newton Raphson method
@@ -161,7 +171,12 @@ class satGeometry:
         return (llh, error)
     
     
-    def slowTimefastTime2llh(self, slowTime, fastTime, sv=None, dem=None, u=0.0):
+    def slowTimefastTime2llh(self, 
+                             slowTime, 
+                             fastTime, 
+                             sv=None, 
+                             dem=None, 
+                             u=0.0):
         # This function will try to compute the llh coordinate in WGS84 for
         # a given slowTime, fastTime, satellite and DEM. If the DEM is not provided
         # Then the default DTED2 DEM will be used
@@ -172,7 +187,7 @@ class satGeometry:
             return None, None, None
         
         # Set the default DEM as required
-        dem = dem or DEM()
+        # dem = dem or DEM()
         
         # Convert azimuth string to datetime
         UTC = datetime.datetime.strptime(slowTime, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -181,5 +196,9 @@ class satGeometry:
         rng = fastTime*self.c/2.0
         
         # Calculate the coordinates and return
-        return self.computeLLHwithDEM(sv.estimate(UTC), u, rng, dem, sv.geoidHeight), sv, dem
+        return (self.computeLLHwithDEM(sv.estimate(UTC), 
+                                       u, 
+                                       rng, 
+                                       dem, 
+                                       sv.geoidHeight), sv, dem)
     
