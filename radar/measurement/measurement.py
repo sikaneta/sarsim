@@ -7,12 +7,10 @@ import numpy as np
 from numpy import meshgrid, arange, sqrt, zeros, cumprod, array, diag, cos, sin
 import os
 import math
-import share.resource as res
 from timeit import default_timer as timer
-from numba import jit, njit, prange
-from space.planets import earth as planet
+from numba import njit, prange
+from space.planets import earth
 
-egmFilePath = os.path.split(res.__file__)[0]
 
 class measurement:
     """
@@ -172,9 +170,14 @@ class state_vector(measurement):
     harmonics = []
     
     
-    def __init__(self, svFile=None, harmonicsfile=None, harmonicsCoeff=360):
+    def __init__(self, 
+                 svFile=None,
+                 planet = None,
+                 harmonicsfile=None, 
+                 harmonicsCoeff=360):
         self.reference_time = datetime.datetime.now()
-        harmonicsFile = harmonicsfile or planet.sphericalHarmonicsFile
+        self.planet = planet or earth()
+        harmonicsFile = harmonicsfile or self.planet.sphericalHarmonicsFile
         if(os.path.exists(harmonicsFile) and harmonicsCoeff):
             try:
                 self.loadSphericalHarmonics(harmonicsFile, harmonicsCoeff)
@@ -187,14 +190,20 @@ class state_vector(measurement):
             print(svFile)
             self.readStateVectors(svFile)
             
+            
 
-    def xyz2polar(self, mData):
+    def xyz2polar(self, mData, maxiter = 1000, etol=1e-9):
         """
         Convert Cartesian ECEF XYZ to geographical polar coordinates EPSG:4326
         Parameters
         ----------
         mData : numpy.`numpy.ndarray`, (3,) or `list`, [`float`]
             The X,Y,Z coordinates in ECEF Catersian space.
+        maxiter : int
+            Maximum number of iterations in the method
+        etol : float
+            Error bound for the iteration. Once the difference in iterations
+            is small than this number, the algorithm stops
         Returns
         -------
         latitude : `float`
@@ -209,24 +218,22 @@ class state_vector(measurement):
         This implementation is faster than the method defined in the class
         satGeometry
         """
-        a = planet.a
-        b = planet.b
+        a = self.planet.a
+        b = self.planet.b
         f=(a-b)/a
         es=2.0*f-f*f;
         p=sqrt(mData[0]*mData[0]+mData[1]*mData[1])
         latitude=atan(mData[2]*a/p*b)
         ess=(a*a-b*b)/(b*b)
-        for k in range(1,1000):
+        for k in range(1,maxiter):
             la = atan2(mData[2]+ess*b*sin(latitude)**3,p-es*a*cos(latitude)**3)
-            if(abs(latitude-la)<1.0e-9):
+            if(abs(latitude-la)<etol):
                 break
             latitude = la
         longitude = atan2(mData[1],mData[0])
         Nphi=a/sqrt(1.0-es*sin(latitude)**2)
         hae=p/cos(latitude)-Nphi
-        latitude = latitude/pi*180
-        longitude = longitude/pi*180
-        return latitude, longitude, hae
+        return np.degrees(latitude), np.degrees(longitude), hae
 
     def xyz2SphericalPolar(self, mData):
         """
@@ -247,9 +254,7 @@ class state_vector(measurement):
         r = sqrt(mData[0]*mData[0]+mData[1]*mData[1]+mData[2]*mData[2])
         latitude = asin(mData[2]/r)
         longitude = atan2(mData[1],mData[0])
-        latitude = latitude/pi*180.0
-        longitude = longitude/pi*180.0
-        return latitude, longitude, r
+        return np.degrees(latitude), np.degrees(longitude), r
     
     def llh2xyz(self, mData):
         """
@@ -264,10 +269,10 @@ class state_vector(measurement):
             The X,Y,Z coordinates in ECEF Cartesian space.
         """
         # mData contains the lat, lon, height in degrees
-        a = planet.a
-        b = planet.b
-        phi = mData[0]*pi/180.0
-        lam = mData[1]*pi/180.0
+        a = self.planet.a
+        b = self.planet.b
+        phi = np.radians(mData[0])
+        lam = np.radians(mData[1])
         h = mData[2]
         
         N = a**2/sqrt(a**2*cos(phi)**2+b**2*sin(phi)**2)
@@ -276,7 +281,7 @@ class state_vector(measurement):
         Z = (b**2*N/a**2+h)*sin(phi)
         return np.array([X,Y,Z])
     
-    def computeBroadsideToX(self, eta, X):
+    def computeBroadsideToX(self, eta, X, maxiter = 10, etol=1e-6):
         """
         Compute the braodside state vector to vector X
         
@@ -289,13 +294,18 @@ class state_vector(measurement):
             Initial estimate of broadside time.
         X : `numpy.ndarray`, (3,)
             The XYZ coordinates of the point of interest.
+        maxiter : int
+            Maximum number of iterations in the Newton method
+        etol : float
+            Error bound for the iteration. Once the difference in iterations
+            is small than this number, the algorithm stops
         Returns
         -------
         `list`, [`float`, `numpy.ndarray`, (3,), `float`]
             The broadside time, the state vector at this time an the error in
             the broadside position.
         """
-        for k in range(10):
+        for k in range(maxiter):
             slaveX = self.estimate(eta)
             slaveV = self.satEQM(slaveX, 0.0)
             slX = slaveX[0:3]
@@ -308,7 +318,7 @@ class state_vector(measurement):
             
             # Check to break from the loop. Recall that we only measure time
             # to the closest 1.0e-6 in the usec field
-            if(abs(error) < 1.0e-6): 
+            if(abs(error) < etol): 
                 break
             
         return [eta, slaveX, error]
@@ -369,7 +379,10 @@ class state_vector(measurement):
         row = f.readline()
         fields = row.split()
         while int(fields[0])<(self.NharmonicsToLoad+1):
-            self.harmonics.append([int(fields[0]),int(fields[1]),float(fields[2]),float(fields[3])])
+            self.harmonics.append([int(fields[0]),
+                                   int(fields[1]),
+                                   float(fields[2]),
+                                   float(fields[3])])
             self.hrmC[int(fields[0]),int(fields[1])] = float(fields[2])
             self.hrmS[int(fields[0]),int(fields[1])] = float(fields[3])
             row = f.readline()
@@ -428,8 +441,8 @@ class state_vector(measurement):
             a point on the surface of the ellipsoid at the given latitude.
             Answer in meters.
         """
-        ee = (self.constGRS80.aE/self.constGRS80.bE)**2 - 1.0
-        return self.constGRS80.aE/sqrt(1.0 + ee*sin(lat)**2)
+        ee = (self.planet.a/self.planet.b)**2 - 1.0
+        return self.planet.a/sqrt(1.0 + ee*sin(lat)**2)
         
     def geoidHeight(self, lat, lon):
         """
@@ -450,11 +463,9 @@ class state_vector(measurement):
         """
         # Compute the GRS80 equivalent radius
         r = self.grs80radius(lat)
-        h = -(self.harmonicsPotential(r, lat, lon) - self.ellipsoidPotential(r, lat, lon))
+        h = -(self.harmonicsPotential(r, lat, lon) 
+              - self.ellipsoidPotential(r, lat, lon))
         return h/self.harmonicsdelR(r, lat, lon)
-        
-    def d2r(self, deg):
-        return deg/180.0*pi
 
     def _getLCS(self,
                 lat,
@@ -466,54 +477,13 @@ class state_vector(measurement):
         if nmLegendreCoeffs is None:
             nmLegendreCoeffs = self.myLegendre(self.Nharmonics, sin(lat))
         if cosines is None:
-            cosines = np.array([cos(l*lon) for l in range (0, self.Nharmonics+1)])
+            cosines = np.array([cos(l*lon) 
+                                for l in range (0, self.Nharmonics+1)])
         if sines is None:
-            sines = np.array([sin(l*lon) for l in range (0, self.Nharmonics+1)])
-        # if nmLegendreCoeffs is None:
-        #     nmLegendreCoeffs = self.myLegendre(self.Nharmonics, sin(lat))
-        # if cosines is None:
-        #     cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        # if sines is None:
-        #     sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
-        # if cosines is None:
-        #     cosines = [cos(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
-        # if sines is None:
-        #     sines = [sin(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
+            sines = np.array([sin(l*lon) 
+                              for l in range (0, self.Nharmonics+1)])
             
         return nmLegendreCoeffs, cosines, sines
-    
-    # def egm96PotentialSlow(self, 
-    #                     r, 
-    #                     lat, 
-    #                     lon,
-    #                     nmLegendreCoeffs = None,
-    #                     cosines = None,
-    #                     sines = None):
-    #     GM = planet.GM
-    #     a = planet.a
-
-    #     # Compute the coefficients for the gradient of the gravitational potential
-    #     D = 1.0*GM/r
-    #     if nmLegendreCoeffs is None:
-    #         nmLegendreCoeffs = self.myLegendre(self.Nharmonics, 
-    #                                                 sin(lat))
-    #     #rt = np.exp(1j*lon)
-    #     #exprt = [rt**l for l in range (0, self.Nharmonics+1)]
-    #     #cosines = np.real(exprt)
-    #     #sines = np.imag(exprt)
-    #     if cosines is None:
-    #         cosines = [cos(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
-    #     if sines is None:
-    #         sines = [sin(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
-    #     for k in range(2,self.Nharmonics+1):
-    #         egmIndex = int((k-2)*(k+3)/2)
-    #         #mv=self.legendreNorm(k,sin(lat))
-    #         mv=nmLegendreCoeffs[k,0:(k+1)]
-    #         #egm = self.selectEGMNew(k)
-    #         cs = np.sum([mv[l]*(cosines[l]*self.egm96[egmIndex+l][2] + sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
-    #         D += 1.0*(GM/r)*cs*(a/r)**k
-
-    #     return D
         
     def harmonicsPotential(self, 
                        r, 
@@ -544,10 +514,11 @@ class state_vector(measurement):
         D : `float`
             The harmonics potential this point.
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
 
-        # Compute the coefficients for the gradient of the gravitational potential
+        # Compute the coefficients for the gradient of the gravitational 
+        # potential
         D = 1.0*GM/r
         
         
@@ -555,15 +526,11 @@ class state_vector(measurement):
             nmLegendreCoeffs = self.myLegendre(self.Nharmonics, 
                                                    sin(lat))
         if cosines is None:
-            cosines = [cos(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
+            cosines = [cos(np.mod(l*lon, 2.0*np.pi)) 
+                       for l in range (0, self.Nharmonics+1)]
         if sines is None:
-            sines = [sin(np.mod(l*lon, 2.0*np.pi)) for l in range (0, self.Nharmonics+1)]
-        
-        # nmLegendreCoeffs, sines, cosines = self._getLCS(lat,
-        #                                                 lon,
-        #                                                 nmLegendreCoeffs,
-        #                                                 cosines,
-        #                                                 sines)
+            sines = [sin(np.mod(l*lon, 2.0*np.pi)) 
+                     for l in range (0, self.Nharmonics+1)]
             
         nterm = np.arange(2, self.Nharmonics+1)
         rterm = (a/r)**nterm
@@ -595,15 +562,20 @@ class state_vector(measurement):
         D : `float`
             The GRS80 ellipsoid potential the point.
         """
-        GM = self.constGRS80.GM
-        a = self.constGRS80.aE
+        GM = self.planet.GM
+        a = self.planet.a
         
-        J = [self.constGRS80.J2, self.constGRS80.J4, self.constGRS80.J6, self.constGRS80.J8]
+        J = [self.planet.J2, 
+             self.planet.J4, 
+             self.planet.J6, 
+             self.planet.J8]
         
         # Compute the coefficients of the harmonic expansion
-        coeff = [-j/sqrt(2.0*l+1.0)*self.myLegendre(l,sin(lat))[-1,0]*(a/r)**l for j,l in zip(J, range(2,10,2))]
+        coeff = [-j/sqrt(2.0*l+1.0)*self.myLegendre(l,sin(lat))[-1,0]*(a/r)**l 
+                 for j,l in zip(J, range(2,10,2))]
         
-        # Add the very first term to the cumulative sum and multiple by physical constants
+        # Add the very first term to the cumulative sum and multiple by 
+        # physical constants
         D = GM/r*(1.0 + sum(coeff))
 
         return D 
@@ -615,8 +587,8 @@ class state_vector(measurement):
                  nmLegendreCoeffs = None,
                  cosines = None,
                  sines = None):
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         u = sin(lat)
         v = cos(lat)
         rSquare = r**2
@@ -677,8 +649,8 @@ class state_vector(measurement):
         D : `float`
             The derivative of the harmonics potential wrt r at the point.
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         rSquare = r**2
 
         # Apply the formula
@@ -693,7 +665,9 @@ class state_vector(measurement):
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=nmLegendreCoeffs[k,0:(k+1)]
-            cs = sum([mv[l]*(cosines[l]*self.harmonics[egmIndex+l][2] + sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([mv[l]*(cosines[l]*self.harmonics[egmIndex+l][2] 
+                             + sines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D += -1.0*GM*cs*(k+1.0)*(a/r)**k/rSquare
 
         return D 
@@ -723,8 +697,8 @@ class state_vector(measurement):
             The second derivative of the harmonics potential wrt r twice at the 
             point of interest.
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         rCubed = r**3
 
         # Apply the formula
@@ -739,7 +713,9 @@ class state_vector(measurement):
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=nmLegendreCoeffs[k,0:(k+1)]
-            cs = sum([mv[l]*(cosines[l]*self.harmonics[egmIndex+l][2] + sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([mv[l]*(cosines[l]*self.harmonics[egmIndex+l][2] 
+                             + sines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D += GM*cs*(k+1.0)*(k+2.0)*(a/r)**k/rCubed
 
         return D 
@@ -752,8 +728,8 @@ class state_vector(measurement):
                       cosines = None,
                       sines = None):
         
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         u = sin(lat)
         v = cos(lat)
         rCubed = r**3
@@ -846,8 +822,8 @@ class state_vector(measurement):
         D : `float`
             The derivative of the harmonics potential wrt theta at the point.
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         D = 0.0
 
         nmLegendreCoeffs, cosines, sines = self._getLCS(lat,
@@ -859,7 +835,9 @@ class state_vector(measurement):
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=nmLegendreCoeffs[k,0:(k+1)]
-            cs = sum([mv[l]*(-l*sines[l]*self.harmonics[egmIndex+l][2] + l*cosines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([mv[l]*(-l*sines[l]*self.harmonics[egmIndex+l][2] 
+                             + l*cosines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D += GM*cs*(a/r)**k/r
 
         return D 
@@ -890,8 +868,8 @@ class state_vector(measurement):
             point of interest.
             
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         D = 0.0
 
         nmLegendreCoeffs, cosines, sines = self._getLCS(lat,
@@ -903,7 +881,9 @@ class state_vector(measurement):
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=nmLegendreCoeffs[k,0:(k+1)]
-            cs = sum([mv[l]*(-l**2*cosines[l]*self.harmonics[egmIndex+l][2] - l**2*sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([mv[l]*(-l**2*cosines[l]*self.harmonics[egmIndex+l][2] 
+                             - l**2*sines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D += GM*cs*(a/r)**k/r
 
         return D 
@@ -934,8 +914,8 @@ class state_vector(measurement):
             point of interest.
             
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         D = 0.0
 
         nmLegendreCoeffs, cosines, sines = self._getLCS(lat,
@@ -947,7 +927,9 @@ class state_vector(measurement):
         for k in range(2,self.Nharmonics+1):
             egmIndex = int((k-2)*(k+3)/2)
             mv=nmLegendreCoeffs[k,0:(k+1)]
-            cs = sum([mv[l]*(-l*sines[l]*self.harmonics[egmIndex+l][2] + l*cosines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([mv[l]*(-l*sines[l]*self.harmonics[egmIndex+l][2] 
+                             + l*cosines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D += -(k+1.0)*GM*cs*(a/r)**k/r**2
 
         return D 
@@ -979,8 +961,8 @@ class state_vector(measurement):
         D : `float`
             The derivative of the harmonics potential wrt U at the point.
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         u = sin(lat)
         v = cos(lat)
         D = 0.0
@@ -996,9 +978,12 @@ class state_vector(measurement):
             mv1 = nmLegendreCoeffs[k,0:(k+1)]
             mv2 = nmLegendreCoeffs[(k-1),0:(k+1)]
             f1 = [mv1[l]*u*k for l in range(0, k+1)]
-            f2 = [mv2[l]*sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) for l in range(0, k+1)]
+            f2 = [mv2[l]*sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) 
+                  for l in range(0, k+1)]
             
-            cs = sum([(f1[l]-f2[l])*(cosines[l]*self.harmonics[egmIndex+l][2] + sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([(f1[l]-f2[l])*(cosines[l]*self.harmonics[egmIndex+l][2] 
+                                     + sines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D+= v*GM*cs*(a/r)**k/(u**2-1.0)/r
 
         return D 
@@ -1035,8 +1020,8 @@ class state_vector(measurement):
             point of interest.
             
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         u = sin(lat)
         v = cos(lat)
         D = 0.0
@@ -1053,10 +1038,14 @@ class state_vector(measurement):
             mv2 = nmLegendreCoeffs[(k-1),0:(k+1)]
             mv3 = nmLegendreCoeffs[(k-2),0:(k+1)]
             f1 = [mv1[l]*(k**2*u**2-k)/v**2 for l in range(0, k+1)]
-            f2 = [mv2[l]*2.0*(1.0-k)*u/v**2*self.fkl(k,l) for l in range(0, k+1)]
-            f3 = [mv3[l]*self.fkl(k,l)*self.fkl(k-1,l)/v**2 for l in range(0, k+1)]
+            f2 = [mv2[l]*2.0*(1.0-k)*u/v**2*self.fkl(k,l) 
+                  for l in range(0, k+1)]
+            f3 = [mv3[l]*self.fkl(k,l)*self.fkl(k-1,l)/v**2 
+                  for l in range(0, k+1)]
             
-            cs = sum([(f1[l]+f2[l]+f3[l])*(cosines[l]*self.harmonics[egmIndex+l][2] + sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([(f1[l]+f2[l]+f3[l])*(cosines[l]*self.harmonics[egmIndex+l][2] 
+                                           + sines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D += GM*cs*(a/r)**k/r
 
         return D
@@ -1087,8 +1076,8 @@ class state_vector(measurement):
             point of interest.
             
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         u = sin(lat)
         v = cos(lat)
         D = 0.0
@@ -1104,9 +1093,12 @@ class state_vector(measurement):
             mv1=nmLegendreCoeffs[k,0:(k+1)]
             mv2 = nmLegendreCoeffs[(k-1),0:(k+1)]
             f1 = [mv1[l]*u*k for l in range(0, k+1)]
-            f2 = [mv2[l]*sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) for l in range(0, k+1)]
+            f2 = [mv2[l]*sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) 
+                  for l in range(0, k+1)]
             
-            cs = sum([(f1[l]-f2[l])*(-l*sines[l]*self.harmonics[egmIndex+l][2] + l*cosines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([(f1[l]-f2[l])*(-l*sines[l]*self.harmonics[egmIndex+l][2] 
+                                     + l*cosines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D+= GM*v*cs*(a/r)**k/(u**2-1.0)/r
 
         return D 
@@ -1137,8 +1129,8 @@ class state_vector(measurement):
             point of interest.
             
         """
-        GM = planet.GM
-        a = planet.a
+        GM = self.planet.GM
+        a = self.planet.a
         u = sin(lat)
         v = cos(lat)
         D = 0.0
@@ -1154,9 +1146,12 @@ class state_vector(measurement):
             mv1=nmLegendreCoeffs[k,0:(k+1)]
             mv2 = nmLegendreCoeffs[(k-1),0:(k+1)]
             f1 = [mv1[l]*u*k for l in range(0, k+1)]
-            f2 = [mv2[l]*sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) for l in range(0, k+1)]
+            f2 = [mv2[l]*sqrt((k**2-l**2)*(k+0.5)/(k-0.5)) 
+                  for l in range(0, k+1)]
             
-            cs = sum([(f1[l]-f2[l])*(cosines[l]*self.harmonics[egmIndex+l][2] + sines[l]*self.harmonics[egmIndex+l][3]) for l in range(0,k+1)])
+            cs = sum([(f1[l]-f2[l])*(cosines[l]*self.harmonics[egmIndex+l][2] 
+                                     + sines[l]*self.harmonics[egmIndex+l][3]) 
+                      for l in range(0,k+1)])
             D+= -(k+1.0)*v*GM*cs*(a/r)**k/(u**2-1.0)/r**2
 
         return D 
@@ -1208,9 +1203,15 @@ class state_vector(measurement):
         
         Jtr = 1.0/r*np.eye(3) - 1.0/r**3*np.outer(X[0:3],X[0:3])
     
-        Jtu = np.array([[-z*((r*y)**2-2.0*(x*p)**2), x*y*z*(2.0*p**2+r**2), -x*(p**4-(p*z)**2)],
-                        [x*y*z*(2.0*p**2+r**2), -z*((r*x)**2-2.0*(y*p)**2), -y*(p**4-(z*p)**2)],
-                        [-x*(p**4-(p*z)**2), -y*(p**4-(z*p)**2), -2.0*z*p**4]])/p**3/r**4
+        Jtu = np.array([[-z*((r*y)**2-2.0*(x*p)**2), 
+                         x*y*z*(2.0*p**2+r**2), 
+                         -x*(p**4-(p*z)**2)],
+                        [x*y*z*(2.0*p**2+r**2), 
+                         -z*((r*x)**2-2.0*(y*p)**2), 
+                         -y*(p**4-(z*p)**2)],
+                        [-x*(p**4-(p*z)**2), 
+                         -y*(p**4-(z*p)**2), 
+                         -2.0*z*p**4]])/p**3/r**4
     
         Jtt = np.array([[2.0*x*y, y**2-x**2, 0.0],
                         [y**2-x**2, -2.0*x*y, 0.0],
@@ -1229,7 +1230,7 @@ class state_vector(measurement):
         return reshuffle.dot(np.concatenate((Jtr, Jtu, Jtt)))
     
         
-    def satEQM(self,X,t):
+    def satEQMold(self,X,t):
         """
         Return the satellite equations of motion for the given state vector
         X
@@ -1248,15 +1249,14 @@ class state_vector(measurement):
             DESCRIPTION.
         """
         # Define some constants
-        wE = planet.w
+        wE = self.planet.w
         
         # Get n-body positions
-        masses, positions = planet.nbody(self.reference_time, ["Sun", "Moon"])
+        nbody = self.planet.nbodyacc(t, X[0:3])
         
         # Transform to lat/long/r spherical polar
         llh = self.xyz2SphericalPolar(X)
-        lat = llh[0]/180.0*pi
-        lon = llh[1]/180.0*pi
+        lat, lon = np.radians(llh[0:2])
 
         # Compute the norm
         r = llh[2]
@@ -1278,7 +1278,8 @@ class state_vector(measurement):
                                                       cosines = cosines,
                                                       sines = sines)
 
-        # Calculate factors to transform sperical polar to Cartesian derivatives
+        # Calculate factors to transform sperical polar to Cartesian 
+        # derivatives
         delVdelRX = delVdelR/r*mat(X[0:3])
         delVdelUX = delVdelU*mat([-X[0]*X[2]/r**2/p, 
                                   -X[1]*X[2]/r**2/p, 
@@ -1299,10 +1300,14 @@ class state_vector(measurement):
         
         
         # Do the calculation
-        return np.array(X[3:]*XM + (wE**2*Xp*I2 + 2.0*wE*Xv*Q2 + delVdelRX + delVdelTX + delVdelUX)*VM).flatten()
+        return np.array(X[3:]*XM + (wE**2*Xp*I2 
+                                    + 2.0*wE*Xv*Q2 
+                                    + delVdelRX 
+                                    + delVdelTX 
+                                    + delVdelUX)*VM).flatten()
     
             
-    def satEQMNew(self,X,t):
+    def satEQM(self,X,t):
         """
         Return the satellite equations of motion for the given state vector
         X
@@ -1321,15 +1326,15 @@ class state_vector(measurement):
             DESCRIPTION.
         """
         # Define some constants
-        wE = planet.w
+        wE = self.planet.w
         
         # Get n-body positions
-        # masses, positions = planet.nbody(self.reference_time, ["Sun", "Moon"])
+        nbody = self.planet.nbodyacc(t, X)
+        drag = self.planet.dragacc(X)
         
         # Transform to lat/long/r spherical polar
         llh = self.xyz2SphericalPolar(X)
-        lat = llh[0]/180.0*pi
-        lon = llh[1]/180.0*pi
+        lat, lon = np.radians(llh[0:2])
 
         # Compute the norm
         r = llh[2]
@@ -1351,7 +1356,8 @@ class state_vector(measurement):
                                                      cosines = cosines,
                                                      sines = sines)
 
-        # Calculate factors to transform sperical polar to Cartesian derivatives
+        # Calculate factors to transform sperical polar to Cartesian 
+        # derivatives
         delVdelRX = delVdelR/r*X[0:3]
         delVdelUX = delVdelU*np.array([-X[0]*X[2]/r**2/p, 
                                        -X[1]*X[2]/r**2/p, 
@@ -1378,7 +1384,9 @@ class state_vector(measurement):
                                    + 2.0*wE*Q2.dot(Xv) 
                                    + delVdelRX 
                                    + delVdelTX 
-                                   + delVdelUX)
+                                   + delVdelUX
+                                   + nbody
+                                   + drag)
     
     
     def isatEQM(self, t, X):
@@ -1423,11 +1431,7 @@ class state_vector(measurement):
         `numpy.ndarray`, (3,3)
             Matrix of second derivatives of the harmonics potential.
         """
-        # Calculate the U Hessian matrix
         nmLegendreCoeffs, cosines, sines = self._getLCS(lat, lon)
-        # nmLegendreCoeffs = self.myLegendre(self.Nharmonics, sin(lat))
-        # cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        # sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
         
         h11, h12, h13, h22, h23, h33 = self.harmonicsdeldel(r, 
                                                         lat, 
@@ -1461,12 +1465,11 @@ class state_vector(measurement):
             row ecef_d2X/dt2, fourth row ecef_d3X/dt3.
         """
         # Define some constants
-        wE = planet.w
+        wE = self.planet.w
         
         # Transform to lat/long/r spherical polar
         llh = self.xyz2SphericalPolar(X)
-        lat = llh[0]/180.0*pi
-        lon = llh[1]/180.0*pi
+        lat, lon = np.radians(llh[0:2])
 
         # Compute the norm
         r = llh[2]
@@ -1511,7 +1514,8 @@ class state_vector(measurement):
                        [-1.0, 0.0, 0.0], 
                        [0.0, 0.0, 0.0]])        
         
-        # Calculate factors to transform sperical polar to Cartesian derivatives
+        # Calculate factors to transform sperical polar to Cartesian 
+        # derivatives
         # start = timer()
         J = self.Jsx(ecef_X)
         # end = timer()
@@ -1525,7 +1529,9 @@ class state_vector(measurement):
         inertial_dddX = F.dot(inertial_dX)
 
         # Calculate te seoncd derivative in ECEF
-        ecef_ddX = wE**2*np.dot(I2,ecef_X) + 2.0*wE*np.dot(Q2, ecef_dX) + inertial_ddX
+        ecef_ddX = (wE**2*np.dot(I2,ecef_X) 
+                    + 2.0*wE*np.dot(Q2, ecef_dX) 
+                    + inertial_ddX)
         
         
         # Calculate the third derivative in ECEF
@@ -1556,7 +1562,8 @@ class state_vector(measurement):
         
         # Define the B matrix
         B = zeros([n0, n0])
-        B[idx] = sqrt((2*N[idx]+1)*(N[idx]+M[idx]-1)*(N[idx]-M[idx]-1)/((N[idx]-M[idx])*(N[idx]+M[idx])*(2*N[idx]-3)))
+        B[idx] = sqrt((2*N[idx]+1)*(N[idx]+M[idx]-1)*(N[idx]-M[idx]-1)
+                      /((N[idx]-M[idx])*(N[idx]+M[idx])*(2*N[idx]-3)))
 
         # Define the diagonal p matrix (the m,m terms)
         u = sqrt(1.0-t**2)
@@ -1607,9 +1614,13 @@ class state_vector(measurement):
         return p
 
     def toInertial(self,mData, t):
-        w = self.constWGS84.wE;
-        X = mat([[cos(w*t),-sin(w*t),0.0],[sin(w*t),cos(w*t),0.0],[0.0,0.0,1.0]])
-        V = w*mat([[-sin(w*t),-cos(w*t),0.0],[cos(w*t),-sin(w*t),0.0],[0.0,0.0,0.0]])
+        w = self.planet.w;
+        X = mat([[cos(w*t),-sin(w*t),0.0],
+                 [sin(w*t),cos(w*t),0.0],
+                 [0.0,0.0,1.0]])
+        V = w*mat([[-sin(w*t),-cos(w*t),0.0],
+                   [cos(w*t),-sin(w*t),0.0],
+                   [0.0,0.0,0.0]])
         ix = X*mat(mData[0:3]).H
         iv = X*mat(mData[3:6]).H + V*mat(mData[0:3]).H
         ivect = []
@@ -1620,9 +1631,13 @@ class state_vector(measurement):
         return ivect
 
     def toECEF(self,mData, t):
-        w = self.constWGS84.wE;
-        X = mat([[cos(w*t),sin(w*t),0.0],[-sin(w*t),cos(w*t),0.0],[0.0,0.0,1.0]])
-        V = w*mat([[-sin(w*t),cos(w*t),0.0],[-cos(w*t),-sin(w*t),0.0],[0.0,0.0,0.0]])
+        w = self.planet.w;
+        X = mat([[cos(w*t),sin(w*t),0.0],
+                 [-sin(w*t),cos(w*t),0.0],
+                 [0.0,0.0,1.0]])
+        V = w*mat([[-sin(w*t),cos(w*t),0.0],
+                   [-cos(w*t),-sin(w*t),0.0],
+                   [0.0,0.0,0.0]])
         ix = X*mat(mData[0:3]).H
         iv = X*mat(mData[3:6]).H + V*mat(mData[0:3]).H
         ivect = []
@@ -1632,7 +1647,13 @@ class state_vector(measurement):
             ivect.append(float(iv[k]))
         return ivect
 
-    def integrate(self, t, k, t_eval=None):
+    def integrate(self, 
+                  t, 
+                  k, 
+                  t_eval=None, 
+                  rtol = 3.0e-14, 
+                  atol = 1.0e-14,
+                  intmethod = 'RK45'):
         """
         Numerically integrate satEQM
         
@@ -1651,16 +1672,31 @@ class state_vector(measurement):
         istate : `numpy.ndarray`, (6,)
             The value of the numerical integration as a state vector.
         """
-        mymethod = 'RK45'
-        rtol = 3.0e-14
-        atol = 1.0e-14
+        self.reference_time = self.measurementTime[k]
+        
         if t_eval is None:
-            y = solve_ivp(self.isatEQM, t, self.measurementData[k], method=mymethod, rtol=rtol)
+            y = solve_ivp(self.isatEQM, 
+                          t, 
+                          self.measurementData[k], 
+                          method=intmethod, 
+                          rtol=rtol,
+                          atol=atol)
         else:
-            y = solve_ivp(self.isatEQM, t, self.measurementData[k], method=mymethod, t_eval=t_eval, rtol=rtol, atol=atol)
+            y = solve_ivp(self.isatEQM, 
+                          t, 
+                          self.measurementData[k], 
+                          method=intmethod, 
+                          t_eval=t_eval, 
+                          rtol=rtol, 
+                          atol=atol)
         return y
         
-    def estimateTimeRange(self, dtime, integrationTimes = None):
+    def estimateTimeRange(self, 
+                          dtime, 
+                          integrationTimes = None,
+                          rtol = 3e-14,
+                          atol = 1e-14,
+                          intmethod = 'RK45'):
         """
         Integrate the satEQM to estimate the state vectors over a range of 
         times.
@@ -1687,9 +1723,11 @@ class state_vector(measurement):
         #print(self.measurementTime[minK])
         if integrationTimes is None:
             if type(self.measurementTime[0]) == datetime.datetime:
-                integrationTimes = [(dt - self.measurementTime[minK]).total_seconds() for dt in dtime]
+                integrationTimes = [(dt - self.measurementTime[minK]).total_seconds() 
+                                    for dt in dtime]
             else:
-                integrationTimes = [(dt - self.measurementTime[minK])/np.timedelta64(1,'s') for dt in dtime]
+                integrationTimes = [(dt - self.measurementTime[minK])/np.timedelta64(1,'s') 
+                                    for dt in dtime]
                 
         
         # Perform the integration
@@ -1699,22 +1737,38 @@ class state_vector(measurement):
         nTimes.reverse()
            
         if(len(nTimes) > 1):
-            nState = self.integrate([np.max(nTimes), np.min(nTimes)], minK, t_eval = nTimes)
+            nState = self.integrate([np.max(nTimes), np.min(nTimes)], 
+                                    minK, 
+                                    t_eval = nTimes,
+                                    rtol = rtol,
+                                    atol = atol,
+                                    intmethod = intmethod)
             
         # Integrate
         if(len(pTimes) > 1):
-            pState = self.integrate([np.min(pTimes), np.max(pTimes)], minK, t_eval = pTimes)
+            pState = self.integrate([np.min(pTimes), np.max(pTimes)], 
+                                    minK, 
+                                    t_eval = pTimes,
+                                    rtol = rtol,
+                                    atol = atol,
+                                    intmethod = intmethod)
          
             
         # Create and return the output
         if 0.0 in integrationTimes:
-            y_array = np.concatenate((np.fliplr(nState.y[:,1:]), pState.y), axis=1).T
+            y_array = np.concatenate((np.fliplr(nState.y[:,1:]), pState.y), 
+                                     axis=1).T
         else:
-            y_array = np.concatenate((np.fliplr(nState.y[:,1:]), pState.y[:,1:]), axis=1).T
+            y_array = np.concatenate((np.fliplr(nState.y[:,1:]), 
+                                      pState.y[:,1:]), axis=1).T
             
         return y_array
     
-    def estimate(self, dtime):
+    def estimate(self, 
+                 dtime,
+                 rtol = 3e-14,
+                 atol = 1e-14,
+                 intmethod = 'RK45'):
         """
         Estimate/Compute the state vector at a particular time
         
@@ -1735,8 +1789,16 @@ class state_vector(measurement):
         if type(self.measurementTime[0]) == datetime.datetime:
             dT = [0.0, (dtime - self.measurementTime[minK]).total_seconds()]
         else:
-            dT = [0.0, (dtime - self.measurementTime[minK])/np.timedelta64(1,'s')]
-        sol = self.integrate(dT,minK)
+            dT = [0.0, (dtime 
+                        - self.measurementTime[minK])/np.timedelta64(1,'s')]
+        
+        # Do the integration
+        sol = self.integrate(dT,
+                             minK,
+                             rtol = rtol,
+                             atol = atol,
+                             intmethod = intmethod)
+        
         if not dtime in self.measurementTime:
             self.add(dtime, sol.y[:,-1])
         return sol.y[:,-1]
@@ -1765,8 +1827,14 @@ class state_vector_TSX(state_vector):
             vx = sv.find('velX')
             vy = sv.find('velY')
             vz = sv.find('velZ')
-            self.add(datetime.datetime.strptime(svTime.text, '%Y-%m-%dT%H:%M:%S.%f'), 
-              [float(x.text),float(y.text),float(z.text),float(vx.text),float(vy.text),float(vz.text)])
+            self.add(datetime.datetime.strptime(svTime.text, 
+                                                '%Y-%m-%dT%H:%M:%S.%f'), 
+              [float(x.text),
+               float(y.text),
+               float(z.text),
+               float(vx.text),
+               float(vy.text),
+               float(vz.text)])
         return
 
 class state_vector_Radarsat(state_vector):
@@ -1793,8 +1861,19 @@ class state_vector_Radarsat(state_vector):
         svVY = stateVectorList.findall('stateVector/yVel')
         svVZ = stateVectorList.findall('stateVector/zVel')
         
-        for sv,x,y,z,vx,vy,vz in zip(stateVectorTimeElements,svX,svY,svZ,svVX,svVY,svVZ):
-            self.add(self.getDateTimeXML(sv), [float(x.text),float(y.text),float(z.text),float(vx.text),float(vy.text),float(vz.text)])
+        for sv,x,y,z,vx,vy,vz in zip(stateVectorTimeElements,
+                                     svX,
+                                     svY,
+                                     svZ,
+                                     svVX,
+                                     svVY,
+                                     svVZ):
+            self.add(self.getDateTimeXML(sv), [float(x.text),
+                                               float(y.text),
+                                               float(z.text),
+                                               float(vx.text),
+                                               float(vy.text),
+                                               float(vz.text)])
         return
         
 class state_vector_RSO(state_vector):
@@ -1820,7 +1899,8 @@ class state_vector_RSO(state_vector):
                 return
             day = float(ln[0:6])*1e-1
             secsSinceMidnight = float(ln[6:17])*1e-6 - TTUTC_offset
-            self.add(refDate + datetime.timedelta(days=math.ceil(day), seconds = secsSinceMidnight),
+            self.add(refDate + datetime.timedelta(days=math.ceil(day), 
+                                                  seconds = secsSinceMidnight),
                 [float(ln[17:29])*1e-3,
                 float(ln[29:41])*1e-3,
                 float(ln[41:53])*1e-3,
@@ -1857,14 +1937,18 @@ class state_vector_ESAEOD(state_vector):
         `Sentinel poeorb <https://qc.sentinel1.eo.esa.int/aux_poeorb>`_
         
     """
-    def readStateVectors(self, EODFile, desiredStartTime=None, desiredStopTime=None):
+    def readStateVectors(self, 
+                         EODFile, 
+                         desiredStartTime=None, 
+                         desiredStopTime=None):
         xmlroot = etree.parse(EODFile).getroot()
         osvlist = xmlroot.findall(".//OSV")
 
         for osv in osvlist:
             utcElement = osv.find(".//UTC")
             datetime.datetime
-            utc = datetime.datetime.strptime(utcElement.text.split('=')[1],'%Y-%m-%dT%H:%M:%S.%f')
+            utc = datetime.datetime.strptime(utcElement.text.split('=')[1],
+                                             '%Y-%m-%dT%H:%M:%S.%f')
             if desiredStartTime is not None and desiredStopTime is not None:
                 if(utc > desiredStartTime and utc < desiredStopTime):
                     # Add to list of state vectors
@@ -1912,9 +1996,11 @@ class state_vector_Sarscape(state_vector):
         startTime = svN.find('.//{http://www.sarmap.ch/xml/SARscapeHeaderSchema}TimeFirst')
         timeDelta = svN.find('.//{http://www.sarmap.ch/xml/SARscapeHeaderSchema}TimeDelta')
 
-        sTime = datetime.datetime.strptime(startTime.text[0:27], '%d-%b-%Y %H:%M:%S.%f')
+        sTime = datetime.datetime.strptime(startTime.text[0:27], 
+                                           '%d-%b-%Y %H:%M:%S.%f')
         tD = float(timeDelta.text)
-        sTimes = [sTime+datetime.timedelta(seconds=tD*r) for r in range(len(svX))]
+        sTimes = [sTime+datetime.timedelta(seconds=tD*r) 
+                  for r in range(len(svX))]
 
         # Populate the local data
         for sv,x,y,z,vx,vy,vz in zip(sTimes,svX,svY,svZ,svVX,svVY,svVZ):
@@ -1948,7 +2034,8 @@ class state_vector_Dimap(state_vector):
         svVZ = orbit.findall(".//MDATTR[@name='z_vel']")
         sTimeText = orbit.findall(".//MDATTR[@name='time']")
         dformat = "%d-%b-%Y %H:%M:%S.%f"
-        sTimes = [datetime.datetime.strptime(d.text, dformat) for d in sTimeText]
+        sTimes = [datetime.datetime.strptime(d.text, dformat) 
+                  for d in sTimeText]
 
         # Populate the local data
         for sv,x,y,z,vx,vy,vz in zip(sTimes,svX,svY,svZ,svVX,svVY,svVZ):
@@ -1968,7 +2055,8 @@ def myLegendre_numba(p, n0, t):
     
     # Define the diagonal p matrix (the m,m terms)
     u = sqrt(1.0-t**2)
-    ff = np.array([1.0, u] + [u*sqrt((2*i+1)/(2*i)) for i in arange(2.0,float(N))])
+    ff = np.array([1.0, u] + [u*sqrt((2*i+1)/(2*i)) 
+                              for i in arange(2.0,float(N))])
     gg = cumprod(ff)*sqrt(3.0)
     gg[0] = 1.0
     

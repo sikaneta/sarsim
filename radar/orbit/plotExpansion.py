@@ -19,6 +19,7 @@ from measurement.arclength import slow
 import argparse
 orbpath = "C:/Users/Ishuwa.Sikaneta/local/sarsim/radar/orbit"
 orbfile = "S1B_OPER_AUX_POEORB_OPOD_20180825T110641_V20180804T225942_20180806T005942.EOF"
+orbfile = "S1A_OPER_AUX_POEORB_OPOD_20211114T122414_V20211024T225942_20211026T005942.EOF"
 
 #%% Load the data
 purpose = """
@@ -48,7 +49,7 @@ parser.add_argument("--index",
                     help="""Index into the state vector array to use as
                             a point of expansion""",
                     type=int,
-                    default=300)
+                    default=2102)
 parser.add_argument("--state-fs",
                     help="Sampling frequency of the propagated state vectors (Hz)",
                     type=float,
@@ -56,7 +57,7 @@ parser.add_argument("--state-fs",
 parser.add_argument("--period",
                     help="Time duration over which to propagate vectors (s)",
                     type=float,
-                    default=60.0)
+                    default=12000.0)
 parser.add_argument("--depression-angle",
                     help="""The depression angle to use for projection of 
                             error onto line-of-sight (in degrees)""",
@@ -120,7 +121,12 @@ print("lat,lon,R: (%0.4f, %0.4f, %0.1f)" % llh)
 #%% Compute the integration times and integrate
 half_time = deltaT*nSamples/2
 integration_times = np.arange(-half_time, half_time+deltaT, deltaT)
-numerical_sv = myrd.estimateTimeRange(myrd.measurementTime, integrationTimes=integration_times)
+#myrd.planet.set_nbody(reference_time, ["Sun", "Moon"])
+#myrd.planet.set_nbody(reference_time, ["Sun"])
+numerical_sv = myrd.estimateTimeRange(myrd.measurementTime, 
+                                      integrationTimes=integration_times,
+                                      atol = 1e-7,
+                                      rtol = 1e-7)
 
 #%% Extract what we'll need
 npos = numerical_sv[:,0:3].T
@@ -165,6 +171,9 @@ else:
     plt.ylabel('difference (m)')
     plt.legend(['ECEF-X','ECEF-Y','ECEF-Z'])
     plt.title('Difference between integration and expansion')
+
+# This for testing purposes
+plt.ylim([-40,40])
 
 fname = ".".join([fname_head + "_%d_error" % vv.index,
                   fname_tail])
