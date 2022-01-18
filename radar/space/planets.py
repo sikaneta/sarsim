@@ -49,6 +49,7 @@ class solar_planet:
     sphericalHarmonicsFile = os.path.join(harmonicsPath , "egm96.txt")
     
     def __init__(self):
+        self.e = np.sqrt(1 - (self.b/self.a)**2)
         self.nbody = {"name": [],
                       "GM": [],
                       "position": np.array([])}

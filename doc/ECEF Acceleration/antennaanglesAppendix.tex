@@ -14,7 +14,7 @@ Since $\vct{T}_0$ is perpendicular to $\rangeVectorParmZero$, one immediately fi
 and
 \begin{equation}
 \begin{split}
- \targetnoparm &= \sat(\parm_0) + (\targetxparm - \parm_0)\vct{T}_0 + \frac{(\targetxparm - \parm_0)^2}{2}\kappa_0\vct{N}_0 + \frac{(\targetxparm - \parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + \dot{\kappa}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\\ 
+ \targetnoparm &= \sat(\parm_0) + (\targetxparm - \parm_0)\vct{T}_0 + \frac{(\targetxparm - \parm_0)^2}{2}\kappa_0\vct{N}_0 + \frac{(\targetxparm - \parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + {\kappa'}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]\\ 
  &+ \targetrange\cos\targetdepression\left[\vct{N}_0 + (\targetxparm - \parm_0)\biggl(-\kappa_0\vct{T}_0 + \tau_0\vct{B}_0\biggr)\right] + \targetrange\sin\targetdepression\left[\vct{B}_0 + (\targetxparm - \parm_0)\biggl(- \tau_0\vct{N}_0\biggr)\right]
  \label{eq:ptarget}
  \end{split}
@@ -40,7 +40,7 @@ By combining equations \eqref{eq:pzero}, \eqref{eq:ptarget} and \eqref{eq:rperp}
 and
 \begin{equation}
 \begin{split}
-  \uRangeVectorParmZeroPerp\cdot(\targetnoparm-\targetnoparmzero)&\approx\frac{1}{6}(\targetxparm-\parm_0)^3[\kappa_0\tau_0\cos\targetdepressionz - \dot{\kappa}_0\sin\targetdepressionz]+\frac{1}{2}\kappa(\targetxparm-\parm_0)^2\sin\targetdepressionz\\
+  \uRangeVectorParmZeroPerp\cdot(\targetnoparm-\targetnoparmzero)&\approx\frac{1}{6}(\targetxparm-\parm_0)^3[\kappa_0\tau_0\cos\targetdepressionz - {\kappa'}_0\sin\targetdepressionz]+\frac{1}{2}\kappa(\targetxparm-\parm_0)^2\sin\targetdepressionz\\
   &- (\targetxparm-\parm_0)\targetrange\tau_0\cos(\targetdepression-\targetdepressionz) -\targetrange\sin(\targetdepression-\targetdepressionz)
  \end{split}
 \end{equation}
@@ -80,7 +80,7 @@ and
  &- \tau_0(\parm-\parm_0)[\cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)]
 \end{split}
 \end{equation} 
-In summary, and with only the non-negligeable terms retained (for the Sentinel-1 orbit examined in this document, $\kappa_0$ and $\tau_0$ take on values of approximately $10^{-7}$, $10^{-8}$, repectively which means that they can be considered negligeable over over a scene of several hundred kilometers in $\parm$), one finds that
+In summary, and with only the non-negligible terms retained (for the Sentinel-1 orbit examined in this document, $\kappa_0$ and $\tau_0$ take on values of approximately $10^{-7}$, $10^{-8}$, repectively which means that they can be considered negligible over over a scene of several hundred kilometers in $\parm$), one finds that
 \begin{align}
  \vhat{\range}(\stationaryparm)\cdot\vct{T}(\stationaryparm) &= -\kparm/\kr\label{eq:ender}\\
  \vhat{\range}(\stationaryparm)\cdot\vct{N}(\stationaryparm) &= \cos\targetdepressionz + \frac{\targetrange}{\targetrangez}\sin\targetdepressionz\sin(\targetdepression-\targetdepressionz)\label{eq:cos}\\

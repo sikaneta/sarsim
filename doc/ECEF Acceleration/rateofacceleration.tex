@@ -2,7 +2,7 @@
 \label{an:rateacc}
 This subsection computes the rate of change of acceleration of a satellite in an intertial Earth-Centered coordinate system. Further, because the egm96 gravitational potential, \eqref{eq:egm96model}, is defined using spherical-polar coordinates, this subsection also demonstrates how to convert the gradient of this potential into a Cartesian representation. The ECEF rate of change of acceleration is then given by the derivative of this acceleration with respect to time and one then acquires the ECEF equations of motion by substituting the two computed quantities into \eqref{eq:inertialddot} and \eqref{eq:inertialdddot}.
 \par
-The gravitational potential, $U(r,\phi,\lambda)$, is defined in \eqref{eq:egm96model}, and the gradient of this quantity defines the gravitational acceleration. We convert the gradient in spherical-polar coordinates to a graident in Cartesian coordinates, $x,y,z$, through
+The gravitational potential, $U(r,\phi,\lambda)$, is defined in \eqref{eq:egm96model}, and the gradient of this quantity defines the gravitational acceleration. We convert the gradient in spherical-polar coordinates to a gradient in Cartesian coordinates, $x,y,z$, through
 \begin{equation}
 \begin{split}
  \ddot{\vct{x}}_i(t) &= \del_{x,y,z}U = 

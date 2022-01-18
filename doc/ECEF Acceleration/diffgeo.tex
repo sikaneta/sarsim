@@ -1,14 +1,21 @@
 \section{Differential geometry of curves in 3D}
 \label{sc:diffgeoreview}
-This section reviews material abundant in published literature; for instance, see \url{http://homepages.math.uic.edu/~jwood/analysis/Curvegeomrev.pdf} for a highly recommended introduction. While the material presented is complete for understanding the application to SAR imaging, it represents only a small tip of the theory and is by no means original - even common differential geometry notation has been maintained.
+This section reviews material abundant in published literature; for instance, see \cite{WoodDiffGeo} for a highly recommended introduction. While the material presented is complete for understanding the application to SAR imaging, it represents only a small tip of the theory and is by no means original - even common differential geometry notation has been maintained.
 \par
 In this short section all the required tools to develop the SAR satellite signal model are presented.
 \par
-For a curve in three dimensions given by $\sats(\parm)$, the tangent vector is given by $\vct{T}(\parm) = \sats'(\parm)$. Because of the arclength parameterisation, $\vct{T}(\parm)$ is a unit vector and $\vct{T}(\parm)\cdot\vct{T}'(\parm)=0$. The \textbf{curvature} is defined as $\kappa(\parm) =\lvert\vct{T}'(\parm)\rvert$. Define the unit vector 
+For a curve in three dimensions given by $\sats(\parm)$, the tangent vector is given by $\vct{T}(\parm) = \sats'(\parm)$, where $\cdot'$ denotes derivative with respect to $\parm$. Because of the arclength parameterisation, $\vct{T}(\parm)$ is a unit vector and $\vct{T}(\parm)\cdot\vct{T}'(\parm)=0$. The \textbf{curvature} is defined as $\kappa(\parm) =\lvert\vct{T}'(\parm)\rvert$. Define the unit vector 
 \begin{equation}
 \vct{N}(\parm) = \vct{T}'(\parm)/\kappa(\parm). 
 \end{equation}
-The binormal vector $\vct{B}(\parm)$ is defined as $\vct{B}(\parm) = \vct{T}(\parm)\times\vct{N}(\parm)$. The vectors $\vct{T}(\parm), \vct{N}(\parm), \vct{B}(\parm)$ form an orthonormal basis.
+The binormal vector $\vct{B}(\parm)$ is defined as $\vct{B}(\parm) = \vct{T}(\parm)\times\vct{N}(\parm)$. The vectors $\vct{T}(\parm), \vct{N}(\parm), \vct{B}(\parm)$ form an orthonormal basis, see \fgref{fg:diffvectors}
+\begin{figure}[ht!]
+    \begin{center}
+    \resizebox{0.8\textwidth}{!}{\input{diffvectors.pdf_tex}}
+	\caption{Illustration of differential geometry vectors}
+	\label{fg:diffvectors}
+	\end{center}
+\end{figure}
 \par
 Since $\vct{T}(\parm)\cdot\vct{N}(\parm)=0$,
 \begin{equation}
@@ -17,7 +24,7 @@ Since $\vct{T}(\parm)\cdot\vct{N}(\parm)=0$,
  &=-\kappa(\parm)
 \end{split}
 \end{equation}
-Define the \textbf{torsion} as $\tau(\parm) = \vct{N}'(\parm)\cdot\vct{B}(\parm)$. Then, by multiplying $\vct{N}'(\parm)=a_T\vct{T}(\parm) + a_N\vct{N}(\parm) + a_B\vct{B}(\parm)$ successively by $\vct{T}(\parm),\vct{N}(\parm),\vct{B}(\parm)$, one finds that
+Define the \textbf{torsion} as $\tau(\parm) = \vct{N}'(\parm)\cdot\vct{B}(\parm)$. Then, by multiplying $\vct{N}'(\parm)=a_T\vct{T}(\parm) + a_N\vct{N}(\parm) + a_B\vct{B}(\parm)$\footnote{since $\vct{T}(\parm), \vct{N}(\parm), \vct{B}(\parm)$ form an orthonormal basis, we can write $\vct{N}'(\parm)$ as a linear combination with parameters $a_T, a_N, a_B$} successively by $\vct{T}(\parm),\vct{N}(\parm),\vct{B}(\parm)$, one finds that
 \begin{equation}
  \vct{N}'(\parm) = -\kappa(\parm)\vct{T}(\parm)+\tau(\parm)\vct{B}(\parm)
 \end{equation}
@@ -34,9 +41,9 @@ The previous few expressions lead to the Frenet-Serret equation
  \begin{bmatrix}\vct{T}'(\parm)\\\vct{N}'(\parm)\\\vct{B}'(\parm)\end{bmatrix}
  =
  \begin{bmatrix}
-  &\kappa(\parm)&\\
-  -\kappa(\parm)&&\tau(\parm)\\
-  &-\tau(\parm)&
+  0 &\kappa(\parm)& 0\\
+  -\kappa(\parm)& 0 &\tau(\parm)\\
+  0 &-\tau(\parm)& 0
  \end{bmatrix}
  \begin{bmatrix}\vct{T}(\parm)\\\vct{N}(\parm)\\\vct{B}(\parm)\end{bmatrix}.
  \label{eq:FrenetSerret}
@@ -52,18 +59,18 @@ One observes that
  &= \kappa'(\parm)\vct{N}(\parm) -\kappa^2(\parm)\vct{T}(\parm)+\kappa(\parm)\tau(\parm)\vct{B}(\parm)
 \end{split}
 \end{equation}
-Thus, a third order polynomial approximation to the satellite orbit can be expressed as
+Thus, a third order polynomial approximation to the satellite orbit around the point $\parm_0$, which we denote as $\satp(\parm)$, can be expressed as
 \begin{equation}
 \begin{split}
  \sats(\parm)&\approx\satp(\parm) = \sats(\parm_0) + (s-\parm_0)\vct{T}(\parm_0) + \frac{(s-\parm_0)^2}{2!}\kappa(\parm_0)\vct{N}(\parm_0)\\
  &+ \frac{(s-\parm_0)^3}{3!}[\kappa'(\parm_0)\vct{N}(\parm_0) -\kappa^2(\parm_0)\vct{T}(\parm_0)+\kappa(\parm_0)\tau(\parm_0)\vct{B}(\parm_0)]
 \end{split}
 \end{equation}
-To make the notation more compact, we introduce $\vct{T}_0$, $\vct{N}_0$, $\vct{B}_0$, $\kappa_0$, $\dot{\kappa}_0$, $\tau_0$ as all the respective functions evaluated at some suitably chosen $\parm_0$.
+To make the notation more compact, we introduce $\vct{T}_0$, $\vct{N}_0$, $\vct{B}_0$, $\kappa_0$, ${\kappa'}_0$, $\tau_0$ as all the respective functions evaluated at some suitably chosen $\parm_0$.
 \begin{equation}
 \begin{split}
  \satp(\parm) &= \sats(\parm_0) + (\parm-\parm_0)\vct{T}_0 +  \frac{(\parm-\parm_0)^2}{2}\kappa_0\vct{N}_0\\
- &+ \frac{(\parm-\parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + \dot{\kappa}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]
+ &+ \frac{(\parm-\parm_0)^3}{6}[-\kappa^2_0\vct{T}_0 + {\kappa'}_0\vct{N}_0 + \kappa_0\tau_0\vct{B}_0]
  \end{split}
  \label{eq:diffgeoeqn}
 \end{equation}

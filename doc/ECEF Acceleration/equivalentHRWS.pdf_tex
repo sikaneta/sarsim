@@ -1,4 +1,4 @@
-%% Creator: Inkscape 1.1 (c68e22c387, 2021-05-23), www.inkscape.org
+%% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'equivalentHRWS.pdf' (pdf, eps, ps)
 %%
@@ -35,10 +35,8 @@
     \renewcommand\transparent[1]{}%
   }%
   \providecommand\rotatebox[2]{#2}%
-  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
-  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{1346.95276383bp}%
+    \setlength{\unitlength}{1344.68183427bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,18 +48,16 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.32937207)%
-    \lineheight{1}%
-    \setlength\tabcolsep{0pt}%
+  \begin{picture}(1,0.32992832)%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{equivalentHRWS.pdf}}%
-    \put(0.87522549,0.32291012){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge Along-track position}\end{tabular}}}}%
-    \put(0.00646195,0.0028683){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge Slow time}\end{tabular}}}}}%
+    \put(0.8767036,0.32345546){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge Along-track position}}}}%
+    \put(0.00647286,0.00287315){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lb]{\smash{{\Huge Slow time}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{equivalentHRWS.pdf}}%
-    \put(0.08300884,0.10484783){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\frac{1}{\prfEffective}=\frac{\channelM\resxDesired}{\satv}$}\end{tabular}}}}%
+    \put(0.08314903,0.1050249){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\frac{1}{\prfEffective}$}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{equivalentHRWS.pdf}}%
-    \put(0.25803977,0.09982079){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\phaseSep=\resxDesired$}\end{tabular}}}}%
+    \put(0.25847556,0.09998937){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\phaseSep$}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{equivalentHRWS.pdf}}%
-    \put(0.21674026,0.173351){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\threeDBDesired$}\end{tabular}}}}%
+    \put(0.2171063,0.17364376){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\threeDBDesired$}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{equivalentHRWS.pdf}}%
   \end{picture}%
 \endgroup%

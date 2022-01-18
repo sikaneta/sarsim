@@ -166,7 +166,6 @@
 \newcommand{\nadAngle}{\ensuremath{\phi_0}}
 \newcommand{\numberChannels}{\ensuremath{N_c}}
 \newcommand{\channelM}{\ensuremath{M}}
-\newcommand{\myChannelM}{\channelM}
 \newcommand{\uX}[1]{\ensuremath{\vct{\hat{x}}(#1)}}
 \newcommand{\uY}[1]{\ensuremath{\vct{\hat{y}}(#1)}}
 \newcommand{\uZ}[1]{\ensuremath{\vct{\hat{z}}(#1)}}
@@ -265,7 +264,7 @@
 %\newcommand{\satparm}{\ensuremath{\vct{c}(s)}}
 %\newcommand{\target}{\ensuremath{\vct{P}}}
 \newcommand\Index[1]{#1}
-\newcommand{\gls}[1]{#1}
+%\newcommand{\gls}[1]{#1}
 
 \newcommand{\prf}{\ensuremath{f_p}}
 \newcommand{\antennaLength}{\ensuremath{L}}
@@ -309,14 +308,14 @@
 % \newcommand{\ishfix}[3]{{\textcolor{cyan}{#1}}{\tiny\textcolor{magenta}{#2}}{\scshape\small\textcolor{red}{#3}}}
 \newcommand{\ishfix}[3]{#1}
 \newcommand{\figref}[1]{\figurename~\ref{#1}}
-%\newtheorem{theorem}{Theorem}[section]
-%\newtheorem{corollary}{Corollary}[section]
-%\newtheorem{lemma}{Lemma}[section]
-%\newtheorem{question}{Question}[section]
-%\newtheorem{Definition}{Definition}[section]
-\newcommand{\figD}{\ensuremath{\phaseSep=\myChannelM\resxDesired=11\resxDesired}}
-\newcommand{\figL}{\ensuremath{\antennaLengthEffective=2\myChannelM\resxDesired=22\resxDesired}}
-\newcommand{\figWL}{\ensuremath{\antennaLength=2\myChannelM^2\resxDesired=242\resxDesired}}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{question}{Question}[section]
+\newtheorem{Definition}{Definition}[section]
+\newcommand{\figD}{\ensuremath{\phaseSep=M\resxDesired=11\resxDesired}}
+\newcommand{\figL}{\ensuremath{\antennaLengthEffective=2M\resxDesired=22\resxDesired}}
+\newcommand{\figWL}{\ensuremath{\antennaLength=2M^2\resxDesired=242\resxDesired}}
 \newcommand{\carrier}{\ensuremath{f_0}}
 \newcommand{\SNR}{\ensuremath{\text{SNR}}}
 \newcommand{\crossSection}{\ensuremath{\sigma_0}}

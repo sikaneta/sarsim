@@ -74,12 +74,6 @@ class measurement:
             return np.argmin(np.abs(d_array))
         
         return 0
-
-class attitude_vector(measurement):
-    def estimate(self, dtime):
-        minK = self.findNearest(dtime)
-        y = self.measurementData[minK]
-        return y
     
 class state_vector(measurement):
     """

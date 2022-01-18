@@ -121,12 +121,10 @@ print("lat,lon,R: (%0.4f, %0.4f, %0.1f)" % llh)
 #%% Compute the integration times and integrate
 half_time = deltaT*nSamples/2
 integration_times = np.arange(-half_time, half_time+deltaT, deltaT)
-#myrd.planet.set_nbody(reference_time, ["Sun", "Moon"])
+myrd.planet.set_nbody(reference_time, ["Sun", "Moon"])
 #myrd.planet.set_nbody(reference_time, ["Sun"])
 numerical_sv = myrd.estimateTimeRange(myrd.measurementTime, 
-                                      integrationTimes=integration_times,
-                                      atol = 1e-7,
-                                      rtol = 1e-7)
+                                      integrationTimes=integration_times)
 
 #%% Extract what we'll need
 npos = numerical_sv[:,0:3].T

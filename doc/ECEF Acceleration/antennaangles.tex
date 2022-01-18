@@ -91,10 +91,10 @@ where
 \end{minipage}
 }
 \end{center}
-In the above, $\sqrt{\ddot\Phi(\stationaryparm)}$ and $\sqrt{2\pi\im}$ have been omitted because the first only varies slowly over the parameters while the second is a constant. Also $\amplitude\range^2(\stationaryparm[\kr,\kparm])$ is approximated with $\amplitude\range^2$. With the signal as written, one sees that the elevation gain pattern and the inverse range relationship simply modulate the reflectivity (through the radar equation) according to the geometry.
+In the above, $\sqrt{\ddot\Phi(\stationaryparm)}$ and $\sqrt{2\pi\im}$ have been omitted because the first only varies slowly over the parameters while the second is a constant. Also $\amplitude\range^2(\stationaryparm[\kr,\kparm])$ is approximated with $\amplitude\range^2$ because it is assumed that this weighting of the spectrum with range does not vary significantly. With the signal as written, one sees that the elevation gain pattern and the inverse range relationship simply modulate the reflectivity (through the radar equation) according to the geometry.
 \subsection{Modified Stolz interpolation}
 \label{sc:modifiedStolz}
-If the signal has been sampled adequately and is evaluated a a set of different points given by
+If the signal has been sampled adequately and is evaluated at a set of different points given by
 \begin{equation}
 \begin{split}
  \krstolt &= \kr\sec\thetas - \kparm\frac{\tan\thetas}{\gfunc[\myparm(\xang)]} = \stolt(\kr,\kparm)\\
@@ -123,4 +123,4 @@ An adequately-sampled SAR signal, with the modified Stolz interpolation scheme o
 \par
 The proposed numerical Stolz interpolation can be challenging to implement. For this reason, \anref{an:stolz} outlines the particular implementation of the numerical approach adopted in this work. 
 \par
-We have repeatedly stated that the above approach only works if the signal has been adequately sampled. In the case of a multichannel configuration where the channels are deliberately undersampled, an unambiguous signal must first be reconstructed; only then can the Wavenumber processing algorithm be implemented. Reconstruction of such a signal from undersampled channels is the task of \scref{sc:hrws}.
+We have repeatedly stated that the above approach only works if the signal has been adequately sampled. In the case of a multichannel configuration where the channels are deliberately undersampled, because of a desire to implement a \gls{hrws} configuration, an unambiguous signal must first be reconstructed; only then can the Wavenumber processing algorithm be implemented. Reconstruction of such a signal from undersampled channels is the task of \scref{sc:hrws}.

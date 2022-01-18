@@ -1,4 +1,4 @@
-%% Creator: Inkscape 1.1 (c68e22c387, 2021-05-23), www.inkscape.org
+%% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'fivechan.pdf' (pdf, eps, ps)
 %%
@@ -35,10 +35,8 @@
     \renewcommand\transparent[1]{}%
   }%
   \providecommand\rotatebox[2]{#2}%
-  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
-  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{737.86535662bp}%
+    \setlength{\unitlength}{737.86536381bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,24 +48,22 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.95427237)%
-    \lineheight{1}%
-    \setlength\tabcolsep{0pt}%
+  \begin{picture}(1,0.95429511)%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{fivechan.pdf}}%
-    \put(0.74600613,0.94247627){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge Along-track position}\end{tabular}}}}%
-    \put(0.0117961,0.07852873){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge Slow time}\end{tabular}}}}}%
+    \put(0.74600613,0.942499){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge Along-track position}}}}%
+    \put(0.01179611,0.07855147){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lb]{\smash{{\Huge Slow time}}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{fivechan.pdf}}%
-    \put(0.07240927,0.23208319){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge Cycle repetition time}\end{tabular}}}}}%
-    \put(0.21425962,0.25627063){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\frac{1}{\prfEffective}=\frac{\channelM\resxDesired}{\satv}$}\end{tabular}}}}%
+    \put(0.07240928,0.23210594){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lb]{\smash{{\Huge Cycle repetition time}}}}}%
+    \put(0.21425962,0.25629338){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\frac{1}{\prfEffective}$}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{fivechan.pdf}}%
-    \put(0.18382777,0.45299363){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\phaseSep=\channelM\resxDesired$}\end{tabular}}}}%
+    \put(0.18382778,0.45301638){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\phaseSep$}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{fivechan.pdf}}%
-    \put(0.54270316,0.76616584){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\huge Five different antennas}\end{tabular}}}}%
-    \put(0.54281694,0.74851804){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\huge measure from each}\end{tabular}}}}%
-    \put(0.54329445,0.72931763){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\huge along-track position}\end{tabular}}}}%
+    \put(0.54270316,0.76618858){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\huge Five different antennas}}}}%
+    \put(0.54281694,0.74854078){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\huge measure from each}}}}%
+    \put(0.54329446,0.72934036){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\huge along-track position}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{fivechan.pdf}}%
-    \put(0.54542281,0.12756284){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\mathbf\sum$}\end{tabular}}}}%
+    \put(0.54542281,0.12758559){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\mathbf\sum$}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{fivechan.pdf}}%
-    \put(0.43602016,0.00320678){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}{\Huge $\threeDBDesired$}\end{tabular}}}}%
+    \put(0.43602016,0.00322953){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{{\Huge $\threeDBDesired$}}}}%
   \end{picture}%
 \endgroup%

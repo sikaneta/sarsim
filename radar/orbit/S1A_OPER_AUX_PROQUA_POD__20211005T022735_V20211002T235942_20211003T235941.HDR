@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Earth_Explorer_Header>
+  <Fixed_Header>
+    <File_Name>S1A_OPER_AUX_PROQUA_POD__20211005T022735_V20211002T235942_20211003T235941</File_Name>
+    <File_Description>Quaternions Operational File</File_Description>
+    <Notes></Notes>
+    <Mission>Sentinel-1A</Mission>
+    <File_Class>OPER</File_Class>
+    <File_Type>AUX_PROQUA</File_Type>
+    <Validity_Period>
+      <Validity_Start>UTC=2021-10-02T23:59:42</Validity_Start>
+      <Validity_Stop>UTC=2021-10-03T23:59:41</Validity_Stop>
+    </Validity_Period>
+    <File_Version>0001</File_Version>
+    <Source>
+      <System>POD_</System>
+      <Creator>POD_</Creator>
+      <Creator_Version>1.11.3</Creator_Version>
+      <Creation_Date>UTC=2021-10-05T02:27:35</Creation_Date>
+    </Source>
+  </Fixed_Header>
+  <Variable_Header>
+    <SPH_Descriptor>Quaternions File</SPH_Descriptor>
+    <Validity_Start>GPS=2021-10-03T00:00:00</Validity_Start>
+    <Validity_Stop>GPS=2021-10-03T23:59:59</Validity_Stop>
+  </Variable_Header>
+</Earth_Explorer_Header>

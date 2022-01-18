@@ -23,112 +23,110 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{Acknowledgements}{ix}{section*.8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1}A proposal for very high resolution SAR}{1}{section.1}%
+\contentsline {section}{\numberline {1}Proposal for very high resolution \gls {sar}}{1}{section.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.1}Positive apects of the proposed approach}{1}{subsection.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2}Negative aspects of the proposed approach}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.2}Negative aspects of the proposed approach}{3}{subsection.1.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2}Notation}{3}{section.2}%
+\contentsline {section}{\numberline {2}Notation}{4}{section.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Multi-channel design and configuration}{4}{section.3}%
+\contentsline {section}{\numberline {3}Multi-channel design and configuration}{5}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}System design size}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}System design size}{5}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.2}Traditional HRWS configuration and design}{7}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {4}Transmit antenna}{8}{section.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}A closer look at SAR from an orbiting satellite}{8}{section.5}%
+\contentsline {section}{\numberline {5}A closer look at SAR from an orbiting satellite}{9}{section.5}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.1}A closer examination of locally circular orbits}{9}{subsection.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.2}Non-linearity between arclength and time}{11}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.2}Non-linearity between arclength and time}{13}{subsection.5.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {5.3}Arclength parameterization approach}{13}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.3}Arclength parameterization approach}{15}{subsection.5.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Differential geometry of curves in 3D}{14}{section.6}%
+\contentsline {section}{\numberline {6}Differential geometry of curves in 3D}{16}{section.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.1}Calculation of differential geometry parameters from position, velocity and acceleration}{15}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.1}Calculation of differential geometry parameters from position, velocity and acceleration}{18}{subsection.6.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.2}Slow-time curve parameters, state vectors and the geoid model}{16}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.2}Slow-time curve parameters, state vectors and the geoid model}{19}{subsection.6.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {6.2.1}State vectors}{16}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.1}State vectors}{19}{subsubsection.6.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {6.2.2}Geopotential model}{16}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.2}Geopotential model}{19}{subsubsection.6.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.3}Demonstration of accuracy of the model}{19}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.3}Demonstration of accuracy of the model}{20}{subsection.6.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Arclength-paremterized range function}{27}{section.7}%
+\contentsline {section}{\numberline {7}Arclength-parameterized range function}{29}{section.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.1}Error in the range function}{28}{subsection.7.1}%
+\contentsline {section}{\numberline {8}The SAR signal in arclength space}{30}{section.8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {8}The SAR signal in arclength space}{28}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Scene measurement through multiple antenna patterns}{31}{subsection.8.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {8.1}Scene measurement through multiple antenna patterns}{29}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Demodulation}{33}{subsection.8.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {8.2}Demodulation}{31}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Stationary phase approximation}{34}{subsection.8.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {8.2.1}Range error compensation}{31}{subsubsection.8.2.1}%
+\contentsline {section}{\numberline {9}Stationary phase}{34}{section.9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {8.3}Stationary phase approximation}{32}{subsection.8.3}%
+\contentsline {subsection}{\numberline {9.1}Relation between arclength and wavenumber}{36}{subsection.9.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {9}Stationary phase}{32}{section.9}%
+\contentsline {subsection}{\numberline {9.2}Antenna pattern angles}{37}{subsection.9.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {9.1}Relation between arclength and wavenumber}{34}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.3}The 2-D wavenumber signal}{38}{subsection.9.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {9.2}Antenna pattern angles}{35}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.4}Modified Stolz interpolation}{39}{subsection.9.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {9.3}The 2-D wavenumber signal}{36}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Multichannel signal processing for high resolution}{40}{section.10}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {9.4}Modified Stolz interpolation}{37}{subsection.9.4}%
+\contentsline {section}{\numberline {11}Multi-channel SAR processing}{41}{section.11}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {10}Multichannel signal processing for high resolution}{38}{section.10}%
+\contentsline {subsection}{\numberline {11.1}Linear filtering to extract signal components}{41}{subsection.11.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {11}Multi-channel SAR processing}{39}{section.11}%
+\contentsline {subsection}{\numberline {11.2}Matrix-vector model for the aliased signal}{41}{subsection.11.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {11.1}Linear filtering to extract signal components}{39}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.3}A cost function for HRWS processing}{42}{subsection.11.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {11.2}Matrix-vector model for the aliased signal}{39}{subsection.11.2}%
+\contentsline {subsubsection}{\numberline {11.3.1}Amplified additive noise}{43}{subsubsection.11.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {11.3}A cost function for HRWS processing}{40}{subsection.11.3}%
+\contentsline {subsubsection}{\numberline {11.3.2}Blended cost function}{43}{subsubsection.11.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {11.3.1}Amplified additive noise}{41}{subsubsection.11.3.1}%
+\contentsline {subsection}{\numberline {11.4}Section summary}{43}{subsection.11.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {11.3.2}Blended cost function}{41}{subsubsection.11.3.2}%
+\contentsline {section}{\numberline {12}Simulated multi-channel signal}{44}{section.12}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {11.4}Section summary}{41}{subsection.11.4}%
+\contentsline {subsection}{\numberline {12.1}Generation of the raw signals}{44}{subsection.12.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {12}Simulated multi-channel signal}{42}{section.12}%
+\contentsline {subsection}{\numberline {12.2}Multi-channel processing}{47}{subsection.12.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {12.1}Generation of the raw signals}{42}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.3}Azimuth compression}{49}{subsection.12.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {12.2}Multichannel processing}{45}{subsection.12.2}%
+\contentsline {subsubsection}{\numberline {12.3.1}Residual phase correction}{51}{subsubsection.12.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {12.3}Azimuth compression}{47}{subsection.12.3}%
+\contentsline {subsubsection}{\numberline {12.3.2}Signal-to-noise ratio}{52}{subsubsection.12.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {12.3.1}Residual phase correction}{49}{subsubsection.12.3.1}%
+\contentsline {section}{\numberline {13}Conclusion}{56}{section.13}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {12.3.2}Signal to noise ratio}{50}{subsubsection.12.3.2}%
+\contentsline {section}{References}{57}{section*.43}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {13}Conclusion}{54}{section.13}%
+\contentsline {annex}{\numberline {A}Derivative of unit vectors}{61}{annex.A}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{55}{section*.40}%
+\contentsline {annex}{\numberline {B}ECEF acceleration}{62}{annex.B}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {A}Derivative of unit vectors}{57}{annex.A}%
+\contentsline {subannex}{\numberline {B.1}ECEF equations of motion}{63}{subannex.B.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {B}ECEF acceleration}{58}{annex.B}%
+\contentsline {subannex}{\numberline {B.2}Rate of change of acceleration}{64}{subannex.B.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subannex}{\numberline {B.1}ECEF equations of motion}{59}{subannex.B.1}%
+\contentsline {annex}{\numberline {C}Derivation of the arclength-parameterized range function}{66}{annex.C}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subannex}{\numberline {B.2}Rate of change of acceleration}{60}{subannex.B.2}%
+\contentsline {annex}{\numberline {D}Iteration to the stationary point}{69}{annex.D}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {C}Derivation of the arclength-paremterized range function}{62}{annex.C}%
+\contentsline {annex}{\numberline {E}Numerical implementation of the Stolz interpolation}{71}{annex.E}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {D}Numerical implementation of the Stolz interpolation}{64}{annex.D}%
+\contentsline {subannex}{\numberline {E.1}Simplification for iterative root-finding}{71}{subannex.E.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subannex}{\numberline {D.1}Simplification for iterative root-finding}{64}{subannex.D.1}%
+\contentsline {annex}{\numberline {F}MIMO configuration}{73}{annex.F}%
 \defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {E}MIMO configuration}{66}{annex.E}%
-\defcounter {refsection}{0}\relax 
-\contentsline {annex}{\numberline {F}Antenna pattern angles}{69}{annex.F}%
+\contentsline {annex}{\numberline {G}Antenna pattern angles}{76}{annex.G}%

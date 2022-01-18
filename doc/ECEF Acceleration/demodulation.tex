@@ -1,5 +1,5 @@
 \subsection{Demodulation}
-If the return signal is mixed with $\eex{-\im\omega_0\fasttime}$, and if filters are applied to remove unwanted images, one obtains the \Index{demodulated signal}
+If the return signal is mixed with $\eex{-\im\omega_0\fasttime}$, and if filters are applied to remove unwanted frequency bands, one obtains the \Index{demodulated signal}
 \begin{equation}
 \begin{split}
  \stst{\channelIndex}(\fasttime,\parm)\rightarrow \stst{\channelIndex}(\fasttime,\parm)&=\int\pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)}{\amplitude\range^2(\parm, \targetnoparm)}\\&\cdot\envelope\left(\fasttime-2\frac{\amplitude\range(\parm, \targetnoparm)+\rangeErrorZero(\parm)}{c}\right)
@@ -7,7 +7,7 @@ If the return signal is mixed with $\eex{-\im\omega_0\fasttime}$, and if filters
  \label{eq:fasttime1}
  \end{split}
 \end{equation}
-The fast-time \Index{\gls{FT}} of $\stst{\channelIndex}(\fasttime,\parm)$ may be computed as
+The fast-time \Index{\gls{ft}} of $\stst{\channelIndex}(\fasttime,\parm)$ may be computed as
 \begin{equation}
 \begin{split}
  \Sfst{\channelIndex}(\omega,\parm) &= 	\Envelope(\omega)\int\eex{-\im\frac{2[\omega+\omega_0]}{c}[\amplitude\range(\parm, \targetnoparm)+\rangeErrorZero(\parm)]}\pattern{\channelIndex}[\kr, \uRangeVectorParm, \pAntennaParm{\channelIndex}]\frac{\reflectivity(\vct\target)}{\amplitude\range^2(\parm, \targetnoparm)}\d\vct\target
@@ -27,9 +27,9 @@ Recall that $\kr=\frac{2(\omega+\omega_0)}{c}$, and define $\krc = \frac{2\omega
 }
 \end{center}
 where $\Snvelope(\krc) = \lvert\Envelope(c\krc/2)\rvert$ and the absolute value has been computed by multiplying by the known conjugate phase of $\Envelope(\cdot)$. Indeed, range or \Index{pulse compression} is achieved through multiplication by the conjugate phase. For instance, if the pulse is a chirp, then it is at this point that the chirp phase is removed.
-\subsubsection{Range error compensation}
+\subsubsection*{Range error compensation}
 \label{sc:phaseCompensation}
-One can compensate for the range error term througgh multiplication by $\eex{\im\kr\rangeErrorZero(\parm)}$. This operation simply accounts for the time delay between the ideal path and the real path of the satellite.
+One can compensate for the range error term through multiplication by $\eex{\im\kr\rangeErrorZero(\parm)}$. This operation simply accounts for the time delay between the ideal path and the real path of the satellite.
 \par
 A simplification is possible in the case of small range errors. In this case, assume that \eqref{eq:Skst1} is multiplied by $\eex{\im\krnaught\rangeErrorZero(\parm)}$. This leads to a leading term given by $\Snvelope(\krc)\eex{-\im\krc\rangeErrorZero(\parm)}$ which can be interpreted as a shift of the pulse compressed signal by $\rangeErrorZero(\parm)$ at each point $\parm$. 
 \par

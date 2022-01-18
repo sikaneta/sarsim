@@ -9,9 +9,13 @@ Since
 In the above and in the expressions below, the equation on the left, a function of $\parm$ is related to an expression on the right, a function of $t$, under the relation that $t$ is a function of $\parm$, i.e. $t = t(\parm)$.
 The tangent vector, $\vct{T}(\parm)$, is just the unit velocity vector. With $k(\parm) = \lvert \vct{T}'(\parm)\rvert$, and with the aid of \anref{an:vectorCalc}, one computes
 \begin{equation}
- \frac{\d{\vct{T}(\parm)}}{\d{\parm}} = \frac{1}{\lvert\dx(t)\rvert}\frac{\d{\hat\dx(t)}}{\d{t}} = \frac{\mtx{P}_{\dx(t)}\ddx(t)}{\lvert\dx(t)\rvert^2}
+ \frac{\d{\vct{T}(\parm)}}{\d{\parm}} = \frac{1}{\lvert\dx(t)\rvert}\frac{\d{\hat\dx(t)}}{\d{t}} = \frac{\mtx{P}_{\dx(t)}\ddx(t)}{\lvert\dx(t)\rvert^2},
 \end{equation}
-so that
+where the projection operator, which computes the component of a vector that is perpendifuclar to $\vct{f}$, is defined as
+\begin{equation}
+ \mtx{P}_\vct{f} = \mtx{I} - \hat{\vct{f}}\vct{\hat{f}}^T.
+\end{equation}
+One finds that
 \begin{equation}
  k(\parm) = \frac{\lvert\mtx{P}_{\dx(t)}\ddx(t)\rvert}{\lvert\dx(t)\rvert^2}.
 \end{equation}

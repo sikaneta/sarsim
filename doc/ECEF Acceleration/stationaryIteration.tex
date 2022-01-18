@@ -1,0 +1,43 @@
+\section{Iteration to the stationary point}
+\label{sc:stationaryIteration}
+This section illustrates convergence of the procedure of \eqref{eq:Sdefinition}. Recall that the requirement is to compute $\parm$ from
+\begin{equation}
+ \xang = \parm\gfunc(\parm),
+\end{equation}
+and to invert the above, we suggested that
+\begin{equation}
+\begin{split}
+ \parm &= \frac{\xang}{\gfunc(\parm)} = \frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc(\parm)}\right)} = \frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc(\parm)}\right)}\right)} = ...\\
+ \gfunc(\parm) &= \gfunc\left(\frac{\xang}{\gfunc(\parm)}\right) = \gfunc\left(\frac{\xang}{\gfunc\left(\frac{\xang}{\gfunc(\parm)}\right)}\right) = ...
+\end{split}
+\end{equation}
+Re-write the expression to invert as
+\begin{equation}
+ \frac{\xang}{\gfunc(\parm)} - \parm = 0
+\end{equation}
+and define the two functions
+\begin{align}
+ f_1(\parm) &= \parm,\\
+ f_2(\parm) &= \frac{\xang}{\gfunc(\parm)}.
+\end{align}
+The task is then to compute the point where these two functions intersect.
+\begin{figure}[ht!]
+    \begin{center}
+    \resizebox{0.5\textwidth}{!}{\input{iteration.pdf_tex}}
+	\caption{Simple iterative procedure showing convergence to the stationary point}
+	\label{fg:stationaryiteration}
+	\end{center}
+\end{figure}
+From \fgref{fg:stationaryiteration}, one sees that, starting from the point $\parm_0$
+\begin{equation}
+ \parm_1 = f_2(\parm_0) = \frac{\xang}{\gfunc(\parm_0)},
+\end{equation}
+and, in general
+\begin{equation}
+ \parm_{n+1} = f_2(\parm_n) = \frac{\xang}{\gfunc(\parm_n)}.
+\end{equation}
+If 
+\begin{equation} 
+    \left\lvert \dtv{f_2(\parm)}{\parm}\right\rvert < 1,
+\end{equation}
+then convergence is assured.
