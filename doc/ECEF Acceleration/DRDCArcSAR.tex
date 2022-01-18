@@ -51,32 +51,60 @@
 \usepackage{multirow}
 \usepackage[mathscr]{euscript}
 \usepackage{listings}
+% \definecolor{gray}{rgb}{0.4,0.4,0.4}
+% \definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+% \definecolor{cyan}{rgb}{0.0,0.6,0.6}
+% \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+% \definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+% \definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+
+\definecolor{lightlightgray}{gray}{0.9}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
 \definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{lightblue}{rgb}{0.0,0.0,0.9}
 \definecolor{cyan}{rgb}{0.0,0.6,0.6}
-% \usepackage{svgnames}
-% \usepackage[svgnames]{xcolor}
-% \lstset{
-%   basicstyle=\ttfamily\small,
-%   columns=fullflexible,
-%   showstringspaces=false,
-%   %commentstyle=\color{gray}\upshape
-% }
+\definecolor{darkred}{rgb}{0.6,0.0,0.0}
+
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  showstringspaces=false,
+  numbers=left,                                % where to put the line-numbers
+  numberstyle=\tiny\color{gray},               % the style that is used for the line-numbers
+  stepnumber=1,
+  numbersep=5pt,                               % how far the line-numbers are from the code
+  backgroundcolor=\color{lightlightgray},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,                            % show spaces adding particular underscores
+  showstringspaces=false,                      % underline spaces within strings
+  showtabs=false,                              % show tabs within strings adding particular underscores
+  frame=none,                                  % adds a frame around the code
+  rulecolor=\color{black},                     % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                                   % sets default tabsize to 2 spaces
+  captionpos=b,                                % sets the caption-position to bottom
+  breaklines=true,                             % sets automatic line breaking
+  breakatwhitespace=false,                     % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                              % show the filename of files included with \lstinputlisting;
+                                               % also try caption instead of title  
+  commentstyle=\color{gray}\upshape
+}
+
 
 \lstdefinelanguage{XML}
 {
-  basicstyle=\tiny
-  morestring=[b]",
-  moredelim=[s][\bfseries\color{Maroon}]{<}{\ },
-  moredelim=[s][\bfseries\color{Maroon}]{</}{>},
-  moredelim=[l][\bfseries\color{Maroon}]{/>},
-  moredelim=[l][\bfseries\color{Maroon}]{>},
+  morestring=[s][\color{mauve}]{"}{"},
+  morestring=[s][\color{black}]{>}{<},
   morecomment=[s]{<?}{?>},
-  morecomment=[s]{<!--}{-->},
-  commentstyle=\color{DarkOliveGreen},
-  stringstyle=\color{blue},
-  identifierstyle=\color{red}
+  morecomment=[s][\color{dkgreen}]{<!--}{-->},
+  stringstyle=\color{black},
+  identifierstyle=\color{lightblue},
+  keywordstyle=\color{red},
+  morekeywords={xmlns,xsi,noNamespaceSchemaLocation,type,id,x,y,source,target,version,tool,transRef,roleRef,objective,eventually}% list your attributes here
 }
+
 
 \usepackage[bibstyle=nature, style=numeric, citestyle=numeric-comp, sorting=none, backend=biber]{biblatex}
 \bibliography{/home/ishuwa/Documents/bibliography/ishbib}
@@ -145,7 +173,7 @@
 \makefrontcover
 
 \begin{abstract}
-By presenting the design, configuration and required end-to-end signal processing, this report proposes a system for improved \Index{\gls{sar}} imaging. Compared to conventional Spotlight \gls{sar}, the proposed system will generate imagery with equivalent or better resolution and significantly increased area coverage. The design and configuration are based upon a phased-array antenna in combination with the appropriate hardware to enable rapid electronic beam steering and to permit digitisation of multiple receive channels. The current state of technology is mature enough to construct all components of such a system. As a specific goal, the report proposes a system capable of imaging with 10 cm resolution (azimuth and slant-range) over a ground swath of 5 km. Importantly, this mode can collect with unlimited azimuth extent, something that no other proposed system can achieve.
+By presenting the design, configuration and required end-to-end signal processing, this report proposes a system for improved \Index{\gls{sar}} imaging. Compared to conventional Spotlight \gls{sar}, the proposed system will generate imagery with equivalent or better resolution and significantly increased area coverage. The design and configuration are based upon a phased-array antenna in combination with the appropriate hardware to enable rapid electronic beam steering and to permit digitisation of multiple receive channels. The current state of technology is mature enough to construct all components of such a system. As a specific goal, the report proposes a system capable of imaging with 10 cm resolution (azimuth and slant-range) over a ground swath of 5 km. The proposed system is simulated at X-band, but could, in principle, be operated at any band with sufficiently available bandwidth. Importantly, this mode can collect with unlimited azimuth extent, something that no other proposed system can achieve.
 \par
 As the considered resolutions push the limits of known theory, the report also introduces an augmented theory that is needed to derive the signal processing algorithms. The presented approach incorporates a physical model, based upon the spherical harmonic model of the Earth's gravitational potential, into the theory of differential geometry of curves in three dimensions. From the theory, a wavenumber-based \gls{sar} processing algorithm that extends current methods is developed and presented. The proposed algorithm relies only on accurate attitude data and a single accurate state vector. The approach is therefore suitable for on-board SAR processing if sensor instruments can measure these parameters while imaging.
 \end{abstract}

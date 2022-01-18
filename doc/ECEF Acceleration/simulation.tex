@@ -46,7 +46,7 @@ The satellite velocity chosen for the simulation is 7500 m/s. This means that th
 As outlined in \fgref{fg:simflow}, the simulator computes the back-folded signal for each of the desired channels of data, computes the processing filters, applies the filters to the back-folded data and presents the amplitude of the reconstructed signal in the Doppler domain.
 \begin{figure}[ht!]
 \begin{center}
- \resizebox{\columnwidth}{!}{\includegraphics{sim.pdf}}
+ \resizebox{0.5\columnwidth}{!}{\includegraphics{sim.pdf}}
  \caption{Simulation of the SURE signal.}
  \label{fg:simflow}
  \end{center}
@@ -74,7 +74,7 @@ The azimuthPositions XML field defines the position of each T/R module in the az
 The various azimuth look directions are defined according to the angular width of each beam (which depends upon the length of the subaperture) and the span of angles required to achieve a particular azimuth resolution. In this simulation all beams are created with the same angular width. As well, the subaperture phase-centre positions are generated to be evenly spaced in the azimuth direction.
 \begin{figure}[h!]
 \begin{center}
- \resizebox{0.8\columnwidth}{!}{\input{subarray.pdf_tex}}
+ \resizebox{0.7\columnwidth}{!}{\input{subarray.pdf_tex}}
  \caption{Schematic of 5 subapertures for the 40 cm mode.}
  \label{fg:fivechansubaperture}
  \end{center}
@@ -105,7 +105,7 @@ Note that in this simulation, the computed signals have no across-track baseline
 \subsection{Multi-channel processing}
 Multi-channel processing for this simulation occurs in the azimuth-wavenumber, range-time domain. This step computes a processing filter that attempts to create a signal over an azimuth frequency range given by $\kparmPRF*(\numberChannels + 4)$; that is, when the average antenna pattern of \eqref{eq:averagePattern} is applied, there should some wavenumber domain zero-padding applied to the computed signal.
 \par
-Since the theory shows that the multi-channel processing filter is range independent, only a single processing filter is computed an applied across all ranges. \Fgref{fg:reconstructed} illustrates the multi-channel processed signal. In the figure, one sees that the response in the Doppler domain shows the desired response as a function of $\kparm$, with each local maximum in this region highlighting the response from each sub-beam.
+Since the theory shows that the multi-channel processing filter is range independent, only a single processing filter is computed and applied across all ranges. \Fgref{fg:reconstructed} illustrates the multi-channel processed signal. In the figure, one sees that the response in the Doppler domain shows the desired response as a function of $\kparm$, with each local maximum in this region highlighting the response from each sub-beam.
 \begin{figure}[ht!]
 \begin{subfigure}{0.5\textwidth}
 \begin{center}
@@ -154,7 +154,7 @@ Since the theory shows that the multi-channel processing filter is range indepen
 \end{figure}
 \clearpage
 \subsection{Azimuth compression}
-The simulator then azimuth compresses multi-channel reconstructed signal with the generalized Stolz interpolation algorithm outlined in \scref{sc:modifiedStolz}. \Fgref{fg:PSFAll} illustrates the produced the Point Spread Functions (PSF) for all modes. In these plots, the residual phase correction of \scref{sc:phaseCompensation} has not been applied.
+The simulator then azimuth compresses multi-channel reconstructed signal with the generalized Stolz interpolation algorithm outlined in \scref{sc:modifiedStolz}. \Fgref{fg:PSFAll} illustrates the produced Point Spread Functions (PSF) for all modes. In these plots, the residual phase correction of \scref{sc:phaseCompensation} has not been applied.
 \begin{figure}[ht!]
 \begin{subfigure}{0.5\textwidth}
 \begin{center}

@@ -1,4 +1,4 @@
-%% Creator: Inkscape inkscape 0.92.5, www.inkscape.org
+%% Creator: Inkscape 1.1.1 (3bf5ae0d25, 2021-09-20), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'subarray.pdf' (pdf, eps, ps)
 %%
@@ -50,12 +50,12 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.5147)%
+  \begin{picture}(1,0.51470001)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{subarray.pdf}}%
     \put(0.36262179,0.44113312){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}0.04m\end{tabular}}}}%
-    \put(0.12639284,0.31557839){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}4.0m long (composed of 100 elements)\end{tabular}}}}%
-    \put(0.34588115,0.00866676){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5 subapertures each 4m long\end{tabular}}}}%
+    \put(0.10081279,0.30355858){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}4.0m long (composed of 100 elements)\end{tabular}}}}%
+    \put(0.34588115,0.00866677){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}5 subapertures each 4m long\end{tabular}}}}%
   \end{picture}%
 \endgroup%

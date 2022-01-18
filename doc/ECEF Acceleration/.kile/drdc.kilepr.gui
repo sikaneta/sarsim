@@ -1,0 +1,619 @@
+[General]
+kile_livePreviewEnabled=true
+kile_livePreviewStatusUserSpecified=false
+kile_livePreviewTool=LivePreview-PDFLaTeX
+lastDocument=SURE_introduction.tex
+
+[document-settings,item:DRDCArcSAR.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:SURE_introduction.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:SURE_multichannel.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:SURE_transmit.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:antennaangles.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:antennaanglesAppendix.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:conclusion.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:demodulation.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:diffgeo.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:diffgeoslow.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:diffgeostategeoid.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:drdc.kilepr]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=None
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=Normal
+Mode Set By User=false
+
+[document-settings,item:inertialtoecef.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:introduction.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:ishCommands.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:mimo.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:multichannel.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:multichannelmodel.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:myGlossary.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:newStationaryPhase.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:orbit_demo.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:orbiterror.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:range.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:rangeAppendix.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:rateofacceleration.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:sardiffgeo.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:simulation.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:stationaryphase.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:stolz.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[document-settings,item:vectorcalc.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Highlighting Set By User=false
+Indentation Mode=normal
+Mode=LaTeX
+Mode Set By User=false
+
+[item:DRDCArcSAR.tex]
+open=true
+order=0
+
+[item:SURE_introduction.tex]
+open=true
+order=2
+
+[item:SURE_multichannel.tex]
+open=true
+order=9
+
+[item:SURE_transmit.tex]
+open=true
+order=11
+
+[item:antennaangles.tex]
+open=true
+order=18
+
+[item:antennaanglesAppendix.tex]
+open=true
+order=14
+
+[item:conclusion.tex]
+open=true
+order=21
+
+[item:demodulation.tex]
+open=true
+order=8
+
+[item:diffgeo.tex]
+open=true
+order=13
+
+[item:diffgeoslow.tex]
+open=true
+order=16
+
+[item:diffgeostategeoid.tex]
+open=false
+order=-1
+
+[item:drdc.kilepr]
+open=false
+order=-1
+
+[item:inertialtoecef.tex]
+open=true
+order=23
+
+[item:introduction.tex]
+open=true
+order=5
+
+[item:ishCommands.tex]
+open=true
+order=3
+
+[item:mimo.tex]
+open=true
+order=26
+
+[item:multichannel.tex]
+open=true
+order=20
+
+[item:multichannelmodel.tex]
+open=false
+order=-1
+
+[item:myGlossary.tex]
+open=true
+order=7
+
+[item:newStationaryPhase.tex]
+open=true
+order=19
+
+[item:orbit_demo.tex]
+open=true
+order=17
+
+[item:orbiterror.tex]
+open=true
+order=12
+
+[item:range.tex]
+open=true
+order=6
+
+[item:rangeAppendix.tex]
+open=true
+order=24
+
+[item:rateofacceleration.tex]
+open=true
+order=22
+
+[item:sardiffgeo.tex]
+open=true
+order=1
+
+[item:simulation.tex]
+open=true
+order=10
+
+[item:stationaryphase.tex]
+open=true
+order=4
+
+[item:stolz.tex]
+open=true
+order=25
+
+[item:vectorcalc.tex]
+open=true
+order=15
+
+[view-settings,view=0,item:DRDCArcSAR.tex]
+CursorColumn=882
+CursorLine=175
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,175,0,[,175,0,],175,0
+
+[view-settings,view=0,item:SURE_introduction.tex]
+CursorColumn=270
+CursorLine=3
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,3,269,[,3,260,],3,269
+
+[view-settings,view=0,item:SURE_multichannel.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:SURE_transmit.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:antennaangles.tex]
+CursorColumn=92
+CursorLine=96
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,99,99,[,99,99,],99,99
+
+[view-settings,view=0,item:antennaanglesAppendix.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:conclusion.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:demodulation.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:diffgeo.tex]
+CursorColumn=34
+CursorLine=44
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,50,26,[,50,26,],50,26
+
+[view-settings,view=0,item:diffgeoslow.tex]
+CursorColumn=89
+CursorLine=13
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,13,88,[,13,88,],13,88
+
+[view-settings,view=0,item:diffgeostategeoid.tex]
+CursorColumn=341
+CursorLine=6
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:inertialtoecef.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:introduction.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:ishCommands.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:mimo.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:multichannel.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:myGlossary.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:newStationaryPhase.tex]
+CursorColumn=114
+CursorLine=26
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,26,113,[,26,113,],26,113
+
+[view-settings,view=0,item:orbit_demo.tex]
+CursorColumn=676
+CursorLine=1
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,1,675,[,1,675,],1,675
+
+[view-settings,view=0,item:orbiterror.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:range.tex]
+CursorColumn=152
+CursorLine=2
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,36,11,[,36,11,],36,11
+
+[view-settings,view=0,item:rangeAppendix.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:rateofacceleration.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:sardiffgeo.tex]
+CursorColumn=58
+CursorLine=10
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,4,113,[,4,113,],4,113
+
+[view-settings,view=0,item:simulation.tex]
+CursorColumn=204
+CursorLine=156
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=.,156,204,[,156,204,],156,204
+
+[view-settings,view=0,item:stationaryphase.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:stolz.tex]
+CursorColumn=175
+CursorLine=15
+Dynamic Word Wrap=true
+JumpList=
+TextFolding=[]
+ViMarks=
+
+[view-settings,view=0,item:vectorcalc.tex]
+CursorColumn=0
+CursorLine=0
+Dynamic Word Wrap=false
+JumpList=
+TextFolding=[]
+ViMarks=

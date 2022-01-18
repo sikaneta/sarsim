@@ -61,6 +61,8 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {7}Arclength-parameterized range function}{29}{section.7}%
 \defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {7.1}Residual error in the range function}{30}{subsection.7.1}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {8}The SAR signal in arclength space}{30}{section.8}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {8.1}Scene measurement through multiple antenna patterns}{31}{subsection.8.1}%
@@ -109,7 +111,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {13}Conclusion}{56}{section.13}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{57}{section*.43}%
+\contentsline {section}{References}{57}{section*.42}%
 \defcounter {refsection}{0}\relax 
 \contentsline {annex}{\numberline {A}Derivative of unit vectors}{61}{annex.A}%
 \defcounter {refsection}{0}\relax 

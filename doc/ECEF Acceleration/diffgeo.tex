@@ -8,7 +8,7 @@ For a curve in three dimensions given by $\sats(\parm)$, the tangent vector is g
 \begin{equation}
 \vct{N}(\parm) = \vct{T}'(\parm)/\kappa(\parm). 
 \end{equation}
-The binormal vector $\vct{B}(\parm)$ is defined as $\vct{B}(\parm) = \vct{T}(\parm)\times\vct{N}(\parm)$. The vectors $\vct{T}(\parm), \vct{N}(\parm), \vct{B}(\parm)$ form an orthonormal basis, see \fgref{fg:diffvectors}
+The binormal vector $\vct{B}(\parm)$ is defined as $\vct{B}(\parm) = -\vct{T}(\parm)\times\vct{N}(\parm)$ (In order to form a right-handed coordinate system). The vectors $\vct{T}(\parm), \vct{N}(\parm), \vct{B}(\parm)$ form an orthonormal basis, see \fgref{fg:diffvectors}
 \begin{figure}[ht!]
     \begin{center}
     \resizebox{0.8\textwidth}{!}{\input{diffvectors.pdf_tex}}
@@ -31,8 +31,8 @@ Define the \textbf{torsion} as $\tau(\parm) = \vct{N}'(\parm)\cdot\vct{B}(\parm)
 Finally, one finds that
 \begin{equation}
 \begin{split}
- \vct{B}'(\parm) &= \vct{T}'(\parm)\times\vct{N}(\parm) + \vct{T}(\parm)\times\vct{N}'(\parm)\\
- &=\kappa(\parm)\vct{N}(\parm)\times\vct{N}(\parm) + \vct{T}(\parm)\times[-\kappa(\parm)\vct{T}(\parm)+\tau(\parm)\vct{B}(\parm)]\\
+ \vct{B}'(\parm) &= -\vct{T}'(\parm)\times\vct{N}(\parm) - \vct{T}(\parm)\times\vct{N}'(\parm)\\
+ &=-\kappa(\parm)\vct{N}(\parm)\times\vct{N}(\parm) - \vct{T}(\parm)\times[-\kappa(\parm)\vct{T}(\parm)+\tau(\parm)\vct{B}(\parm)]\\
  &=-\tau(\parm)\vct{N}(\parm)
  \end{split}
 \end{equation}
@@ -48,7 +48,7 @@ The previous few expressions lead to the Frenet-Serret equation
  \begin{bmatrix}\vct{T}(\parm)\\\vct{N}(\parm)\\\vct{B}(\parm)\end{bmatrix}.
  \label{eq:FrenetSerret}
 \end{equation}
-The Frenet-Serret equations will be used in numerous places throughout this document to derive quantities related to the SAR signal model.
+The Frenet-Serret equation will be used in numerous places throughout this document to derive quantities related to the SAR signal model.
 \par
 One observes that
 \begin{equation}
