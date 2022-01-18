@@ -22,7 +22,7 @@ open=false
 order=-1
 
 [view-settings,view=0,item:DRDCArcSAR.tex]
-CursorColumn=250
+CursorColumn=0
 CursorLine=149
 Dynamic Word Wrap=true
 JumpList=
