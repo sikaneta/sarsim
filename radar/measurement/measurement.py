@@ -189,6 +189,7 @@ class state_vector(measurement):
     def xyz2polar(self, mData, maxiter = 1000, etol=1e-9):
         """
         Convert Cartesian ECEF XYZ to geographical polar coordinates EPSG:4326
+        
         Parameters
         ----------
         mData : numpy.`numpy.ndarray`, (3,) or `list`, [`float`]
@@ -198,6 +199,7 @@ class state_vector(measurement):
         etol : float
             Error bound for the iteration. Once the difference in iterations
             is small than this number, the algorithm stops
+            
         Returns
         -------
         latitude : `float`
@@ -211,6 +213,7 @@ class state_vector(measurement):
         -----
         This implementation is faster than the method defined in the class
         satGeometry
+        
         """
         a = self.planet.a
         b = self.planet.b
@@ -232,10 +235,12 @@ class state_vector(measurement):
     def xyz2SphericalPolar(self, mData):
         """
         Convert ECEF XYZ to spherical polar coordinates
+        
         Parameters
         ----------
         mData : `numpy.ndarray` or list
             The input X,Y,Z.
+            
         Returns
         -------
         latitude : `float`
@@ -244,6 +249,7 @@ class state_vector(measurement):
             Longitude anlge.
         r : `float`
             The raidus.
+            
         """
         r = sqrt(mData[0]*mData[0]+mData[1]*mData[1]+mData[2]*mData[2])
         latitude = asin(mData[2]/r)
@@ -253,14 +259,17 @@ class state_vector(measurement):
     def llh2xyz(self, mData):
         """
         Convert lat, long, height to ECEF Cartesian XYZ
+        
         Parameters
         ----------
         mData : `numpy.ndarray` or list
             The input lat, long, height.
+            
         Returns
         -------
         `numpy.ndarray`, (3,)
             The X,Y,Z coordinates in ECEF Cartesian space.
+            
         """
         # mData contains the lat, lon, height in degrees
         a = self.planet.a
@@ -282,6 +291,7 @@ class state_vector(measurement):
         Given a curve described with state vectors, there is a time when the
         vector between the curve c(t) and the position X is perpendicular to
         the the curve velocity vector, c'(t).
+        
         Parameters
         ----------
         eta : datetime
@@ -293,11 +303,13 @@ class state_vector(measurement):
         etol : float
             Error bound for the iteration. Once the difference in iterations
             is small than this number, the algorithm stops
+            
         Returns
         -------
         `list`, [`float`, `numpy.ndarray`, (3,), `float`]
             The broadside time, the state vector at this time an the error in
             the broadside position.
+            
         """
         for k in range(maxiter):
             slaveX = self.estimate(eta)
@@ -320,14 +332,17 @@ class state_vector(measurement):
     def getDateTimeXML(self, XMLDateTimeElement):
         """
         Read a datetime from an XML snippet
+        
         Parameters
         ----------
         XMLDateTimeElement : `etree.Element`
             A node describing a time.
+            
         Returns
         -------
         `datetime.datetime`
             A datetime representation of the time.
+            
         """
         return datetime.datetime(int(XMLDateTimeElement.find('year').text),
                                  int(XMLDateTimeElement.find('month').text),
@@ -342,6 +357,7 @@ class state_vector(measurement):
         Load spherical harmonics from file
         
         Load spherical harmonics such as egm96 or egm2008 from a csv file
+        
         Parameters
         ----------
         filename : `str`
@@ -349,9 +365,11 @@ class state_vector(measurement):
         Nharmonics : `int`, optional
             The number of harmonics to read. If set to None, then the entire
             set of harmonics will be read. The default is None.
+            
         Returns
         -------
         None.
+        
         """
         self.harmonics = []
         self.hrmC = np.zeros((Nharmonics+1, Nharmonics+1), dtype=float)
@@ -395,14 +413,17 @@ class state_vector(measurement):
         These are the Cosine coefficients at idx and the Sine coefficients
         at idx, C_idx and S_idx as presented on the Wikipedia page on the
         `Geoid <https://en.wikipedia.org/wiki/Geoid>`_
+        
         Parameters
         ----------
         idx : `int`
             The index of the desired harmonics.
+            
         Returns
         -------
         `numpy.ndarray`, (N,2)
             The Cosine and Sine coefficients.
+            
         """
         C = []
         S = []
@@ -424,16 +445,19 @@ class state_vector(measurement):
     def grs80radius(self, lat):
         """
         The GRS80 radius at a particular latitude
+        
         Parameters
         ----------
         lat : `float`
             Latitude.
+            
         Returns
         -------
         `float`
             The computed radius. The distance from the centre of the earth to
             a point on the surface of the ellipsoid at the given latitude.
             Answer in meters.
+            
         """
         ee = (self.planet.a/self.planet.b)**2 - 1.0
         return self.planet.a/sqrt(1.0 + ee*sin(lat)**2)
@@ -444,16 +468,19 @@ class state_vector(measurement):
         
         Compute the geoid height difference as compared to the GRS80 ellipsoid
         at the given lat, long coordinates
+        
         Parameters
         ----------
         lat : `float`
             Latitude.
         lon : `float`
             Longitude.
+            
         Returns
         -------
         `float`
             Difference between ellipsoid height and geoid height in m.
+            
         """
         # Compute the GRS80 equivalent radius
         r = self.grs80radius(lat)
@@ -495,6 +522,7 @@ class state_vector(measurement):
         here: Geoid_. The gravitational
         acceleration at the point in space is given by the gradient of this 
         potential.
+        
         Parameters
         ----------
         r : `float`
@@ -503,10 +531,12 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The harmonics potential this point.
+            
         """
         GM = self.planet.GM
         a = self.planet.a
@@ -543,6 +573,7 @@ class state_vector(measurement):
         Compute the GRS80 ellipsoid potential at the given point. The 
         potential should be more or less constant for every point on a 
         particular ellipse that contains the point of interest.
+        
         Parameters
         ----------
         r : `float`
@@ -551,10 +582,12 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The GRS80 ellipsoid potential the point.
+            
         """
         GM = self.planet.GM
         a = self.planet.a
@@ -629,7 +662,8 @@ class state_vector(measurement):
         Compute the derivative of the harmonics potential with respect to r.
         
         This is the component of gravitational acceleration in the direction 
-        of the vector from the centre of the earth to the point
+        of the vector from the centre of the earth to the point.
+        
         Parameters
         ----------
         r : `float`
@@ -638,10 +672,12 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The derivative of the harmonics potential wrt r at the point.
+            
         """
         GM = self.planet.GM
         a = self.planet.a
@@ -685,11 +721,13 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The second derivative of the harmonics potential wrt r twice at the 
             point of interest.
+            
         """
         GM = self.planet.GM
         a = self.planet.a
@@ -803,6 +841,7 @@ class state_vector(measurement):
         
         This is the component of gravitational acceleration in the direction 
         of theta. More or less east/west gravitational acceleration
+        
         Parameters
         ----------
         r : `float`
@@ -811,10 +850,12 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The derivative of the harmonics potential wrt theta at the point.
+            
         """
         GM = self.planet.GM
         a = self.planet.a
@@ -855,6 +896,7 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
@@ -901,6 +943,7 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
@@ -942,6 +985,7 @@ class state_vector(measurement):
         This is the component of gravitational acceleration in the direction 
         of the unit vector in latitude. More or less acceleration in the north
         south direction.
+        
         Parameters
         ----------
         r : `float`
@@ -950,10 +994,12 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The derivative of the harmonics potential wrt U at the point.
+            
         """
         GM = self.planet.GM
         a = self.planet.a
@@ -1007,6 +1053,7 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
@@ -1063,6 +1110,7 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
@@ -1116,11 +1164,13 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         D : `float`
             The second derivative of the harmonics potential wrt U and R at the 
             point of interest.
+            
             
         """
         GM = self.planet.GM
@@ -1156,14 +1206,17 @@ class state_vector(measurement):
         spherical polar coordinates.
         
         This is the Jacobian between XYZ and RTU
+        
         Parameters
         ----------
         X : `numpy.ndarray`, (3,)
             Cartesian coordinates.
+            
         Returns
         -------
         `numpy.ndarray`, (3,3)
             The Jacobian matrix.
+            
         """
         r = np.linalg.norm(X[0:3])
         p = np.sqrt(X[0]**2 + X[1]**2)
@@ -1179,14 +1232,17 @@ class state_vector(measurement):
         RTU
         
         See equation B.24
+        
         Parameters
         ----------
         X : `numpy.ndarray`, (3,)
             The Cartesian coordinates.
+            
         Returns
         -------
         `numpy.ndarray`, (9,9)
             The reordered Hessian matrix.
+            
         """
         x = X[0]
         y = X[1]
@@ -1231,16 +1287,19 @@ class state_vector(measurement):
         
         Return M from the first-order system of differential equations such 
         that dX/dt = MX
+        
         Parameters
         ----------
         X : `numpy.ndarray`, (6,)
             Six element array describing the state vector.
         t : `float`
             The time of the state vector information in s.
+            
         Returns
         -------
         `numpy.ndarray`, (6,)
-            DESCRIPTION.
+            Satellite velocity and acceleration.
+            
         """
         # Define some constants
         wE = self.planet.w
@@ -1308,16 +1367,19 @@ class state_vector(measurement):
         
         Return M from the first-order system of differential equations such 
         that dX/dt = MX
+        
         Parameters
         ----------
         X : `numpy.ndarray`, (6,)
             Six element array describing the state vector.
         t : `float`
             The time of the state vector information in s.
+            
         Returns
         -------
         `numpy.ndarray`, (6,)
-            DESCRIPTION.
+            Satellite velcoity and acceleration.
+            
         """
         # Define some constants
         wE = self.planet.w
@@ -1390,7 +1452,8 @@ class state_vector(measurement):
         This function computes the satellite equations of motion as done
         in :func:`~measurement.satEQM`, but with the parameters reversed.
         This helps with calling the scipy.ivp differential equation
-        solver
+        solver.
+        
         Parameters
         ----------
         t : `float`
@@ -1403,6 +1466,7 @@ class state_vector(measurement):
         `numpy.ndarray`, (6,)
             The values for the equations of motion (velocity and acceleration)
             at the point in time.
+            
         """
         return self.satEQM(X,t)
     
@@ -1412,6 +1476,7 @@ class state_vector(measurement):
         
         See the second part of equation B.24. This is needed to find the
         jerk
+        
         Parameters
         ----------
         r : `float`
@@ -1420,10 +1485,12 @@ class state_vector(measurement):
             Latitude angle to point of interest (rad).
         lon : `float`
             Longitude to the point of interest (rad).
+            
         Returns
         -------
         `numpy.ndarray`, (3,3)
             Matrix of second derivatives of the harmonics potential.
+            
         """
         nmLegendreCoeffs, cosines, sines = self._getLCS(lat, lon)
         
@@ -1446,17 +1513,20 @@ class state_vector(measurement):
         input is the position and velocity. These are used to compute the 
         acceleration and jerk. The output is the state vector appended by the
         acceleration and jerk
+        
         Parameters
         ----------
         X : `numpy.ndarray`, (6,)
             Six element state vector.
         t : `float`
             Time associate with the state vector.
+            
         Returns
         -------
         `numpy.ndarray`, (4,3)
             A 4x3 array with the top row ecef_X, second row ecef_dX/dt, third
             row ecef_d2X/dt2, fourth row ecef_d3X/dt3.
+            
         """
         # Define some constants
         wE = self.planet.w
@@ -1583,12 +1653,14 @@ class state_vector(measurement):
         See `normalized lpnm <http://mitgcm.org/~mlosch/geoidcookbook/node11.html>`_ 
         for a description of the fully normalized associated Legendre 
         polynomials
+        
         Parameters
         ----------
         n : `int`
             The maximum degree of the polynomials.
         x : `float`
             The argument of the function.
+            
         Returns
         -------
         `numpy.ndarray`, (n+1, n+1)
@@ -1602,6 +1674,7 @@ class state_vector(measurement):
             the Clenshaw summation and the recursive computation of very high 
             degree and order normalised associated Legendre functions Journal 
             of Geodesy, 76(5), pp. 279-299.
+            
         """
         p = np.zeros((n0+1, n0+1))
         myLegendre_numba(p, n0, t)
@@ -1654,6 +1727,7 @@ class state_vector(measurement):
         This function uses the
         `scipy odeint <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.odeint.html>`_
         function
+        
         Parameters
         ----------
         t : `float`
@@ -1661,10 +1735,12 @@ class state_vector(measurement):
         k : `int`
             Index into list of state vectors so we know from where we are
             integrating.
+            
         Returns
         -------
         istate : `numpy.ndarray`, (6,)
             The value of the numerical integration as a state vector.
+            
         """
         self.reference_time = self.measurementTime[k]
         
@@ -1697,15 +1773,18 @@ class state_vector(measurement):
         
         This function uses the integrate function to compute the values
         of the state vector at different times.
+        
         Parameters
         ----------
         dtime : `list`, [`datetime.datetime`]
             A list of times at which to compute/estimate the state vectors. 
             This is given as a list of datetimes.
+            
         Returns
         -------
         `list`, [`numpy.ndarray`, (6,)]
             The computed/estimated state vectors.
+            
         """
         if type(dtime[0]) == datetime.datetime:
             mnTime = sum([(tm - dtime[0]).total_seconds() for tm in dtime])/len(dtime)
@@ -1769,14 +1848,17 @@ class state_vector(measurement):
         This method uses the class integrate function to numerically
         integrate the ODE from the closest state vector to the desired 
         time point
+        
         Parameters
         ----------
         dtime : `datetime.datetime`
             The desired time at which to estimate the state vector.
+            
         Returns
         -------
         `numpy.ndarray`, (6,)
             The computed/estimated state vector.
+            
         """
         minK = self.findNearest(dtime)
         self.reference_time = dtime

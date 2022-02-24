@@ -5,20 +5,24 @@ Created on Fri Jan 28 14:10:22 2022
 @author: Ishuwa.Sikaneta
 """
 
-from space.planets import earth
+from space.planets import earth, venus
 import numpy as np
+import quaternion
+import matplotlib.pyplot as plt
 
+#%% Define the orbit class
 class orbit:
     """
     Class to compute the zero Doppler for a given orbit
     """
     
     def __init__(self,
-                 e,
-                 arg_perigee,
-                 a,
-                 inclination,
-                 planet = earth
+                 e=0,
+                 arg_perigee=0,
+                 a=10000000.0,
+                 inclination=np.pi/2,
+                 planet = earth(),
+                 angleUnitFunction = lambda x:x
                  ):
         """
         Initiator for orbit object. 
@@ -42,22 +46,31 @@ class orbit:
             which the orbit plane is rotated.
         planet : `radar.space.planet`
             Object that defines the planet. Default is Earth
+        angleUnitFunction : `function`
+            Function to convert angles to radians. If not set, the identity
+            function is assumed. This function will be used to convert all
+            function arguments to radians. Thus a consistent unit for angles
+            must be used for all calls to functions in the class. For
+            instance, if this is set to `np.radians`, it is assumed that
+            all angles are supplied in degrees.
 
         Returns
         -------
         None.
 
         """
+        
+        self.toRadians = angleUnitFunction
         self.e = e
-        self.arg_perigee = arg_perigee
+        self.arg_perigee = self.toRadians(arg_perigee)
         self.a = a
-        self.inclination = inclination
+        self.inclination = self.toRadians(inclination)
         self.planet = planet
         self.period = 2*np.pi*np.sqrt(a**3/planet.GM)
-        cosI = np.cos(inclination)
-        sinI = np.sin(inclination)
-        cosP = np.cos(arg_perigee)
-        sinP = np.sin(arg_perigee)
+        cosI = np.cos(self.inclination)
+        sinI = np.sin(self.inclination)
+        cosP = np.cos(self.arg_perigee)
+        sinP = np.sin(self.arg_perigee)
         self.rotOfromE = np.array([[sinP, -cosP, 0],
                                    [cosP,  sinP, 0],
                                    [0,     0   , 1]])
@@ -71,9 +84,10 @@ class orbit:
     
     def computeR(self, beta):
         """
-        Compute the range at the orbit angle
+        Compute the state vector at the orbit angle
         
-        Compute the satellite range at the specified orbit angle beta
+        Compute the satellite state vector at the given orbit angle. This
+        vector is given in the Inertial coordinate system
 
         Parameters
         ----------
@@ -82,16 +96,22 @@ class orbit:
 
         Returns
         -------
-        float:
+        state: float
+            The state vector at the orbit angle
+        r: float
             The range from the center of the planet to the satellite in (m)
+        v: float
+            The speed of the satellite in the Inertial reference frame and
+            at the supplied orbit angle
 
         """
+        
         a = self.a
         e = self.e
         GM = self.planet.GM
-        U = beta - self.arg_perigee
-        cosB = np.cos(beta)
-        sinB = np.sin(beta)
+        U = self.toRadians(beta) - self.arg_perigee
+        cosB = np.cos(self.toRadians(beta))
+        sinB = np.sin(self.toRadians(beta))
         cosP = np.cos(self.arg_perigee)
         sinP = np.sin(self.arg_perigee)
         
@@ -110,6 +130,27 @@ class orbit:
         return state, r, v
     
     def computeTCN(self, beta):
+        """
+        Compute the T,C,N vectors
+        
+        This function computes the unit vectors that define the T,C,N
+        reference system. These are vectors in the PCI reference
+        sytem
+
+        Parameters
+        ----------
+        beta : float, (Radians)
+            The orbit angle at which to compute the T,C,N vectors. This is the
+            angle measured from the ascending node.
+
+        Returns
+        -------
+        `np.ndarray` [3,3] 
+            A numpy array with the T,C,N vectors as columns in the respective
+            order.
+
+        """
+        
         X, _, _ = self.computeR(beta)
         Xhat = X[0:3]/np.linalg.norm(X[0:3])
         T = X[3:]/np.linalg.norm(X[3:])
@@ -134,13 +175,177 @@ class orbit:
             The orbit speed in (m/s)
 
         """
+        
         a = self.a
         e = self.e
         w = self.arg_perigee
         GM = self.planet.GM
-        return np.sqrt((GM/a)*(1+2*e*np.cos(beta-w) + e**2)/(1-e**2))
+        return np.sqrt((GM/a)*(1+2*e*np.cos(self.toRadians(beta)-w) 
+                               + e**2)/(1-e**2))
+              
+    
+    def computeAEUold(self, beta, v):
+        """
+        Compute the look direction, azimuth and elevation vectors
         
-    def computeU(self, beta, v):
+        Compute the look direction, azimuth and elevation vectors in
+        both the TCN frame and the Inertial frame
+
+        Parameters
+        ----------
+        beta : float (Radians)
+            The orbit angle. Measured from the ascending node.
+        v : float (Unitless)
+            Cosine of the off-nadir angle
+        Returns
+        -------
+        aeuI: `npmpy.array`, [3,3]
+            The azimuth, elevation and look vectors in the Inertial reference
+            frame arranged as the columns of a matrix (respective order)
+        aeuTCN: `npmpy.array`, [3,3]
+            The azimuth, elevation and look vectors in the TCN frame arranged 
+            as the columns of a matrix (respective order)
+
+        """
+        
+        U = self.toRadians(beta) - self.arg_perigee
+        e = self.e
+        C = 1.0/self.planet.w*np.sqrt(self.planet.GM/(self.a*(1-e**2))**3)
+        cosU = np.cos(U)
+        sinU = np.sin(U)
+        cosI = np.cos(self.inclination)
+        sinI = np.sin(self.inclination)
+        cosB = np.cos(self.toRadians(beta))
+        
+        """ Compute equations (89) and (90). Equation numbers may change! """
+        cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
+        sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
+        
+        """ Compute equations (99) and (100). Equation numbers may change! """
+        DcosG = C*(1+e*cosU)**2
+        DsinG = e*C*(1+e*cosU)*sinU
+        D = np.sqrt(DcosG**2 + DsinG**2)
+        
+        """ Compute equation (54) """
+        A = DcosG - cosI
+        
+        """ Compute equation (55). sB can be plus/minus depending on look
+            direction """
+        Q = (sinI*cosB)**2 + A**2
+        sB = np.sqrt((1-v**2)*Q - (v*sinG)**2)/Q
+        
+        """ Compute the overall result (60)"""
+        uTCN = np.array([sinG*v*(DcosG*A/Q - 1) + sB*cosG*cosB*sinI,
+                         -v*DsinG*sinI*cosB/Q + sB*A,
+                         v*(cosG + DsinG*sinG*A/Q) + sB*sinG*cosB*sinI])
+        
+        """ Compute the TCN vectors """
+        TCN = self.computeTCN(beta)
+        
+        
+        aTCN = np.array([D - cosG*cosI,
+                         -cosB*sinI,
+                         -sinG*cosI])
+        aTCN = aTCN/np.linalg.norm(aTCN)
+        
+        """ Compute the eTCN vector """
+        eTCN = np.cross(uTCN, aTCN)
+        
+        """ Compute the aeuTCN matrix """
+        aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
+        
+        """ compute the aeuI matrix """
+        aeuI = TCN.dot(aeuTCN)
+        
+        """ Return the aeuI and aeuTCN matrices """
+        return aeuI, aeuTCN
+    
+    def computeAEU(self, beta, v):
+        """
+        Compute the look direction, azimuth and elevation vectors
+        
+        Compute the look direction, azimuth and elevation vectors in
+        both the TCN frame and the Inertial frame
+
+        Parameters
+        ----------
+        beta : float (Radians)
+            The orbit angle. Measured from the ascending node.
+        v : float (Unitless)
+            Cosine of the off-nadir angle
+        Returns
+        -------
+        aeuI: `npmpy.array`, [3,3]
+            The azimuth, elevation and look vectors in the Inertial reference
+            frame arranged as the columns of a matrix (respective order)
+        aeuTCN: `npmpy.array`, [3,3]
+            The azimuth, elevation and look vectors in the TCN frame arranged 
+            as the columns of a matrix (respective order)
+                
+        Notes
+        -----
+        The calculation coded here multiples the equations in the notes
+        by the planet angular velocity to allow the computation of equation
+        (60) even in the case the planet angular velocity is low or zero.
+
+        """
+        
+        U = self.toRadians(beta) - self.arg_perigee
+        e = self.e
+        w = self.planet.w
+        wC = np.sqrt(self.planet.GM/(self.a*(1-e**2))**3)
+        cosU = np.cos(U)
+        sinU = np.sin(U)
+        cosI = np.cos(self.inclination)
+        sinI = np.sin(self.inclination)
+        cosB = np.cos(self.toRadians(beta))
+        
+        """ Compute equations (89) and (90). Equation numbers may change! """
+        cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
+        sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
+        
+        """ Compute equations (99) and (100). Equation numbers may change!  """
+        wDcosG = wC*(1+e*cosU)**2
+        wDsinG = e*wC*(1+e*cosU)*sinU
+        wD = np.sqrt(wDcosG**2 + wDsinG**2)
+        
+        """ Compute equation (54) """
+        wA = wDcosG - w*cosI
+        
+        """ Compute equation (55). sB can be plus/minus depending on look
+            direction """
+        wwQ = (w*sinI*cosB)**2 + wA**2
+        wsB = w*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
+        wAsB = wA*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
+        
+        """ Compute the overall result (60)"""
+        uTCN = np.array([sinG*v*(wDcosG*wA/wwQ - 1) + wsB*cosG*cosB*sinI,
+                         -w*v*wDsinG*sinI*cosB/wwQ + wAsB,
+                         v*(cosG + wDsinG*sinG*wA/wwQ) + wsB*sinG*cosB*sinI])
+        
+        """ Compute the TCN vectors """
+        TCN = self.computeTCN(beta)
+        
+        
+        aTCN = np.array([wD - w*cosG*cosI,
+                         -w*cosB*sinI,
+                         -w*sinG*cosI])
+        aTCN = aTCN/np.linalg.norm(aTCN)
+        
+        """ Compute the eTCN vector """
+        eTCN = np.cross(uTCN, aTCN)
+        
+        """ Compute the aeuTCN matrix """
+        aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
+        
+        """ compute the aeuI matrix """
+        aeuI = TCN.dot(aeuTCN)
+        
+        """ Return the aeuI and aeuTCN matrices """
+        return aeuI, aeuTCN
+
+    
+    def computeEold(self, beta, v):
         """
         Compute the scaling parameter for solving the underdetermined system
         of equations
@@ -160,14 +365,14 @@ class orbit:
 
         """
         
-        U = beta - self.arg_perigee
+        U = self.toRadians(beta) - self.arg_perigee
         e = self.e
         C = 1.0/self.planet.w*np.sqrt(self.planet.GM/(self.a*(1-e))**3)
         cosU = np.cos(U)
         sinU = np.sin(U)
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
-        cosB = np.cos(beta)
+        cosB = np.cos(self.toRadians(beta))
         
         """ Compute equations (73) and (74). Equation numbers may change! """
         cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
@@ -176,20 +381,14 @@ class orbit:
         """ Compute equations (79) and (80). Equation numbers may change!  """
         DcosG = C*(1+e*cosU)**2
         DsinG = e*C*(1+e*cosU)*sinU
+        D = np.sqrt(DcosG**2 + DsinG**2)
         
-        """ Compute equation (56) """
-        A = DcosG - cosI
-        Q = (sinI*cosB)**2 + A**2
+        e1 = np.array([D-cosI*cosG, -sinI*cosB, -cosI*sinG])
+        e2 = np.array([-sinG,
+                       0,
+                       cosG])
         
-        """ Compute equation (59) """
-        sB = np.sqrt((1-v**2)*Q - (v*DsinG)**2)/Q
-        
-        """ Compute the overall result """
-        u = np.array([sinG*v*(DcosG*A/Q - 1) + sB*cosG*cosB*sinI,
-                      -v*DsinG*sinI*cosB/Q + sB*A,
-                      v*(cosG + DsinG*sinG*A/Q) + sB*sinG*cosB*sinI])
-        
-        return self.computeTCN(beta).dot(u), u
+        return e1, e2
     
     def computeE(self, beta, v):
         """
@@ -208,35 +407,76 @@ class orbit:
         -------
         s: float
             The scaling factor
+            
+        Notes
+        -----
+        The calculation coded here multiples the equations in the notes
+        by the planet angular velocity to allow the computation of equation
+        (38) even in the case the planet angular velocity is low or zero.
 
         """
         
-        U = beta - self.arg_perigee
+        U = self.toRadians(beta) - self.arg_perigee
         e = self.e
-        C = 1.0/self.planet.w*np.sqrt(self.planet.GM/(self.a*(1-e))**3)
+        w = self.planet.w
+        wC = np.sqrt(self.planet.GM/(self.a*(1-e))**3)
         cosU = np.cos(U)
         sinU = np.sin(U)
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
-        cosB = np.cos(beta)
+        cosB = np.cos(self.toRadians(beta))
         
         """ Compute equations (73) and (74). Equation numbers may change! """
         cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
         sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
         
         """ Compute equations (79) and (80). Equation numbers may change!  """
-        DcosG = C*(1+e*cosU)**2
-        DsinG = e*C*(1+e*cosU)*sinU
-        D = np.sqrt(DcosG**2 + DsinG**2)
+        wDcosG = wC*(1+e*cosU)**2
+        wDsinG = e*wC*(1+e*cosU)*sinU
+        wD = np.sqrt(wDcosG**2 + wDsinG**2)
         
-        e1 = np.array([D-cosI*cosG, -sinI*cosB, -cosI*sinG])
+        e1 = np.array([wD-w*cosI*cosG, -w*sinI*cosB, -w*cosI*sinG])
         e2 = np.array([-sinG,
                        0,
                        cosG])
         
-        return e1, e2
+        return e1, e2 
+    
+    def computeItoR(self, beta):
+        """
+        Compute the matrix to transform PCI to PCR reference system
         
+        This function returns the rotation matrix and its time derivative
+        to go from the Planet Centered Inertial coordinate system to the 
+        Planet Centered Rotating coordinate system.
 
+        Parameters
+        ----------
+        beta : float (Radians)
+            The orbit angle (measured from the ascending node) for which to
+            compute the transformation matrix.
+
+        Returns
+        -------
+        M : `np.ndarray` [3,3]
+            The rotation matrix.
+        dM : `np.ndarray` [3,3]
+            The time derivative of the rotation matrix.
+
+        """
+        
+        t = self.computeT(beta)
+        cosWT = np.cos(self.planet.w*t)
+        sinWT = np.sin(self.planet.w*t)
+        M = np.array([[cosWT,  sinWT, 0],
+                      [-sinWT, cosWT, 0],
+                      [0,          0, 1]])
+        
+        dM = self.planet.w*np.array([[-sinWT, cosWT,  0],
+                                     [-cosWT, -sinWT, 0],
+                                     [0,          0,  0]])
+        return M, dM
+    
     def computeT(self, beta):
         """
         Compute time given the orbit abgle
@@ -255,38 +495,227 @@ class orbit:
             The amount of time passed to get to the orbit angle.
 
         """
+        
+        U = self.toRadians(beta) - self.arg_perigee
+        
         a = self.a
         e = self.e
         g = 1-e**2
         W = np.sqrt(self.planet.GM/(a**3*g))
-        t1 = 2/np.sqrt(g)*np.arctan((1-e)*np.tan(beta/2)/np.sqrt(g)) 
-        t2 = e*np.sin(beta)/(1+e*np.cos(beta))
+        # t1 = 2/np.sqrt(g)*np.arctan((1-e)*np.tan(U/2)/np.sqrt(g)) 
+        t1 = 2/np.sqrt(g)*np.arctan2((1-e)*np.tan(U/2), np.sqrt(g))
+        t2 = e*np.sin(U)/(1+e*np.cos(U))
         return 1/(W)*(t1-t2)
+    
+    def computeO(self, t, error = 1e-12, max_iter = 10):
+        """
+        Compute the orbit angle from time
         
+        Compute the orbit angle from time using the Newton-Raphson
+        iterative method
+
+        Parameters
+        ----------
+        beta : float
+            The time in seconds since the time of the ascending node at
+            which to compute the orbit angle.
+
+        Returns
+        -------
+        The orbit angle.
+
+        """
         
-#%% Tests   
-""" Some tests """
-off_nadir = 30
-orbit_angle = 79.7417+80
+        """ Normalize to the length of the period """
+        t -= np.round(t/self.period)*self.period
+        a = self.a
+        e = self.e
+        g = 1-e**2
+        W = np.sqrt(self.planet.GM/(a**3*g))
+        
+        U_old = np.pi/2
+        for k in range(max_iter):
+            c1 = (1+e*np.cos(U_old))
+            c2 = np.sin(U_old)
+            beta = U_old + self.arg_perigee
+            beta = beta if self.toRadians(1)==1 else np.degrees(beta)
+            tn = self.computeT(beta)
+            U_new = U_old + (t-tn)*W*c1**2
+            U_new = U_old - c1/(2*e*c2)*(1-np.sqrt(1+4*e*W*c1*c2*(t-tn)))
+            iter_error = np.abs(U_new-U_old)
+            if iter_error < error:
+                break
+            U_old = U_new
+            
+        beta = np.mod(beta, 2*np.pi if self.toRadians(1)==1 else 360)
+        return beta, iter_error
+    
+    def state2kepler(self, X):
+        """
+        Estimate the Keplerian elements from a state vector
 
-sentinel = orbit(0.0001303, 
-                 np.radians(79.7417), 
-                 7167100, 
-                 np.radians(98.1813))
-X, r, v = sentinel.computeR(np.radians(orbit_angle))
+        Parameters
+        ----------
+        X : `numpy.ndarray` (6,)
+            The state vector in an inertial reference frame.
 
-print("|r|: %0.6f, r: %0.6f" % (np.linalg.norm(X[0:3]), r))
-print("|v|: %0.6f, v: %0.6f" % (np.linalg.norm(X[3:]), v))
+        Returns
+        -------
+        dict
+            has fields: (radians or degress according to self.toRadians 
+            definition)
+                - eccentricity (unitless)
+                - a (m)
+                - perigee (radians or degrees)
+                - inclination (radians or degrees)
+                - ascendingNode (radians or degrees)
+                
+        Note
+        ----
+        Calculations are performed according to 
+        `this reference <https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf>`_
 
-uI, u = sentinel.computeU(np.radians(orbit_angle), np.cos(np.radians(off_nadir)))
-e1, e2 = sentinel.computeE(np.radians(orbit_angle), np.cos(np.radians(off_nadir)))
-print("Norm of u: %0.6f" % np.linalg.norm(u))
-print("u*e1: %0.6f" % np.dot(u,e1))
-print("u*e2: %0.6f, v: %0.6f" % (np.dot(u,e2), np.cos(np.radians(off_nadir))))
+        """
+        vsqr = np.linalg.norm(X[3:])**2
+        r = np.linalg.norm(X[:3])
+        a = 1/(2/r - vsqr/self.planet.GM)
+        h = np.cross(X[:3], X[3:])
+        evec = np.cross(X[3:], h)/self.planet.GM - X[0:3]/r
+        n = np.cross(np.array([0,0,1]), h)
+        e = np.linalg.norm(evec)
+        i = np.arccos(h[-1]/np.linalg.norm(h))
+        anode = np.arccos(n[0]/np.linalg.norm(n))
+        anode = anode if n[1]>=0 else 2*np.pi - anode
+        p = np.arccos(n.dot(evec)/np.linalg.norm(n)/e)
+        p = p if evec[-1] >= 0 else 2*np.pi - p
+        angleUnitFn = (lambda x:x) if self.toRadians(1) == 1 else np.degrees
+        return {"eccentricity": e,
+                "perigee": angleUnitFn(p),
+                "a": a,
+                "inclination": angleUnitFn(i),
+                "ascendingNode": angleUnitFn(anode)}
+    
+    def setFromStateVector(self, X):
+        """
+        Set the orbit parameters for this object using a state vector
+        
+        This function modifies the orbit parameters for this object. The
+        Kepler orbit elements are calculated using the state2kepler function
 
-#%%
-beta = np.radians(np.arange(0,720,0.00001))
-t = sentinel.computeT(beta)
-print(max(t)-min(t))
-print(2*np.pi*np.sqrt(sentinel.a**3/sentinel.planet.GM))
+        Parameters
+        ----------
+        X : `numpy.ndarray` (6,)
+            The supplied state vector.
 
+        Returns
+        -------
+        None.
+
+        """
+        
+        kepler = self.state2kepler(X)
+        
+        """ Call the init function to set everything """
+        self.e = kepler["eccentricity"]
+        self.arg_perigee = self.toRadians(kepler["perigee"])
+        self.a = kepler["a"]
+        self.inclination = self.toRadians(kepler["inclination"])
+        
+        cosI = np.cos(self.inclination)
+        sinI = np.sin(self.inclination)
+        cosP = np.cos(self.arg_perigee)
+        sinP = np.sin(self.arg_perigee)
+        
+        self.rotOfromE = np.array([[sinP, -cosP, 0],
+                                   [cosP,  sinP, 0],
+                                   [0,     0   , 1]])
+        self.rotIfromO = np.array([[cosI,  0, sinI],
+                                   [0,     1, 0   ],
+                                   [-sinI, 0, cosI]])
+        
+    def rotateUnit(self, angles, uvec, rvec):
+        """
+        Rotate a unit vector around some axis for a given set of angles.
+        
+        This function will use the quaternion rotation formalism
+        to rotate a given vector around another given vector.
+
+        Parameters
+        ----------
+        angles : `numpy.ndarray`
+            An array of angles to rotate by.
+        uvec : `numpy.ndarray` (3,)
+            The vector to rotate.
+        rvec : `numpy.ndarray` (3,)
+            The vector around which to rotate.
+
+        Returns
+        -------
+        'numpy.ndarray` (angles.shape, 3).
+            The rotated vector for each angle
+
+        """
+        
+        """ Make sure we are using radians """
+        cAngles = np.cos(self.toRadians(angles/2))
+        sAngles = np.sin(self.toRadians(angles/2))
+        
+        """ Create the quaternions """
+        urvec = rvec/np.linalg.norm(rvec)
+        q = np.array([np.quaternion(c, *(s*urvec)) 
+                      for c,s in zip(cAngles, sAngles)])
+        
+        """ Define the rotation vector as a quaternion """
+        p = np.quaternion(0, *uvec)
+        
+        """ Do the computation to rotate """
+        return quaternion.as_vector_part(((q*p)*q.conj()))
+    
+    def pointingError(self, AEU, alpha, epsilon, tau):
+        """
+        Rotate the basis vectors contained in the columns of AEU by the pointing
+        errors.
+        
+        Rotate the AEU vectors according to pointing error by using rotation 
+        matrices
+
+        Parameters
+        ----------
+        AEU : `numpy.ndarray` (3,3)
+            Basis vectors for Azimuth, Elevation and Look direction. Each column
+            corresponds to a respective basis vector.
+        alpha : float
+            Azimuth error (Radians).
+        epsilon : float
+            Elevation error (Radians).
+        tau : float
+            Tilt error (Radians).
+
+        Returns
+        -------
+        `numpy.ndarray` (3,3).
+            The rotated basis vectors
+
+        """
+        
+        cosA = np.cos(self.toRadians(alpha))
+        sinA = np.sin(self.toRadians(alpha))
+        cosE = np.cos(self.toRadians(epsilon))
+        sinE = np.sin(self.toRadians(epsilon))
+        cosT = np.cos(self.toRadians(tau))
+        sinT = np.sin(self.toRadians(tau))
+        
+        Me = np.array([[1, 0,        0],
+                       [0, cosE, -sinE],
+                       [0, sinE,  cosE]])
+           
+        Ma = np.array([[cosA,  0, sinA],
+                       [0,     1,    0],
+                       [-sinA, 0, cosA]])
+        
+        Mt = np.array([[cosT, -sinT, 0],
+                       [sinT, cosT,  0],
+                       [0,    0,     1]])
+        
+        return AEU.dot(Me).dot(Ma).dot(Mt)
+        

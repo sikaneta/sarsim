@@ -47,6 +47,7 @@ class solar_planet:
     J6 = 0.00000000608347
     J8 = -0.00000000001427
     sphericalHarmonicsFile = os.path.join(harmonicsPath , "egm96.txt")
+    nharmonics = 360
     
     def __init__(self):
         self.e = np.sqrt(1 - (self.b/self.a)**2)
@@ -181,6 +182,21 @@ class earth(solar_planet):
     J6 = 0.00000000608347
     J8 = -0.00000000001427
     sphericalHarmonicsFile = os.path.join(harmonicsPath , "egm96.txt")
+    nharmonics = 360
+    
+class venus(solar_planet):
+    M = 3.24858592079e14/G
+    GM = 3.24858592079e14
+    a = 6051878.0
+    b = 6051878.0
+    siderealSeconds = 243.0226*24*60*60
+    w = -2*np.pi/(243.0226*24*60*60)
+    J2 = 4.4044e-6
+    J4 = -2.1474e-6
+    J6 = 0
+    J8 = 0
+    sphericalHarmonicsFile = os.path.join(harmonicsPath , "shgj180u.txt")
+    nharmonics = 180
     
 # earth = planet()
 
