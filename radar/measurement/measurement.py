@@ -328,6 +328,94 @@ class state_vector(measurement):
                 break
             
         return [eta, slaveX, error]
+    
+    #%% Code to compute the ground position given u and v
+    def computeGroundPosition(self, X, u = 0, v = np.pi/4, h=0):
+        xhat = -X[:3]/np.linalg.norm(X[:3])
+        vhat = X[3:]/np.linalg.norm(X[3:])
+        
+        """ Compute a vector perpendicular to both """
+        what = np.cross(xhat, vhat)
+        what = what/np.linalg.norm(what)
+        
+        """ Find the matrix to invert """
+        M = np.array([xhat, vhat, what])
+        Minv = np.linalg.inv(M)
+        
+        """ Homogeneous solution """
+        y = np.array([v, u, 0])
+        uhom = np.dot(Minv, y)
+        
+        """ Find a unit vector specific solution """
+        C = uhom.dot(uhom) - 1
+        B = 2*uhom.dot(what)
+        tA = (-B + np.sqrt(B**2 - 4*C))/2
+        tB = (-B - np.sqrt(B**2 - 4*C))/2
+        uhatA = uhom + tA*what
+        uhatB = uhom + tB*what
+        uhat = uhatA if uhatA.dot(what) >= 0 else uhatB
+        
+        """ Now find where the vector hits the ground """
+        Xs = X[:3]
+        a = self.planet.a
+        b = self.planet.b
+        mXs = Xs/np.array([a+h, a+h, b+h])
+        mu = uhat/np.array([a+h, a+h, b+h])
+        
+        mC = mXs.dot(mXs) - 1
+        mB = 2*mXs.dot(mu)
+        mA = mu.dot(mu)
+        
+        mtA = (-mB + np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+        mtB = (-mB - np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+        
+        mt = mtA if np.abs(mtA) < np.abs(mtB) else mtB
+        
+        return Xs + mt*uhat
+    
+    #%% Code to compute the ground position given u and v
+    def computeGroundPositionU(self, X, uhat, h=0):
+        
+        """ Find where the vector hits the ground """
+        Xs = X[:3]
+        a = self.planet.a
+        b = self.planet.b
+        mXs = Xs/np.array([a+h, a+h, b+h])
+        mu = uhat/np.array([a+h, a+h, b+h])
+        
+        mC = mXs.dot(mXs) - 1
+        mB = 2*mXs.dot(mu)
+        mA = mu.dot(mu)
+        
+        mtA = (-mB + np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+        mtB = (-mB - np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+        
+        mt = mtA if np.abs(mtA) < np.abs(mtB) else mtB
+        
+        return Xs + mt*uhat
+    
+    def computeRangeVectorsU(self, X, uhats, h=0):
+
+        """ Find where the vector hits the ground """
+        Xs = X[:3]
+        a = self.planet.a
+        b = self.planet.b
+        mXs = Xs/np.array([a+h, a+h, b+h])
+        De = np.array([[1/(a+h), 0, 0],[0, 1/(a+h), 0],[0, 0, 1/(b+h)]])
+        mu = np.matmul(uhats, De)
+
+        mA = np.sum(mu*mu, axis=-1)
+        mB = 2*np.matmul(mu, mXs)
+        mC = (mXs.dot(mXs) - 1)*np.ones_like(mA)
+
+        mtA = (-mB + np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+        mtB = (-mB - np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+
+        msk = (np.abs(mtA) < np.abs(mtB)).astype(int)
+        mt = mtA*msk + mtB*(1-msk)
+
+        """ Compute the range vectors and return """
+        return np.stack((mt, mt, mt), axis=-1)*uhats
         
     def getDateTimeXML(self, XMLDateTimeElement):
         """
@@ -1696,7 +1784,22 @@ class state_vector(measurement):
         for vel in iv:
             ivect.append(float(vel))
         return ivect
+    
+    def toPCI(self, mData, t):
+        w = self.planet.w;
+        cosWT = np.cos(w*t)
+        sinWT = np.sin(w*t)
+        X = np.array([[cosWT, -sinWT, 0],
+                      [sinWT,  cosWT, 0],
+                      [0,      0,     1]])
+        V = w*np.array([[-sinWT, -cosWT, 0],
+                        [cosWT,  -sinWT, 0],
+                        [0,      0,      0]])
 
+        ix = X.dot(mData[0:3])
+        iv = X.dot(mData[3:6]) + V.dot(mData[0:3])
+        return np.concatenate((ix, iv))
+    
     def toECEF(self,mData, t):
         w = self.planet.w;
         X = mat([[cos(w*t),sin(w*t),0.0],
@@ -1713,6 +1816,23 @@ class state_vector(measurement):
         for k in range(0,3):
             ivect.append(float(iv[k]))
         return ivect
+    
+    def toPCR(self, mData, t):
+        w = self.planet.w;
+        cosWT = np.cos(w*t)
+        sinWT = np.sin(w*t)
+        X = np.array([[cosWT,  sinWT, 0],
+                      [-sinWT, cosWT, 0],
+                      [0,      0,     1]])
+        V = w*np.array([[-sinWT,  cosWT, 0],
+                        [-cosWT, -sinWT, 0],
+                        [0,      0,     0]])
+        print(X)
+        print(V)
+
+        ix = X.dot(mData[0:3])
+        iv = X.dot(mData[3:6]) + V.dot(mData[0:3])
+        return np.concatenate((ix, iv))
 
     def integrate(self, 
                   t, 

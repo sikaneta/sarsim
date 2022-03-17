@@ -1,42 +1,53 @@
-[0] Config.pm:311> INFO - This is Biber 2.16
-[0] Config.pm:314> INFO - Logfile is 'DRDCArcSAR.blg'
-[56] biber:340> INFO - === Fr Aug 27, 2021, 11:46:20
-[65] Biber.pm:415> INFO - Reading 'DRDCArcSAR.bcf'
-[116] Biber.pm:952> INFO - Found 42 citekeys in bib section 0
-[126] Biber.pm:4340> INFO - Processing section 0
-[134] Biber.pm:4531> INFO - Looking for bibtex format file '/home/ishuwa/Documents/bibliography/ishbib.bib' for section 0
-[158] bibtex.pm:1689> INFO - LaTeX decoding ...
-[598] bibtex.pm:1494> INFO - Found BibTeX data source '/home/ishuwa/Documents/bibliography/ishbib.bib'
-[619] Utils.pm:384> WARN - Duplicate entry key: 'Meng2018' in file '/home/ishuwa/Documents/bibliography/ishbib.bib', skipping ...
-[654] Utils.pm:384> WARN - legacy month field 'July' in entry 'Porfilio2016' is not an integer - this will probably not sort properly.
-[659] Utils.pm:384> WARN - legacy month field 'June' in entry 'Mittermayer' is not an integer - this will probably not sort properly.
-[666] Utils.pm:384> WARN - legacy month field 'June' in entry 'Luo2014' is not an integer - this will probably not sort properly.
-[675] Utils.pm:384> WARN - legacy month field 'Jan' in entry 'Meng2018' is not an integer - this will probably not sort properly.
-[678] Utils.pm:384> WARN - legacy month field 'Oct' in entry 'Edelhust2017' is not an integer - this will probably not sort properly.
-[685] Utils.pm:384> WARN - legacy month field 'Jan' in entry 'Zhao2014' is not an integer - this will probably not sort properly.
-[692] Utils.pm:384> WARN - legacy month field 'March' in entry 'Wu2016' is not an integer - this will probably not sort properly.
-[698] Utils.pm:384> WARN - legacy month field 'March' in entry 'Wang2015' is not an integer - this will probably not sort properly.
-[703] Utils.pm:384> WARN - legacy month field 'July' in entry 'RodriguezCassola2019' is not an integer - this will probably not sort properly.
-[714] Utils.pm:384> WARN - legacy month field 'Oct' in entry 'Prats2014' is not an integer - this will probably not sort properly.
-[733] Utils.pm:384> WARN - legacy month field 'June' in entry 'CalabreseDiego2014' is not an integer - this will probably not sort properly.
-[737] Utils.pm:384> WARN - legacy month field 'Nov' in entry 'SikanetaGierullTGRS2015' is not an integer - this will probably not sort properly.
-[759] Utils.pm:384> WARN - legacy month field 'July' in entry 'Wong2000' is not an integer - this will probably not sort properly.
-[764] Utils.pm:384> WARN - legacy month field 'Dec' in entry 'Liang2017' is not an integer - this will probably not sort properly.
-[776] Utils.pm:384> WARN - legacy month field 'Oct' in entry 'PratsIraola2014' is not an integer - this will probably not sort properly.
-[781] Utils.pm:384> WARN - legacy month field 'july' in entry 'Cumming2003' is not an integer - this will probably not sort properly.
-[786] Utils.pm:384> WARN - legacy month field 'May' in entry 'Raney1992' is not an integer - this will probably not sort properly.
-[788] Utils.pm:384> WARN - legacy month field 'July' in entry 'Bamler1992' is not an integer - this will probably not sort properly.
-[791] Utils.pm:384> WARN - legacy month field 'July' in entry 'EnderSignalTheoretic' is not an integer - this will probably not sort properly.
-[798] Utils.pm:384> WARN - legacy month field 'March' in entry 'Cafforio1991a' is not an integer - this will probably not sort properly.
-[802] Utils.pm:384> WARN - legacy month field 'Oct' in entry 'Sikaneta2014' is not an integer - this will probably not sort properly.
-[816] Utils.pm:384> WARN - legacy month field 'Oct' in entry 'Krieger2004' is not an integer - this will probably not sort properly.
-[820] Utils.pm:384> WARN - legacy month field 'oct.' in entry 'Gebert2009b' is not an integer - this will probably not sort properly.
-[827] Utils.pm:384> WARN - legacy month field 'July' in entry 'SikanetaCeruttiKlareGierullIGARSS2014' is not an integer - this will probably not sort properly.
-[832] Utils.pm:384> WARN - legacy month field 'April' in entry 'Cerutti-Maori2010b' is not an integer - this will probably not sort properly.
-[868] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[868] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[868] Biber.pm:4168> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
-[868] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
-[888] bbl.pm:654> INFO - Writing 'DRDCArcSAR.bbl' with encoding 'UTF-8'
-[913] bbl.pm:757> INFO - Output to DRDCArcSAR.bbl
-[913] Biber.pm:128> INFO - WARNINGS: 26
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: DRDCArcSAR.aux
+Reallocating 'name_of_file' (item size: 1) to 5 items.
+The style file: drdc.bst
+Reallocating 'name_of_file' (item size: 1) to 62 items.
+Database file #1: C:/Users/Ishuwa.Sikaneta/Documents/Legacy/bibliography/ishbib.bib
+Warning--I'm ignoring Raney1992's extra "month" field
+--line 747 of file C:/Users/Ishuwa.Sikaneta/Documents/Legacy/bibliography/ishbib.bib
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--can't use both author and editor fields in NovelRadar
+You've used 42 entries,
+            2134 wiz_defined-function locations,
+            818 strings with 13786 characters,
+and the built_in function-call counts, 12373 in all, are:
+= -- 1378
+> -- 473
+< -- 0
++ -- 176
+- -- 134
+* -- 942
+:= -- 1913
+add.period$ -- 46
+call.type$ -- 42
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 43
+duplicate$ -- 542
+empty$ -- 1158
+format.name$ -- 134
+if$ -- 2994
+int.to.chr$ -- 0
+int.to.str$ -- 42
+missing$ -- 43
+newline$ -- 150
+num.names$ -- 42
+pop$ -- 144
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 370
+stack$ -- 0
+substring$ -- 864
+swap$ -- 169
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 92
+width$ -- 44
+write$ -- 436
+(There were 2 warnings)

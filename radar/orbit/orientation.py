@@ -322,6 +322,7 @@ class orbit:
         uTCN = np.array([sinG*v*(wDcosG*wA/wwQ - 1) + wsB*cosG*cosB*sinI,
                          -w*v*wDsinG*sinI*cosB/wwQ + wAsB,
                          v*(cosG + wDsinG*sinG*wA/wwQ) + wsB*sinG*cosB*sinI])
+        uTCN /= np.linalg.norm(uTCN)
         
         """ Compute the TCN vectors """
         TCN = self.computeTCN(beta)
@@ -334,6 +335,7 @@ class orbit:
         
         """ Compute the eTCN vector """
         eTCN = np.cross(uTCN, aTCN)
+        eTCN/= np.linalg.norm(eTCN)
         
         """ Compute the aeuTCN matrix """
         aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
@@ -479,7 +481,7 @@ class orbit:
     
     def computeT(self, beta):
         """
-        Compute time given the orbit abgle
+        Compute time given the orbit angle.
         
         Computes the time from the ascending node given the orbit angle,
         also measured from the ascending node.
@@ -580,7 +582,7 @@ class orbit:
         r = np.linalg.norm(X[:3])
         a = 1/(2/r - vsqr/self.planet.GM)
         h = np.cross(X[:3], X[3:])
-        evec = np.cross(X[3:], h)/self.planet.GM - X[0:3]/r
+        evec = np.cross(X[3:], h)/self.planet.GM - X[:3]/r
         n = np.cross(np.array([0,0,1]), h)
         e = np.linalg.norm(evec)
         i = np.arccos(h[-1]/np.linalg.norm(h))
@@ -588,12 +590,18 @@ class orbit:
         anode = anode if n[1]>=0 else 2*np.pi - anode
         p = np.arccos(n.dot(evec)/np.linalg.norm(n)/e)
         p = p if evec[-1] >= 0 else 2*np.pi - p
+        urvec = X[:3]/r
+        uevec = evec/np.linalg.norm(evec)
+        dp = urvec.dot(uevec)
+        dp = np.sign(dp)*min(np.abs(dp), 1)
+        tAnomaly = np.arccos(dp)
         angleUnitFn = (lambda x:x) if self.toRadians(1) == 1 else np.degrees
         return {"eccentricity": e,
                 "perigee": angleUnitFn(p),
                 "a": a,
                 "inclination": angleUnitFn(i),
-                "ascendingNode": angleUnitFn(anode)}
+                "ascendingNode": angleUnitFn(anode),
+                "trueAnomaly": angleUnitFn(tAnomaly)}
     
     def setFromStateVector(self, X):
         """
@@ -620,6 +628,7 @@ class orbit:
         self.arg_perigee = self.toRadians(kepler["perigee"])
         self.a = kepler["a"]
         self.inclination = self.toRadians(kepler["inclination"])
+        self.period = 2*np.pi*np.sqrt(self.a**3/self.planet.GM)
         
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
@@ -673,8 +682,8 @@ class orbit:
     
     def pointingError(self, AEU, alpha, epsilon, tau):
         """
-        Rotate the basis vectors contained in the columns of AEU by the pointing
-        errors.
+        Rotate the basis vectors contained in the columns of AEU by the 
+        pointing errors.
         
         Rotate the AEU vectors according to pointing error by using rotation 
         matrices
@@ -682,8 +691,8 @@ class orbit:
         Parameters
         ----------
         AEU : `numpy.ndarray` (3,3)
-            Basis vectors for Azimuth, Elevation and Look direction. Each column
-            corresponds to a respective basis vector.
+            Basis vectors for Azimuth, Elevation and Look direction. Each 
+            column corresponds to a respective basis vector.
         alpha : float
             Azimuth error (Radians).
         epsilon : float
@@ -718,4 +727,146 @@ class orbit:
                        [0,    0,     1]])
         
         return AEU.dot(Me).dot(Ma).dot(Mt)
+          
+    def pointingErrors(self, AEU, alpha, epsilon, tau):
+        """
+        Rotate the basis vectors contained in the columns of AEU by the 
+        pointing errors.
+        
+        Rotate the AEU vectors according to pointing error by using rotation 
+        matrices. This function takes a list of angles by which to rotate.
+
+        Parameters
+        ----------
+        AEU : `numpy.ndarray` (3,3)
+            Basis vectors for Azimuth, Elevation and Look direction. Each 
+            column corresponds to a respective basis vector.
+        alpha : float
+            Azimuth error (Radians).
+        epsilon : float
+            Elevation error (Radians).
+        tau : float
+            Tilt error (Radians).
+
+        Returns
+        -------
+        `numpy.ndarray` (3,3).
+            The rotated basis vectors
+
+        """
+        
+        cosA = np.cos(self.toRadians(alpha))
+        sinA = np.sin(self.toRadians(alpha))
+        cosE = np.cos(self.toRadians(epsilon))
+        sinE = np.sin(self.toRadians(epsilon))
+        cosT = np.cos(self.toRadians(tau))
+        sinT = np.sin(self.toRadians(tau))
+        
+        Me = np.array([[[1, 0, 0],
+                       [0, cE, -sE],
+                       [0, sE,  cE]] for cE,sE in zip(cosE, sinE)])
+
+        Ma = np.array([[[cA, 0, sA],
+                        [0, 1, 0],
+                        [-sA, 0, cA]] for cA,sA in zip(cosA, sinA)])
+
+        Mt = np.array([[[cT, -sT, 0],
+                       [sT, cT,  0],
+                       [0,    0,     1]] for cT,sT in zip(cosT, sinT)])
+        
+        """ Values are computed by using the Einstein summation convetion.
+        This is a fast, intuitive way to handle the multiple indeces in the 
+        ndarray. See the numpy docs for more information."""
+        return np.einsum('ij,ejl,aln,tnk -> aetik', AEU, Me, Ma, Mt)
+    
+    def dopCen(self, 
+               aeuPe, 
+               off_boresight, 
+               VP, 
+               wavelength):
+        """
+        Compute the Doppler centroid at a given off-nadir (in elevation)
+        angle
+        
+        Compute the Doppler centroid for a given off-nadir angle. The 
+        off-nadir angle is the right-handed rotation of the actual look
+        vector around the azimuth axis, the first column of aeuPe
+
+        Parameters
+        ----------
+        aeuPe : `numpy.ndarray`, (nA, nE, nT, 3, 3)
+            The actual Azimuth, Elevation, Look direction (AEU) vectors as
+            columns. These are stacked by a vector of nA azimuth, nE elevation
+            and nT tilt angles by which the actual aeuPe vectors are rotated
+            relative the desired aeuP vectors. These are all referenced to the
+            Planetary (P) reference frame.
+        off_boresight : float
+            The anlge by which to rotate the look vector around the actual
+            azimuth axis.
+        VP : `np.ndarray`, (3,)
+            The satellite velocity vector in the Planetary reference frame (P).
+        wavelength : float
+            The carrier wavelength (m).
+
+        Returns
+        -------
+        `numpy.ndarray`, (nA, nE, nT)
+            The Doppler centroid for each azimuth, elevation and tilt angle
+            error.
+
+        """
+        
+        v = np.array([0, 
+                      -np.sin(self.toRadians(off_boresight)),
+                      np.cos(self.toRadians(off_boresight))])
+        
+        r2 = np.matmul(aeuPe, v)
+        return -2*np.matmul(r2, VP)/wavelength
+
+
+    def dopCens(self,
+                aeuPe, 
+                vAngles, 
+                VP, 
+                wavelength):
+        """
+        Compute the Doppler centroid at a given set of off-nadir (in elevation)
+        angles
+        
+        Compute the Doppler centroid for a given set of off-nadir angles. The 
+        off-nadir angle is the right-handed rotation of the actual look
+        vector around the azimuth axis, the first column of aeuPe
+
+        Parameters
+        ----------
+        aeuPe : `numpy.ndarray`, (nA, nE, nT, 3, 3)
+            The actual Azimuth, Elevation, Look direction (AEU) vectors as
+            columns. These are stacked by a vector of nA azimuth, nE elevation
+            and nT tilt angles by which the actual aeuPe vectors are rotated
+            relative the desired aeuP vectors. These are all referenced to the
+            Planetary (P) reference frame.
+        off_boresight : `numpy.ndarray`
+            Array of anlges by which to rotate the look vector around the 
+            actual azimuth axis.
+        VP : `np.ndarray`, (3,)
+            The satellite velocity vector in the Planetary reference frame (P).
+        wavelength : float
+            The carrier wavelength (m).
+
+        Returns
+        -------
+        `numpy.ndarray`, (nA, nE, nT)
+            The Doppler centroid for each azimuth, elevation and tilt angle
+            error.
+
+        """
+        
+        v = np.array([[0, 
+                      -np.sin(self.toRadians(ob)),
+                      np.cos(self.toRadians(ob))] for ob in vAngles])
+        
+        """ Values are computed by using the Einstein summation convetion.
+        This is a fast, intuitive way to handle the multiple indeces in the 
+        ndarray. See the numpy docs for more information."""
+        return 2*np.einsum('ijklm,nm,l->ijkn', aeuPe, v, VP)/wavelength
         
