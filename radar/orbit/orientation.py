@@ -16,13 +16,16 @@ class orbit:
     Class to compute the zero Doppler for a given orbit
     """
     
+    angleFunction = {"degrees": np.radians,
+                     "radians": lambda x:x}
+    
     def __init__(self,
                  e=0,
                  arg_perigee=0,
                  a=10000000.0,
                  inclination=np.pi/2,
                  planet = earth(),
-                 angleUnitFunction = lambda x:x
+                 angleUnits = "radians"
                  ):
         """
         Initiator for orbit object. 
@@ -46,13 +49,8 @@ class orbit:
             which the orbit plane is rotated.
         planet : `radar.space.planet`
             Object that defines the planet. Default is Earth
-        angleUnitFunction : `function`
-            Function to convert angles to radians. If not set, the identity
-            function is assumed. This function will be used to convert all
-            function arguments to radians. Thus a consistent unit for angles
-            must be used for all calls to functions in the class. For
-            instance, if this is set to `np.radians`, it is assumed that
-            all angles are supplied in degrees.
+        angleUnits : `str`
+            Units for input angles, degrees or radians.
 
         Returns
         -------
@@ -60,7 +58,7 @@ class orbit:
 
         """
         
-        self.toRadians = angleUnitFunction
+        self.toRadians = self.angleFunction[angleUnits]
         self.e = e
         self.arg_perigee = self.toRadians(arg_perigee)
         self.a = a
@@ -77,7 +75,128 @@ class orbit:
         self.rotIfromO = np.array([[cosI,  0, sinI],
                                    [0,     1, 0   ],
                                    [-sinI, 0, cosI]])
+
     
+    def setFromStateVector(self, X):
+        """
+        Set the orbit parameters for this object using a state vector
+        
+        This function modifies the orbit parameters for this object. The
+        Kepler orbit elements are calculated using the state2kepler function
+
+        Parameters
+        ----------
+        X : `numpy.ndarray` (6,)
+            The supplied state vector.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        kepler = self.state2kepler(X)
+        
+        """ Set everything """
+        self.e = kepler["eccentricity"]
+        self.arg_perigee = self.toRadians(kepler["perigee"])
+        self.a = kepler["a"]
+        self.inclination = self.toRadians(kepler["inclination"])
+        self.period = 2*np.pi*np.sqrt(self.a**3/self.planet.GM)
+        ascendingNode = kepler["ascendingNode"]
+        orbitAngle = (kepler["trueAnomaly"] 
+                      - ascendingNode
+                      + kepler["perigee"])
+        
+        cosI = np.cos(self.inclination)
+        sinI = np.sin(self.inclination)
+        cosP = np.cos(self.arg_perigee)
+        sinP = np.sin(self.arg_perigee)
+        
+        self.rotOfromE = np.array([[sinP, -cosP, 0],
+                                   [cosP,  sinP, 0],
+                                   [0,     0   , 1]])
+        self.rotIfromO = np.array([[cosI,  0, sinI],
+                                   [0,     1, 0   ],
+                                   [-sinI, 0, cosI]])
+        
+        return orbitAngle, ascendingNode
+        
+
+    def state2kepler(self, X):
+        """
+        Estimate the Keplerian elements from a state vector
+
+        Parameters
+        ----------
+        X : `numpy.ndarray` (6,)
+            The state vector in an inertial reference frame.
+
+        Returns
+        -------
+        dict
+            has fields: (radians or degress according to self.toRadians 
+            definition)
+                - eccentricity (unitless)
+                - a (m)
+                - perigee (radians or degrees)
+                - inclination (radians or degrees)
+                - ascendingNode (radians or degrees)
+                
+        Note
+        ----
+        Calculations are performed according to 
+        `this reference <https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf>`_
+
+        """
+        rvec = X[:3]
+        vvec = X[3:]
+        vsqr = np.linalg.norm(vvec)**2
+        r = np.linalg.norm(rvec)
+        
+        """ Compute the semi major axis, eq (8) """
+        a = 1/(2/r - vsqr/self.planet.GM)
+        
+        """ Compute the orbital momentum vector, eq (1) """
+        hvec = np.cross(rvec, vvec)
+        
+        """ Compute the eccentricity vector and eccentricity, eq (2)"""
+        evec = np.cross(vvec, hvec)/self.planet.GM - rvec/r
+        e = np.linalg.norm(evec)
+        
+        """ Compute the n vector, eq (3a) """
+        nvec = np.cross(np.array([0,0,1]), hvec)
+        unvec = nvec/np.linalg.norm(nvec)
+        
+        """ Compute the true anomaly, eq (3b) """
+        urvec = rvec/r
+        uevec = evec/np.linalg.norm(evec)
+        tAnomaly = np.arccos(uevec.dot(urvec))
+        if rvec.dot(vvec) < 0:
+            tAnomaly = 2*np.pi-tAnomaly
+            
+        """ Compute the orbit inclination angle, eq (4) """
+        i = np.arccos(hvec[-1]/np.linalg.norm(hvec))
+        
+        """ Compute the longitude of the ascending node, eq (6a) """
+        anode = np.arccos(unvec[0])
+        """ Have added the pi above because I was getting
+            the descending node instead. Check for reason. """
+        anode = anode if nvec[1]>=0 else 2*np.pi - anode
+        
+        """ Compute the angle of periapsis, eq (6b) """
+        p = np.arccos(unvec.dot(uevec))
+        p = p if evec[-1] >= 0 else 2*np.pi - p
+        
+        angleUnitFn = (lambda x:x) if self.toRadians(1) == 1 else np.degrees
+        return {"eccentricity": e,
+                "perigee": angleUnitFn(p),
+                "a": a,
+                "inclination": angleUnitFn(i),
+                "ascendingNode": angleUnitFn(anode),
+                "trueAnomaly": angleUnitFn(tAnomaly)}
+
+           
     def fromPeriod(self, period):
         self.period = period
         self.a = ((period/2/np.pi)**2*self.planet.GM)**(1/3)
@@ -551,97 +670,7 @@ class orbit:
             
         beta = np.mod(beta, 2*np.pi if self.toRadians(1)==1 else 360)
         return beta, iter_error
-    
-    def state2kepler(self, X):
-        """
-        Estimate the Keplerian elements from a state vector
 
-        Parameters
-        ----------
-        X : `numpy.ndarray` (6,)
-            The state vector in an inertial reference frame.
-
-        Returns
-        -------
-        dict
-            has fields: (radians or degress according to self.toRadians 
-            definition)
-                - eccentricity (unitless)
-                - a (m)
-                - perigee (radians or degrees)
-                - inclination (radians or degrees)
-                - ascendingNode (radians or degrees)
-                
-        Note
-        ----
-        Calculations are performed according to 
-        `this reference <https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf>`_
-
-        """
-        vsqr = np.linalg.norm(X[3:])**2
-        r = np.linalg.norm(X[:3])
-        a = 1/(2/r - vsqr/self.planet.GM)
-        h = np.cross(X[:3], X[3:])
-        evec = np.cross(X[3:], h)/self.planet.GM - X[:3]/r
-        n = np.cross(np.array([0,0,1]), h)
-        e = np.linalg.norm(evec)
-        i = np.arccos(h[-1]/np.linalg.norm(h))
-        anode = np.arccos(n[0]/np.linalg.norm(n))
-        anode = anode if n[1]>=0 else 2*np.pi - anode
-        p = np.arccos(n.dot(evec)/np.linalg.norm(n)/e)
-        p = p if evec[-1] >= 0 else 2*np.pi - p
-        urvec = X[:3]/r
-        uevec = evec/np.linalg.norm(evec)
-        dp = urvec.dot(uevec)
-        dp = np.sign(dp)*min(np.abs(dp), 1)
-        tAnomaly = np.arccos(dp)
-        angleUnitFn = (lambda x:x) if self.toRadians(1) == 1 else np.degrees
-        return {"eccentricity": e,
-                "perigee": angleUnitFn(p),
-                "a": a,
-                "inclination": angleUnitFn(i),
-                "ascendingNode": angleUnitFn(anode),
-                "trueAnomaly": angleUnitFn(tAnomaly)}
-    
-    def setFromStateVector(self, X):
-        """
-        Set the orbit parameters for this object using a state vector
-        
-        This function modifies the orbit parameters for this object. The
-        Kepler orbit elements are calculated using the state2kepler function
-
-        Parameters
-        ----------
-        X : `numpy.ndarray` (6,)
-            The supplied state vector.
-
-        Returns
-        -------
-        None.
-
-        """
-        
-        kepler = self.state2kepler(X)
-        
-        """ Call the init function to set everything """
-        self.e = kepler["eccentricity"]
-        self.arg_perigee = self.toRadians(kepler["perigee"])
-        self.a = kepler["a"]
-        self.inclination = self.toRadians(kepler["inclination"])
-        self.period = 2*np.pi*np.sqrt(self.a**3/self.planet.GM)
-        
-        cosI = np.cos(self.inclination)
-        sinI = np.sin(self.inclination)
-        cosP = np.cos(self.arg_perigee)
-        sinP = np.sin(self.arg_perigee)
-        
-        self.rotOfromE = np.array([[sinP, -cosP, 0],
-                                   [cosP,  sinP, 0],
-                                   [0,     0   , 1]])
-        self.rotIfromO = np.array([[cosI,  0, sinI],
-                                   [0,     1, 0   ],
-                                   [-sinI, 0, cosI]])
-        
     def rotateUnit(self, angles, uvec, rvec):
         """
         Rotate a unit vector around some axis for a given set of angles.
@@ -870,3 +899,208 @@ class orbit:
         ndarray. See the numpy docs for more information."""
         return 2*np.einsum('ijklm,nm,l->ijkn', aeuPe, v, VP)/wavelength
         
+    def PRYfromRotation(self, R, R0 = np.eye(3)):
+        """
+        Compute Pitch, roll and Yaw from rotation matrix
+        
+        This function computes the Pitch angle, Roll angle
+        and Yaw angle from a given rotation matrix. The
+        algorithm for computing these values can be found
+        in my notes.
+        
+        The pitch, roll and yaw angles are given by \theta_p,
+        \theta_r and \theta_y, respectively.
+        
+        The Pitch matrix is given by
+        
+        M_p = [cos\theta_p  sin\theta_p  0]
+              [-sin\theta_p cos\theta_p  0]
+              [0            0            1].
+              
+        
+        The roll matrix is given by
+        
+        M_r = [cos\theta_r  0 -sin\theta_r]
+              [0            1            0]
+              [sin\theta_r  0  cos\theta_r].
+        
+        
+        And the yaw matrix is given by
+        
+        M_y = [1            0            0]
+              [0  cos\theta_y  sin\theta_y]
+              [0  -sin\theta_y cos\theta_y].
+              
+        The **rotated** basis vectors i_1, j_1 and k_1 relate to the
+        original basis vectors, i_0, j_0, k_0 through
+        
+        [i_1, j_1, k_1] = [i_0, j_0, k_0]M_p^TM_r^TM_y^T
+        
+        where [i_1, j_1, k_1] and [i_0, j_0, k_0] are 3x3 matrices with columns
+        corresponding to the indicated basis vectors.
+        
+        Assuming that [i_0, j_0, k_0] is the identity matrix, this function
+        takes input as R = [i_1, j_1, k_1] and computes M_p, M_r and M_y and
+        the corresponding Euler angles.
+        
+        Parameters
+        ----------
+        R : `numpy.ndarray, [3,3]`
+            The rotation matrix to express as pitch roll yaw.
+        R0 : `numpy.ndarray, [3,3]`
+            Initial basis vectors. This is defines the default from which
+            pitch roll and yaw are computed. Default is the identity matrix.
+    
+        Returns
+        -------
+        dict
+            A dictionary with the Euler angles in radians and the corresponding
+            rotation matrices.
+    
+        """
+        
+        
+        """ Compute the yaw angle """
+        R = (R0.T).dot(R)
+        theta_y = np.arctan2(R[2,1], R[2,2])
+        c_y = np.cos(theta_y)
+        s_y = np.sin(theta_y)
+        
+        M_y = np.array([
+                        [1,0,0],
+                        [0, c_y, s_y],
+                        [0,-s_y, c_y]
+                       ])
+        
+        R = R.dot(M_y)
+        
+        """ Compute the roll angle """
+        theta_r = np.arctan2(-R[2,0], R[2,2])
+        c_r = np.cos(theta_r)
+        s_r = np.sin(theta_r)
+        
+        M_r = np.array([
+                        [c_r,0,-s_r],
+                        [0,1,0],
+                        [s_r,0,c_r]
+                       ])
+        
+        R = R.dot(M_r)
+        
+        """ Compute the pitch angle """
+        theta_p = np.arctan2(R[1,0], R[1,1])
+        c_p = np.cos(theta_p)
+        s_p = np.sin(theta_p)
+        
+        M_p = np.array([
+                        [c_p, s_p,0],
+                        [-s_p,c_p,0],
+                        [0,0,1]
+                       ])
+        
+        R.dot(M_p)
+        
+        return (theta_p, theta_r, theta_y), (M_p, M_r, M_y)
+    
+            
+    def YRPfromRotation(self, R, R0 = np.eye(3)):
+        """
+        Compute Pitch, roll and Yaw from rotation matrix
+        
+        This function computes the Pitch angle, Roll angle
+        and Yaw angle from a given rotation matrix. The
+        algorithm for computing these values can be found
+        in my notes.
+        
+        The pitch, roll and yaw angles are given by \theta_p,
+        \theta_r and \theta_y, respectively.
+        
+        The Pitch matrix is given by
+        
+        M_p = [cos\theta_p  sin\theta_p  0]
+              [-sin\theta_p cos\theta_p  0]
+              [0            0            1].
+              
+        
+        The roll matrix is given by
+        
+        M_r = [cos\theta_r  0 -sin\theta_r]
+              [0            1            0]
+              [sin\theta_r  0  cos\theta_r].
+        
+        
+        And the yaw matrix is given by
+        
+        M_y = [1            0            0]
+              [0  cos\theta_y  sin\theta_y]
+              [0  -sin\theta_y cos\theta_y].
+              
+        The **rotated** basis vectors i_1, j_1 and k_1 relate to the
+        original basis vectors, i_0, j_0, k_0 through
+        
+        [i_1, j_1, k_1] = [i_0, j_0, k_0]M_p^TM_r^TM_y^T
+        
+        where [i_1, j_1, k_1] and [i_0, j_0, k_0] are 3x3 matrices with columns
+        corresponding to the indicated basis vectors.
+        
+        Assuming that [i_0, j_0, k_0] is the identity matrix, this function
+        takes input as R = [i_1, j_1, k_1] and computes M_p, M_r and M_y and
+        the corresponding Euler angles.
+        
+        Parameters
+        ----------
+        R : `numpy.ndarray, [3,3]`
+            The rotation matrix to express as pitch roll yaw.
+        R0 : `numpy.ndarray, [3,3]`
+            Initial basis vectors. This is defines the default from which
+            pitch roll and yaw are computed. Default is the identity matrix.
+    
+        Returns
+        -------
+        dict
+            A dictionary with the Euler angles in radians and the corresponding
+            rotation matrices.
+    
+        """
+        
+        
+        """ Compute the yaw angle """
+        R = (R0.T).dot(R)
+        theta_p = np.arctan2(-R[0,1], R[0,0])
+        c_p = np.cos(theta_p)
+        s_p = np.sin(theta_p)
+        
+        M_p = np.array([
+                        [c_p,  s_p,  0.0],
+                        [-s_p, c_p,  0.0],
+                        [0.0,  0.0,  1.0]
+                        ])
+        R = R.dot(M_p)
+        
+        """ Compute the roll angle """
+        theta_r = np.arctan2(-R[0,2], R[0,0])
+        c_r = np.cos(theta_r)
+        s_r = np.sin(theta_r)
+        
+        M_r = np.array([
+                        [c_r,0,-s_r],
+                        [0,1,0],
+                        [s_r,0,c_r]
+                       ])
+        
+        R = R.dot(M_r)
+        
+        """ Compute the pitch angle """
+        theta_y = np.arctan2(-R[1,2], R[1,1])
+        c_y = np.cos(theta_p)
+        s_y = np.sin(theta_p)
+        
+        M_y = np.array([
+                        [1,0,0],
+                        [0, c_y, s_y],
+                        [0,-s_y, c_y]
+                       ])
+        
+        R.dot(M_y)
+        
+        return (theta_y, theta_r, theta_p), (M_y, M_r, M_p)

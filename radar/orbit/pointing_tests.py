@@ -13,6 +13,7 @@ from measurement.measurement import state_vector
 from scipy.constants import c
 from numpy.random import default_rng
 rng = default_rng()
+import os
 
 #%% Define some parameters for venSAR
 wavelength = c/3.15e9
@@ -26,7 +27,8 @@ print("Elevation beamwidth (deg): %0.4f" % np.degrees(elBW))
 print("Azimuth beamwidth (deg): %0.4f" % np.degrees(azBW))
 
 #%% Load an oem orbit state vecctor file from Venus
-svfile = r"C:\Users\Ishuwa.Sikaneta\Documents\ESTEC\Envision\EnVision_ALT_T4_2032_SouthVOI.oem"
+orb_path = r"C:\Users\Ishuwa.Sikaneta\Documents\ESTEC\Envision\Orbits"
+svfile = os.path.join(orb_path, "EnVision_ALT_T4_2032_SouthVOI.oem")
 with open(svfile, 'r') as f:
     svecs = f.read().split('\n')
 svecs = [s.split() for s in svecs[16:-1]]
@@ -36,7 +38,7 @@ svs = [(np.datetime64(s[0]), np.array([float(x) for x in s[1:]])*1e3)
 
 #%% Test converting to Kepler orbit elements
 venSAR = orbit(planet=venus(),
-               angleUnitFunction=np.radians)
+               angleUnits="degrees")
 sidx_left = 0
 sidx_right = 1000
 kepler = [venSAR.state2kepler(s[1]) for s in svs[sidx_left:sidx_right]] 
@@ -108,7 +110,7 @@ orbitAngle = (orbitElements["trueAnomaly"] -
               (orbitElements["ascendingNode"] 
                - orbitElements["perigee"]))
 
-""" Define the depression angle """
+""" Define the off-nadir angle """
 v = np.cos(np.radians(41.2))
 
 venSAR = orbit(kepler[xidx]["eccentricity"],
@@ -116,22 +118,36 @@ venSAR = orbit(kepler[xidx]["eccentricity"],
                kepler[xidx]["a"],
                np.degrees(kepler[xidx]["inclination"]),
                planet=venus(),
-               angleUnitFunction=np.radians)
+               angleUnits="degrees")
 
 XI, rI, vI = venSAR.computeR(orbitAngle)
 e1, e2 = venSAR.computeE(orbitAngle, v)
 
 aeuI, aeuTCN = venSAR.computeAEU(orbitAngle, v)
 
+""" Compute the rotation matrix to go from aeu to ijk_s """
+ep_ang = np.radians(17)
+c_ep = np.cos(ep_ang)
+s_ep = np.sin(ep_ang)
+M_e = np.array([
+                [0,     1,     0],
+                [s_ep,  0,  c_ep],
+                [c_ep,  0, -s_ep]
+               ])
+ijk_s = aeuI.dot(M_e) 
+(theta_p, theta_r, theta_y), _ = venSAR.PRYfromRotation(ijk_s)
+
 M, dM = venSAR.computeItoR(orbitAngle)
 XP = np.hstack((M.dot(XI[0:3]), dM.dot(XI[0:3]) + M.dot(XI[3:])))
 aeuP = M.dot(aeuI)
 
 print("Norm of u: %0.6f" % np.linalg.norm(aeuTCN[:,2]))
-print("u*e1: %0.6f" % np.dot(aeuTCN[:,2],e1))
-print("u*e2: %0.6f, v: %0.6f" % (np.dot(aeuTCN[:,2],e2), v))
+# print("u*e1: %0.6f" % np.dot(aeuTCN[:,2],e1))
+# print("u*e2: %0.6f, v: %0.6f" % (np.dot(aeuTCN[:,2],e2), v))
 print("uP*VP: %0.6f" % XP[3:].dot(aeuP[:,2]))
-
+print("Pitch: %0.4f, Roll: %0.4f, Yaw: %0.4f" % (np.degrees(theta_p),
+                                                 np.degrees(theta_r),
+                                                 np.degrees(theta_y)))
 #%%
 """ Compute the time """
 t = venSAR.computeT(orbitAngle)
@@ -151,7 +167,7 @@ rhat = R/np.linalg.norm(R)
 vG = -XP[:3].dot(rhat)/np.linalg.norm(XP[:3])
 pG = (XG[0]/venSAR.planet.a)**2 + (XG[1]/venSAR.planet.a)**2 + (XG[2]/venSAR.planet.b)**2
 dG = XP[3:].dot(rhat)
-print("Cosine of depression angle: %0.8f" % vG)
+print("Cosine of off-nadir angle: %0.8f" % vG)
 print("Doppler centroid: %0.8f" % dG)
 print("Ellipsoid function value: %0.8f" % pG)
 

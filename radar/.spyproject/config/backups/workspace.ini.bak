@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['..\\..\\..\\.spyder-py3\\temp.py', '..\\..\\..\\Documents\\ESTEC\\ARSI\\mail_list.py', 'configuration\\configuration.py', '..\\..\\..\\Documents\\ESTEC\\Cryosat\\explore.py', 'measurement\\arclength.py', 'measurement\\measurementMerge.py', 'space\\planets.py', 'space\\__init__.py', 'measurement\\measurement.py', 'measurement\\attitudeRestore.py', '..\\..\\AMAPS\\BayesianEstimate.py', 'common\\utils.py', 'orbit\\pointing_tests.py', 'orbit\\orientation.py', 'measurement\\attitude.py', 'geoComputer\\geoComputer.py']
+recent_files = ['..\\..\\..\\Documents\\ESTEC\\Wivern\\performance.py', '..\\..\\..\\Documents\\ESTEC\\ARSI\\mail_list.py', 'configuration\\configuration.py', '..\\..\\..\\Documents\\ESTEC\\Cryosat\\explore_sral_l1a.py', 'measurement\\arclength.py', 'measurement\\measurementMerge.py', 'space\\planets.py', 'space\\__init__.py', 'measurement\\measurement.py', 'measurement\\attitudeRestore.py', '..\\..\\AMAPS\\BayesianEstimate.py', 'common\\utils.py', 'measurement\\attitude.py', 'geoComputer\\geoComputer.py', 'orbit\\stateVec2geospatial.py', 'orbit\\plotExpansion.py', 'orbit\\plotExpansionRestore', '..\\..\\array_factor.py', '..\\..\\..\\Documents\\ESTEC\\Envision\\rplaceMathFont.py', 'orbit\\orientation.py', 'orbit\\euler.py', 'orbit\\vensar_tests.py']
 
 [main]
 version = 0.2.0

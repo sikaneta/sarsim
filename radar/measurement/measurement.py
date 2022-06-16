@@ -1827,8 +1827,6 @@ class state_vector(measurement):
         V = w*np.array([[-sinWT,  cosWT, 0],
                         [-cosWT, -sinWT, 0],
                         [0,      0,     0]])
-        print(X)
-        print(V)
 
         ix = X.dot(mData[0:3])
         iv = X.dot(mData[3:6]) + V.dot(mData[0:3])
