@@ -973,6 +973,7 @@ class orbit:
                        ])
         
         R = R.dot(M_y)
+        #print(R)
         
         """ Compute the roll angle """
         theta_r = np.arctan2(-R[2,0], R[2,2])
@@ -986,6 +987,7 @@ class orbit:
                        ])
         
         R = R.dot(M_r)
+        #print(R)
         
         """ Compute the pitch angle """
         theta_p = np.arctan2(R[1,0], R[1,1])
@@ -998,11 +1000,19 @@ class orbit:
                         [0,0,1]
                        ])
         
-        R.dot(M_p)
+        R = R.dot(M_p)
+        #print(R)
         
         return (theta_p, theta_r, theta_y), (M_p, M_r, M_y)
     
-            
+    def aeuAnglesAAEUfromDAEU(self, AAEU, DAEU):
+        (ep, az, tau), (Meps, Mazi, Mtau) = self.YRPfromRotation(AAEU, DAEU)
+        return (az, ep, tau), (Mazi, Meps, Mtau)
+    
+    def aeuAnglesDAEUfromAAEU(self, DAEU, AAEU):
+        (tau, az, ep), (Mtau, Mazi, Meps) = self.PRYfromRotation(DAEU, AAEU)
+        return (-az, -ep, -tau), (Mazi.T, Meps.T, Mtau.T)
+    
     def YRPfromRotation(self, R, R0 = np.eye(3)):
         """
         Compute Pitch, roll and Yaw from rotation matrix
@@ -1076,9 +1086,10 @@ class orbit:
                         [0.0,  0.0,  1.0]
                         ])
         R = R.dot(M_p)
+        #print(R)
         
         """ Compute the roll angle """
-        theta_r = np.arctan2(-R[0,2], R[0,0])
+        theta_r = np.arctan2(R[0,2], R[0,0])
         c_r = np.cos(theta_r)
         s_r = np.sin(theta_r)
         
@@ -1089,11 +1100,12 @@ class orbit:
                        ])
         
         R = R.dot(M_r)
+        #print(R)
         
         """ Compute the pitch angle """
         theta_y = np.arctan2(-R[1,2], R[1,1])
-        c_y = np.cos(theta_p)
-        s_y = np.sin(theta_p)
+        c_y = np.cos(theta_y)
+        s_y = np.sin(theta_y)
         
         M_y = np.array([
                         [1,0,0],
@@ -1101,6 +1113,7 @@ class orbit:
                         [0,-s_y, c_y]
                        ])
         
-        R.dot(M_y)
+        R = R.dot(M_y)
+        #print(R)
         
         return (theta_y, theta_r, theta_p), (M_y, M_r, M_p)

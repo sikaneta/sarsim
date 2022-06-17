@@ -179,7 +179,7 @@ def YRPfromRotation(R, R0, YRP):
         Rp = Rinit.dot(M_p)
         
         """ Compute the roll angle """
-        YRP[k,1] = np.arctan2(-Rp[0,2], Rp[0,0])
+        YRP[k,1] = np.arctan2(Rp[0,2], Rp[0,0])
         c_r = np.cos(YRP[k,1])
         s_r = np.sin(YRP[k,1])
         
@@ -194,6 +194,21 @@ def YRPfromRotation(R, R0, YRP):
         """ Compute the yaw angle """
         YRP[k,0] = np.arctan2(-Rp[1,2], Rp[1,1])
 
+
+def aeuAnglesAAEUfromDAEU(AAEU, DAEU):
+    aeu = np.zeros((len(AAEU),3), dtype = np.double)
+    YRPfromRotation(AAEU, DAEU, aeu)
+    return aeu.dot(np.array([[0,1,0],
+                             [1,0,0],
+                             [0,0,1]]))
+
+
+def aeuAnglesDAEUfromAAEU(DAEU, AAEU):
+    aeu = np.zeros((len(DAEU),3), dtype = np.double)
+    PRYfromRotation(DAEU, AAEU, aeu)
+    return -aeu.dot(np.array([[0,0,1],
+                              [1,0,0],
+                              [0,1,0]]))
 
 # @njit
 # def AETfromRotation(R, R0, AEU):

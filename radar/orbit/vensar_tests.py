@@ -8,6 +8,7 @@ Created on Fri Jan 28 14:10:22 2022
 from space.planets import venus
 from orbit.orientation import orbit
 from orbit.euler import PRYfromRotation, YRPfromRotation
+from orbit.euler import aeuAnglesDAEUfromAAEU, aeuAnglesAAEUfromDAEU
 import numpy as np
 import matplotlib.pyplot as plt
 from measurement.measurement import state_vector
@@ -81,24 +82,23 @@ def angularVelocityError(X,
     """ Compute the reference aueIe frame that is in error 
         from wrong velocity """
     orbitAngle, ascendingNode = venSAR.setFromStateVector(X)
-    aeuIe, _ = venSAR.computeAEU(orbitAngle, v)
+    aaeu, _ = venSAR.computeAEU(orbitAngle, v)
     
     """ Compute the desired aeuI frame for each true velocity """
-    aeuI = np.zeros((N,3,3), dtype = np.double)
+    daeu = np.zeros((N,3,3), dtype = np.double)
     for k in range(N):
         orbitAngle, ascendingNode = venSAR.setFromStateVector(X + SVe[:,k])
-        aeuI[k,:,:], _ = venSAR.computeAEU(orbitAngle, v)
+        daeu[k,:,:], _ = venSAR.computeAEU(orbitAngle, v)
         
     """ Compute the tilt, elevation and azimuth angles """
-    AEU = np.zeros((N,3), dtype = np.double)
-    PRYfromRotation(aeuI, aeuIe, AEU)
+    AEU = aeuAnglesDAEUfromAAEU(daeu, aaeu)
     
     """ Return computed standard deviations """
     return np.sqrt(np.mean(AEU**2, axis=0))
     
 
 #%% timing error
-def angularTimingError(X, dT=5, N=10000):
+def angularTimingError(X, off_nadir, dT=5, N=10000):
     
     """ Define the off-nadir directional cosine """
     v = np.cos(np.radians(off_nadir))
@@ -114,7 +114,8 @@ def angularTimingError(X, dT=5, N=10000):
     e = venSAR.e
     GM = venSAR.planet.GM
     a = venSAR.a
-    C = (1+e)**2*np.sqrt(GM/
+    U = np.radians(orbitAngle) - venSAR.arg_perigee
+    C = (1+e*np.cos(U))**2*np.sqrt(GM/
                          (a*(1-e**2))**3)
     
     """ Generate random orbit angle deviances """
@@ -129,8 +130,7 @@ def angularTimingError(X, dT=5, N=10000):
         aaeu[k,:,:], _ = venSAR.computeAEU(orbitAngle + dO[k], v)
         
     """ Compute the tilt, elevation and azimuth angles """
-    AEU = np.zeros((N,3), dtype = np.double)
-    PRYfromRotation(aaeu, daeu, AEU)
+    AEU = aeuAnglesAAEUfromDAEU(aaeu, daeu)
     
     """ Return computed standard deviations """
     return np.sqrt(np.mean(AEU**2, axis=0))
@@ -401,16 +401,16 @@ res2 = [simulateError(s[1], off_nadir, sigmaA=0.023, sigmaE = 0.26, sigmaT = 0.1
 #%% Compute angular velocity errors
 for r,sv in zip(res2, mysvs):
     aerr = np.degrees(angularVelocityError(sv[1], off_nadir))
-    r["computed"]["errors"]["sigmAv"] = aerr[0]
-    r["computed"]["errors"]["sigmEv"] = aerr[1]
-    r["computed"]["errors"]["sigmUv"] = aerr[2]
+    r["computed"]["errors"]["sigmaAv"] = aerr[0]
+    r["computed"]["errors"]["sigmaEv"] = aerr[1]
+    r["computed"]["errors"]["sigmaTv"] = aerr[2]
 
 #%% Compute angular timing errors
 for r,sv in zip(res2, mysvs):
     aerr = np.degrees(angularTimingError(sv[1], off_nadir))
-    r["computed"]["errors"]["sigmAt"] = aerr[0]
-    r["computed"]["errors"]["sigmEt"] = aerr[1]
-    r["computed"]["errors"]["sigmUt"] = aerr[2]
+    r["computed"]["errors"]["sigmaAt"] = aerr[0]
+    r["computed"]["errors"]["sigmaEt"] = aerr[1]
+    r["computed"]["errors"]["sigmaTt"] = aerr[2]
 
 #%%  
 times = [(s[0] - mysvs[0][0])/np.timedelta64(1, 's') for s in mysvs]
@@ -438,3 +438,33 @@ print(np.mean(sErrorRate))
 print(np.var(sErrorRate))
 print(np.var(dErrorRate))
 print(np.mean(dErrorRate))
+
+#%%
+sD = np.radians(np.array([r["computed"]["errors"]["sigmaDelta"] for r in res2]))*1e3
+sAv = np.radians(np.array([r["computed"]["errors"]["sigmaAv"] for r in res2]))*1e3
+sEv = np.radians(np.array([r["computed"]["errors"]["sigmaEv"] for r in res2]))*1e3
+sTv = np.radians(np.array([r["computed"]["errors"]["sigmaTv"] for r in res2]))*1e3
+sAt = np.radians(np.array([r["computed"]["errors"]["sigmaAt"] for r in res2]))*1e3
+sEt = np.radians(np.array([r["computed"]["errors"]["sigmaEt"] for r in res2]))*1e3
+sTt = np.radians(np.array([r["computed"]["errors"]["sigmaTt"] for r in res2]))*1e3
+
+#%%
+plt.figure()
+plt.plot(times, sD)
+plt.plot(times, sAv)
+plt.plot(times, sEv)
+plt.plot(times, sTv)
+plt.plot(times, sAt, '--')
+plt.plot(times, sEt, '--')
+plt.plot(times, sTt, '--')
+plt.ylabel("Error Standard Deviation (mrad)")
+plt.xlabel("State Vector %s +Time (s)" % np.datetime_as_string(mysvs[0][0]))
+plt.legend([r"$\sigma_{\epsilon_\delta}$", 
+            r"$\sigma_{\alpha_v}$",
+            r"$\sigma_{\epsilon_v}$",
+            r"$\sigma_{\tau_v}$",
+            r"$\sigma_{\alpha_t}$",
+            r"$\sigma_{\epsilon_t}$",
+            r"$\sigma_{\tau_t}$"])
+plt.grid()
+plt.show()
