@@ -82,22 +82,22 @@ plt.show()
 xidx = 100
 
 #%% Test orbit propagation
-# yidx = 248
-# sv = state_vector(planet=venus(), harmonicsCoeff=180)
-# sv.add(svs[xidx][0], sv.toPCR(svs[xidx][1], ts[xidx]))
-# dt = (svs[yidx][0] - svs[xidx][0])/np.timedelta64(1,'s')
-# print(dt)   
-# print(sv.estimate(svs[yidx][0]) - sv.toPCR(svs[yidx][1], ts[xidx]+dt))
+yidx = 248
+sv = state_vector(planet=venus(), harmonicsCoeff=180)
+sv.add(svs[xidx][0], sv.toPCR(svs[xidx][1], ts[xidx]))
+dt = (svs[yidx][0] - svs[xidx][0])/np.timedelta64(1,'s')
+print(dt)   
+print(sv.estimate(svs[yidx][0]) - sv.toPCR(svs[yidx][1], ts[xidx]+dt))
 
-# venSAR.setFromStateVector(svs[xidx][1])
-# print(venSAR.period)
+venSAR.setFromStateVector(svs[xidx][1])
+print(venSAR.period)
 
-# dT = sv.measurementTime[0] + np.timedelta64(int(venSAR.period*1e9), 'ns')
-# Y = sv.estimate(dT)
-# dX = sv.measurementData[-1]-sv.measurementData[0]
-# print("Difference in state vectors after 1 period")
-# print("="*40)
-# print(dX)
+dT = sv.measurementTime[0] + np.timedelta64(int(venSAR.period*1e9), 'ns')
+Y = sv.estimate(dT)
+dX = sv.measurementData[-1]-sv.measurementData[0]
+print("Difference in state vectors after 1 period")
+print("="*40)
+print(dX)
 
 #%%  Test zero-Doppler steering for Venus orbit
 

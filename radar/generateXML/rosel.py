@@ -14,7 +14,202 @@ import lxml.etree as etree
 from functools import reduce
 import os
 from scipy.constants import c
-from generateXML.base_XML import base_XML_XBand, base_ROSEL
+from generateXML.base_XML import base_ROSEL
+import pandas as pd
+import os
+import matplotlib.pyplot as plt
+
+#%% Coefficients file
+roseLxsl = r"C:\Users\Ishuwa.Sikaneta\Documents\ESTEC\RoseL\performanceSheetROSELDUALPolSwath1-3.xlsx"
+elementPattern = pd.read_excel(roseLxsl, sheet_name = "patternSA")
+swath = 3
+coefficientsTX = pd.read_excel(roseLxsl, sheet_name = "excitationsSA_TX", 
+                               skiprows = (swath-1)*13, nrows=13)
+coefficientsRX = pd.read_excel(roseLxsl, sheet_name = "excitationsSA_RX",
+                               skiprows = (swath-1)*13, nrows=13)
+
+
+#%% Get TX coefficients
+txAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
+txPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+
+txAmp = coefficientsTX[txAmpCols].to_numpy()
+txPhs = np.radians(coefficientsTX[txPhsCols].to_numpy())
+
+TX = txAmp*np.exp(1j*txPhs)
+
+#%% Get RX coefficients
+rxAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
+rxPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+
+rxAmp = coefficientsRX[rxAmpCols].to_numpy()
+rxPhs = np.radians(coefficientsRX[rxPhsCols].to_numpy())
+
+RX = rxAmp*np.exp(1j*rxPhs)
+
+#%% Get Element pattern
+dEpatternAbs = "elevationHP_abs / 1"
+dEpatternPhs = "elevationHP_phase / deg"
+dApatternAbs = "azimuthHP_abs / 1"
+dApatternPhs = "azimuthHP_phase / deg"
+dEAbs = elementPattern[dEpatternAbs].to_numpy()
+dEPhs = np.radians(elementPattern[dEpatternPhs].to_numpy())
+dAAbs = elementPattern[dApatternAbs].to_numpy()
+dAPhs = np.radians(elementPattern[dApatternPhs].to_numpy())
+u = elementPattern["u"].to_numpy()
+v = elementPattern["v"].to_numpy()
+ePattern = dEAbs*np.exp(1j*dEPhs)
+aPattern = dAAbs*np.exp(1j*dAPhs)
+
+
+#%% get data from XML file
+pq = etree.XMLParser(remove_blank_text=True)
+xml = etree.XML(base_ROSEL,parser=pq)
+fc = float(xml.find(".//carrierFrequency").text)
+
+azimuthResolution = 11.8 #vv.az_resolution
+rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
+range_BANDWIDTH = c/2.0/rangeResolution
+deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
+swathWidth = 88e3 #vv.swath_width
+
+elevationPositions = np.array([float(f) for f in xml.find(".//elevationPositions").text.split()])
+azimuthPositions = np.array([float(f) for f in xml.find(".//azimuthPositions").text.split()])
+
+
+#%% Compute the array factor
+def arrayFactor(cosangs, positions, TX, RX, k):
+    
+    dM = np.exp(-1j*k*np.outer(cosangs, positions))
+    
+    try:
+        tPattAF = dM.dot(tTX)
+        nmRX = np.diag(1/np.sqrt(np.real(np.sum(RX*RX.conj(), axis=0))))
+        rPattAF = dM.dot(tRX).dot(nmRX)
+    except ValueError:
+        tPattAF = dM.dot(tTX.T)
+        nmRX = np.diag(1/np.sqrt(np.real(np.sum(RX*RX.conj(), axis=1))))
+        rPattAF = dM.dot(tRX.T).dot(nmRX)
+        
+    return tPattAF, rPattAF
+
+
+
+#%% Compute the array factor
+def arrayFactor2D(u, v, UPos, VPos, tTX, tRX, k):
+    MU = np.exp(-1j*k*np.einsum("ij,k -> kij", UPos, u))
+    MV = np.exp(-1j*k*np.einsum("ij,k -> ijk", VPos, v))
+    tPatt = np.einsum("ijk,jk,jkl -> il", MU, tTX, MV)
+    rPatt = np.einsum("ijk,jk,jkl -> il", MU, tRX, MV)
+    
+    nmRX = np.sqrt(np.real(np.sum(RX*RX.conj())))
+
+    return tPatt, rPatt/nmRX
+
+#%% function to create expansion matrix
+def identityM(m, k):
+    iM = np.zeros((m,m*k))
+    for i in range(k):
+        iM[:, i::k] = np.eye(m)
+    return iM
+
+#%%  
+k = 2*np.pi/c*fc
+
+UPos, VPos = np.meshgrid(azimuthPositions, elevationPositions)
+
+# Ny = elevationPositions.size
+# Nx = azimuthPositions.size
+
+# dEM = np.exp(-1j*k*np.outer(v,elevationPositions))
+# dAM = np.exp(-1j*k*np.outer(u,azimuthPositions))
+
+iElev = identityM(TX.shape[0], 2).T
+iAzim = identityM(TX.shape[1], 12)
+
+# iTwo[0::2, :] = np.eye(RX.shape[0])
+# iTwo[1::2, :] = np.eye(RX.shape[0])
+
+tRX = iElev.dot(RX).dot(iAzim)
+tTX = iElev.dot(TX).dot(iAzim)
+
+#%% Compute the element patterns
+tPattEP = np.tile(ePattern, (TX.shape[1], 1)).T
+rPattEP = np.tile(ePattern, (RX.shape[1], 1)).T
+
+
+#%% Compute the one way array factors
+tPattAF, rPattAF = arrayFactor2D(u, v, UPos, VPos, tTX, tRX, k)
+
+#%%
+tPattAFtestEL, rPattAFtestEL = arrayFactor(v, elevationPositions, tTX, tRX, k)
+tPattAFtestAZ, rPattAFtestAZ = arrayFactor(u, azimuthPositions, tTX, tRX, k)
+
+plt.figure()
+plt.plot(v, 20*np.log10(np.abs(np.mean(tPattAFtestEL, axis=1))))
+plt.grid()
+plt.xlabel("v")
+plt.ylabel("Directivity (dB)")
+plt.show()
+
+plt.figure()
+plt.plot(u, 20*np.log10(np.abs(np.mean(tPattAFtestAZ, axis=1))))
+plt.grid()
+plt.xlabel("u")
+plt.ylabel("Directivity (dB)")
+plt.show()
+
+tPattAFtest = np.outer(np.mean(tPattAFtestAZ, axis=1), 
+                       np.mean(tPattAFtestEL, axis=1))
+plt.figure()
+plt.imshow(20*np.log10(np.abs(tPattAFtest)))
+plt.colorbar()
+plt.grid()
+plt.show()
+
+#%% Plot the pattern
+plt.figure()
+plt.imshow(20*np.log10(np.abs(tPattAF)))
+plt.colorbar()
+plt.grid()
+plt.show()
+
+
+#%% Compute the composite patterns
+tPatt = tPattEP*tPattAF
+rPatt = rPattEP*rPattAF
+
+#%% Compute the directivity
+pTXav = np.real(np.mean(tPatt*tPatt.conj(), axis=0))
+tDirectivity = tPatt.dot(np.diag(1/np.sqrt(pTXav)))
+rDirectivity = v.size*rPatt.dot(np.diag(1/np.linalg.norm(rPatt, axis=0)))
+
+
+#%% Compute the one way patterns in azimuth
+tPwr = np.real(np.sum(TX*TX.conj(), axis=0))
+rNrm = np.sqrt(np.real(np.sum(RX*RX.conj(), axis=0)))
+nmTX = np.diag(1/np.linalg.norm(np.abs(TX), axis=0))
+nmRX = np.diag(1/rNrm)
+tPatt = (np.tile(ePattern, (TX.shape[1], 1)).T)*(dM.dot(tTX))#.dot(nmTX)
+pTXav = np.real(np.mean(tPatt*tPatt.conj(), axis=0))
+tDirectivity = tPatt.dot(np.diag(1/np.sqrt(pTXav)))
+rPatt = (np.tile(ePattern, (RX.shape[1], 1)).T)*(dM.dot(tRX)).dot(nmRX)
+rDirectivity = v.size*rPatt.dot(np.diag(1/np.linalg.norm(rPatt, axis=0)))
+
+#%% Plot TX directivity
+plt.figure()
+plt.plot(v, 20*np.log10(np.abs(tPatt)))
+plt.grid()
+plt.xlabel("v")
+plt.ylabel("Directivity (dB)")
+plt.show()
+
+plt.figure()
+plt.plot(v, 20*np.log10(np.abs(tDirectivity)))
+plt.grid()
+plt.xlabel("v")
+plt.ylabel("Directivity (dB)")
+plt.show()
 
 #%% Write to file
 def createXMLStructure(folder): 
@@ -40,44 +235,35 @@ def writeToXML(xml_file_name, xml):
 #%% Generate the XML object. This code needs refactoring and documentation
 def generateXML(vv,
                 va = 7500.0,
-                nearRange = 5.568856572102291e-03,
+                nearRange = 5.746681592636996e-03,
                 element_length = 0.04):
     
     print("SURE configuration generator")
     numAziSamples = 8192
+    numRngSamples = 1024
     
     #%% Generate the base XML object
     pq = etree.XMLParser(remove_blank_text=True)
-    xml = etree.XML(base_XML_XBand,parser=pq)
+    xml = etree.XML(base_ROSEL,parser=pq)
     fc = float(xml.find(".//carrierFrequency").text)
         
     #%% Set some defaults
-    azimuthResolution = vv.az_resolution
-    rangeResolution = vv.rn_resolution
+    azimuthResolution = 11.8 #vv.az_resolution
+    rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
     range_BANDWIDTH = c/2.0/rangeResolution
-    deltaR = 1.0/vv.rn_oversample/range_BANDWIDTH
-    swathWidth = vv.swath_width
-    rangeTimeBufferFactor = 2.0
-    min_M = int(np.ceil(rangeTimeBufferFactor*va*2.0*swathWidth
-                        /azimuthResolution/c - 1)) 
-    max_M = int(np.floor(np.sqrt(vv.max_antenna_length
-                                 /azimuthResolution/2) - 1))
-    if max_M >= min_M:
-        M = max_M
-    else:
-        print("No solution for the number of channels")
+    deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
+    swathWidth = 88e3 #vv.swath_width
+    M = 4
         
     number_channels = M + 1
     print("Number of channels: (M+1) = %d" % number_channels)
-    print("Antenna total length: %0.2f m" % (2.0*azimuthResolution*(M+1)**2))
-    print("Sub-aperture length: %0.2f m" % (2.0*azimuthResolution*(M+1)))
     print("Ideal PRF: %0.4f Hz" % (va/(M+1)/azimuthResolution))
     
     #%% Compute some collection parameters
-    number_beams = number_channels
+    number_beams = 1 #number_channels
     aziDoppler = va/azimuthResolution
-    beam_DOPPLER = aziDoppler/number_channels
-    prf = (va/(number_channels)/azimuthResolution)*vv.az_oversample
+    beam_DOPPLER = aziDoppler #/number_channels
+    prf = (va/(number_channels)/azimuthResolution)*1.2 #vv.az_oversample
     near_RANGE = nearRange*c/2.0
     far_RANGE = near_RANGE+swathWidth
     channel_LEN = np.int(np.round(far_RANGE*(c/fc)
@@ -96,44 +282,44 @@ def generateXML(vv,
     
     
     #%% Compute the azimuth positions
-    numAziSamples = 2*channel_LEN*(2+number_channels*number_beams)
+    # numAziSamples = 2*channel_LEN*(2+number_channels*number_beams)
     
-    subarray_length = number_channels*azimuthResolution*2.0
+    # subarray_length = number_channels*azimuthResolution*2.0
     
     
-    # Compute the channel tables for each pulse in the g vector. 
-    # i.e. put in the squint
-    subarray_elements = int(subarray_length/element_length)
-    element_spacing = subarray_length/subarray_elements
-    print("Beam spread interval: %f Hz" % beam_DOPPLER)
-    print("Antenna Element Length: %f m" % element_length)
-    print("Subarray Length: %f m" % subarray_length)
-    subarray_centres = [(pos-(number_channels-1)/2.0)*subarray_length 
-                        for pos in range(number_channels)]
-    azi_positions = [[subpos + element_spacing/2.0 - 
-                      subarray_length/2.0 + k*element_spacing 
-                      for k in range(subarray_elements)] 
-                     for subpos in subarray_centres]
+    # # Compute the channel tables for each pulse in the g vector. 
+    # # i.e. put in the squint
+    # subarray_elements = int(subarray_length/element_length)
+    # element_spacing = subarray_length/subarray_elements
+    # print("Beam spread interval: %f Hz" % beam_DOPPLER)
+    # print("Antenna Element Length: %f m" % element_length)
+    # print("Subarray Length: %f m" % subarray_length)
+    # subarray_centres = [(pos-(number_channels-1)/2.0)*subarray_length 
+    #                     for pos in range(number_channels)]
+    # azi_positions = [[subpos + element_spacing/2.0 - 
+    #                   subarray_length/2.0 + k*element_spacing 
+    #                   for k in range(subarray_elements)] 
+    #                  for subpos in subarray_centres]
     
     #%% Write the azimuth positions, lengths and powers
     
-    flattened_azi_positions = reduce(lambda x,y: x+y, azi_positions)
-    str_azi_pos = ["%0.6f" % pos for pos in flattened_azi_positions]
-    str_azi_len = ["%0.6f" % element_length 
-                   for pos in flattened_azi_positions]
-    str_azi_pwr = ["%0.1f" % vv.element_power 
-                   for pos in flattened_azi_positions]
-    print_azi=False
-    if print_azi:
-        print("Azimuth positions:")
-        print("----------------------------------------------------")
-        print(" ".join(str_azi_pos))
-    azimuthPosNode = xml.find('.//azimuthPositions')
-    azimuthPosNode.text = " ".join(str_azi_pos)
-    azimuthLenNode = xml.find('.//azimuthElementLengths')
-    azimuthLenNode.text = " ".join(str_azi_len)
-    azimuthPwrNode = xml.find('.//transmitPowers')
-    azimuthPwrNode.text = " ".join(str_azi_pwr)
+    # flattened_azi_positions = reduce(lambda x,y: x+y, azi_positions)
+    # str_azi_pos = ["%0.6f" % pos for pos in flattened_azi_positions]
+    # str_azi_len = ["%0.6f" % element_length 
+    #                for pos in flattened_azi_positions]
+    # str_azi_pwr = ["%0.1f" % vv.element_power 
+    #                for pos in flattened_azi_positions]
+    # print_azi=False
+    # if print_azi:
+    #     print("Azimuth positions:")
+    #     print("----------------------------------------------------")
+    #     print(" ".join(str_azi_pos))
+    # azimuthPosNode = xml.find('.//azimuthPositions')
+    # azimuthPosNode.text = " ".join(str_azi_pos)
+    # azimuthLenNode = xml.find('.//azimuthElementLengths')
+    # azimuthLenNode.text = " ".join(str_azi_len)
+    # azimuthPwrNode = xml.find('.//transmitPowers')
+    # azimuthPwrNode.text = " ".join(str_azi_pwr)
     
     #%% Calculate the Doppler centroids for each beam
     beam_DC = [beam_DOPPLER*(pos-(number_beams-1)/2.0) 
@@ -156,7 +342,7 @@ def generateXML(vv,
     #%% Calculate how many extra range samples we'll need
     u = c/fc/(4*azimuthResolution)
     sim_range_samples = 2*(far_RANGE - near_RANGE)/c/deltaR
-    RMC_range = (far_RANGE/c*2)*(np.sqrt(1.0+u**2)-1)/deltaR + vv.range_samples
+    RMC_range = (far_RANGE/c*2)*(np.sqrt(1.0+u**2)-1)/deltaR + numRngSamples
     
     min_range_samples = int(RMC_range)
     # Add the offset due to range migration to the nim range samples

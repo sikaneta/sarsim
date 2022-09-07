@@ -320,7 +320,10 @@ class state_vector(measurement):
             error = np.dot(slV,slX-X)/(np.dot(slA, slX-X) + np.dot(slV, slV))
             
             # Update the time variable
-            eta = eta - datetime.timedelta(seconds=error)
+            if type(eta) == datetime.datetime:
+                eta = eta - datetime.timedelta(seconds=error)
+            else:
+                eta = eta - np.timedelta64(int(error*1e9), 'ns')
             
             # Check to break from the loop. Recall that we only measure time
             # to the closest 1.0e-6 in the usec field
@@ -330,7 +333,7 @@ class state_vector(measurement):
         return [eta, slaveX, error]
     
     #%% Code to compute the ground position given u and v
-    def computeGroundPosition(self, X, u = 0, v = np.pi/4, h=0):
+    def computeGroundPosition(self, X, u = 0, v = 0.707107, h=0):
         xhat = -X[:3]/np.linalg.norm(X[:3])
         vhat = X[3:]/np.linalg.norm(X[3:])
         

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#%% -*- coding: utf-8 -*-
 """
 Created on Fri Jan 28 14:10:22 2022
 
@@ -7,7 +7,7 @@ Created on Fri Jan 28 14:10:22 2022
 
 from space.planets import venus
 from orbit.orientation import orbit
-from orbit.euler import PRYfromRotation, YRPfromRotation
+from orbit.euler import YRPfromRotation
 from orbit.euler import aeuAnglesDAEUfromAAEU, aeuAnglesAAEUfromDAEU
 import numpy as np
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ elAxis = 0.6
 azAxis = 6.0
 
 #%% Load an oem orbit state vecctor file from Venus
-orb_path = r"C:\Users\Ishuwa.Sikaneta\Documents\ESTEC\Envision\Orbits"
+orb_path = r"C:\Users\Ishuwa.Sikaneta\local\Data\Envision"
 svfile = os.path.join(orb_path, "EnVision_ALT_T4_2032_SouthVOI.oem")
 with open(svfile, 'r') as f:
     svecs = f.read().split('\n')
@@ -417,10 +417,16 @@ times = [(s[0] - mysvs[0][0])/np.timedelta64(1, 's') for s in mysvs]
 
 #%% Save and plot the error
 filepath = r"c:\Users\Ishuwa.Sikaneta\Documents\ESTEC\Envision"
+
+#%%
 filename = r"sim-%s.json" % dt.now().strftime("%Y-%m-%dT%H%M%S")
 with open(os.path.join(filepath, filename), "w") as f:
     f.write(json.dumps(res2, indent=2))
     
+#%% Set the filename
+filename = r"sim-2022-06-17T150834.json"
+
+#%%
 with open(os.path.join(filepath, filename), "r") as f:
     res2 = json.loads(f.read())
     
@@ -448,6 +454,11 @@ sAt = np.radians(np.array([r["computed"]["errors"]["sigmaAt"] for r in res2]))*1
 sEt = np.radians(np.array([r["computed"]["errors"]["sigmaEt"] for r in res2]))*1e3
 sTt = np.radians(np.array([r["computed"]["errors"]["sigmaTt"] for r in res2]))*1e3
 
+#%% Get the given values for each run
+sE = np.radians(np.array([r["given"]["variances"]["sigmaE"] for r in res2]))*1e3
+sA = np.radians(np.array([r["given"]["variances"]["sigmaA"] for r in res2]))*1e3
+sT = np.radians(np.array([r["given"]["variances"]["sigmaT"] for r in res2]))*1e3
+
 #%%
 plt.figure()
 plt.plot(times, sD)
@@ -468,3 +479,68 @@ plt.legend([r"$\sigma_{\epsilon_\delta}$",
             r"$\sigma_{\tau_t}$"])
 plt.grid()
 plt.show()
+# %%
+sElev = np.sqrt(sE**2 - (sD**2+sEv**2+sEt**2))
+sAzimuth = np.sqrt(sA**2 - (sAv**2 + sAt**2))
+sTilt = np.sqrt(sT**2 - (sTv**2 + sTt**2))
+
+#%%
+plt.figure()
+plt.plot(times, sElev)
+plt.plot(times, sAzimuth)
+plt.plot(times, sTilt)
+plt.ylabel("Margin (mrad)")
+plt.xlabel("State Vector %s +Time (s)" % np.datetime_as_string(mysvs[0][0]))
+plt.legend([r"$\sigma_{\epsilon_s}$", 
+            r"$\sigma_{\alpha_s}$",
+            r"$\sigma_{\tau_s}$"])
+plt.grid()
+plt.show()
+
+# %% Stack plot for Elevation
+fig, ax = plt.subplots()
+errorE = {
+    "position error": sD,
+    "timing error": sEt,
+    "velocity error": sEv,
+    "margin": sElev
+}
+ax.stackplot(times, errorE.values(), labels=errorE.keys(), alpha=0.8)
+ax.legend()
+ax.set_title("Elevation Angle Error")
+ax.set_xlabel("State Vector %s +Time (s)" % np.datetime_as_string(mysvs[0][0]))
+ax.set_ylabel("Contributor (mrad)")
+plt.show()
+plt.show()
+
+# %% Stack plot for Azimuth
+fig, ax = plt.subplots()
+errorE = {
+    "timing error": sAt,
+    "velocity error": sAv,
+    "margin": sAzimuth
+}
+ax.stackplot(times, errorE.values(), labels=errorE.keys(), alpha=0.8)
+ax.legend()
+ax.set_title("Azimuth Angle Error")
+ax.set_xlabel("State Vector %s +Time (s)" % np.datetime_as_string(mysvs[0][0]))
+ax.set_ylabel("Contributor (mrad)")
+plt.show()
+plt.show()
+
+# %% Stack plot for Tilt
+fig, ax = plt.subplots()
+errorE = {
+    "timing error": sTt,
+    "velocity error": sTv,
+    "margin": sTilt
+}
+ax.stackplot(times, errorE.values(), labels=errorE.keys(), alpha=0.8)
+ax.legend()
+ax.set_title("Tilt Angle Error")
+ax.set_xlabel("State Vector %s +Time (s)" % np.datetime_as_string(mysvs[0][0]))
+ax.set_ylabel("Contributor (mrad)")
+plt.show()
+plt.show()
+
+# %%
