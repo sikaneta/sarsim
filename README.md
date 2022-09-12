@@ -1,5 +1,5 @@
 # sarsim
-Simulation of multi-channel SAR signals in python
+Simulation of multi-channel SAR signals in python. Also simulating orbits around solar system planets
 
 ## Pupose
 This repository of python code contains coded algorithms for generating simulations
