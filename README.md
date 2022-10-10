@@ -23,6 +23,8 @@ Python libraries used include (bold entries are essential)
 - **matplotlib**
 - **tqdm**
 - **lxml**
+- **quaternion** conda-forge
+- **astropy**
 - Jupyter 
 - Jupyterlab
 

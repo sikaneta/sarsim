@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['configuration\\configuration.py', 'measurement\\arclength.py', 'measurement\\measurementMerge.py', 'space\\planets.py', 'space\\__init__.py', 'measurement\\measurement.py', 'measurement\\attitudeRestore.py', '..\\..\\AMAPS\\BayesianEstimate.py', 'common\\utils.py', 'measurement\\attitude.py', 'geoComputer\\geoComputer.py', 'orbit\\stateVec2geospatial.py', 'orbit\\plotExpansion.py', 'orbit\\plotExpansionRestore', '..\\..\\array_factor.py', 'orbit\\orientation.py', 'orbit\\euler.py', 'orbit\\vensar_tests.py', '..\\..\\ESA\\gaussianPulsePair.py', '..\\..\\ESA\\amapsPerformance.py', '..\\..\\ESA\\pyMPM\\MPM.py', 'generateXML\\rosel.py', 'generateXML\\base_XML.py', 'orbit\\pointing_tests.py', 'orbit\\vensar_orbits.py', '..\\..\\..\\Documents\\Personal\\gasUsage.py', '..\\..\\..\\OneDrive - ESA\\Documents\\ESTEC\\Wivern\\weatherREQ.py']
+recent_files = ['measurement\\measurement.py', 'orbit\\orientation.py', 'orbit\\euler.py', 'generateXML\\rosel.py', 'generateXML\\base_XML.py', 'orbit\\timing.py', 'orbit\\stateVec2geospatial.py', 'orbit\\vensar_tests.py', 'orbit\\keplerVersusESOC.py', 'orbit\\envision.py']
 
 [main]
 version = 0.2.0

@@ -69,6 +69,7 @@ class orbit:
         sinI = np.sin(self.inclination)
         cosP = np.cos(self.arg_perigee)
         sinP = np.sin(self.arg_perigee)
+        self.rotIfromAnode = np.eye(3)
         self.rotOfromE = np.array([[sinP, -cosP, 0],
                                    [cosP,  sinP, 0],
                                    [0,     0   , 1]])
@@ -103,16 +104,20 @@ class orbit:
         self.a = kepler["a"]
         self.inclination = self.toRadians(kepler["inclination"])
         self.period = 2*np.pi*np.sqrt(self.a**3/self.planet.GM)
-        ascendingNode = kepler["ascendingNode"]
+        ascendingNode = self.toRadians(kepler["ascendingNode"])
         orbitAngle = (kepler["trueAnomaly"] 
-                      - ascendingNode
                       + kepler["perigee"])
         
+        cosA = np.cos(ascendingNode)
+        sinA = np.sin(ascendingNode)
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
         cosP = np.cos(self.arg_perigee)
         sinP = np.sin(self.arg_perigee)
         
+        self.rotIfromAnode = np.array([[sinA,  cosA, 0],
+                                       [-cosA, sinA, 0],
+                                       [0,     0   , 1]])
         self.rotOfromE = np.array([[sinP, -cosP, 0],
                                    [cosP,  sinP, 0],
                                    [0,     0   , 1]])
@@ -122,7 +127,7 @@ class orbit:
         
         return orbitAngle, ascendingNode
         
-
+        
     def state2kepler(self, X):
         """
         Estimate the Keplerian elements from a state vector
@@ -244,8 +249,12 @@ class orbit:
                                                sinB + e*sinP,
                                                0])
         
-        state = np.hstack((np.dot(self.rotIfromO, Xo),
-                           np.dot(self.rotIfromO, Vo)))
+        """ Rotate by the longitude of the ascending node
+            to get into inertial coordinate system """
+        mInertial = self.rotIfromAnode.dot(self.rotIfromO)
+        
+        state = np.hstack((np.dot(mInertial, Xo),
+                           np.dot(mInertial, Vo)))
         return state, r, v
     
     def computeTCN(self, beta):
