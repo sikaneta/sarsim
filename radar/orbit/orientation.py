@@ -388,7 +388,7 @@ class orbit:
         """ Return the aeuI and aeuTCN matrices """
         return aeuI, aeuTCN
     
-    def computeAEU(self, beta, v):
+    def computeAEU(self, beta, off_nadir):
         """
         Compute the look direction, azimuth and elevation vectors
         
@@ -399,8 +399,13 @@ class orbit:
         ----------
         beta : float (Radians)
             The orbit angle. Measured from the ascending node.
-        v : float (Unitless)
-            Cosine of the off-nadir angle
+        off_nadir : float (Unitless)
+            Off-nadir angle. This is signed-angle corresponding to a roll.
+            A negative angle corresponds to right-looking, a positive
+            angle corresponds to left-looking. This is the right-handed rule
+            for angles rotated around the velocity vector under the assumption
+            that the default (0) is looking nadir.
+            
         Returns
         -------
         aeuI: `npmpy.array`, [3,3]
@@ -418,6 +423,8 @@ class orbit:
 
         """
         
+        look = -np.sign(off_nadir)
+        v = np.cos(self.toRadians(off_nadir))
         U = self.toRadians(beta) - self.arg_perigee
         e = self.e
         w = self.planet.w
@@ -428,28 +435,29 @@ class orbit:
         sinI = np.sin(self.inclination)
         cosB = np.cos(self.toRadians(beta))
         
-        """ Compute equations (89) and (90). Equation numbers may change! """
+        """ Compute equations (107) and (108). Eq numbers may change! """
         cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
         sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
         
-        """ Compute equations (99) and (100). Equation numbers may change!  """
+        """ Compute equations (117) and (118). Eq numbers may change!  """
         wDcosG = wC*(1+e*cosU)**2
         wDsinG = e*wC*(1+e*cosU)*sinU
         wD = np.sqrt(wDcosG**2 + wDsinG**2)
         
-        """ Compute equation (54) """
-        wA = wDcosG - w*cosI
+        """ Compute equation (75) """
+        wF = wDcosG - w*cosI
         
-        """ Compute equation (55). sB can be plus/minus depending on look
-            direction """
-        wwQ = (w*sinI*cosB)**2 + wA**2
-        wsB = w*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
-        wAsB = wA*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
+        """ Compute equation (79). s2, s2F can be plus/minus depending on look
+            direction. wwQ is the denominator of (78,79) multiplied by
+            w^2 """
+        wwQ = (w*sinI*cosB)**2 + wF**2
+        s2 = look*w*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
+        s2F = look*wF*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
         
-        """ Compute the overall result (60)"""
-        uTCN = np.array([sinG*v*(wDcosG*wA/wwQ - 1) + wsB*cosG*cosB*sinI,
-                         -w*v*wDsinG*sinI*cosB/wwQ + wAsB,
-                         v*(cosG + wDsinG*sinG*wA/wwQ) + wsB*sinG*cosB*sinI])
+        """ Compute the overall result (81)"""
+        uTCN = np.array([sinG*v*(wDcosG*wF/wwQ - 1) + s2*cosG*cosB*sinI,
+                          -w*v*wDsinG*sinI*cosB/wwQ + s2F,
+                          v*(cosG + wDsinG*sinG*wF/wwQ) + s2*sinG*cosB*sinI])
         uTCN /= np.linalg.norm(uTCN)
         
         """ Compute the TCN vectors """
@@ -457,8 +465,8 @@ class orbit:
         
         
         aTCN = np.array([wD - w*cosG*cosI,
-                         -w*cosB*sinI,
-                         -w*sinG*cosI])
+                          -w*cosB*sinI,
+                          -w*sinG*cosI])
         aTCN = aTCN/np.linalg.norm(aTCN)
         
         """ Compute the eTCN vector """
@@ -473,6 +481,96 @@ class orbit:
         
         """ Return the aeuI and aeuTCN matrices """
         return aeuI, aeuTCN
+    
+    # def computeAEU(self, beta, v, look=1):
+    #     """
+    #     Compute the look direction, azimuth and elevation vectors
+        
+    #     Compute the look direction, azimuth and elevation vectors in
+    #     both the TCN frame and the Inertial frame
+
+    #     Parameters
+    #     ----------
+    #     beta : float (Radians)
+    #         The orbit angle. Measured from the ascending node.
+    #     v : float (Unitless)
+    #         Cosine of the off-nadir angle
+    #     look : int
+    #         The look direction vector. +1 for right, -1 for left
+            
+    #     Returns
+    #     -------
+    #     aeuI: `npmpy.array`, [3,3]
+    #         The azimuth, elevation and look vectors in the Inertial reference
+    #         frame arranged as the columns of a matrix (respective order)
+    #     aeuTCN: `npmpy.array`, [3,3]
+    #         The azimuth, elevation and look vectors in the TCN frame arranged 
+    #         as the columns of a matrix (respective order)
+                
+    #     Notes
+    #     -----
+    #     The calculation coded here multiples the equations in the notes
+    #     by the planet angular velocity to allow the computation of equation
+    #     (60) even in the case the planet angular velocity is low or zero.
+
+    #     """
+        
+    #     U = self.toRadians(beta) - self.arg_perigee
+    #     e = self.e
+    #     w = self.planet.w
+    #     wC = np.sqrt(self.planet.GM/(self.a*(1-e**2))**3)
+    #     cosU = np.cos(U)
+    #     sinU = np.sin(U)
+    #     cosI = np.cos(self.inclination)
+    #     sinI = np.sin(self.inclination)
+    #     cosB = np.cos(self.toRadians(beta))
+        
+    #     """ Compute equations (107) and (108). Eq numbers may change! """
+    #     cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
+    #     sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
+        
+    #     """ Compute equations (117) and (118). Eq numbers may change!  """
+    #     wDcosG = wC*(1+e*cosU)**2
+    #     wDsinG = e*wC*(1+e*cosU)*sinU
+    #     wD = np.sqrt(wDcosG**2 + wDsinG**2)
+        
+    #     """ Compute equation (75) """
+    #     wF = wDcosG - w*cosI
+        
+    #     """ Compute equation (79). s2, s2F can be plus/minus depending on look
+    #         direction. wwQ is the denominator of (78,79) multiplied by
+    #         w^2 """
+    #     wwQ = (w*sinI*cosB)**2 + wF**2
+    #     s2 = look*w*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
+    #     s2F = look*wF*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
+        
+    #     """ Compute the overall result (81)"""
+    #     uTCN = np.array([sinG*v*(wDcosG*wF/wwQ - 1) + s2*cosG*cosB*sinI,
+    #                      -w*v*wDsinG*sinI*cosB/wwQ + s2F,
+    #                      v*(cosG + wDsinG*sinG*wF/wwQ) + s2*sinG*cosB*sinI])
+    #     uTCN /= np.linalg.norm(uTCN)
+        
+    #     """ Compute the TCN vectors """
+    #     TCN = self.computeTCN(beta)
+        
+        
+    #     aTCN = np.array([wD - w*cosG*cosI,
+    #                      -w*cosB*sinI,
+    #                      -w*sinG*cosI])
+    #     aTCN = aTCN/np.linalg.norm(aTCN)
+        
+    #     """ Compute the eTCN vector """
+    #     eTCN = np.cross(uTCN, aTCN)
+    #     eTCN/= np.linalg.norm(eTCN)
+        
+    #     """ Compute the aeuTCN matrix """
+    #     aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
+        
+    #     """ compute the aeuI matrix """
+    #     aeuI = TCN.dot(aeuTCN)
+        
+    #     """ Return the aeuI and aeuTCN matrices """
+    #     return aeuI, aeuTCN
 
     
     def computeEold(self, beta, v):
@@ -778,7 +876,7 @@ class orbit:
         ----------
         AEU : `numpy.ndarray` (3,3)
             Basis vectors for Azimuth, Elevation and Look direction. Each 
-            column corresponds to a respective basis vector.
+            column corresponds to the respective basis vector.
         alpha : float
             Azimuth error (Radians).
         epsilon : float

@@ -5,15 +5,13 @@ Created on Fri Jan 28 14:10:22 2022
 @author: Ishuwa.Sikaneta
 """
 
-from orbit.envision import envisionState, angularVelocityError
-from orbit.envision import simulateError, angularTimingError
+from orbit.envision import envisionState
+from orbit.envision import simulateError
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import default_rng
 import json
 from datetime import datetime as dt
 
-rng = default_rng()
 import os
 
 
@@ -34,18 +32,68 @@ svs = [(np.datetime64(s[0]), np.array([float(x) for x in s[1:]])*1e3)
 
 #%% Run a test#%% Define a reference state vector to use
 """ First get the state vector """
-mysvs = envisionState(svs, [270, 480, 10])
+mysvs = envisionState(svs, [270, 280, 10])
 xidx = 0
 X = mysvs[xidx][1]
 
 #%%
 # res2 = [simulateError(s[1], 30, sigmaA=0.022, sigmaE = 0.29, sigmaT = 0.12)
 #         for s in mysvs]
+off_nadir = -30
+
+""" Generate the covariances """  
+R_RPY = np.diag([4.9e-3, 0.2e-3, 1.4e-3])**2
+# R_RPY = np.diag([4.9e-3, 3e-3, 0.4e-3])**2
+R_v = np.diag([0.2, 0.2, 0.2])**2
+R_t = 5**2
+R_p = 430**2
+
+# R_att = rpy2aeuCovariance(R_RPY)
+# for _,X in mysvs:
+#     R_vel = velocity2aeuCovariance()
+
+#%%
+parray = np.arange(0.1, 1.0, 0.02)*1.0e-3
+yarray = np.arange(0.1, 2.0, 0.04)*1.0e-3
+
+res_array = []
+for p in parray:
+    for y in yarray:
+        print("Pitch: %0.2e, Yaw: %0.2e" % (p,y))
+        R_RPY = np.diag([4.9e-3, p, y])**2
+        dd = simulateError(X, off_nadir, R_RPY = R_RPY, R_v = R_v, R_t = R_t, R_p = R_p)
+        res_array.append(dd)
+    
+# res2 = [simulateError(s[1], off_nadir, sigmaA=0.023, sigmaE = 0.26, sigmaT = 0.12) 
+#         for s in mysvs]
+
+#%%
+dprate = np.array([r["ErrorRate"]["Doppler"] for r in res_array]).reshape((len(parray), len(yarray)))
+
+#%%
+plt.figure()
+plt.contour(yarray*1e3, parray*1e3, dprate, np.arange(1,30,1), origin='lower')
+plt.xlabel("yaw (mrad)")
+plt.ylabel("pitch (mrad)")
+plt.colorbar()
+plt.grid()
+plt.contour(yarray*1e3, parray*1e3, dprate, np.array([5]), origin='lower', colors = ['red'])
+plt.title("Percentage of R-MIS-PER-1045 violations (Doppler)")
+plt.show()
+
+#%% Save and plot the error
+filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\PointingSimulations"
+filename = r"pitchRoll49PitchYawRelation.json"
+with open(os.path.join(filepath, filename), "w") as f:
+    f.write(json.dumps(res_array, indent=2))
+    
+#%%
+R_RPY = np.diag([4.9e-3, 0.4e-3, 1.18e-3])**2
 off_nadir = 30
-res2 = [simulateError(s[1], off_nadir, sigmaA=0.023, sigmaE = 0.26, sigmaT = 0.12) 
-        for s in mysvs]
+simulateError(X, off_nadir, R_RPY = R_RPY, R_v = R_v, R_t = R_t, R_p = R_p)
 
 #%% Compute angular velocity errors
+Rv = np.diag([0.2, 0.2, 0.2])**2
 for r,sv in zip(res2, mysvs):
     aerr = np.degrees(angularVelocityError(sv[1], off_nadir))
     r["computed"]["errors"]["sigmaAv"] = aerr[0]
@@ -62,8 +110,6 @@ for r,sv in zip(res2, mysvs):
 #%%  
 times = [(s[0] - mysvs[0][0])/np.timedelta64(1, 's') for s in mysvs]
 
-#%% Save and plot the error
-filepath = r"c:\Users\Ishuwa.Sikaneta\Documents\ESTEC\Envision"
 
 #%%
 filename = r"sim-%s.json" % dt.now().strftime("%Y-%m-%dT%H%M%S")
