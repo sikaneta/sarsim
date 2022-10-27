@@ -6,7 +6,7 @@ Created on Wed Jun  8 13:50:20 2022
 """
 #%%
 import numpy as np
-from numba import jit, njit, prange
+from numba import njit, prange
 
 @njit
 def PRYfromRotation(R, R0, PRY):
@@ -196,9 +196,9 @@ def YRPfromRotation(R, R0, YRP):
 
 #%%      
 @njit
-def RPYfromRotation(R, RPY):
+def rpyFromRotation(R, RPY):
     """
-    Compute Yaw, roll and pitch from rotation matrix
+    Compute roll and pitch and yaw from rotation matrix
     
     This function computes the Roll angle, Pitch angle
     and Yaw angle from a given rotation matrix. The
@@ -280,11 +280,37 @@ def RPYfromRotation(R, RPY):
         
         Rp = Rp.dot(M_p)
         
-        """ Compute the yaw angle """
+        """ Compute the roll angle """
         RPY[0,k] = np.arctan2(-Rp[1,2], Rp[1,1])
+        
 #%%     
 @njit
-def aeu2rot(basis, aeu_e, aeu_m):
+def aeu2rot(old_basis, aeu_e, new_basis):
+    """
+    Rotate a set of basis vectors by aeu angles.
+    
+    Rotate a set of basis vectors according to eq (25) in the Envision
+    reference frames and pointing angle errors document. If the basis is
+    the identity matrix, then the return values are the rotation matrices.
+
+    Parameters
+    ----------
+    old_basis : `numpy.ndarray(3,3)`
+        Basis vectors (columnwise) to be rotated.
+    aeu_e : `numpy.ndarray(3,N)`
+        A list of angles (radians) to be transformed into rotation matrices.
+        each of the N columns is a vector of azimuth, elevation and tilt
+        angles.
+    new_basis : `numpy.ndarray(3,3,N)`
+        The rotated bases vectors. If bases is the identity, the return
+        value is the rotation matrix. This matrix is a pointer to the
+        computed values.
+
+    Returns
+    -------
+    None.
+
+    """
     c_aeu = np.cos(aeu_e)
     s_aeu = np.sin(aeu_e)
     _,N = aeu_e.shape
@@ -301,9 +327,9 @@ def aeu2rot(basis, aeu_e, aeu_m):
         Mt = np.array([[c_aeu[2,k], -s_aeu[2,k], 0.0],
                        [s_aeu[2,k], c_aeu[2,k],  0.0],
                        [0.0, 0.0, 1.0]])
-        aeu_m[:,:,k] = basis.dot(Me).dot(Ma).dot(Mt)
+        new_basis[:,:,k] = old_basis.dot(Me).dot(Ma).dot(Mt)
 
-        #%%
+#%%
 @njit
 def RPYfromAEU(AEU, M_e, RPY):
     """
@@ -438,16 +464,17 @@ def RPYfromAEU(AEU, M_e, RPY):
         
         """ Compute the yaw angle """
         RPY[0,k] = np.arctan2(-Rp[1,2], Rp[1,1])
-
+        
+@njit
 def AEUfromRPY(RPY, M_e, AEU):
     """
     Compute azimuth, elevation and tilt angle errors from the
-    roll, pitch and yaw angular errors
+    roll, pitch and yaw angular errors.
     
-    This function computes the azimuth, elevationand tilt angular erros
-    from the roll, pitch and yaw angular errors The
-    algorithm for computing these values can be found
-    in my notes.
+    This function computes the azimuth, elevation and tilt angular erros
+    from the roll, pitch and yaw angular errors. A reference for the
+    algorithm may be found in the Envision reference frames and pointing
+    angle error document.
     
     Roll, Pitch and Yaw errors
     --------------------------
@@ -580,22 +607,55 @@ def AEUfromRPY(RPY, M_e, AEU):
         """ Compute the epsilon angle """
         AEU[1,k] = np.arctan2(-Rp[1,2], Rp[1,1])
         
-def aeuAnglesAAEUfromDAEU(AAEU, DAEU):
-    aeu = np.zeros((len(AAEU),3), dtype = np.double)
-    YRPfromRotation(AAEU, DAEU, aeu)
-    return aeu.dot(np.array([[0,1,0],
-                             [1,0,0],
-                             [0,0,1]]))
+# def aeuAnglesAAEUfromDAEU(AAEU, DAEU):
+#     aeu = np.zeros((len(AAEU),3), dtype = np.double)
+#     YRPfromRotation(AAEU, DAEU, aeu)
+#     return aeu.dot(np.array([[0,1,0],
+#                               [1,0,0],
+#                               [0,0,1]]))
 
-def aeuAngles(AEUmatrix):
-    aeu = np.zeros((3, len(AEUmatrix)), dtype = np.double)
-    RPYfromRotation(AEUmatrix, aeu)
-    return aeu
+def aeuFromRotation(AEUmatrix):
+    """
+    Compute the azimuth, elevation and tilt angles from rotation matrices.
+    
+    According to equation (25) of the Envision reference frames and pointing
+    angle error document, compute the angles corresponding to given
+    rotation matrices.
+
+    Parameters
+    ----------
+    AAEmatrix : TYPE
+        DESCRIPTION.
+    DAEU : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
+    
+    eau = np.zeros((3, len(AEUmatrix)), dtype = np.double)
+    rpyFromRotation(AEUmatrix, eau)
+    
+    """ Need to switch the order of values so that we get
+        aeu order rather than eau """
+    aeShift = np.array([[0,1,0],
+                        [1,0,0],
+                        [0,0,1]])
+    # aeShift = np.array([[1,0,0],
+    #                     [0,1,0],
+    #                     [0,0,1]])
+    
+    return aeShift.dot(eau)
 
 #%%
 def rpyAnglesFromIJK(IJKmatrix):
-    Ishift = np.array([[0,0,1],[1,0,0],[0,1,0]])
-    return aeuAngles(IJKmatrix.dot(Ishift))
+    JKIshift = np.array([[0,0,1],[1,0,0],[0,1,0]])
+    rpy = np.zeros((3, len(IJKmatrix)), dtype = np.double)
+    rpyFromRotation(IJKmatrix.dot(JKIshift), rpy)
+    return rpy
 
 # def aeuAnglesDAEUfromAAEU(DAEU, AAEU):
 #     aeu = np.zeros((len(DAEU),3), dtype = np.double)

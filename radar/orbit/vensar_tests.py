@@ -5,8 +5,8 @@ Created on Fri Jan 28 14:10:22 2022
 @author: Ishuwa.Sikaneta
 """
 
-from orbit.envision import envisionState
-from orbit.envision import simulateError
+from space.planets import venus
+from orbit.pointing import simulation
 import numpy as np
 import matplotlib.pyplot as plt
 import json
@@ -15,10 +15,12 @@ from datetime import datetime as dt
 import os
 
 
-#%% Define some parameters for venSAR
-
-elAxis = 0.6
-azAxis = 6.0
+#%% Create a simulation object
+eSim = simulation(planet = venus(),
+                  e_ang = 14.28,
+                  azAxis = 6.0,
+                  elAxis = 0.6,
+                  carrier = 3.15e9)
 
 #%% Load an oem orbit state vecctor file from Venus
 orb_path = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\Orbits"
@@ -32,7 +34,7 @@ svs = [(np.datetime64(s[0]), np.array([float(x) for x in s[1:]])*1e3)
 
 #%% Run a test#%% Define a reference state vector to use
 """ First get the state vector """
-mysvs = envisionState(svs, [270, 280, 10])
+mysvs = eSim.state(svs, [270, 280, 10])
 xidx = 0
 X = mysvs[xidx][1]
 
@@ -43,25 +45,25 @@ off_nadir = -30
 
 """ Generate the covariances """  
 R_RPY = np.diag([4.9e-3, 0.2e-3, 1.4e-3])**2
-# R_RPY = np.diag([4.9e-3, 3e-3, 0.4e-3])**2
 R_v = np.diag([0.2, 0.2, 0.2])**2
 R_t = 5**2
 R_p = 430**2
-
-# R_att = rpy2aeuCovariance(R_RPY)
-# for _,X in mysvs:
-#     R_vel = velocity2aeuCovariance()
+    
+#%%
+R_RPY = np.diag([4.9e-3, 0.4e-3, 1.2e-3])**2
+off_nadir = -30
+eSim.simulateError(X, off_nadir, R_RPY = R_RPY, R_v = R_v, R_t = R_t, R_p = R_p)
 
 #%%
-parray = np.arange(0.1, 1.0, 0.02)*1.0e-3
-yarray = np.arange(0.1, 2.0, 0.04)*1.0e-3
+parray = np.arange(0.1, 0.6, 0.05)*1.0e-3
+yarray = np.arange(0.1, 2.0, 0.1)*1.0e-3
 
 res_array = []
 for p in parray:
     for y in yarray:
         print("Pitch: %0.2e, Yaw: %0.2e" % (p,y))
         R_RPY = np.diag([4.9e-3, p, y])**2
-        dd = simulateError(X, off_nadir, R_RPY = R_RPY, R_v = R_v, R_t = R_t, R_p = R_p)
+        dd = eSim.simulateError(X, off_nadir, R_RPY = R_RPY, R_v = R_v, R_t = R_t, R_p = R_p)
         res_array.append(dd)
     
 # res2 = [simulateError(s[1], off_nadir, sigmaA=0.023, sigmaE = 0.26, sigmaT = 0.12) 
@@ -86,11 +88,6 @@ filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\Po
 filename = r"pitchRoll49PitchYawRelation.json"
 with open(os.path.join(filepath, filename), "w") as f:
     f.write(json.dumps(res_array, indent=2))
-    
-#%%
-R_RPY = np.diag([4.9e-3, 0.4e-3, 1.18e-3])**2
-off_nadir = 30
-simulateError(X, off_nadir, R_RPY = R_RPY, R_v = R_v, R_t = R_t, R_p = R_p)
 
 #%% Compute angular velocity errors
 Rv = np.diag([0.2, 0.2, 0.2])**2

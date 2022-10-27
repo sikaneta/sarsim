@@ -37,13 +37,13 @@ class orbit:
         ----------
         e : float (Unitless)
             The orbit eccentricity.
-        arg_perigee : float (Radians)
+        arg_perigee : float (angleUnits according to angleUnits)
             Argument of Perigee. This is the angle measured from the vector
             from planet center to the ascending node to the vector from planet
             center to perigee.
         a : float (m)
             The length of the orbit semi-major axis.
-        inclination : (Radians)
+        inclination : (angleUnits according to angleUnits)
             The inclination angle of the orbit. This is the right-handed angle 
             around the vector from the planet center to the ascending node by 
             which the orbit plane is rotated.
@@ -59,6 +59,7 @@ class orbit:
         """
         
         self.toRadians = self.angleFunction[angleUnits]
+        self.angleUnits = angleUnits
         self.e = e
         self.arg_perigee = self.toRadians(arg_perigee)
         self.a = a
@@ -140,13 +141,13 @@ class orbit:
         Returns
         -------
         dict
-            has fields: (radians or degress according to self.toRadians 
-            definition)
+            has fields: (angleUnits according to self.angleUnits)
                 - eccentricity (unitless)
                 - a (m)
-                - perigee (radians or degrees)
-                - inclination (radians or degrees)
-                - ascendingNode (radians or degrees)
+                - perigee (angleUnits according to self.angleUnits)
+                - inclination (angleUnits according to self.angleUnits)
+                - ascendingNode: longitude of the ascending node
+                  (angleUnits according to self.angleUnits)
                 
         Note
         ----
@@ -215,7 +216,7 @@ class orbit:
 
         Parameters
         ----------
-        beta : float, (Radians)
+        beta : float, (angleUnits according to self.angleUnits)
             The orbit angle measure from the ascending node.
 
         Returns
@@ -267,7 +268,7 @@ class orbit:
 
         Parameters
         ----------
-        beta : float, (Radians)
+        beta : float, (angleUnits according to self.angleUnits)
             The orbit angle at which to compute the T,C,N vectors. This is the
             angle measured from the ascending node.
 
@@ -294,7 +295,7 @@ class orbit:
 
         Parameters
         ----------
-        beta : float, (Radians)
+        beta : float, (angleUnits according to self.angleUnits)
             The orbit angle measure from the ascending node.
 
         Returns
@@ -310,83 +311,6 @@ class orbit:
         GM = self.planet.GM
         return np.sqrt((GM/a)*(1+2*e*np.cos(self.toRadians(beta)-w) 
                                + e**2)/(1-e**2))
-              
-    
-    def computeAEUold(self, beta, v):
-        """
-        Compute the look direction, azimuth and elevation vectors
-        
-        Compute the look direction, azimuth and elevation vectors in
-        both the TCN frame and the Inertial frame
-
-        Parameters
-        ----------
-        beta : float (Radians)
-            The orbit angle. Measured from the ascending node.
-        v : float (Unitless)
-            Cosine of the off-nadir angle
-        Returns
-        -------
-        aeuI: `npmpy.array`, [3,3]
-            The azimuth, elevation and look vectors in the Inertial reference
-            frame arranged as the columns of a matrix (respective order)
-        aeuTCN: `npmpy.array`, [3,3]
-            The azimuth, elevation and look vectors in the TCN frame arranged 
-            as the columns of a matrix (respective order)
-
-        """
-        
-        U = self.toRadians(beta) - self.arg_perigee
-        e = self.e
-        C = 1.0/self.planet.w*np.sqrt(self.planet.GM/(self.a*(1-e**2))**3)
-        cosU = np.cos(U)
-        sinU = np.sin(U)
-        cosI = np.cos(self.inclination)
-        sinI = np.sin(self.inclination)
-        cosB = np.cos(self.toRadians(beta))
-        
-        """ Compute equations (89) and (90). Equation numbers may change! """
-        cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
-        sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
-        
-        """ Compute equations (99) and (100). Equation numbers may change! """
-        DcosG = C*(1+e*cosU)**2
-        DsinG = e*C*(1+e*cosU)*sinU
-        D = np.sqrt(DcosG**2 + DsinG**2)
-        
-        """ Compute equation (54) """
-        A = DcosG - cosI
-        
-        """ Compute equation (55). sB can be plus/minus depending on look
-            direction """
-        Q = (sinI*cosB)**2 + A**2
-        sB = np.sqrt((1-v**2)*Q - (v*sinG)**2)/Q
-        
-        """ Compute the overall result (60)"""
-        uTCN = np.array([sinG*v*(DcosG*A/Q - 1) + sB*cosG*cosB*sinI,
-                         -v*DsinG*sinI*cosB/Q + sB*A,
-                         v*(cosG + DsinG*sinG*A/Q) + sB*sinG*cosB*sinI])
-        
-        """ Compute the TCN vectors """
-        TCN = self.computeTCN(beta)
-        
-        
-        aTCN = np.array([D - cosG*cosI,
-                         -cosB*sinI,
-                         -sinG*cosI])
-        aTCN = aTCN/np.linalg.norm(aTCN)
-        
-        """ Compute the eTCN vector """
-        eTCN = np.cross(uTCN, aTCN)
-        
-        """ Compute the aeuTCN matrix """
-        aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
-        
-        """ compute the aeuI matrix """
-        aeuI = TCN.dot(aeuTCN)
-        
-        """ Return the aeuI and aeuTCN matrices """
-        return aeuI, aeuTCN
     
     def computeAEU(self, beta, off_nadir):
         """
@@ -397,9 +321,9 @@ class orbit:
 
         Parameters
         ----------
-        beta : float (Radians)
+        beta : float (angleUnits according to self.angleUnits)
             The orbit angle. Measured from the ascending node.
-        off_nadir : float (Unitless)
+        off_nadir : float (angleUnits according to self.angleUnits)
             Off-nadir angle. This is signed-angle corresponding to a roll.
             A negative angle corresponds to right-looking, a positive
             angle corresponds to left-looking. This is the right-handed rule
@@ -482,142 +406,6 @@ class orbit:
         """ Return the aeuI and aeuTCN matrices """
         return aeuI, aeuTCN
     
-    # def computeAEU(self, beta, v, look=1):
-    #     """
-    #     Compute the look direction, azimuth and elevation vectors
-        
-    #     Compute the look direction, azimuth and elevation vectors in
-    #     both the TCN frame and the Inertial frame
-
-    #     Parameters
-    #     ----------
-    #     beta : float (Radians)
-    #         The orbit angle. Measured from the ascending node.
-    #     v : float (Unitless)
-    #         Cosine of the off-nadir angle
-    #     look : int
-    #         The look direction vector. +1 for right, -1 for left
-            
-    #     Returns
-    #     -------
-    #     aeuI: `npmpy.array`, [3,3]
-    #         The azimuth, elevation and look vectors in the Inertial reference
-    #         frame arranged as the columns of a matrix (respective order)
-    #     aeuTCN: `npmpy.array`, [3,3]
-    #         The azimuth, elevation and look vectors in the TCN frame arranged 
-    #         as the columns of a matrix (respective order)
-                
-    #     Notes
-    #     -----
-    #     The calculation coded here multiples the equations in the notes
-    #     by the planet angular velocity to allow the computation of equation
-    #     (60) even in the case the planet angular velocity is low or zero.
-
-    #     """
-        
-    #     U = self.toRadians(beta) - self.arg_perigee
-    #     e = self.e
-    #     w = self.planet.w
-    #     wC = np.sqrt(self.planet.GM/(self.a*(1-e**2))**3)
-    #     cosU = np.cos(U)
-    #     sinU = np.sin(U)
-    #     cosI = np.cos(self.inclination)
-    #     sinI = np.sin(self.inclination)
-    #     cosB = np.cos(self.toRadians(beta))
-        
-    #     """ Compute equations (107) and (108). Eq numbers may change! """
-    #     cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
-    #     sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
-        
-    #     """ Compute equations (117) and (118). Eq numbers may change!  """
-    #     wDcosG = wC*(1+e*cosU)**2
-    #     wDsinG = e*wC*(1+e*cosU)*sinU
-    #     wD = np.sqrt(wDcosG**2 + wDsinG**2)
-        
-    #     """ Compute equation (75) """
-    #     wF = wDcosG - w*cosI
-        
-    #     """ Compute equation (79). s2, s2F can be plus/minus depending on look
-    #         direction. wwQ is the denominator of (78,79) multiplied by
-    #         w^2 """
-    #     wwQ = (w*sinI*cosB)**2 + wF**2
-    #     s2 = look*w*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
-    #     s2F = look*wF*np.sqrt((1-v**2)*wwQ - (w*v*sinG)**2)/wwQ
-        
-    #     """ Compute the overall result (81)"""
-    #     uTCN = np.array([sinG*v*(wDcosG*wF/wwQ - 1) + s2*cosG*cosB*sinI,
-    #                      -w*v*wDsinG*sinI*cosB/wwQ + s2F,
-    #                      v*(cosG + wDsinG*sinG*wF/wwQ) + s2*sinG*cosB*sinI])
-    #     uTCN /= np.linalg.norm(uTCN)
-        
-    #     """ Compute the TCN vectors """
-    #     TCN = self.computeTCN(beta)
-        
-        
-    #     aTCN = np.array([wD - w*cosG*cosI,
-    #                      -w*cosB*sinI,
-    #                      -w*sinG*cosI])
-    #     aTCN = aTCN/np.linalg.norm(aTCN)
-        
-    #     """ Compute the eTCN vector """
-    #     eTCN = np.cross(uTCN, aTCN)
-    #     eTCN/= np.linalg.norm(eTCN)
-        
-    #     """ Compute the aeuTCN matrix """
-    #     aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
-        
-    #     """ compute the aeuI matrix """
-    #     aeuI = TCN.dot(aeuTCN)
-        
-    #     """ Return the aeuI and aeuTCN matrices """
-    #     return aeuI, aeuTCN
-
-    
-    def computeEold(self, beta, v):
-        """
-        Compute the scaling parameter for solving the underdetermined system
-        of equations
-        
-        Compute the value of s in equation (56)
-
-        Parameters
-        ----------
-        beta : float (Radias)
-            The orbit angle. Measured from the ascending node.
-        v : float (Unitless)
-            Cosine of the off-nadir angle
-        Returns
-        -------
-        s: float
-            The scaling factor
-
-        """
-        
-        U = self.toRadians(beta) - self.arg_perigee
-        e = self.e
-        C = 1.0/self.planet.w*np.sqrt(self.planet.GM/(self.a*(1-e))**3)
-        cosU = np.cos(U)
-        sinU = np.sin(U)
-        cosI = np.cos(self.inclination)
-        sinI = np.sin(self.inclination)
-        cosB = np.cos(self.toRadians(beta))
-        
-        """ Compute equations (73) and (74). Equation numbers may change! """
-        cosG = (1+e*cosU)/np.sqrt(1+2*e*cosU+e**2)
-        sinG = e*sinU/np.sqrt(1+2*e*cosU+e**2)
-        
-        """ Compute equations (79) and (80). Equation numbers may change!  """
-        DcosG = C*(1+e*cosU)**2
-        DsinG = e*C*(1+e*cosU)*sinU
-        D = np.sqrt(DcosG**2 + DsinG**2)
-        
-        e1 = np.array([D-cosI*cosG, -sinI*cosB, -cosI*sinG])
-        e2 = np.array([-sinG,
-                       0,
-                       cosG])
-        
-        return e1, e2
-    
     def computeE(self, beta, v):
         """
         Compute the scaling parameter for solving the underdetermined system
@@ -627,7 +415,7 @@ class orbit:
 
         Parameters
         ----------
-        beta : float (Radias)
+        beta : float (angleUnits according to self.angleUnits)
             The orbit angle. Measured from the ascending node.
         v : float (Unitless)
             Cosine of the off-nadir angle
@@ -680,7 +468,7 @@ class orbit:
 
         Parameters
         ----------
-        beta : float (Radians)
+        beta : float (angleUnits according to self.angleUnits)
             The orbit angle (measured from the ascending node) for which to
             compute the transformation matrix.
 
@@ -714,7 +502,7 @@ class orbit:
 
         Parameters
         ----------
-        beta : float (rad)
+        beta : float (angleUnits according to self.angleUnits)
             Orbit angle measured from the ascending node.
 
         Returns
@@ -744,13 +532,13 @@ class orbit:
 
         Parameters
         ----------
-        beta : float
+        t : float
             The time in seconds since the time of the ascending node at
             which to compute the orbit angle.
 
         Returns
         -------
-        The orbit angle.
+        The orbit angle (angleUnits according to self.angleUnits).
 
         """
         
@@ -787,7 +575,7 @@ class orbit:
 
         Parameters
         ----------
-        angles : `numpy.ndarray`
+        angles : `numpy.ndarray` (angleUnits according to self.angleUnits)
             An array of angles to rotate by.
         uvec : `numpy.ndarray` (3,)
             The vector to rotate.
@@ -915,312 +703,312 @@ class orbit:
         ndarray. See the numpy docs for more information."""
         return np.einsum('ij,ejl,aln,tnk -> aetik', AEU, Me, Ma, Mt)
     
-    def dopCen(self, 
-               aeuPe, 
-               off_boresight, 
-               VP, 
-               wavelength):
-        """
-        Compute the Doppler centroid at a given off-nadir (in elevation)
-        angle
+    # def dopCen(self, 
+    #            aeuPe, 
+    #            off_boresight, 
+    #            VP, 
+    #            wavelength):
+    #     """
+    #     Compute the Doppler centroid at a given off-nadir (in elevation)
+    #     angle
         
-        Compute the Doppler centroid for a given off-nadir angle. The 
-        off-nadir angle is the right-handed rotation of the actual look
-        vector around the azimuth axis, the first column of aeuPe
+    #     Compute the Doppler centroid for a given off-nadir angle. The 
+    #     off-nadir angle is the right-handed rotation of the actual look
+    #     vector around the azimuth axis, the first column of aeuPe
 
-        Parameters
-        ----------
-        aeuPe : `numpy.ndarray`, (nA, nE, nT, 3, 3)
-            The actual Azimuth, Elevation, Look direction (AEU) vectors as
-            columns. These are stacked by a vector of nA azimuth, nE elevation
-            and nT tilt angles by which the actual aeuPe vectors are rotated
-            relative the desired aeuP vectors. These are all referenced to the
-            Planetary (P) reference frame.
-        off_boresight : float
-            The anlge by which to rotate the look vector around the actual
-            azimuth axis.
-        VP : `np.ndarray`, (3,)
-            The satellite velocity vector in the Planetary reference frame (P).
-        wavelength : float
-            The carrier wavelength (m).
+    #     Parameters
+    #     ----------
+    #     aeuPe : `numpy.ndarray`, (nA, nE, nT, 3, 3)
+    #         The actual Azimuth, Elevation, Look direction (AEU) vectors as
+    #         columns. These are stacked by a vector of nA azimuth, nE elevation
+    #         and nT tilt angles by which the actual aeuPe vectors are rotated
+    #         relative the desired aeuP vectors. These are all referenced to the
+    #         Planetary (P) reference frame.
+    #     off_boresight : float
+    #         The anlge by which to rotate the look vector around the actual
+    #         azimuth axis.
+    #     VP : `np.ndarray`, (3,)
+    #         The satellite velocity vector in the Planetary reference frame (P).
+    #     wavelength : float
+    #         The carrier wavelength (m).
 
-        Returns
-        -------
-        `numpy.ndarray`, (nA, nE, nT)
-            The Doppler centroid for each azimuth, elevation and tilt angle
-            error.
+    #     Returns
+    #     -------
+    #     `numpy.ndarray`, (nA, nE, nT)
+    #         The Doppler centroid for each azimuth, elevation and tilt angle
+    #         error.
 
-        """
+    #     """
         
-        v = np.array([0, 
-                      -np.sin(self.toRadians(off_boresight)),
-                      np.cos(self.toRadians(off_boresight))])
+    #     v = np.array([0, 
+    #                   -np.sin(self.toRadians(off_boresight)),
+    #                   np.cos(self.toRadians(off_boresight))])
         
-        r2 = np.matmul(aeuPe, v)
-        return -2*np.matmul(r2, VP)/wavelength
+    #     r2 = np.matmul(aeuPe, v)
+    #     return -2*np.matmul(r2, VP)/wavelength
 
 
-    def dopCens(self,
-                aeuPe, 
-                vAngles, 
-                VP, 
-                wavelength):
-        """
-        Compute the Doppler centroid at a given set of off-nadir (in elevation)
-        angles
+    # def dopCens(self,
+    #             aeuPe, 
+    #             vAngles, 
+    #             VP, 
+    #             wavelength):
+    #     """
+    #     Compute the Doppler centroid at a given set of off-nadir (in elevation)
+    #     angles
         
-        Compute the Doppler centroid for a given set of off-nadir angles. The 
-        off-nadir angle is the right-handed rotation of the actual look
-        vector around the azimuth axis, the first column of aeuPe
+    #     Compute the Doppler centroid for a given set of off-nadir angles. The 
+    #     off-nadir angle is the right-handed rotation of the actual look
+    #     vector around the azimuth axis, the first column of aeuPe
 
-        Parameters
-        ----------
-        aeuPe : `numpy.ndarray`, (nA, nE, nT, 3, 3)
-            The actual Azimuth, Elevation, Look direction (AEU) vectors as
-            columns. These are stacked by a vector of nA azimuth, nE elevation
-            and nT tilt angles by which the actual aeuPe vectors are rotated
-            relative the desired aeuP vectors. These are all referenced to the
-            Planetary (P) reference frame.
-        off_boresight : `numpy.ndarray`
-            Array of anlges by which to rotate the look vector around the 
-            actual azimuth axis.
-        VP : `np.ndarray`, (3,)
-            The satellite velocity vector in the Planetary reference frame (P).
-        wavelength : float
-            The carrier wavelength (m).
+    #     Parameters
+    #     ----------
+    #     aeuPe : `numpy.ndarray`, (nA, nE, nT, 3, 3)
+    #         The actual Azimuth, Elevation, Look direction (AEU) vectors as
+    #         columns. These are stacked by a vector of nA azimuth, nE elevation
+    #         and nT tilt angles by which the actual aeuPe vectors are rotated
+    #         relative the desired aeuP vectors. These are all referenced to the
+    #         Planetary (P) reference frame.
+    #     off_boresight : `numpy.ndarray`
+    #         Array of anlges by which to rotate the look vector around the 
+    #         actual azimuth axis.
+    #     VP : `np.ndarray`, (3,)
+    #         The satellite velocity vector in the Planetary reference frame (P).
+    #     wavelength : float
+    #         The carrier wavelength (m).
 
-        Returns
-        -------
-        `numpy.ndarray`, (nA, nE, nT)
-            The Doppler centroid for each azimuth, elevation and tilt angle
-            error.
+    #     Returns
+    #     -------
+    #     `numpy.ndarray`, (nA, nE, nT)
+    #         The Doppler centroid for each azimuth, elevation and tilt angle
+    #         error.
 
-        """
+    #     """
         
-        v = np.array([[0, 
-                      -np.sin(self.toRadians(ob)),
-                      np.cos(self.toRadians(ob))] for ob in vAngles])
+    #     v = np.array([[0, 
+    #                   -np.sin(self.toRadians(ob)),
+    #                   np.cos(self.toRadians(ob))] for ob in vAngles])
         
-        """ Values are computed by using the Einstein summation convetion.
-        This is a fast, intuitive way to handle the multiple indeces in the 
-        ndarray. See the numpy docs for more information."""
-        return 2*np.einsum('ijklm,nm,l->ijkn', aeuPe, v, VP)/wavelength
+    #     """ Values are computed by using the Einstein summation convetion.
+    #     This is a fast, intuitive way to handle the multiple indeces in the 
+    #     ndarray. See the numpy docs for more information."""
+    #     return 2*np.einsum('ijklm,nm,l->ijkn', aeuPe, v, VP)/wavelength
         
-    def PRYfromRotation(self, R, R0 = np.eye(3)):
-        """
-        Compute Pitch, roll and Yaw from rotation matrix
+    # def PRYfromRotation(self, R, R0 = np.eye(3)):
+    #     """
+    #     Compute Pitch, roll and Yaw from rotation matrix
         
-        This function computes the Pitch angle, Roll angle
-        and Yaw angle from a given rotation matrix. The
-        algorithm for computing these values can be found
-        in my notes.
+    #     This function computes the Pitch angle, Roll angle
+    #     and Yaw angle from a given rotation matrix. The
+    #     algorithm for computing these values can be found
+    #     in my notes.
         
-        The pitch, roll and yaw angles are given by \theta_p,
-        \theta_r and \theta_y, respectively.
+    #     The pitch, roll and yaw angles are given by \theta_p,
+    #     \theta_r and \theta_y, respectively.
         
-        The Pitch matrix is given by
+    #     The Pitch matrix is given by
         
-        M_p = [cos\theta_p  sin\theta_p  0]
-              [-sin\theta_p cos\theta_p  0]
-              [0            0            1].
+    #     M_p = [cos\theta_p  sin\theta_p  0]
+    #           [-sin\theta_p cos\theta_p  0]
+    #           [0            0            1].
               
         
-        The roll matrix is given by
+    #     The roll matrix is given by
         
-        M_r = [cos\theta_r  0 -sin\theta_r]
-              [0            1            0]
-              [sin\theta_r  0  cos\theta_r].
+    #     M_r = [cos\theta_r  0 -sin\theta_r]
+    #           [0            1            0]
+    #           [sin\theta_r  0  cos\theta_r].
         
         
-        And the yaw matrix is given by
+    #     And the yaw matrix is given by
         
-        M_y = [1            0            0]
-              [0  cos\theta_y  sin\theta_y]
-              [0  -sin\theta_y cos\theta_y].
+    #     M_y = [1            0            0]
+    #           [0  cos\theta_y  sin\theta_y]
+    #           [0  -sin\theta_y cos\theta_y].
               
-        The **rotated** basis vectors i_1, j_1 and k_1 relate to the
-        original basis vectors, i_0, j_0, k_0 through
+    #     The **rotated** basis vectors i_1, j_1 and k_1 relate to the
+    #     original basis vectors, i_0, j_0, k_0 through
         
-        [i_1, j_1, k_1] = [i_0, j_0, k_0]M_p^TM_r^TM_y^T
+    #     [i_1, j_1, k_1] = [i_0, j_0, k_0]M_p^TM_r^TM_y^T
         
-        where [i_1, j_1, k_1] and [i_0, j_0, k_0] are 3x3 matrices with columns
-        corresponding to the indicated basis vectors.
+    #     where [i_1, j_1, k_1] and [i_0, j_0, k_0] are 3x3 matrices with columns
+    #     corresponding to the indicated basis vectors.
         
-        Assuming that [i_0, j_0, k_0] is the identity matrix, this function
-        takes input as R = [i_1, j_1, k_1] and computes M_p, M_r and M_y and
-        the corresponding Euler angles.
+    #     Assuming that [i_0, j_0, k_0] is the identity matrix, this function
+    #     takes input as R = [i_1, j_1, k_1] and computes M_p, M_r and M_y and
+    #     the corresponding Euler angles.
         
-        Parameters
-        ----------
-        R : `numpy.ndarray, [3,3]`
-            The rotation matrix to express as pitch roll yaw.
-        R0 : `numpy.ndarray, [3,3]`
-            Initial basis vectors. This is defines the default from which
-            pitch roll and yaw are computed. Default is the identity matrix.
+    #     Parameters
+    #     ----------
+    #     R : `numpy.ndarray, [3,3]`
+    #         The rotation matrix to express as pitch roll yaw.
+    #     R0 : `numpy.ndarray, [3,3]`
+    #         Initial basis vectors. This is defines the default from which
+    #         pitch roll and yaw are computed. Default is the identity matrix.
     
-        Returns
-        -------
-        dict
-            A dictionary with the Euler angles in radians and the corresponding
-            rotation matrices.
+    #     Returns
+    #     -------
+    #     dict
+    #         A dictionary with the Euler angles in radians and the corresponding
+    #         rotation matrices.
     
-        """
+    #     """
         
         
-        """ Compute the yaw angle """
-        R = (R0.T).dot(R)
-        theta_y = np.arctan2(R[2,1], R[2,2])
-        c_y = np.cos(theta_y)
-        s_y = np.sin(theta_y)
+    #     """ Compute the yaw angle """
+    #     R = (R0.T).dot(R)
+    #     theta_y = np.arctan2(R[2,1], R[2,2])
+    #     c_y = np.cos(theta_y)
+    #     s_y = np.sin(theta_y)
         
-        M_y = np.array([
-                        [1,0,0],
-                        [0, c_y, s_y],
-                        [0,-s_y, c_y]
-                       ])
+    #     M_y = np.array([
+    #                     [1,0,0],
+    #                     [0, c_y, s_y],
+    #                     [0,-s_y, c_y]
+    #                    ])
         
-        R = R.dot(M_y)
-        #print(R)
+    #     R = R.dot(M_y)
+    #     #print(R)
         
-        """ Compute the roll angle """
-        theta_r = np.arctan2(-R[2,0], R[2,2])
-        c_r = np.cos(theta_r)
-        s_r = np.sin(theta_r)
+    #     """ Compute the roll angle """
+    #     theta_r = np.arctan2(-R[2,0], R[2,2])
+    #     c_r = np.cos(theta_r)
+    #     s_r = np.sin(theta_r)
         
-        M_r = np.array([
-                        [c_r,0,-s_r],
-                        [0,1,0],
-                        [s_r,0,c_r]
-                       ])
+    #     M_r = np.array([
+    #                     [c_r,0,-s_r],
+    #                     [0,1,0],
+    #                     [s_r,0,c_r]
+    #                    ])
         
-        R = R.dot(M_r)
-        #print(R)
+    #     R = R.dot(M_r)
+    #     #print(R)
         
-        """ Compute the pitch angle """
-        theta_p = np.arctan2(R[1,0], R[1,1])
-        c_p = np.cos(theta_p)
-        s_p = np.sin(theta_p)
+    #     """ Compute the pitch angle """
+    #     theta_p = np.arctan2(R[1,0], R[1,1])
+    #     c_p = np.cos(theta_p)
+    #     s_p = np.sin(theta_p)
         
-        M_p = np.array([
-                        [c_p, s_p,0],
-                        [-s_p,c_p,0],
-                        [0,0,1]
-                       ])
+    #     M_p = np.array([
+    #                     [c_p, s_p,0],
+    #                     [-s_p,c_p,0],
+    #                     [0,0,1]
+    #                    ])
         
-        R = R.dot(M_p)
-        #print(R)
+    #     R = R.dot(M_p)
+    #     #print(R)
         
-        return (theta_p, theta_r, theta_y), (M_p, M_r, M_y)
+    #     return (theta_p, theta_r, theta_y), (M_p, M_r, M_y)
     
-    def aeuAnglesAAEUfromDAEU(self, AAEU, DAEU):
-        (ep, az, tau), (Meps, Mazi, Mtau) = self.YRPfromRotation(AAEU, DAEU)
-        return (az, ep, tau), (Mazi, Meps, Mtau)
+    # def aeuAnglesAAEUfromDAEU(self, AAEU, DAEU):
+    #     (ep, az, tau), (Meps, Mazi, Mtau) = self.YRPfromRotation(AAEU, DAEU)
+    #     return (az, ep, tau), (Mazi, Meps, Mtau)
     
-    def aeuAnglesDAEUfromAAEU(self, DAEU, AAEU):
-        (tau, az, ep), (Mtau, Mazi, Meps) = self.PRYfromRotation(DAEU, AAEU)
-        return (-az, -ep, -tau), (Mazi.T, Meps.T, Mtau.T)
+    # def aeuAnglesDAEUfromAAEU(self, DAEU, AAEU):
+    #     (tau, az, ep), (Mtau, Mazi, Meps) = self.PRYfromRotation(DAEU, AAEU)
+    #     return (-az, -ep, -tau), (Mazi.T, Meps.T, Mtau.T)
     
-    def YRPfromRotation(self, R, R0 = np.eye(3)):
-        """
-        Compute Pitch, roll and Yaw from rotation matrix
+    # def YRPfromRotation(self, R, R0 = np.eye(3)):
+    #     """
+    #     Compute Pitch, roll and Yaw from rotation matrix
         
-        This function computes the Pitch angle, Roll angle
-        and Yaw angle from a given rotation matrix. The
-        algorithm for computing these values can be found
-        in my notes.
+    #     This function computes the Pitch angle, Roll angle
+    #     and Yaw angle from a given rotation matrix. The
+    #     algorithm for computing these values can be found
+    #     in my notes.
         
-        The pitch, roll and yaw angles are given by \theta_p,
-        \theta_r and \theta_y, respectively.
+    #     The pitch, roll and yaw angles are given by \theta_p,
+    #     \theta_r and \theta_y, respectively.
         
-        The Pitch matrix is given by
+    #     The Pitch matrix is given by
         
-        M_p = [cos\theta_p  sin\theta_p  0]
-              [-sin\theta_p cos\theta_p  0]
-              [0            0            1].
+    #     M_p = [cos\theta_p  sin\theta_p  0]
+    #           [-sin\theta_p cos\theta_p  0]
+    #           [0            0            1].
               
         
-        The roll matrix is given by
+    #     The roll matrix is given by
         
-        M_r = [cos\theta_r  0 -sin\theta_r]
-              [0            1            0]
-              [sin\theta_r  0  cos\theta_r].
+    #     M_r = [cos\theta_r  0 -sin\theta_r]
+    #           [0            1            0]
+    #           [sin\theta_r  0  cos\theta_r].
         
         
-        And the yaw matrix is given by
+    #     And the yaw matrix is given by
         
-        M_y = [1            0            0]
-              [0  cos\theta_y  sin\theta_y]
-              [0  -sin\theta_y cos\theta_y].
+    #     M_y = [1            0            0]
+    #           [0  cos\theta_y  sin\theta_y]
+    #           [0  -sin\theta_y cos\theta_y].
               
-        The **rotated** basis vectors i_1, j_1 and k_1 relate to the
-        original basis vectors, i_0, j_0, k_0 through
+    #     The **rotated** basis vectors i_1, j_1 and k_1 relate to the
+    #     original basis vectors, i_0, j_0, k_0 through
         
-        [i_1, j_1, k_1] = [i_0, j_0, k_0]M_p^TM_r^TM_y^T
+    #     [i_1, j_1, k_1] = [i_0, j_0, k_0]M_p^TM_r^TM_y^T
         
-        where [i_1, j_1, k_1] and [i_0, j_0, k_0] are 3x3 matrices with columns
-        corresponding to the indicated basis vectors.
+    #     where [i_1, j_1, k_1] and [i_0, j_0, k_0] are 3x3 matrices with columns
+    #     corresponding to the indicated basis vectors.
         
-        Assuming that [i_0, j_0, k_0] is the identity matrix, this function
-        takes input as R = [i_1, j_1, k_1] and computes M_p, M_r and M_y and
-        the corresponding Euler angles.
+    #     Assuming that [i_0, j_0, k_0] is the identity matrix, this function
+    #     takes input as R = [i_1, j_1, k_1] and computes M_p, M_r and M_y and
+    #     the corresponding Euler angles.
         
-        Parameters
-        ----------
-        R : `numpy.ndarray, [3,3]`
-            The rotation matrix to express as pitch roll yaw.
-        R0 : `numpy.ndarray, [3,3]`
-            Initial basis vectors. This is defines the default from which
-            pitch roll and yaw are computed. Default is the identity matrix.
+    #     Parameters
+    #     ----------
+    #     R : `numpy.ndarray, [3,3]`
+    #         The rotation matrix to express as pitch roll yaw.
+    #     R0 : `numpy.ndarray, [3,3]`
+    #         Initial basis vectors. This is defines the default from which
+    #         pitch roll and yaw are computed. Default is the identity matrix.
     
-        Returns
-        -------
-        dict
-            A dictionary with the Euler angles in radians and the corresponding
-            rotation matrices.
+    #     Returns
+    #     -------
+    #     dict
+    #         A dictionary with the Euler angles in radians and the corresponding
+    #         rotation matrices.
     
-        """
+    #     """
         
         
-        """ Compute the yaw angle """
-        R = (R0.T).dot(R)
-        theta_p = np.arctan2(-R[0,1], R[0,0])
-        c_p = np.cos(theta_p)
-        s_p = np.sin(theta_p)
+    #     """ Compute the yaw angle """
+    #     R = (R0.T).dot(R)
+    #     theta_p = np.arctan2(-R[0,1], R[0,0])
+    #     c_p = np.cos(theta_p)
+    #     s_p = np.sin(theta_p)
         
-        M_p = np.array([
-                        [c_p,  s_p,  0.0],
-                        [-s_p, c_p,  0.0],
-                        [0.0,  0.0,  1.0]
-                        ])
-        R = R.dot(M_p)
-        #print(R)
+    #     M_p = np.array([
+    #                     [c_p,  s_p,  0.0],
+    #                     [-s_p, c_p,  0.0],
+    #                     [0.0,  0.0,  1.0]
+    #                     ])
+    #     R = R.dot(M_p)
+    #     #print(R)
         
-        """ Compute the roll angle """
-        theta_r = np.arctan2(R[0,2], R[0,0])
-        c_r = np.cos(theta_r)
-        s_r = np.sin(theta_r)
+    #     """ Compute the roll angle """
+    #     theta_r = np.arctan2(R[0,2], R[0,0])
+    #     c_r = np.cos(theta_r)
+    #     s_r = np.sin(theta_r)
         
-        M_r = np.array([
-                        [c_r,0,-s_r],
-                        [0,1,0],
-                        [s_r,0,c_r]
-                       ])
+    #     M_r = np.array([
+    #                     [c_r,0,-s_r],
+    #                     [0,1,0],
+    #                     [s_r,0,c_r]
+    #                    ])
         
-        R = R.dot(M_r)
-        #print(R)
+    #     R = R.dot(M_r)
+    #     #print(R)
         
-        """ Compute the pitch angle """
-        theta_y = np.arctan2(-R[1,2], R[1,1])
-        c_y = np.cos(theta_y)
-        s_y = np.sin(theta_y)
+    #     """ Compute the pitch angle """
+    #     theta_y = np.arctan2(-R[1,2], R[1,1])
+    #     c_y = np.cos(theta_y)
+    #     s_y = np.sin(theta_y)
         
-        M_y = np.array([
-                        [1,0,0],
-                        [0, c_y, s_y],
-                        [0,-s_y, c_y]
-                       ])
+    #     M_y = np.array([
+    #                     [1,0,0],
+    #                     [0, c_y, s_y],
+    #                     [0,-s_y, c_y]
+    #                    ])
         
-        R = R.dot(M_y)
-        #print(R)
+    #     R = R.dot(M_y)
+    #     #print(R)
         
-        return (theta_y, theta_r, theta_p), (M_y, M_r, M_p)
+    #     return (theta_y, theta_r, theta_p), (M_y, M_r, M_p)
