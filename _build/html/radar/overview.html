@@ -1,0 +1,949 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Overview &#8212; sarsim  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Welcome to sarsim’s documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
+<p>Sarsim python code generates a range of satellite radar related simulations.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<p>This section will refer to readme.rst from folder above</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
+<p>There are several use cases for the code.</p>
+</section>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this heading">¶</a></h2>
+<section id="module-orbit.euler">
+<span id="indices-and-tables"></span><h3>Indices and tables<a class="headerlink" href="#module-orbit.euler" title="Permalink to this heading">¶</a></h3>
+<p>Created on Wed Jun  8 13:50:20 2022</p>
+<p>&#64;author: Ishuwa.Sikaneta</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.AEUfromRPY">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">AEUfromRPY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RPY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AEU</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.AEUfromRPY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute azimuth, elevation and tilt angle errors from the
+roll, pitch and yaw angular errors.</p>
+<p>This function computes the azimuth, elevation and tilt angular erros
+from the roll, pitch and yaw angular errors. A reference for the
+algorithm may be found in the Envision reference frames and pointing
+angle error document.</p>
+<p>Specifically, equation (31) of <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a> is inverted to get
+the azimuth, elevation and tilt angle rotation matrix, then equation (25)
+is inverted according to the method of Section 5.2.1.</p>
+<section id="note">
+<h4>Note<a class="headerlink" href="#note" title="Permalink to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>epsilon -&gt; roll</p></li>
+<li><p>alpha -&gt; pitch</p></li>
+<li><p>tau -&gt; yaw</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>RPY<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>The roll, pitch, yaw values as a matrix of 3xN.</p>
+</dd>
+<dt>M_e<span class="classifier"><cite>numpy.ndarray, [3,3]</cite></span></dt><dd><p>The matrix that rotates aeu into jki_s.</p>
+</dd>
+<dt>AEU<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>Numoy array to hold computed azimuth, elevation and tilt vales.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h4>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.RPYfromAEU">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">RPYfromAEU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AEU</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RPY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.RPYfromAEU" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Yaw, roll and pitch errors from azimuth, elevation and
+tilt errors</p>
+<p>This function computes the Roll angle, Pitch angle
+and Yaw angle errors from given azimuth, elevation and tile
+errors. The algorithm for computing these values can be found
+in my notes.</p>
+<p>The angles are computed according to equation (31) of 
+<a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>.</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>AEU<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>The a, e, u values as a matrix of Nx3.</p>
+</dd>
+<dt>M_e<span class="classifier"><cite>numpy.ndarray, [3,3]</cite></span></dt><dd><p>The matrix that rotates aeu into jki_s.</p>
+</dd>
+<dt>RPY<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>Numoy array to hold computed roll pitch yaw vales.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h4>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.aeu2rot">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">aeu2rot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aeu_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_basis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.aeu2rot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate a set of basis vectors by aeu angles.</p>
+<p>Rotate a set of basis vectors according to eq (25) in <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>. 
+If old_basis is the identity matrix, then the return value is the 
+overall rotation matrix.</p>
+<section id="id3">
+<h4>Parameters<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>old_basis<span class="classifier"><cite>numpy.ndarray(3,3)</cite></span></dt><dd><p>Basis vectors (columnwise) to be rotated.</p>
+</dd>
+<dt>aeu_e<span class="classifier"><cite>numpy.ndarray(3,N)</cite></span></dt><dd><p>A list of angles (radians) to be transformed into rotation matrices.
+each of the N columns is a vector of azimuth, elevation and tilt
+angles.</p>
+</dd>
+<dt>new_basis<span class="classifier"><cite>numpy.ndarray(3,3,N)</cite></span></dt><dd><p>The rotated bases vectors. If bases is the identity, the return
+value is the rotation matrix. This matrix is a pointer to the
+computed values.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h4>Returns<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h4>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.aeuFromRotation">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">aeuFromRotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AEUmatrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.aeuFromRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the azimuth, elevation and tilt angles from a, e, u basis vectors.</p>
+<p>Equation (25) of <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a> is inverted according to the method 
+of Section 5.2.1.</p>
+<section id="id5">
+<h4>Parameters<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>AAEmatrix<span class="classifier"><cite>np.ndarray(N, 3,3)</cite></span></dt><dd><p>N a,e,u, basis vectors from which to compute azimuth, elevation and 
+tilt angles. These are arranged in columns</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h4>Returns<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h4>
+<dl class="simple">
+<dt><cite>np.ndarray(3,N)</cite></dt><dd><p>The computed azimuth, elevation and tilt angles for each basis vector
+set of the input.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.rpyAnglesFromIJK">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">rpyAnglesFromIJK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">IJKmatrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.rpyAnglesFromIJK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute roll, pitch and yaw angles from satellite IJK basis vectors.</p>
+<section id="id7">
+<h4>Parameters<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>IJKmatrix<span class="classifier"><cite>np.ndarray(N, 3,3)</cite></span></dt><dd><p>N i,j,k basis vectors from which to compute azimuth, elevation and 
+tilt angles. These are arranged in columns.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h4>Returns<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>rpy<span class="classifier"><cite>np.ndarray(3,N)</cite></span></dt><dd><p>The computed roll, pitch and yaw angles for each basis vector
+set of the input.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.rpyFromRotation">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">rpyFromRotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RPY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.rpyFromRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute roll and pitch and yaw from rotation matrix</p>
+<p>This function computes the Roll angle, Pitch angle
+and Yaw angle from a given rotation matrix. The
+algorithm for computing these values can be found
+in Section 5.2.1 of <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>, where the input
+RPY matrix is the left side of equation (13).</p>
+<section id="id9">
+<h4>Parameters<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h4>
+<dl>
+<dt>R<span class="classifier"><cite>numpy.ndarray, [3,3,N]</cite></span></dt><dd><p>The product of R.dot(P).dot(Y) rotation matrices.</p>
+</dd>
+<dt>RPY<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>Numoy array to hold computed roll pitch yaw vales.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h4>Returns<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h4>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="orbit.pointing.simulation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orbit.pointing.</span></span><span class="sig-name descname"><span class="pre">simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">planet=&lt;space.planets.earth</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_ang=14.28</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azAxis=6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elAxis=0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carrier=3150000000.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to allow computation satellite pointing errors</p>
+<p>This class allows simulation of pointing errors according to a set of 
+input pointing contributors as given in 
+<a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>
+and
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a></p>
+<section id="methods">
+<h4>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h4>
+<dl class="simple">
+<dt>estimatePDF</dt><dd><p>Estimate a probability distribution function from data using histogram
+approach</p>
+</dd>
+<dt>generateGaussian</dt><dd><p>Generate zero-mean joint Guassian distributed random variables. The
+joint variables have the supplied covariance matrix</p>
+</dd>
+<dt>state</dt><dd><p>This method rotates the inertial coordinate system used by AOCS folks
+into the VCI coordinate system definded in <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>.</p>
+</dd>
+<dt>velocity2aeuCovariance</dt><dd><p>This method takes a covariance matrix for velocity error (assumed to
+be zero-mean Gaussian) and computes the associated covariance matrix 
+for azimuth, elevation and tilt errors. See section 6.3 of
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a></p>
+</dd>
+<dt>timing2aeuCovariance</dt><dd><p>This method takes a variance for timing error (assumed to be zero-mean
+Gaussian) and computes the associated covariance matrix 
+for azimuth, elevation and tilt errors. See section 6.2 of
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a></p>
+</dd>
+<dt>rpy2aeuCovariance</dt><dd><p>This method takes a covariance matrix for roll, pitch and yaw errors,
+(assumed to be zero-mean Gaussian) and computes the associates 
+covariance matrix of azimuth, elevation and tilt as defined in section
+6.1 of <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a></p>
+</dd>
+<dt>simulateError</dt><dd><p>This is the main method of the class. Given statistical parameters for
+the pointing error contributors, (in terms of covariances), it
+combines these parameters into a single covariance matrix for azimuth,
+elevation and pitch, as outlined in Section 6 of 
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>. This covariance matrix is then used to
+generate random samples of the azimuth, elevation and tilt errors, 
+and errors are the transformed into realizations of both the Doppler 
+centroid and swath overlap values. These realizations can be grouped
+into histograms and compared with requirements.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.aeu2rpyCovariance">
+<span class="sig-name descname"><span class="pre">aeu2rpyCovariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R_AEU</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.aeu2rpyCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the rotation matrix to go from aeu to ijk_s</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.contributors2aeuCovariance">
+<span class="sig-name descname"><span class="pre">contributors2aeuCovariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">off_nadir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_RPY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[9.0e-06,</span> <span class="pre">0.0e+00,</span> <span class="pre">0.0e+00],</span> <span class="pre">[0.0e+00,</span> <span class="pre">1.6e-07,</span> <span class="pre">0.0e+00],</span> <span class="pre">[0.0e+00,</span> <span class="pre">0.0e+00,</span> <span class="pre">9.0e-06]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[0.04,</span> <span class="pre">0.,</span> <span class="pre">0.],</span> <span class="pre">[0.,</span> <span class="pre">0.04,</span> <span class="pre">0.],</span> <span class="pre">[0.,</span> <span class="pre">0.,</span> <span class="pre">0.04]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">184900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.contributors2aeuCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function combines source errors into an aeu covariance 
+matrix.</p>
+<p>This function generates the large block-diagonal matrix of Equation 
+(9) in <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>. It uses the defined member functions
+to generate the block matrix.</p>
+<section id="id11">
+<h5>Parameters<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>X<span class="classifier"><cite>np.ndarray(6,)</cite></span></dt><dd><p>A state vector in the VCI reference frame.</p>
+</dd>
+<dt>r<span class="classifier"><cite>float</cite></span></dt><dd><p>The range to the center of the swath of interest.</p>
+</dd>
+<dt>off_nadir<span class="classifier"><cite>float</cite></span></dt><dd><p>The off-nadir angle of the desired look-direction. This angle is
+defined as a right-handed rotation around the velocity vector; 
+thus, a positive angle corresponds to left-looking while a negative
+angle corresponds to right-looking.</p>
+</dd>
+<dt>R_RPY<span class="classifier"><cite>np.ndarray(3,3)</cite></span></dt><dd><p>Covariance matrix of roll, pitch, yaw error.</p>
+</dd>
+<dt>R_v<span class="classifier"><cite>np.ndarray(3,3)</cite>, optional</span></dt><dd><p>Covariance matrix of the satellite velocity error. The default is 
+np.eye(3)*0.04.</p>
+</dd>
+<dt>R_t<span class="classifier"><cite>float</cite>, optional</span></dt><dd><p>Variance of the along-track timing error.</p>
+</dd>
+<dt>R_p<span class="classifier"><cite>float</cite>, optional</span></dt><dd><p>Variance of the orbit tube in cross-lokk direction. The default is 
+430x430.</p>
+</dd>
+<dt>N<span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Number of random samples to generate in estimation process.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h5>Returns<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>np.ndarray(10,10)</cite></dt><dd><p>An AEU block covariance matrix estimate.</p>
+</dd>
+<dt><cite>np.ndarray(3,10)</cite></dt><dd><p>The transformation matrix to recover azimuth, elevation and tilt
+angle errors.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.estimatePDF">
+<span class="sig-name descname"><span class="pre">estimatePDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.estimatePDF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate a probability density function (PDF) from a set of data.</p>
+<section id="id13">
+<h5>Parameters<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>d<span class="classifier"><cite>np.ndarray(N,)</cite></span></dt><dd><p>The data from which a PDF is to be estimated.</p>
+</dd>
+<dt>N<span class="classifier">int, optional</span></dt><dd><p>The number of bins to use in the histogram. This values can also
+be gven as an <cite>np.ndarray(N,1)</cite> specifying histogram bin
+centers. The default is 400.</p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h5>Returns<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>h<span class="classifier"><cite>np.ndarray(N,1)</cite></span></dt><dd><p>The estimated PDF.</p>
+</dd>
+<dt>x<span class="classifier"><cite>np.ndarray(N,1)</cite></span></dt><dd><p>The dependent variable of the PDF.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.generateGaussian">
+<span class="sig-name descname"><span class="pre">generateGaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.generateGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate realizations of a zero-mean joint Gaussian process.</p>
+<p>This function uses a Cholesky decomposition to generate realizations
+of a joint Gaussian process given the desired covariance matrix. The
+values are assumed to be real.</p>
+<section id="id15">
+<h5>Parameters<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>R<span class="classifier"><cite>np.ndarray(M,M)</cite></span></dt><dd><p>Covariance matrix.</p>
+</dd>
+<dt>N<span class="classifier">int, optional</span></dt><dd><p>Number of sample vectors to generate. The default is 10000.</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h5>Returns<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>np.ndarray(M, N)</cite></dt><dd><p>An MxN array of generated random vectors.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.rpy2aeuCovariance">
+<span class="sig-name descname"><span class="pre">rpy2aeuCovariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R_RPY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.rpy2aeuCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the AEU covariance matrix from a RPY covariance matrix.</p>
+<p>This function computes an estimate of covariance in AEU (azimuth, 
+elevation, pitch) given covariance in RPY (roll, pitch, yaw). The
+random errors in roll, pitch and yaw are assumed to be zero-mean
+Gaussian.</p>
+<p>The transformation used to make the estimation is defined in Sections 
+5.2 and 7.6 of <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>.</p>
+<section id="id17">
+<h5>Parameters<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>R_RPY<span class="classifier"><cite>np.ndarray(3,3)</cite></span></dt><dd><p>Covariance matrix of roll, pitch, yaw error.</p>
+</dd>
+<dt>N<span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Number of random samples to generate to estimate covariance in AEU. 
+The default is 100000.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h5>Returns<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>np.ndarray(3,3)</cite></dt><dd><p>An AEU covariance matrix estimate.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.simulateError">
+<span class="sig-name descname"><span class="pre">simulateError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">off_nadir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_RPY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[9.0e-06,</span> <span class="pre">0.0e+00,</span> <span class="pre">0.0e+00],</span> <span class="pre">[0.0e+00,</span> <span class="pre">1.6e-07,</span> <span class="pre">0.0e+00],</span> <span class="pre">[0.0e+00,</span> <span class="pre">0.0e+00,</span> <span class="pre">9.0e-06]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[0.04,</span> <span class="pre">0.,</span> <span class="pre">0.],</span> <span class="pre">[0.,</span> <span class="pre">0.04,</span> <span class="pre">0.],</span> <span class="pre">[0.,</span> <span class="pre">0.,</span> <span class="pre">0.04]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">184900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_AEU</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loglevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.simulateError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a simulation to generate Doppler centroid and swath overlap errors</p>
+<section id="id19">
+<h5>Parameters<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>X<span class="classifier"><cite>np.ndarray(6,)</cite></span></dt><dd><p>A state vector in the VCI reference frame.</p>
+</dd>
+<dt>off_nadir<span class="classifier"><cite>float</cite></span></dt><dd><p>The off-nadir angle of the desired look-direction. This angle is
+defined as a right-handed rotation around the velocity vector; 
+thus, a positive angle corresponds to left-looking while a negative
+angle corresponds to right-looking.</p>
+</dd>
+<dt>R_RPY<span class="classifier"><cite>np.ndarray(3,3)</cite></span></dt><dd><p>Covariance matrix of roll, pitch, yaw error.</p>
+</dd>
+<dt>R_v<span class="classifier"><cite>np.ndarray(3,3)</cite>, optional</span></dt><dd><p>Covariance matrix of the satellite velocity error. The default is 
+np.eye(3)*0.04.</p>
+</dd>
+<dt>R_t<span class="classifier"><cite>float</cite>, optional</span></dt><dd><p>Variance of the along-track timing error.</p>
+</dd>
+<dt>R_p<span class="classifier"><cite>float</cite>, optional</span></dt><dd><p>Variance of the orbit tube in cross-lokk direction. The default is 
+430x430.</p>
+</dd>
+<dt>n_AEU<span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Number of AEU sample vectors to generate in the estimation process. 
+The default is 1000000.</p>
+</dd>
+<dt>loglevel<span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>A variable to drive the logging level. The default is 0. With 0, 
+very little logging is produced.</p>
+<ol class="arabic simple">
+<li><p>Print the computed dictionary to stdout.</p></li>
+<li><p>Generate matplotlib plots and print the computed dictionary to
+stdout.</p></li>
+<li><p>Print intermediate results to stdout, generate matplotlib
+figures and print the computed dictionary to stdout.</p></li>
+</ol>
+</dd>
+</dl>
+</section>
+<section id="id20">
+<h5>Returns<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>res<span class="classifier"><cite>dict</cite></span></dt><dd><p>A dictionary containing given and computed simulation parameters.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">svs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform state vectors to VCI reference frame.</p>
+<p>State vectors provided are in a coordinate system defined
+by AOCS folks. The VCI coordinate system, as per <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a> 
+defines the j vector in the direction of the ascending node. Thus, we 
+need to find the components of the state vectors in this coordinate 
+system.</p>
+<section id="id21">
+<h5>Parameters<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>svs<span class="classifier"><cite>[np.ndarray(6,)]</cite></span></dt><dd><p>A list of state vectors in some inertial coordinate system.</p>
+</dd>
+<dt>idx<span class="classifier"><cite>[int, int, int]</cite></span></dt><dd><p>A set of three integers to select range(idx) values from svs</p>
+</dd>
+</dl>
+</section>
+<section id="id22">
+<h5>Returns<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>[np.ndarray(6,)]</cite></dt><dd><p>A set of VCI state vectors as defined in <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.timing2aeuCovariance">
+<span class="sig-name descname"><span class="pre">timing2aeuCovariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">off_nadir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.timing2aeuCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform along-track timing error in AEU covariance</p>
+<p>This method transforms along-track timing error, which is assumed to
+be Gaussian with zero-mean with variance matrix Rt into an 
+estimate of <span class="math notranslate nohighlight">\(\mathbf{R}_t(t)\)</span> as defined in 
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>.</p>
+<p>In the calculation, the DAEU is calculated from the input state vector
+X. It is assumed that on-board, the computational algorithm has no
+knowledge of any error in timing; thus the actual AAEU frame is 
+calculated at the perturbed time. Random times are generated and 
+the state vector at these perturbed times is computed. The AAEU frame
+is then computed from these perturbed state vectors. The difference 
+between DAEU and AAEU is then used to generate samples of the AEU 
+angles, and a covariance matrix from the generated values is estimated 
+and returned. See, section 6.2 of <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>.</p>
+<section id="id23">
+<h5>Parameters<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>X<span class="classifier"><cite>np.ndarray(6,)</cite></span></dt><dd><p>A state vector in the VCI reference frame.</p>
+</dd>
+<dt>off_nadir<span class="classifier"><cite>float</cite></span></dt><dd><p>The off-nadir angle of the desired look-direction. This angle is
+defined as a right-handed rotation around the velocity vector; 
+thus, a positive angle corresponds to left-looking while a negative
+angle corresponds to right-looking.</p>
+</dd>
+<dt>Rt<span class="classifier"><cite>float</cite>, optional</span></dt><dd><p>Variance of the along-track timing error. The default is 
+25.</p>
+</dd>
+<dt>N<span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>The number of random samples to generate for the covariance matrix
+estimation. The default is 10000.</p>
+</dd>
+</dl>
+</section>
+<section id="id24">
+<h5>Returns<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>np.ndarray(3,3)</cite></dt><dd><p>An AEU covariance matrix estimate.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.pointing.simulation.velocity2aeuCovariance">
+<span class="sig-name descname"><span class="pre">velocity2aeuCovariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">off_nadir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[0.04,</span> <span class="pre">0.,</span> <span class="pre">0.],</span> <span class="pre">[0.,</span> <span class="pre">0.04,</span> <span class="pre">0.],</span> <span class="pre">[0.,</span> <span class="pre">0.,</span> <span class="pre">0.04]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.pointing.simulation.velocity2aeuCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform satellite velocity error in AEU covariance</p>
+<p>This method transforms satellite velocity error, which is assumed to
+be Gaussian with zero-mean with covariance matrix R_v into an 
+estimate of <span class="math notranslate nohighlight">\(\mathbf{R}_v(t)\)</span> as defined in 
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>.</p>
+<p>In the calculation, the AAEU is calculated from the input state vector
+X. It is assumed that on-board, the computational algorithm has no
+knowledge of any error in the satellite velocity; thus the actual
+AAEU frame is calculated from the predicated state vector only. Random
+errors in the velocity are then generated and added to the input 
+satellite velocity to reflect what the satellite velocity really is, 
+and from this value the DAEU frame is computed. The difference between
+these two frames is then used to generate samples of AEU, and a
+covariance matrix from the generated values is estimated and returned.</p>
+<section id="id25">
+<h5>Parameters<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>X<span class="classifier"><cite>np.ndarray(6,)</cite></span></dt><dd><p>A state vector in the VCI reference frame, around which to .</p>
+</dd>
+<dt>off_nadir<span class="classifier"><cite>float</cite></span></dt><dd><p>The off-nadir angle of the desired look-direction. This angle is
+defined as a right-handed rotation around the velocity vector; 
+thus, a positive angle corresponds to left-looking while a negative
+angle corresponds to right-looking.</p>
+</dd>
+<dt>R_v<span class="classifier"><cite>np.ndarray(3,3)</cite>, optional</span></dt><dd><p>Covariance matrix of the satellite velocity error. The default is 
+np.eye(3)*0.04.</p>
+</dd>
+<dt>N<span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>The number of random samples to generate for the covariance matrix
+estimation. The default is 10000.</p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h5>Returns<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>np.ndarray(3,3)</cite></dt><dd><p>An AEU covariance matrix estimate.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="orbit.orientation.orbit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orbit.orientation.</span></span><span class="sig-name descname"><span class="pre">orbit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_perigee=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a=10000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination=1.5707963267948966</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planet=&lt;space.planets.earth</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angleUnits='radians'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to compute the zero Doppler for a given orbit.</p>
+<p>The methods of this class implement various theoretical calculations
+found in both <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a> and the Annex of 
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>.</p>
+<p>The class has been designed to be work for any planet, not just Earth.</p>
+<p>As derived in <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>, the computations calculate the
+required look direction of the boresight of the antenna beam that
+satisfies the zero-Doppler requirement and the given off-nadir pointing
+requirement as a function of the orbit angle of the satellite orbit. This
+required look direction is the the required look direction in the inertial
+reference frame, which is the naturaly reference frame in which the
+satellite operates.</p>
+<p>Because computations are based on Kepler orbit elements, and the steering
+law has been derived according to an ideal orbit, it may be noted that 
+the derived steering law is only accurate for a real orbit around the 
+initial point at which the object is defined. For instance, if the object
+is initialized with a supplied state vector (provided by AOCS, for 
+instance), then the law will only be valid for a few minutes around this
+point. This is simply because of the inaccuracy of propagating an orbit
+using Kepler orbital elements.</p>
+<section id="id27">
+<h4>Methods<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h4>
+<dl class="simple">
+<dt>setFromStateVector</dt><dd><p>Set the orbit parameters for this object using a state vector. This
+will compute the Kepler orbit elements from a given inertial state 
+vector.</p>
+</dd>
+<dt>state2kepler</dt><dd><p>Compute the Kepler orbit elements given an inertial state vector.</p>
+</dd>
+</dl>
+<p>fromPeriod
+computeR
+computeTCN
+computeV
+computeAEU
+computeE
+computeItoR
+computeT
+computeO</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeAEU">
+<span class="sig-name descname"><span class="pre">computeAEU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">off_nadir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeAEU" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the look direction, azimuth and elevation vectors</p>
+<p>Compute the look direction, azimuth and elevation vectors in
+both the TCN frame and the Inertial frame</p>
+<section id="id28">
+<h5>Parameters<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float (angleUnits according to self.angleUnits)</span></dt><dd><p>The orbit angle. Measured from the ascending node.</p>
+</dd>
+<dt>off_nadir<span class="classifier">float (angleUnits according to self.angleUnits)</span></dt><dd><p>Off-nadir angle. This is signed-angle corresponding to a roll.
+A negative angle corresponds to right-looking, a positive
+angle corresponds to left-looking. This is the right-handed rule
+for angles rotated around the velocity vector under the assumption
+that the default (0) is looking nadir.</p>
+</dd>
+</dl>
+</section>
+<section id="id29">
+<h5>Returns<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>aeuI: <cite>npmpy.array</cite>, [3,3]</dt><dd><p>The azimuth, elevation and look vectors in the Inertial reference
+frame arranged as the columns of a matrix (respective order)</p>
+</dd>
+<dt>aeuTCN: <cite>npmpy.array</cite>, [3,3]</dt><dd><p>The azimuth, elevation and look vectors in the TCN frame arranged 
+as the columns of a matrix (respective order)</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h5>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h5>
+<p>The calculation coded here multiples the equations in the Annex of
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a> by the planet angular velocity to allow the 
+computations even in the case the planet angular velocity is low or 
+zero.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeE">
+<span class="sig-name descname"><span class="pre">computeE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the scaling parameter for solving the underdetermined system
+of equations</p>
+<p>Compute the value of s in equation (56)</p>
+<section id="id30">
+<h5>Parameters<a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float (angleUnits according to self.angleUnits)</span></dt><dd><p>The orbit angle. Measured from the ascending node.</p>
+</dd>
+<dt>v<span class="classifier">float (Unitless)</span></dt><dd><p>Cosine of the off-nadir angle</p>
+</dd>
+</dl>
+</section>
+<section id="id31">
+<h5>Returns<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>s: float</dt><dd><p>The scaling factor</p>
+</dd>
+</dl>
+</section>
+<section id="id32">
+<h5>Notes<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h5>
+<p>The calculation coded here multiples the equations in the Annex of
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a> by the planet angular velocity to allow the 
+computations even in the case the planet angular velocity is low or 
+zero.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeItoR">
+<span class="sig-name descname"><span class="pre">computeItoR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeItoR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the matrix to transform PCI to PCR reference system</p>
+<p>This function returns the rotation matrix and its time derivative
+to go from the Planet Centered Inertial coordinate system to the 
+Planet Centered Rotating coordinate system.</p>
+<section id="id33">
+<h5>Parameters<a class="headerlink" href="#id33" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float (angleUnits according to self.angleUnits)</span></dt><dd><p>The orbit angle (measured from the ascending node) for which to
+compute the transformation matrix.</p>
+</dd>
+</dl>
+</section>
+<section id="id34">
+<h5>Returns<a class="headerlink" href="#id34" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>M<span class="classifier"><cite>np.ndarray</cite> [3,3]</span></dt><dd><p>The rotation matrix.</p>
+</dd>
+<dt>dM<span class="classifier"><cite>np.ndarray</cite> [3,3]</span></dt><dd><p>The time derivative of the rotation matrix.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeO">
+<span class="sig-name descname"><span class="pre">computeO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the orbit angle from time</p>
+<p>Compute the orbit angle from time using the Newton-Raphson
+iterative method</p>
+<section id="id35">
+<h5>Parameters<a class="headerlink" href="#id35" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>t<span class="classifier">float</span></dt><dd><p>The time in seconds since the time of the ascending node at
+which to compute the orbit angle.</p>
+</dd>
+</dl>
+</section>
+<section id="id36">
+<h5>Returns<a class="headerlink" href="#id36" title="Permalink to this heading">¶</a></h5>
+<p>The orbit angle (angleUnits according to self.angleUnits).</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeR">
+<span class="sig-name descname"><span class="pre">computeR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the state vector at the orbit angle</p>
+<p>Compute the satellite state vector at the given orbit angle. This
+vector is given in the Inertial coordinate system</p>
+<section id="id37">
+<h5>Parameters<a class="headerlink" href="#id37" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float, (angleUnits according to self.angleUnits)</span></dt><dd><p>The orbit angle measure from the ascending node.</p>
+</dd>
+</dl>
+</section>
+<section id="id38">
+<h5>Returns<a class="headerlink" href="#id38" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>state: float</dt><dd><p>The state vector at the orbit angle</p>
+</dd>
+<dt>r: float</dt><dd><p>The range from the center of the planet to the satellite in (m)</p>
+</dd>
+<dt>v: float</dt><dd><p>The speed of the satellite in the Inertial reference frame and
+at the supplied orbit angle</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeT">
+<span class="sig-name descname"><span class="pre">computeT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute time given the orbit angle.</p>
+<p>Computes the time from the ascending node given the orbit angle,
+also measured from the ascending node.</p>
+<section id="id39">
+<h5>Parameters<a class="headerlink" href="#id39" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float (angleUnits according to self.angleUnits)</span></dt><dd><p>Orbit angle measured from the ascending node.</p>
+</dd>
+</dl>
+</section>
+<section id="id40">
+<h5>Returns<a class="headerlink" href="#id40" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>float</dt><dd><p>The amount of time passed to get to the orbit angle.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeTCN">
+<span class="sig-name descname"><span class="pre">computeTCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeTCN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the T,C,N vectors</p>
+<p>This function computes the unit vectors that define the T,C,N
+reference system. These are vectors in the PCI reference
+sytem</p>
+<section id="id41">
+<h5>Parameters<a class="headerlink" href="#id41" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float, (angleUnits according to self.angleUnits)</span></dt><dd><p>The orbit angle at which to compute the T,C,N vectors. This is the
+angle measured from the ascending node.</p>
+</dd>
+</dl>
+</section>
+<section id="id42">
+<h5>Returns<a class="headerlink" href="#id42" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt><cite>np.ndarray</cite> [3,3] </dt><dd><p>A numpy array with the T,C,N vectors as columns in the respective
+order.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeV">
+<span class="sig-name descname"><span class="pre">computeV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the satellite speed at the given orbit angle</p>
+<section id="id43">
+<h5>Parameters<a class="headerlink" href="#id43" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>beta<span class="classifier">float, (angleUnits according to self.angleUnits)</span></dt><dd><p>The orbit angle measure from the ascending node.</p>
+</dd>
+</dl>
+</section>
+<section id="id44">
+<h5>Returns<a class="headerlink" href="#id44" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>float:</dt><dd><p>The orbit speed in (m/s)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.setFromStateVector">
+<span class="sig-name descname"><span class="pre">setFromStateVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.setFromStateVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the orbit parameters for this object using a state vector</p>
+<p>This function modifies the orbit parameters for this object. The
+Kepler orbit elements are calculated using the state2kepler function</p>
+<section id="id45">
+<h5>Parameters<a class="headerlink" href="#id45" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>X<span class="classifier"><cite>numpy.ndarray</cite> (6,)</span></dt><dd><p>The supplied state vector.</p>
+</dd>
+</dl>
+</section>
+<section id="id46">
+<h5>Returns<a class="headerlink" href="#id46" title="Permalink to this heading">¶</a></h5>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orbit.orientation.orbit.state2kepler">
+<span class="sig-name descname"><span class="pre">state2kepler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.state2kepler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the Keplerian elements from a state vector</p>
+<section id="id47">
+<h5>Parameters<a class="headerlink" href="#id47" title="Permalink to this heading">¶</a></h5>
+<dl>
+<dt>X<span class="classifier"><cite>numpy.ndarray</cite> (6,)</span></dt><dd><p>The state vector in an inertial reference frame.</p>
+</dd>
+</dl>
+</section>
+<section id="id48">
+<h5>Returns<a class="headerlink" href="#id48" title="Permalink to this heading">¶</a></h5>
+<dl class="simple">
+<dt>dict</dt><dd><dl class="simple">
+<dt>has fields: (angleUnits according to self.angleUnits)</dt><dd><ul class="simple">
+<li><p>eccentricity (unitless)</p></li>
+<li><p>a (m)</p></li>
+<li><p>perigee (angleUnits according to self.angleUnits)</p></li>
+<li><p>inclination (angleUnits according to self.angleUnits)</p></li>
+<li><p>ascendingNode: longitude of the ascending node
+(angleUnits according to self.angleUnits)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id49">
+<h5>Note<a class="headerlink" href="#id49" title="Permalink to this heading">¶</a></h5>
+<p>Calculations are performed according to the following document by 
+<a class="reference external" href="https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf">Rene Schwartz</a></p>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">sarsim</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to sarsim’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Ishuwa Sikaneta.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/radar/overview.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

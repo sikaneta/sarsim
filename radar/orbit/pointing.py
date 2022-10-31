@@ -22,27 +22,139 @@ rng = default_rng()
 
 
 class simulation:
+    """
+    Class to allow computation satellite pointing errors
+    
+    This class allows simulation of pointing errors according to a set of 
+    input pointing contributors as given in 
+    `Reference Systems <../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf>`_
+    and
+    `Pointing Justification <../_static/PointingRequirementsJustification.pdf>`_
+    
+    Methods
+    -------
+    estimatePDF
+        Estimate a probability distribution function from data using histogram
+        approach
+    generateGaussian
+        Generate zero-mean joint Guassian distributed random variables. The
+        joint variables have the supplied covariance matrix
+    state
+        This method rotates the inertial coordinate system used by AOCS folks
+        into the VCI coordinate system definded in `Reference Systems`_.
+    velocity2aeuCovariance
+        This method takes a covariance matrix for velocity error (assumed to
+        be zero-mean Gaussian) and computes the associated covariance matrix 
+        for azimuth, elevation and tilt errors. See section 6.3 of
+        `Pointing Justification`_
+    timing2aeuCovariance
+        This method takes a variance for timing error (assumed to be zero-mean
+        Gaussian) and computes the associated covariance matrix 
+        for azimuth, elevation and tilt errors. See section 6.2 of
+        `Pointing Justification`_
+    rpy2aeuCovariance
+        This method takes a covariance matrix for roll, pitch and yaw errors,
+        (assumed to be zero-mean Gaussian) and computes the associates 
+        covariance matrix of azimuth, elevation and tilt as defined in section
+        6.1 of `Pointing Justification`_
+    simulateError
+        This is the main method of the class. Given statistical parameters for
+        the pointing error contributors, (in terms of covariances), it
+        combines these parameters into a single covariance matrix for azimuth,
+        elevation and pitch, as outlined in Section 6 of 
+        `Pointing Justification`_. This covariance matrix is then used to
+        generate random samples of the azimuth, elevation and tilt errors, 
+        and errors are the transformed into realizations of both the Doppler 
+        centroid and swath overlap values. These realizations can be grouped
+        into histograms and compared with requirements.
+    
+    
+    """
     def __init__(self, 
                  planet = earth(),
                  e_ang = 14.28,
                  azAxis = 6.0,
                  elAxis = 0.6,
                  carrier = 3.15e9):
+        """
+        Constructor
+
+        Parameters
+        ----------
+        planet : `space.planet`, optional
+            A class to describe the planet for the orbit. The default is 
+            earth().
+        e_ang : `float`, optional, units (degrees)
+            The angle between boresight and the i-unit vector of the satellite 
+            coordinate system, (see Figure 6. of `Reference Systems`_). 
+            The default is 14.28.
+        azAxis : `float`, optional, units (meters)
+            Dimension of the SAR antenna azimuth axis. The default is 6.0.
+        elAxis : `float`, optional, units (meters)
+            Dimension of the SAR antenna elevation axis. The default is 0.6.
+        carrier : `float`, optional
+            Carrier frequency of the SAR signal. The default is 3.15e9.
+
+        Returns
+        -------
+        None.
+
+        """
         self.planet = planet
         self.e_ang = np.radians(e_ang)
         self.azAxis = azAxis
         self.elAxis = elAxis
         self.carrier = carrier
         
-    #%% Define a function to estimate the PDF given a histogram
+    # Define a function to estimate the PDF given a histogram
     def estimatePDF(self, d, N=400):
+        """
+        Estimate a probability density function (PDF) from a set of data.
+
+        Parameters
+        ----------
+        d : `np.ndarray(N,)`
+            The data from which a PDF is to be estimated.
+        N : int, optional
+            The number of bins to use in the histogram. This values can also
+            be gven as an `np.ndarray(N,1)` specifying histogram bin
+            centers. The default is 400.
+
+        Returns
+        -------
+        h : `np.ndarray(N,1)`
+            The estimated PDF.
+        x : `np.ndarray(N,1)`
+            The dependent variable of the PDF.
+
+        """
         h,x = np.histogram(d,N)
         x = (x[:-1] + x[1:])/2
         h = h/(np.mean(np.diff(x))*len(d))
         return h,x
     
-    #%%
+    #
     def generateGaussian(self, R, N = 10000):
+        """
+        Generate realizations of a zero-mean joint Gaussian process.
+        
+        This function uses a Cholesky decomposition to generate realizations
+        of a joint Gaussian process given the desired covariance matrix. The
+        values are assumed to be real.
+
+        Parameters
+        ----------
+        R : `np.ndarray(M,M)`
+            Covariance matrix.
+        N : int, optional
+            Number of sample vectors to generate. The default is 10000.
+
+        Returns
+        -------
+        `np.ndarray(M, N)`
+            An MxN array of generated random vectors.
+
+        """
         m,n = R.shape
         
         """ Perform Cholesky decomposition """
@@ -51,13 +163,30 @@ class simulation:
         """ Generate the random data """
         return cD.dot(np.random.randn(m,N))
     
-    #%% Define a function that will return state vectors in VCI coordinates
-    """ State vectors provided are in a coordinate system defined
-        by AOCS folks. The VCI coordinate system, as per Envision 
-        definitions, defines the j vector in the direction of the
-        ascending node. Thus, we need to find the components of the
-        state vectors in this coordinate system. """
+    # Define a function that will return state vectors in VCI coordinates
     def state(self, svs, idx):
+        """
+        Transform state vectors to VCI reference frame.
+        
+        State vectors provided are in a coordinate system defined
+        by AOCS folks. The VCI coordinate system, as per `Reference Systems`_ 
+        defines the j vector in the direction of the ascending node. Thus, we 
+        need to find the components of the state vectors in this coordinate 
+        system.
+
+        Parameters
+        ----------
+        svs : `[np.ndarray(6,)]`
+            A list of state vectors in some inertial coordinate system.
+        idx : `[int, int, int]`
+            A set of three integers to select range(idx) values from svs
+
+        Returns
+        -------
+        `[np.ndarray(6,)]`
+            A set of VCI state vectors as defined in `Reference Systems`_.
+
+        """
         planetOrbit = orbit(planet=self.planet, angleUnits="radians")
         omega = np.array([planetOrbit.state2kepler(svs[k][1])["ascendingNode"] 
                           for k in range(idx[0], idx[1], idx[2])]).mean()
@@ -69,12 +198,52 @@ class simulation:
         return [(svs[k][0], svs[k][1].dot(Moo)) for k in range(idx[0],idx[1])]
 
 
-    #%% angular error from velocity error
+    # angular error from velocity error
     def velocity2aeuCovariance(self,
                                X, 
                                off_nadir,
                                R_v = np.eye(3)*0.04,
                                N = 10000):
+        """
+        Transform satellite velocity error in AEU covariance
+        
+        This method transforms satellite velocity error, which is assumed to
+        be Gaussian with zero-mean with covariance matrix R_v into an 
+        estimate of :math:`\mathbf{R}_v(t)` as defined in 
+        `Pointing Justification`_.
+        
+        In the calculation, the AAEU is calculated from the input state vector
+        X. It is assumed that on-board, the computational algorithm has no
+        knowledge of any error in the satellite velocity; thus the actual
+        AAEU frame is calculated from the predicated state vector only. Random
+        errors in the velocity are then generated and added to the input 
+        satellite velocity to reflect what the satellite velocity really is, 
+        and from this value the DAEU frame is computed. The difference between
+        these two frames is then used to generate samples of AEU, and a
+        covariance matrix from the generated values is estimated and returned.
+
+        Parameters
+        ----------
+        X : `np.ndarray(6,)`
+            A state vector in the VCI reference frame, around which to .
+        off_nadir : `float`
+            The off-nadir angle of the desired look-direction. This angle is
+            defined as a right-handed rotation around the velocity vector; 
+            thus, a positive angle corresponds to left-looking while a negative
+            angle corresponds to right-looking.
+        R_v : `np.ndarray(3,3)`, optional
+            Covariance matrix of the satellite velocity error. The default is 
+            np.eye(3)*0.04.
+        N : `int`, optional
+            The number of random samples to generate for the covariance matrix
+            estimation. The default is 10000.
+
+        Returns
+        -------
+        `np.ndarray(3,3)`
+            An AEU covariance matrix estimate.
+
+        """
         
         """ Define the off-nadir directional cosine """
         v = np.cos(np.radians(off_nadir))
@@ -107,6 +276,46 @@ class simulation:
 
     #%% Timing error
     def timing2aeuCovariance(self, X, off_nadir, Rt=5**2, N=10000):
+        """
+        Transform along-track timing error in AEU covariance
+        
+        This method transforms along-track timing error, which is assumed to
+        be Gaussian with zero-mean with variance matrix Rt into an 
+        estimate of :math:`\mathbf{R}_t(t)` as defined in 
+        `Pointing Justification`_.
+        
+        In the calculation, the DAEU is calculated from the input state vector
+        X. It is assumed that on-board, the computational algorithm has no
+        knowledge of any error in timing; thus the actual AAEU frame is 
+        calculated at the perturbed time. Random times are generated and 
+        the state vector at these perturbed times is computed. The AAEU frame
+        is then computed from these perturbed state vectors. The difference 
+        between DAEU and AAEU is then used to generate samples of the AEU 
+        angles, and a covariance matrix from the generated values is estimated 
+        and returned. See, section 6.2 of `Pointing Justification`_.
+
+        Parameters
+        ----------
+        X : `np.ndarray(6,)`
+            A state vector in the VCI reference frame.
+        off_nadir : `float`
+            The off-nadir angle of the desired look-direction. This angle is
+            defined as a right-handed rotation around the velocity vector; 
+            thus, a positive angle corresponds to left-looking while a negative
+            angle corresponds to right-looking.
+        Rt : `float`, optional
+            Variance of the along-track timing error. The default is 
+            25.
+        N : `int`, optional
+            The number of random samples to generate for the covariance matrix
+            estimation. The default is 10000.
+
+        Returns
+        -------
+        `np.ndarray(3,3)`
+            An AEU covariance matrix estimate.
+
+        """
         
         """ Define the off-nadir directional cosine """
         v = np.cos(np.radians(off_nadir))
@@ -163,6 +372,32 @@ class simulation:
 
     #%%
     def rpy2aeuCovariance(self, R_RPY, N=100000):
+        """
+        Estimate the AEU covariance matrix from a RPY covariance matrix.
+        
+        This function computes an estimate of covariance in AEU (azimuth, 
+        elevation, pitch) given covariance in RPY (roll, pitch, yaw). The
+        random errors in roll, pitch and yaw are assumed to be zero-mean
+        Gaussian.
+        
+        The transformation used to make the estimation is defined in Sections 
+        5.2 and 7.6 of `Reference Systems`_.
+
+        Parameters
+        ----------
+        R_RPY : `np.ndarray(3,3)`
+            Covariance matrix of roll, pitch, yaw error. 
+        N : `int`, optional
+            Number of random samples to generate to estimate covariance in AEU. 
+            The default is 100000.
+
+        Returns
+        ------- 
+        `np.ndarray(3,3)`
+            An AEU covariance matrix estimate.
+
+        """
+        
         """ Compute the rotation matrix to go from aeu to ijk_s """
         c_ep = np.cos(self.e_ang)
         s_ep = np.sin(self.e_ang)
@@ -188,28 +423,46 @@ class simulation:
                                    R_p = 430**2,
                                    N = 100000):
         """
-        This function seeks to combine source errors into an aeu covariance 
-        matrix
+        This function combines source errors into an aeu covariance 
+        matrix. 
+        
+        This function generates the large block-diagonal matrix of Equation 
+        (9) in `Pointing Justification`_. It uses the defined member functions
+        to generate the block matrix.
+        
         
     
         Parameters
         ----------
-        X : TYPE
-            DESCRIPTION.
-        off_nadir : TYPE
-            DESCRIPTION.
-        e_ang : TYPE
-            DESCRIPTION.
-        R_RPY : TYPE
-            DESCRIPTION.
-        R_v : TYPE
-            DESCRIPTION.
-        dT : TYPE
-            DESCRIPTION.
+        X : `np.ndarray(6,)`
+            A state vector in the VCI reference frame.
+        r : `float`
+            The range to the center of the swath of interest.
+        off_nadir : `float`
+            The off-nadir angle of the desired look-direction. This angle is
+            defined as a right-handed rotation around the velocity vector; 
+            thus, a positive angle corresponds to left-looking while a negative
+            angle corresponds to right-looking.
+        R_RPY : `np.ndarray(3,3)`
+            Covariance matrix of roll, pitch, yaw error.
+        R_v : `np.ndarray(3,3)`, optional
+            Covariance matrix of the satellite velocity error. The default is 
+            np.eye(3)*0.04.
+        R_t : `float`, optional
+            Variance of the along-track timing error.
+        R_p : `float`, optional
+            Variance of the orbit tube in cross-lokk direction. The default is 
+            430x430.
+        N : `int`, optional
+            Number of random samples to generate in estimation process.
     
         Returns
         -------
-        None.
+        `np.ndarray(10,10)`
+            An AEU block covariance matrix estimate.
+        `np.ndarray(3,10)`
+            The transformation matrix to recover azimuth, elevation and tilt
+            angle errors.
     
         """
         
@@ -235,6 +488,49 @@ class simulation:
                       n_AEU = 1000000,
                       loglevel = 0
                       ):
+        """
+        Run a simulation to generate Doppler centroid and swath overlap errors
+        
+        
+
+        Parameters
+        ----------
+        X : `np.ndarray(6,)`
+            A state vector in the VCI reference frame.
+        off_nadir : `float`
+            The off-nadir angle of the desired look-direction. This angle is
+            defined as a right-handed rotation around the velocity vector; 
+            thus, a positive angle corresponds to left-looking while a negative
+            angle corresponds to right-looking.
+        R_RPY : `np.ndarray(3,3)`
+            Covariance matrix of roll, pitch, yaw error.
+        R_v : `np.ndarray(3,3)`, optional
+            Covariance matrix of the satellite velocity error. The default is 
+            np.eye(3)*0.04.
+        R_t : `float`, optional
+            Variance of the along-track timing error.
+        R_p : `float`, optional
+            Variance of the orbit tube in cross-lokk direction. The default is 
+            430x430.
+        n_AEU : `int`, optional
+            Number of AEU sample vectors to generate in the estimation process. 
+            The default is 1000000.
+        loglevel : `int`, optional
+            A variable to drive the logging level. The default is 0. With 0, 
+            very little logging is produced.
+            
+            1. Print the computed dictionary to stdout.
+            2. Generate matplotlib plots and print the computed dictionary to
+               stdout.
+            3. Print intermediate results to stdout, generate matplotlib
+               figures and print the computed dictionary to stdout.
+
+        Returns
+        -------
+        res : `dict`
+            A dictionary containing given and computed simulation parameters.
+
+        """
         
         """ Define a return dictionary """
         res = {"given": {"off_nadir": off_nadir,
