@@ -3,13 +3,13 @@
 Created on Fri Jan 28 14:10:22 2022
 
 @author: Ishuwa.Sikaneta
-"""
 
+"""
 from space.planets import earth, venus
 import numpy as np
 import quaternion
 
-#%% Define the orbit class
+# Define the orbit class
 class orbit:
     """
     Class to compute the zero Doppler for a given orbit.
@@ -46,16 +46,28 @@ class orbit:
         vector.
     state2kepler
         Compute the Kepler orbit elements given an inertial state vector.
-    fromPeriod
-    computeR
+    computeSV
+        Compute the state vector at a given orbit angle
     computeTCN
+        Compute the T,C,N vectors at a given orbit angle
     computeV
+        Compute the satellite speed at a given orbit angle
     computeAEU
+        Compute the look direction, azimuth and elevation vectors at a given 
+        orbit angle
     computeE
+        Compute the vectors e1 and e2 in B.2.1 of `Pointing Justification`_ at
+        the given orbit angle
     computeItoR
+        Compute the matrix to transform PCI to PCR reference system at the
+        given orbit angle.
     computeT
+        Compute the time after the ascending node that corresponds to the 
+        given orbit angle
     computeO
-    
+        Compute the orbit angle that corresponds to the given time after the
+        ascending node
+        
     """
     
     angleFunction = {"degrees": np.radians,
@@ -197,6 +209,7 @@ class orbit:
         `Rene Schwartz <https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf>`_
 
         """
+        
         rvec = X[:3]
         vvec = X[3:]
         vsqr = np.linalg.norm(vvec)**2
@@ -243,13 +256,8 @@ class orbit:
                 "inclination": angleUnitFn(i),
                 "ascendingNode": angleUnitFn(anode),
                 "trueAnomaly": angleUnitFn(tAnomaly)}
-
-           
-    def fromPeriod(self, period):
-        self.period = period
-        self.a = ((period/2/np.pi)**2*self.planet.GM)**(1/3)
     
-    def computeR(self, beta):
+    def computeSV(self, beta):
         """
         Compute the state vector at the orbit angle
         
@@ -322,7 +330,7 @@ class orbit:
 
         """
         
-        X, _, _ = self.computeR(beta)
+        X, _, _ = self.computeSV(beta)
         Xhat = X[0:3]/np.linalg.norm(X[0:3])
         T = X[3:]/np.linalg.norm(X[3:])
         C = np.cross(T, Xhat)
@@ -451,10 +459,10 @@ class orbit:
     
     def computeE(self, beta, v):
         """
-        Compute the scaling parameter for solving the underdetermined system
-        of equations
+        Compute the e1 and e2
         
-        Compute the value of s in equation (56)
+        Compute the values of the e1 and e2 unit vectors from  of 
+        `Pointing Justification`_
 
         Parameters
         ----------
@@ -462,6 +470,7 @@ class orbit:
             The orbit angle. Measured from the ascending node.
         v : float (Unitless)
             Cosine of the off-nadir angle
+            
         Returns
         -------
         s: float
@@ -610,141 +619,3 @@ class orbit:
         beta = np.mod(beta, 2*np.pi if self.toRadians(1)==1 else 360)
         return beta, iter_error
 
-    # def rotateUnit(self, angles, uvec, rvec):
-    #     """
-    #     Rotate a unit vector around some axis for a given set of angles.
-        
-    #     This function will use the quaternion rotation formalism
-    #     to rotate a given vector around another given vector.
-
-    #     Parameters
-    #     ----------
-    #     angles : `numpy.ndarray` (angleUnits according to self.angleUnits)
-    #         An array of angles to rotate by.
-    #     uvec : `numpy.ndarray` (3,)
-    #         The vector to rotate.
-    #     rvec : `numpy.ndarray` (3,)
-    #         The vector around which to rotate.
-
-    #     Returns
-    #     -------
-    #     'numpy.ndarray` (angles.shape, 3).
-    #         The rotated vector for each angle
-
-    #     """
-        
-    #     """ Make sure we are using radians """
-    #     cAngles = np.cos(self.toRadians(angles/2))
-    #     sAngles = np.sin(self.toRadians(angles/2))
-        
-    #     """ Create the quaternions """
-    #     urvec = rvec/np.linalg.norm(rvec)
-    #     q = np.array([np.quaternion(c, *(s*urvec)) 
-    #                   for c,s in zip(cAngles, sAngles)])
-        
-    #     """ Define the rotation vector as a quaternion """
-    #     p = np.quaternion(0, *uvec)
-        
-    #     """ Do the computation to rotate """
-    #     return quaternion.as_vector_part(((q*p)*q.conj()))
-    
-    # def pointingError(self, AEU, alpha, epsilon, tau):
-    #     """
-    #     Rotate the basis vectors contained in the columns of AEU by the 
-    #     pointing errors.
-        
-    #     Rotate the AEU vectors according to pointing error by using rotation 
-    #     matrices
-
-    #     Parameters
-    #     ----------
-    #     AEU : `numpy.ndarray` (3,3)
-    #         Basis vectors for Azimuth, Elevation and Look direction. Each 
-    #         column corresponds to a respective basis vector.
-    #     alpha : float
-    #         Azimuth error (Radians).
-    #     epsilon : float
-    #         Elevation error (Radians).
-    #     tau : float
-    #         Tilt error (Radians).
-
-    #     Returns
-    #     -------
-    #     `numpy.ndarray` (3,3).
-    #         The rotated basis vectors
-
-    #     """
-        
-    #     cosA = np.cos(self.toRadians(alpha))
-    #     sinA = np.sin(self.toRadians(alpha))
-    #     cosE = np.cos(self.toRadians(epsilon))
-    #     sinE = np.sin(self.toRadians(epsilon))
-    #     cosT = np.cos(self.toRadians(tau))
-    #     sinT = np.sin(self.toRadians(tau))
-        
-    #     Me = np.array([[1, 0,        0],
-    #                    [0, cosE, -sinE],
-    #                    [0, sinE,  cosE]])
-           
-    #     Ma = np.array([[cosA,  0, sinA],
-    #                    [0,     1,    0],
-    #                    [-sinA, 0, cosA]])
-        
-    #     Mt = np.array([[cosT, -sinT, 0],
-    #                    [sinT, cosT,  0],
-    #                    [0,    0,     1]])
-        
-    #     return AEU.dot(Me).dot(Ma).dot(Mt)
-          
-    # def pointingErrors(self, AEU, alpha, epsilon, tau):
-    #     """
-    #     Rotate the basis vectors contained in the columns of AEU by the 
-    #     pointing errors.
-        
-    #     Rotate the AEU vectors according to pointing error by using rotation 
-    #     matrices. This function takes a list of angles by which to rotate.
-
-    #     Parameters
-    #     ----------
-    #     AEU : `numpy.ndarray` (3,3)
-    #         Basis vectors for Azimuth, Elevation and Look direction. Each 
-    #         column corresponds to the respective basis vector.
-    #     alpha : float
-    #         Azimuth error (Radians).
-    #     epsilon : float
-    #         Elevation error (Radians).
-    #     tau : float
-    #         Tilt error (Radians).
-
-    #     Returns
-    #     -------
-    #     `numpy.ndarray` (3,3).
-    #         The rotated basis vectors
-
-    #     """
-        
-    #     cosA = np.cos(self.toRadians(alpha))
-    #     sinA = np.sin(self.toRadians(alpha))
-    #     cosE = np.cos(self.toRadians(epsilon))
-    #     sinE = np.sin(self.toRadians(epsilon))
-    #     cosT = np.cos(self.toRadians(tau))
-    #     sinT = np.sin(self.toRadians(tau))
-        
-    #     Me = np.array([[[1, 0, 0],
-    #                    [0, cE, -sE],
-    #                    [0, sE,  cE]] for cE,sE in zip(cosE, sinE)])
-
-    #     Ma = np.array([[[cA, 0, sA],
-    #                     [0, 1, 0],
-    #                     [-sA, 0, cA]] for cA,sA in zip(cosA, sinA)])
-
-    #     Mt = np.array([[[cT, -sT, 0],
-    #                    [sT, cT,  0],
-    #                    [0,    0,     1]] for cT,sT in zip(cosT, sinT)])
-        
-    #     """ Values are computed by using the Einstein summation convetion.
-    #     This is a fast, intuitive way to handle the multiple indeces in the 
-    #     ndarray. See the numpy docs for more information."""
-    #     return np.einsum('ij,ejl,aln,tnk -> aetik', AEU, Me, Ma, Mt)
-    
-    

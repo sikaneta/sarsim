@@ -563,7 +563,7 @@ class simulation:
         """ Define the off-nadir angle """
         v = np.cos(np.radians(off_nadir))
         
-        XI, rI, vI = planetOrbit.computeR(orbitAngle)
+        XI, rI, vI = planetOrbit.computeSV(orbitAngle)
         res["State Vector Radius"] = np.linalg.norm(X[:3])
         res["Kepler"] = {"radius": np.linalg.norm(rI),
                          "a": planetOrbit.a,

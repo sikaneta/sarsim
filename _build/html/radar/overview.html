@@ -592,16 +592,28 @@ vector.</p>
 </dd>
 <dt>state2kepler</dt><dd><p>Compute the Kepler orbit elements given an inertial state vector.</p>
 </dd>
+<dt>computeSV</dt><dd><p>Compute the state vector at a given orbit angle</p>
+</dd>
+<dt>computeTCN</dt><dd><p>Compute the T,C,N vectors at a given orbit angle</p>
+</dd>
+<dt>computeV</dt><dd><p>Compute the satellite speed at a given orbit angle</p>
+</dd>
+<dt>computeAEU</dt><dd><p>Compute the look direction, azimuth and elevation vectors at a given 
+orbit angle</p>
+</dd>
+<dt>computeE</dt><dd><p>Compute the vectors e1 and e2 in B.2.1 of <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a> at
+the given orbit angle</p>
+</dd>
+<dt>computeItoR</dt><dd><p>Compute the matrix to transform PCI to PCR reference system at the
+given orbit angle.</p>
+</dd>
+<dt>computeT</dt><dd><p>Compute the time after the ascending node that corresponds to the 
+given orbit angle</p>
+</dd>
+<dt>computeO</dt><dd><p>Compute the orbit angle that corresponds to the given time after the
+ascending node</p>
+</dd>
 </dl>
-<p>fromPeriod
-computeR
-computeTCN
-computeV
-computeAEU
-computeE
-computeItoR
-computeT
-computeO</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="orbit.orientation.orbit.computeAEU">
 <span class="sig-name descname"><span class="pre">computeAEU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">off_nadir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeAEU" title="Permalink to this definition">¶</a></dt>
@@ -644,9 +656,9 @@ zero.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="orbit.orientation.orbit.computeE">
 <span class="sig-name descname"><span class="pre">computeE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the scaling parameter for solving the underdetermined system
-of equations</p>
-<p>Compute the value of s in equation (56)</p>
+<dd><p>Compute the e1 and e2</p>
+<p>Compute the values of the e1 and e2 unit vectors from  of 
+<a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a></p>
 <section id="id30">
 <h5>Parameters<a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h5>
 <dl class="simple">
@@ -719,8 +731,8 @@ which to compute the orbit angle.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="orbit.orientation.orbit.computeR">
-<span class="sig-name descname"><span class="pre">computeR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeR" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="orbit.orientation.orbit.computeSV">
+<span class="sig-name descname"><span class="pre">computeSV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.orientation.orbit.computeSV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the state vector at the orbit angle</p>
 <p>Compute the satellite state vector at the given orbit angle. This
 vector is given in the Inertial coordinate system</p>
