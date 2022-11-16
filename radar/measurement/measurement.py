@@ -168,10 +168,11 @@ class state_vector(measurement):
                  svFile=None,
                  planet = None,
                  harmonicsfile=None, 
-                 harmonicsCoeff=360):
+                 harmonicsCoeff=None):
         self.reference_time = datetime.datetime.now()
         self.planet = planet or earth()
         harmonicsFile = harmonicsfile or self.planet.sphericalHarmonicsFile
+        harmonicsCoeff = harmonicsCoeff or self.planet.nharmonics
         if(os.path.exists(harmonicsFile) and harmonicsCoeff):
             try:
                 self.loadSphericalHarmonics(harmonicsFile, harmonicsCoeff)

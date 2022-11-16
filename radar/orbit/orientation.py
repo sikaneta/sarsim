@@ -478,7 +478,7 @@ class orbit:
             
         Notes
         -----
-        The calculation coded here multiples the equations in the Annex of
+        The calculation coded here multiplies the equations in the Annex of
         `Pointing Justification`_ by the planet angular velocity to allow the 
         computations even in the case the planet angular velocity is low or 
         zero.

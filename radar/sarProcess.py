@@ -42,6 +42,8 @@ parser.add_argument("--rblock-size",
                     help="Size of the output data block in the r direction",
                     type=int,
                     default=400)
+
+#%%
 vv = parser.parse_args()
 
 #%% Load the radar configuration
@@ -77,6 +79,7 @@ wkSignal = cfg.wkProcessNumba(procData,
                               r_sys, 
                               ks = r_sys.ks_full[vv.xidx[0]:vv.xidx[1]],
                               os_factor=16, 
+                              mem_cols = np.min([cols, vv.rblock_size]),
                               mem_rows = 8192)
 
 #%% Call the SAR processing algorithm

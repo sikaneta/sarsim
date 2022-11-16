@@ -28,6 +28,8 @@ parser.add_argument("--xblock-size",
                     help="Size of the output data block in the X direction",
                     type=int,
                     default=None)
+
+#%%
 vv = parser.parse_args()
 
 #%% Load the radar configuration

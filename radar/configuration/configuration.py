@@ -21,6 +21,7 @@ import os
 import pickle
 from numba import cuda
 from tqdm import tqdm
+import json
 from antenna.pattern import numberWaveformComputationSamples as nWCS
 if cuda.is_available():
     from antenna.pattern import antennaResponseCudaMem as antennaResp
@@ -495,7 +496,7 @@ def satellitePositionsArclength(rd):
     for k,s in zip(range(nSamples), sampleS):
         root = np.roots([tdf[3]/6.0, tdf[2]/2.0, tdf[1],tdf[0]-s])
         myval = closestRoot(root, myval)
-        newTimes[k] = myval
+        newTimes[k] = np.real(myval)
 
     svc = myrd.estimateTimeRange(myrd.measurementTime,
                                  integrationTimes=newTimes)
@@ -828,6 +829,8 @@ class radar_system:
     def computePhaseResidual(self):
         C = self.radar[0]['acquisition']['satelliteArc'][1]
         s = np.array(self.radar[0]['acquisition']['satelliteArc'][0])
+        print(np.min(self.radar[0]['acquisition']['satelliteArc'][0]))
+        print(np.max(self.radar[0]['acquisition']['satelliteArc'][0]))
         
         # Get the satpositions from integration and from expansion
         sPos_numerical = self.radar[0]['acquisition']['satellitePositions'][1][:,0:3].T
@@ -849,6 +852,10 @@ class radar_system:
     
         # Caluclate component of delta in direction of rhat (dependent variable)
         delta = -self.kr[0]*np.sum(sPos_delta*rhat_vector, axis=0)
+        
+        print("ksM: %0.4f, %0.4f" % (np.min(ksM), np.max(ksM)))
+        print("ks_full: %0.4f, %0.4f" % (np.min(self.ks_full), np.max(self.ks_full)))
+        print(delta)
         
         # Compute the interpolator
         f = interpolate.interp1d(ksM, delta, kind = 'linear')

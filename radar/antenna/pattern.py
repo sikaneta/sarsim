@@ -216,10 +216,70 @@ def antennaResponseMultiCPU(return_response,
                             chirp_bandwidth,
                             chirp_duration,
                             chirp_carrier):
-    """ This function takes a range time: targetRangeTime and a look angle: u along
+    r"""
+    Compute the pulse response for a particular look direction
+    
+    This function takes rangeTimes, targetRangeTime and a look angle: u along
     other parameters which describe the positions of the antenna
     elements and the delays for each element and calculates the response
-    to a transmitted signal z.sample(t) """
+    to a transmitted signal z.sample(t).
+    
+    Notes
+    -----
+    The calculations are accelerated by computation in the frequency domain
+    
+    Given some pulse wavefor :math:`z(\tau)`, the transmit waveform is
+    given by
+    
+    .. math::
+        
+        f_{\text{Tx}}(\tau) = \sum_n w_{\text{Tx}}(n)
+        z(tau - x_nu - \tau_{\text{Tx}}(n))
+        
+    This signal has a Fourier transform given by
+    
+    .. math::
+        
+        f_{\text{Tx}}(\omega) = Z(\omega)\sum_n w_{\text{Tx}}(n)
+        \exp-\jmath\omega\left(x_nu + \tau_{\text{Tx}}(n)\right)
+        
+    which shows that the pattern synthesis can be more readily carried out in
+    the Frequency domain.
+
+    Parameters
+    ----------
+    return_response : `np.ndarray((N,), dtype=np.complex64)`
+        An array of responses for the pulse. This will be the output
+    fastTimes : `np.ndarray(N,)`, (s)
+        An array of times corresponding to the pulse samples.
+    targetRangeTime : float (s)
+        The target range time in s.
+    u : float (unitless)
+        Cosine of the desired azimuth look direction.
+    minAntennaLength : `float` (m)
+        Minimum antenna length. Used to compute the element pattern in azimuth
+    azimuthPositions : `np.ndarray((N,1), dtype=float)`, (m)
+        An array of azimuth phase centre positions.
+    txMag : `np.ndarray((N,1), dtype=float)`, (unitless)
+        An array of weight factors for transmit pattern.
+    rxMag : `np.ndarray((N,1), dtype=float)`, (unitless)
+        An array of weight factors for receive pattern.
+    txDelay : `np.ndarray((N,1), dtype=float)`, (s)
+        An array of true time delays for transmit pattern.
+    rxDelay : `np.ndarray((N,1), dtype=float)`, (s)
+        An array of true time delays for receive pattern.
+    chirp_bandwidth : float, (Hz)
+        The chirp bandwidth.
+    chirp_duration : float, (s)
+        Duration of the chirp in seconds.
+    chirp_carrier : float, (Hz)
+        Pulse carrier frequency.
+
+    Returns
+    -------
+    None.
+
+    """
     
     """ Let's first make sure that there are enough samples in the fastTimes
     array to cover the chirp duration """
@@ -232,18 +292,6 @@ def antennaResponseMultiCPU(return_response,
     f0 = chirp_carrier
     dT = fastTimes[1] - fastTimes[0]
     fp = 1.0/dT
-    # freq = np.array([nbFFT(k,N,fp,f0) for k in range(N)])
-    
-    # Ish stuff =======================================
-    freq = np.arange(N, dtype=int)
-    fidx = freq>=(N/2)
-    freq[fidx] -= N
-    unwrapped_offset = np.round(N*f0/fp).astype(int)
-    wrapped_offset = unwrapped_offset%N
-    cycle = np.round((unwrapped_offset - wrapped_offset)/N).astype(int)
-    
-    freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
-    freq = freq*fp/N
     
     freq = np.arange(N, dtype=int)
     fidx = freq>=(N/2)
@@ -271,15 +319,27 @@ def antennaResponseMultiCPU(return_response,
     wcarrier = 2.0*1j*np.pi*chirp_carrier
     t = fastTimes - targetRangeTime
     
-    response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*(t-chirp_duration/2.0) + 
-                    rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
-    response = response*np.exp( -wcarrier*(fastTimes) )
+    """ Find where t satisfies chirp length """
+    chirp_win = np.zeros_like(t)
+    chirp_win[np.abs(t)<(chirp_duration/2)] = 1.0
+    
+    response = np.fft.ifft(np.fft.fft(chirp_win*
+                                      np.exp(wcarrier*t + rate*t**2 ))*
+                           freq_delay*dCorrection)
+    
+    # Mix the signal to baseband
+    response = eF*response*np.exp( -wcarrier*(fastTimes) )
     
     # Pulse compress the signal
+    """ Define the baseband signal """
     baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) 
                                     - chirp_duration/2.0)**2 )
-    response = eF*np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, N))
-                                      *np.fft.fft(response))
+    """ Time shift the baseband signal to allow for DFT symmetry """
+    baseband_pulse = (np.fft.fft(baseband_pulse, N)
+                      *np.exp(1j*2*np.pi*freq*chirp_duration/2))
+    
+    """ Pulse compress the signal """
+    response = np.fft.ifft(np.conj(baseband_pulse)*np.fft.fft(response))
     
     
     for k in range(len(return_response)):
@@ -492,7 +552,12 @@ if cuda.is_available():
         rate = 1j*np.pi*chirp_bandwidth/chirp_duration
         wcarrier = 2.0*1j*np.pi*chirp_carrier
         t = newFastTimes - targetRangeTime
-        response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*t + rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
+        
+        """ Find where t satisfies chirp length """
+        chirp_win = np.zeros_like(t)
+        chirp_win[np.abs(t)<(chirp_duration/2)] = 1.0
+        
+        response = np.fft.ifft(chirp_win*np.fft.fft(np.exp( wcarrier*t + rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
         response = response*np.exp( -wcarrier*(newFastTimes) )
         
         # Pulse compress the signal
@@ -597,7 +662,12 @@ if cuda.is_available():
         rate = 1j*np.pi*chirp_bandwidth/chirp_duration
         wcarrier = 2.0*1j*np.pi*chirp_carrier
         t = newFastTimes - targetRangeTime
-        response = np.fft.ifft(np.fft.fft(np.exp( wcarrier*t + rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
+        
+        """ Find where t satisfies chirp length """
+        chirp_win = np.zeros_like(t)
+        chirp_win[np.abs(t)<(chirp_duration/2)] = 1.0
+        
+        response = np.fft.ifft(np.fft.fft(chirp_win*np.exp( wcarrier*t + rate*(t-chirp_duration/2.0)**2 ))*freq_delay*dCorrection)
         response = response*np.exp( -wcarrier*(newFastTimes) )
         
         # Pulse compress the signal

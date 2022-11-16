@@ -20,11 +20,15 @@ sv = state_vector()
 sv.add(svtime, svdata)
 
 #%% Define the range of elevation angles to look at
-def getTiming(sv, elev):
-    svdata = sv.measurementData[0] 
-    xhat = svdata[:3]/np.linalg.norm(svdata[:3])
-    vhat = svdata[3:]/np.linalg.norm(svdata[3:])
-    uhats = np.array([-np.cos(eang)*xhat + np.sin(eang)*vhat for eang in elev])
+def getTiming(sv, elev, idx = 0):
+    svdata = sv.measurementData[idx] 
+    N = -svdata[:3]/np.linalg.norm(svdata[:3])
+    T = svdata[3:]/np.linalg.norm(svdata[3:])
+    C = np.cross(N, T)
+    C = C/np.linalg.norm(C)
+    T = np.cross(C,N)
+    T = T/np.linalg.norm(T)
+    uhats = np.array([np.cos(eang)*N + np.sin(eang)*C for eang in elev])
 
     # Calculate range vectors
     rangeVectors = sv.computeRangeVectorsU(svdata, uhats)
@@ -45,60 +49,60 @@ def getTiming(sv, elev):
     
     return ranges, rhat, inc, tau, XgSwath
 
-#%% Generate some data
-elev = np.radians(np.arange(0.01,60,0.001))
-ranges, rhat, inc, tau, swath = getTiming(sv, elev)
+# #%% Generate some data
+# elev = np.radians(np.arange(0.01,60,0.001))
+# ranges, rhat, inc, tau, swath = getTiming(sv, elev)
 
-#%% Plot the ranges
-fp1 = 1000
-fp2 = 1000
-Tp = 40e-6
-dTp = 0*200e-6
-Np = 15
-plt.figure()
-for k,l in zip(range(0,Np,2), range(1,Np,2)):
-    plt.plot(swath/1e3, tau + k/fp1, 'r')
-    plt.plot(swath/1e3, tau + k/fp1 + Tp, 'r')
-    plt.axhline(y=tau[0] + k/fp1, color='b')
-    plt.axhline(y=tau[0] + k/fp1 + Tp, color='b')
-plt.grid()
-plt.xlabel('Ground range (km)')
-plt.ylabel('Fast-time (s)')
-plt.show()
+# #%% Plot the ranges
+# fp1 = 1000
+# fp2 = 1000
+# Tp = 40e-6
+# dTp = 0*200e-6
+# Np = 15
+# plt.figure()
+# for k,l in zip(range(0,Np,2), range(1,Np,2)):
+#     plt.plot(swath/1e3, tau + k/fp1, 'r')
+#     plt.plot(swath/1e3, tau + k/fp1 + Tp, 'r')
+#     plt.axhline(y=tau[0] + k/fp1, color='b')
+#     plt.axhline(y=tau[0] + k/fp1 + Tp, color='b')
+# plt.grid()
+# plt.xlabel('Ground range (km)')
+# plt.ylabel('Fast-time (s)')
+# plt.show()
 
-#%% Plot the ranges
-fp1 = 1000
-fp2 = 1000
-Tp = 40e-6
-dTp = 0*200e-6
-Np = 10
-plt.figure()
-for k,l in zip(range(0,Np,2), range(1,Np,2)):
-    plt.plot(swath/1e3, tau + k/fp1, 'r')
-    plt.plot(swath/1e3, tau + k/fp1 + Tp, 'r')
-    plt.axhline(y=tau[0] + k/fp1, color='b')
-    plt.axhline(y=tau[0] + k/fp1 + Tp, color='b')
-    plt.plot(swath/1e3, tau - dTp + l/fp2, 'g')
-    plt.plot(swath/1e3, tau - dTp + l/fp2 + Tp, 'g')
-    plt.axhline(y=tau[0] - dTp + l/fp2, color='b')
-    plt.axhline(y=tau[0] - dTp + l/fp2 + Tp, color='b')
-plt.grid()
-plt.xlabel('Ground range (km)')
-plt.ylabel('Fast-time (s)')
-plt.show()
+# #%% Plot the ranges
+# fp1 = 1000
+# fp2 = 1000
+# Tp = 40e-6
+# dTp = 0*200e-6
+# Np = 10
+# plt.figure()
+# for k,l in zip(range(0,Np,2), range(1,Np,2)):
+#     plt.plot(swath/1e3, tau + k/fp1, 'r')
+#     plt.plot(swath/1e3, tau + k/fp1 + Tp, 'r')
+#     plt.axhline(y=tau[0] + k/fp1, color='b')
+#     plt.axhline(y=tau[0] + k/fp1 + Tp, color='b')
+#     plt.plot(swath/1e3, tau - dTp + l/fp2, 'g')
+#     plt.plot(swath/1e3, tau - dTp + l/fp2 + Tp, 'g')
+#     plt.axhline(y=tau[0] - dTp + l/fp2, color='b')
+#     plt.axhline(y=tau[0] - dTp + l/fp2 + Tp, color='b')
+# plt.grid()
+# plt.xlabel('Ground range (km)')
+# plt.ylabel('Fast-time (s)')
+# plt.show()
 
-#%% Plot the off-nadir angles
-plt.figure()
-for k,l in zip(range(0,Np,2), range(1,Np,2)):
-    plt.plot(elev, tau + k/fp1, 'r')
-    plt.plot(elev, tau + k/fp1 + Tp, 'r')
-    plt.axhline(y=tau[0] + k/fp1, color='b')
-    plt.axhline(y=tau[0] + k/fp1 + Tp, color='b')
-    plt.plot(elev, tau - dTp + l/fp2, 'g')
-    plt.plot(elev, tau - dTp + l/fp2 + Tp, 'g')
-    plt.axhline(y=tau[0] - dTp + l/fp2, color='b')
-    plt.axhline(y=tau[0] - dTp + l/fp2 + Tp, color='b')
-plt.grid()
-plt.xlabel('Off-nadir angle (rad)')
-plt.ylabel('Fast-time (s)')
-plt.show()
+# #%% Plot the off-nadir angles
+# plt.figure()
+# for k,l in zip(range(0,Np,2), range(1,Np,2)):
+#     plt.plot(elev, tau + k/fp1, 'r')
+#     plt.plot(elev, tau + k/fp1 + Tp, 'r')
+#     plt.axhline(y=tau[0] + k/fp1, color='b')
+#     plt.axhline(y=tau[0] + k/fp1 + Tp, color='b')
+#     plt.plot(elev, tau - dTp + l/fp2, 'g')
+#     plt.plot(elev, tau - dTp + l/fp2 + Tp, 'g')
+#     plt.axhline(y=tau[0] - dTp + l/fp2, color='b')
+#     plt.axhline(y=tau[0] - dTp + l/fp2 + Tp, color='b')
+# plt.grid()
+# plt.xlabel('Off-nadir angle (rad)')
+# plt.ylabel('Fast-time (s)')
+# plt.show()

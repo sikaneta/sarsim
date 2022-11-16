@@ -52,7 +52,8 @@ parser.add_argument("--interactive",
                     help="Interactive mode. Program halts until figures are closed",
                     action="store_true",
                     default=False)
-            
+
+#%%        
 vv = parser.parse_args()
 
 #%% Load the radar configuration
@@ -85,7 +86,13 @@ for k in tqdm(range(len(x_blocks))):
     signal[xidx[0]:xidx[1]] = np.sum(fio.loadSimFiles(vv.mchan_processed_file, 
                                                       xidx=xidx, 
                                                       ridx=vv.ridx), axis=1)
-
+# #%% Load the data summed across range
+# signal = np.zeros((Na,800), dtype=np.complex128)
+# for k in tqdm(range(len(x_blocks))):
+#     xidx = x_blocks[k]
+#     signal[xidx[0]:xidx[1], :] = fio.loadSimFiles(vv.mchan_processed_file, 
+#                                                   xidx=xidx, 
+#                                                   ridx=vv.ridx)
 #%%
 arc_signal = np.fft.ifft(signal)
 

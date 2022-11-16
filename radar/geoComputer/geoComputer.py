@@ -6,16 +6,104 @@ import datetime
 
 
 class satGeometry:
-    # Function to compute the ECEF coordinates
+    """
+    Class to handle geometry of SAR data
+    
+    Class to handle geometrical operations of SAR data
+    
+    Methods
+    -------
+    computeECEF
+        Computes the ECEF coordinates of a point collected in the direction
+        u from a given state vector at a given range at some height above the
+        ellipsoid.
+    computeLLHwithDEM
+        Compute the lat/long/height as above, but using a DEM instead of a
+        given HAE. Also outputs the lat/long/height rather than XYZ in 
+        ECEF Cartesian coordinates.
+    sysEq
+        The system of equations for solving for XYZ on earth given the
+        satellite statevector, the range to the target the height of the
+        target above the ellipsoid and the look direction. See the following
+        for a detailed `Geo Model PDF <_static/geo.pdf>`_
+    sysJac
+        The Jacobian of the system equations given by sysEq. See
+        `Geo Model PDF`_
+    computeECEF
+        Python version of the methods in `Geo Model PDF`_ 
+        to find the XYZ coordinate of a point on the ground given radar 
+        imaging time, range, HAE and look angle
+    computeLLHwithDEM
+        Same as computeECEF, but instead of a given height, a DEM is used
+        to calculate the height. If the height is given by the DEM in HAG,
+        a function to convert HAG to HAE may be supplied
+    geoF
+        Forward functions to calculate Cartesian coordinates XYZ in ECEF from
+        llh
+    geoJ
+        Jacobian of geoF. Used for Newton-Raphson inversion
+    xyz2polar
+        Calculate the polar coordinates (EPSG:4326) of a point given in ECEF
+        Cartesian coordinates XYZ. This function uses Newton-Raphson to invert
+        the forward transform given by geoF
+    generateGeoGrid
+        Generate a grid of points on a grid. This grid is given in radar space
+        and converted to geo space
+    createENVIGCP
+        Write a set of GCPs to ENVI format for GCPs
+    writeGCPtoSHP
+        Write a set of GCPs to a shapefile
+    writeGCPtoXML
+        Write a set of GCPs to a vanilla XML file
+    readGCPFile
+        Read GCPs from a vanilla XML file
+    geocodeSARNew
+        Geo-reference a SAR file by using computed or to be computed GCPs. The
+        gdal engine is used to do the actual warping
+        
+    """
     orbitFile = u"r:/SARorbits.xml"
     
-    def __init__(self, planet = earth):
-        self.body = planet or earth
+    def __init__(self, body = earth()):
+        self.body = body
+        self.eS = np.array([body.a, body.a, body.b])
 
     # Compute the vector of functions
     def sysEq(self, X, range, u, h, sX, sV):
-        # Return a vector of the value sof the system of 
-        # euqations
+        """
+        System of equations to relate radar coordinates to points on the 
+        ground
+        
+        Returns the output of a system of equations relating the ground point
+        that corresponds to the range, look direction, height above ellipsoid
+        and state vector of the radar satellite. For more details, see
+        `Geo Model PDF`_
+        
+        Parameters
+        ----------
+        X : `numpy.ndarray`, (3,)
+            Three element array corresponding to the XYZ coordinates of the 
+            ground point.
+        range : `float`
+            The range from the satellite to the point on the ground (m).
+        u : `float`
+            The look direction from the satellite to the point on the ground.
+            This is the measured relative to the satellite velocity and is
+            in the range [-1,1]. For braodside, or zero-Doppler, u=0.
+        h : `float`
+            The height of the ground point above the ellipsoid (m).
+        sX : `numpy.ndarray`, (3,)
+            Position component of satellite state vector.
+        sV : `numpy.ndarray`, (3,)
+            Velocity component of satellite state vector.
+            
+        Returns
+        -------
+        ndarray
+            Output of the system of equations evaluated at the point X. This
+            is a 3 element ndarray.
+            
+        """
         
         return np.array([((X/self.eS)**2).sum() 
                          - (X*X).sum()/(np.linalg.norm(X)-h)**2,
@@ -24,13 +112,73 @@ class satGeometry:
                     
 
     def sysJac(self, X, range, h, sX, sV):
-        # Define and return the Jacobian matrix
+        """
+        Jacobian of the System of equations to relate radar coordinates to 
+        points on the ground
+        
+        Returns the Jacobian of the system of equations relating the ground 
+        point that corresponds to the range, look direction, height above 
+        ellipsoid and state vector of the radar satellite. For more details,
+        see `Geo Model PDF`_
+        
+        Parameters
+        ----------
+        X : `numpy.ndarray`, (3,)
+            Three element array corresponding to the XYZ coordinates of the 
+            ground point.
+        range : `float`
+            The range from the satellite to the point on the ground (m).
+        h : `float`
+            The height of the ground point above the ellipsoid (m).
+        sX : `numpy.ndarray`, (3,)
+            Position component of satellite state vector.
+        sV : `numpy.ndarray`, (3,)
+            Velocity component of satellite state vector.
+            
+        Returns
+        -------
+        `numpy.ndarray`, (3,3)
+            Jacobian of the system of equations evaluated at the point X. This
+            is a 3x3 ndarray.
+            
+        """
         return np.array([2.0*(X/self.eS)/self.eS
                          + 2.0*X*h/(np.linalg.norm(X)-h)**3,
                          2.0*(sX-X)/range**2, sV])
         
         
     def computeECEF(self, sVec, u, range, h, X = None):
+        """
+        Computes the ECEF XYZ position from radar parameters
+        
+        Given the radar satellite state vector, the look direction of the
+        radar beam, the range to the target point and the height of the
+        target point above the ellipsoid, this function computes the ECEF
+        Cartesian coordinates of the target point. The method used is 
+        described `Geo Model PDF`_
+        
+        Parameters
+        ----------
+        sVec : `numpy.ndarray`, (6,)
+            The radar satellite state vector.
+        u : `float`
+            Look direction in azimuth in range [-1,1]. For braodside, or 
+            zero-Doppler, u=0.
+        range : `float`
+            Range to the target point (m).
+        h : `float`
+            Height of the target point above the ellipsoid (m).
+        X : `numpy.ndarray`, (3,), optional
+            Initial guess of the target point. The default is None.
+            
+        Returns
+        -------
+        X : `numpy.ndarray`, (3,)
+            The estimated ground point in ECEF.
+        error : `float`
+            The error associated with the estimate(m).
+            
+        """
         sX = sVec[0:3]
         sV = sVec[3:6]
         
@@ -68,6 +216,37 @@ class satGeometry:
                           dem = None, 
                           geoidHeightFunction=None, 
                           X=None):
+        """
+        Computes the ECEF XYZ position from radar parameters
+        
+        Given the radar satellite state vector, the look direction of the
+        radar beam, the range to the target point and a DEM, this function 
+        computes the ECEF Cartesian coordinates of the target point. The 
+        method used is described `Geo Model PDF`_
+        
+        Parameters
+        ----------
+        sVec : `numpy.ndarray`, (6,)
+            The radar satellite state vector.
+        u : `float`
+            Look direction in azimuth in range [-1,1]. For braodside, or 
+            zero-Doppler, u=0.
+        range : `float`
+            Range to the target point (m).
+        DEM : :class:`~sip_tools.DEM.DEM.DEM`
+            A DEM object to compute heights.
+        geoidHeightFunction : function, optional
+            A function to convert HAG to HAE. The default is None
+        X : `numpy.ndarray`, (3,), optional
+            Initial guess of the target point. The default is None.
+            
+        Returns
+        -------
+        X : `numpy.ndarray`, (3,)
+            The estimated ground point in ECEF.
+            
+        """
+        
         # Start with a height of zero
         demH = 0.0
         
@@ -105,6 +284,25 @@ class satGeometry:
         return (crdsDeg, X, np.abs(demH-h))
         
     def geoF(self, llh, X):
+        """
+        System of equations for calculating LLH from XYZ
+        
+        The system of equations for calculaging LLH from XYZ by using the
+        Newton-Raphson method
+        
+        Parameters
+        ----------
+        llh : `numpy.ndarray`, (3,)
+            Array of lat (dd), long (dd), HAE (m).
+        X : `numpy.ndarray`, (3,)
+            The current guess of the ECEF coordiantes.
+            
+        Returns
+        -------
+        `numpy.ndarray`, (3,)
+            The output of the system of equations.
+            
+        """
         # Compute the flattening factor
         f = (self.body.a-self.body.b)/self.body.a
         lat = llh[0]
@@ -120,6 +318,23 @@ class satGeometry:
                          (self.body.a*S+h)*np.sin(lat) - X[2]])
 
     def geoJ(self, llh):
+        """
+        Jacobian of the system of equations for calculating LLH from XYZ
+        
+        The Jacobian of the system of equations for calculaging LLH from XYZ.
+        This function is used by the Newton-Raphson method.
+        
+        Parameters
+        ----------
+        llh : `numpy.ndarray`, (3,)
+            Array of lat (dd), long (dd), HAE (m).
+            
+        Returns
+        -------
+        `numpy.ndarray`, (3,3)
+            The Jacobian 3x3.
+            
+        """
         # Compute the flattening factor
         f = (self.body.a-self.body.b)/self.body.a
         lat = llh[0]
@@ -153,6 +368,32 @@ class satGeometry:
         return np.array([[J11, J12, J13], [J21, J22, J23], [J31, J32, J33]]) 
         
     def xyz2polar(self, X):
+        """
+        Convert ECEF XYZ coordinates to geographic coordinates EPSG:4326
+        
+        Use the Newton-Raphson method to compute the EPSG:4326 coordinates
+        of an ECEF Cartesian XYZ point.
+        
+        Parameters
+        ----------
+        X : `numpy.ndarray`, (3,)
+            Three component array of the ECEF Cartesian coordinates (all in m)
+            to be converted into EPSG:4326.
+            
+        Returns
+        -------
+        llh : `numpy.ndarray`, (3,)
+            The computed lat, long and height above ellipsoid (m).
+        error : `float`
+            Error in the calculation. The smaller the error, the better the
+            convergence of the method. There are no units to this error as
+            the coordinates in llh are of mixed type with the first two 
+            coordinates in decimal degrees and the last in m. The error is
+            hard coded to be less than 1.0e-9. That is, the L2 norm of the 
+            difference between the esimated llh and the true llh is less than
+            1e-9
+            
+        """
         # Convert to spherical polar
         llh = np.array([np.arctan(X[2]/np.sqrt(X[0]**2+X[1]**2)), 
                         np.arctan2(X[1],X[0]), 0.0])

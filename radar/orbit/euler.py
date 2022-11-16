@@ -1,5 +1,34 @@
 # -*- coding: utf-8 -*-
 """
+Module to transform between Euler angles and rotation matrices
+
+The methods in this module transform between euler angles and
+rotation matrices. Roll, pitch and yaw angles can be transformed
+back and forth into rotation matrices. Similarly, Azimuth, elevation
+and tilt angles can also be transformed back and forth to correponding
+rotation matrices as defined in `Reference Systems`_.
+
+Methods
+-------
+
+rpyFromRotation
+    Compute roll and pitch and yaw from rotation matrix
+aeu2rot
+    Rotate a set of basis vectors by aeu angles
+RPYfromAEU
+    Compute Yaw, roll and pitch errors from azimuth, elevation and
+    tilt errors
+AEUfromRPY
+    Compute azimuth, elevation and tilt angle errors from the
+    roll, pitch and yaw angular errors
+aeuFromRotation
+    Compute the azimuth, elevation and tilt angles from a, e, u basis vectors
+rpyAnglesFromIJK
+    Compute roll, pitch and yaw angles from satellite IJK basis vectors
+
+"""
+    
+"""
 Created on Wed Jun  8 13:50:20 2022
 
 @author: Ishuwa.Sikaneta

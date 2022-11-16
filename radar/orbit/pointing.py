@@ -188,14 +188,14 @@ class simulation:
 
         """
         planetOrbit = orbit(planet=self.planet, angleUnits="radians")
-        omega = np.array([planetOrbit.state2kepler(svs[k][1])["ascendingNode"] 
+        omega = np.array([planetOrbit.state2kepler(svs[k])["ascendingNode"] 
                           for k in range(idx[0], idx[1], idx[2])]).mean()
         co = np.cos(omega)
         so = np.sin(omega)
         Mo = np.array([[co, so, 0],[-so,co,0],[0,0,1]])
         Moo = np.block([[Mo, np.zeros_like(Mo)], [np.zeros_like(Mo), Mo]])
         
-        return [(svs[k][0], svs[k][1].dot(Moo)) for k in range(idx[0],idx[1])]
+        return [svs[k].dot(Moo) for k in range(idx[0], idx[1], idx[2])]
 
 
     # angular error from velocity error
@@ -417,11 +417,13 @@ class simulation:
                                    X,
                                    r,
                                    off_nadir, 
-                                   R_RPY = np.diag([3e-3, 0.4e-3, 3e-3])**2,
-                                   R_v = np.diag([0.2, 0.2, 0.2])**2,
-                                   R_t = 5**2,
-                                   R_p = 430**2,
+                                   covariances,
                                    N = 100000):
+                                   # R_RPY = np.diag([3e-3, 0.4e-3, 3e-3])**2,
+                                   # R_v = np.diag([0.2, 0.2, 0.2])**2,
+                                   # R_t = 5**2,
+                                   # R_p = 430**2,
+                                   # N = 100000):
         """
         This function combines source errors into an aeu covariance 
         matrix. 
@@ -466,25 +468,31 @@ class simulation:
     
         """
         
-        R_att = self.rpy2aeuCovariance(R_RPY, N)
-        R_vel = self.velocity2aeuCovariance(X, off_nadir, R_v)
-        R_tme = self.timing2aeuCovariance(X, off_nadir, R_t)
-        R_pos = R_p/r**2
+        R_att = self.rpy2aeuCovariance(np.array(covariances["spacecraft"]["R"]), N)
         
-        R = np.array(block_diag(R_att, R_tme, R_vel, R_pos))
-        AEU_m = np.array([[1,0,0,1,0,0,1,0,0,0],
-                          [0,1,0,0,1,0,0,1,0,1],
-                          [0,0,1,0,0,1,0,0,1,0]])
+        R_vel = self.velocity2aeuCovariance(X, 
+                                            off_nadir, 
+                                            np.array(covariances["orbitVelocity"]["R"]))
+        
+        R_tme = self.timing2aeuCovariance(X, 
+                                          off_nadir, 
+                                          np.array(covariances["orbitAlongTrack"]["R"]))
+        
+        R_pos = covariances["orbitAcrossTrack"]["R"]/r**2
+        
+        R_ins = covariances["instrument"]["R"]
+        
+        R = np.array(block_diag(R_att, R_tme, R_vel, R_pos, R_ins))
+        AEU_m = np.array([[1,0,0,1,0,0,1,0,0,0,1,0,0],
+                          [0,1,0,0,1,0,0,1,0,1,0,1,0],
+                          [0,0,1,0,0,1,0,0,1,0,0,0,1]])
         return R, AEU_m
     
     #%%
     def simulateError(self,
                       X, 
                       off_nadir,
-                      R_RPY = np.diag([3e-3, 0.4e-3, 3e-3])**2,
-                      R_v = np.diag([0.2, 0.2, 0.2])**2,
-                      R_t = 5**2,
-                      R_p = 430**2,
+                      covariances,
                       n_AEU = 1000000,
                       loglevel = 0
                       ):
@@ -537,12 +545,7 @@ class simulation:
                          "azAxis": self.azAxis,
                          "elAxis": self.elAxis,
                          "carrier": self.carrier,
-                         "errorCovariances": {
-                             "attitude": R_RPY.tolist(),
-                             "velocity": R_v.tolist(),
-                             "timing": R_t,
-                             "position": R_p
-                             }
+                         "covariances": covariances
                          }
                }
         
@@ -656,10 +659,11 @@ class simulation:
         R, AEU_m = self.contributors2aeuCovariance(X,
                                                    np.linalg.norm(R),
                                                    off_nadir, 
-                                                   R_RPY = R_RPY,
-                                                   R_v = R_v,
-                                                   R_t = R_t,
-                                                   R_p = R_p)
+                                                   covariances)
+                                                   # R_RPY = R_RPY,
+                                                   # R_v = R_v,
+                                                   # R_t = R_t,
+                                                   # R_p = R_p)
         
         R_AEU = AEU_m.dot(R).dot(AEU_m.T)
         aeu_e = self.generateGaussian(R_AEU, n_AEU)

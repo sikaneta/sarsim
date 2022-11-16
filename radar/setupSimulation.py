@@ -59,6 +59,13 @@ parser.add_argument("--number-mchan-processors",
 parser.add_argument("--vanilla-stolt",
                     help="Apply vanilla Stolt interpolation a3=a4=0",
                     action="store_true")
+parser.add_argument("--bands",
+                    help="The bands to process ...,-1,0,1,...",
+                    type=int,
+                    nargs="+",
+                    default=None)
+
+#%%
 vv = parser.parse_args()
 
 #%% Make sure we're looking at the absolute path
@@ -69,7 +76,7 @@ print("""Computing the radar system acquisition object""")
 radar = cfg.loadConfiguration(vv.config_xml)
 
 #%% Define which bands to reconstruct
-bands = np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
+bands = vv.bands or np.arange(-int(len(radar)/2)-2,int(len(radar)/2)+1+2)
 
 #%% Generate the r_sys object
 print("""Computing the radar system signal processing object""")
