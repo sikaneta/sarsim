@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>The euler module &#8212; sarsim  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Simulation of Pointing Errors" href="../pointing.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-orbit.euler">
+<span id="the-euler-module"></span><h1>The euler module<a class="headerlink" href="#module-orbit.euler" title="Permalink to this heading">¶</a></h1>
+<p>Module to transform between Euler angles and rotation matrices</p>
+<p>The methods in this module transform between euler angles and
+rotation matrices. Roll, pitch and yaw angles can be transformed
+back and forth into rotation matrices. Similarly, Azimuth, elevation
+and tilt angles can also be transformed back and forth to correponding
+rotation matrices as defined in <a href="#id11"><span class="problematic" id="id12">`Reference Systems`_</span></a>.</p>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>rpyFromRotation</dt><dd><p>Compute roll and pitch and yaw from rotation matrix</p>
+</dd>
+<dt>aeu2rot</dt><dd><p>Rotate a set of basis vectors by aeu angles</p>
+</dd>
+<dt>RPYfromAEU</dt><dd><p>Compute Yaw, roll and pitch errors from azimuth, elevation and
+tilt errors</p>
+</dd>
+<dt>AEUfromRPY</dt><dd><p>Compute azimuth, elevation and tilt angle errors from the
+roll, pitch and yaw angular errors</p>
+</dd>
+<dt>aeuFromRotation</dt><dd><p>Compute the azimuth, elevation and tilt angles from a, e, u basis vectors</p>
+</dd>
+<dt>rpyAnglesFromIJK</dt><dd><p>Compute roll, pitch and yaw angles from satellite IJK basis vectors</p>
+</dd>
+</dl>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.AEUfromRPY">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">AEUfromRPY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RPY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AEU</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.AEUfromRPY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute azimuth, elevation and tilt angle errors from the
+roll, pitch and yaw angular errors.</p>
+<p>This function computes the azimuth, elevation and tilt angular erros
+from the roll, pitch and yaw angular errors. A reference for the
+algorithm may be found in the Envision reference frames and pointing
+angle error document.</p>
+<p>Specifically, equation (31) of <a href="#id13"><span class="problematic" id="id14">`Reference Systems`_</span></a> is inverted to get
+the azimuth, elevation and tilt angle rotation matrix, then equation (25)
+is inverted according to the method of Section 5.2.1.</p>
+<section id="note">
+<h2>Note<a class="headerlink" href="#note" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>epsilon -&gt; roll</p></li>
+<li><p>alpha -&gt; pitch</p></li>
+<li><p>tau -&gt; yaw</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>RPY<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>The roll, pitch, yaw values as a matrix of 3xN.</p>
+</dd>
+<dt>M_e<span class="classifier"><cite>numpy.ndarray, [3,3]</cite></span></dt><dd><p>The matrix that rotates aeu into jki_s.</p>
+</dd>
+<dt>AEU<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>Numoy array to hold computed azimuth, elevation and tilt vales.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.RPYfromAEU">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">RPYfromAEU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AEU</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RPY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.RPYfromAEU" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Yaw, roll and pitch errors from azimuth, elevation and
+tilt errors</p>
+<p>This function computes the Roll angle, Pitch angle
+and Yaw angle errors from given azimuth, elevation and tile
+errors. The algorithm for computing these values can be found
+in my notes.</p>
+<p>The angles are computed according to equation (31) of 
+<a href="#id15"><span class="problematic" id="id16">`Reference Systems`_</span></a>.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>AEU<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>The a, e, u values as a matrix of Nx3.</p>
+</dd>
+<dt>M_e<span class="classifier"><cite>numpy.ndarray, [3,3]</cite></span></dt><dd><p>The matrix that rotates aeu into jki_s.</p>
+</dd>
+<dt>RPY<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>Numoy array to hold computed roll pitch yaw vales.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.aeu2rot">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">aeu2rot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aeu_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_basis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.aeu2rot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate a set of basis vectors by aeu angles.</p>
+<p>Rotate a set of basis vectors according to eq (25) in <a href="#id17"><span class="problematic" id="id18">`Reference Systems`_</span></a>. 
+If old_basis is the identity matrix, then the return value is the 
+overall rotation matrix.</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>old_basis<span class="classifier"><cite>numpy.ndarray(3,3)</cite></span></dt><dd><p>Basis vectors (columnwise) to be rotated.</p>
+</dd>
+<dt>aeu_e<span class="classifier"><cite>numpy.ndarray(3,N)</cite></span></dt><dd><p>A list of angles (radians) to be transformed into rotation matrices.
+each of the N columns is a vector of azimuth, elevation and tilt
+angles.</p>
+</dd>
+<dt>new_basis<span class="classifier"><cite>numpy.ndarray(3,3,N)</cite></span></dt><dd><p>The rotated bases vectors. If bases is the identity, the return
+value is the rotation matrix. This matrix is a pointer to the
+computed values.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
+<p>None.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.aeuFromRotation">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">aeuFromRotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AEUmatrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.aeuFromRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the azimuth, elevation and tilt angles from a, e, u basis vectors.</p>
+<p>Equation (25) of <a href="#id19"><span class="problematic" id="id20">`Reference Systems`_</span></a> is inverted according to the method 
+of Section 5.2.1.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>AAEmatrix<span class="classifier"><cite>np.ndarray(N, 3,3)</cite></span></dt><dd><p>N a,e,u, basis vectors from which to compute azimuth, elevation and 
+tilt angles. These are arranged in columns</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt><cite>np.ndarray(3,N)</cite></dt><dd><p>The computed azimuth, elevation and tilt angles for each basis vector
+set of the input.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.rpyAnglesFromIJK">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">rpyAnglesFromIJK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">IJKmatrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.rpyAnglesFromIJK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute roll, pitch and yaw angles from satellite IJK basis vectors.</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>IJKmatrix<span class="classifier"><cite>np.ndarray(N, 3,3)</cite></span></dt><dd><p>N i,j,k basis vectors from which to compute azimuth, elevation and 
+tilt angles. These are arranged in columns.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>rpy<span class="classifier"><cite>np.ndarray(3,N)</cite></span></dt><dd><p>The computed roll, pitch and yaw angles for each basis vector
+set of the input.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orbit.euler.rpyFromRotation">
+<span class="sig-prename descclassname"><span class="pre">orbit.euler.</span></span><span class="sig-name descname"><span class="pre">rpyFromRotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RPY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.euler.rpyFromRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute roll and pitch and yaw from rotation matrix</p>
+<p>This function computes the Roll angle, Pitch angle
+and Yaw angle from a given rotation matrix. The
+algorithm for computing these values can be found
+in Section 5.2.1 of <a href="#id21"><span class="problematic" id="id22">`Reference Systems`_</span></a>, where the input
+RPY matrix is the left side of equation (13).</p>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt>R<span class="classifier"><cite>numpy.ndarray, [3,3,N]</cite></span></dt><dd><p>The product of R.dot(P).dot(Y) rotation matrices.</p>
+</dd>
+<dt>RPY<span class="classifier"><cite>numpy.ndarray, [3, N]</cite></span></dt><dd><p>Numoy array to hold computed roll pitch yaw vales.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h2>Returns<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">sarsim</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pointing.html">Simulation of Pointing Errors</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The euler module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orbit.euler.AEUfromRPY"><code class="docutils literal notranslate"><span class="pre">AEUfromRPY()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orbit.euler.RPYfromAEU"><code class="docutils literal notranslate"><span class="pre">RPYfromAEU()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orbit.euler.aeu2rot"><code class="docutils literal notranslate"><span class="pre">aeu2rot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orbit.euler.aeuFromRotation"><code class="docutils literal notranslate"><span class="pre">aeuFromRotation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orbit.euler.rpyAnglesFromIJK"><code class="docutils literal notranslate"><span class="pre">rpyAnglesFromIJK()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orbit.euler.rpyFromRotation"><code class="docutils literal notranslate"><span class="pre">rpyFromRotation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../pointing.html" title="previous chapter">Simulation of Pointing Errors</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Ishuwa Sikaneta.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/radar/orbit/euler.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

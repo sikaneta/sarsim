@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Overview &#8212; sarsim  documentation</title>
+    <title>Simulation of Pointing Errors &#8212; sarsim  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -17,6 +17,7 @@
     <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The euler module" href="orbit/euler.html" />
     <link rel="prev" title="Welcome to sarsim’s documentation!" href="../index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -34,21 +35,15 @@
 
           <div class="body" role="main">
             
-  <section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
-<p>Sarsim python code generates a range of satellite radar related simulations.</p>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
-<p>This section will refer to readme.rst from folder above</p>
-</section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
-<p>There are several use cases for the code.</p>
-</section>
-<section id="python">
-<h2>Python<a class="headerlink" href="#python" title="Permalink to this heading">¶</a></h2>
+  <section id="simulation-of-pointing-errors">
+<h1>Simulation of Pointing Errors<a class="headerlink" href="#simulation-of-pointing-errors" title="Permalink to this heading">¶</a></h1>
+<p>This page outlines how pointing errors are Monte-Carlo-simulated.</p>
+<p>Python classes and modules have been developed to assist with pointing
+error analysis. This code takes a satellite orbit around a given planet
+as input. It also takes parameters of various state-vector-related pointing
+errors, as described in <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>, as input parameters.</p>
 <section id="orientation-orbit-class">
-<h3>Orientation Orbit Class<a class="headerlink" href="#orientation-orbit-class" title="Permalink to this heading">¶</a></h3>
+<h2>Orientation Orbit Class<a class="headerlink" href="#orientation-orbit-class" title="Permalink to this heading">¶</a></h2>
 <p>The class <a class="reference internal" href="#orbit.orientation.orbit" title="orbit.orientation.orbit"><code class="xref py py-class docutils literal notranslate"><span class="pre">orbit.orientation.orbit</span></code></a> contains code that allows for computation
 of the required zero-Doppler steering law for a given orbit around a given planet. Currently,
 <code class="xref py py-class docutils literal notranslate"><span class="pre">space.planets.earth</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">space.planets.venus</span></code> are defined as possible planets.</p>
@@ -76,7 +71,7 @@ instance), then the law will only be valid for a few minutes around this
 point. This is simply because of the inaccuracy of propagating an orbit
 using Kepler orbital elements.</p>
 <section id="methods">
-<h4>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h4>
+<h3>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>setFromStateVector</dt><dd><p>Set the orbit parameters for this object using a state vector. This
 will compute the Kepler orbit elements from a given inertial state 
@@ -111,7 +106,7 @@ ascending node</p>
 
 </section>
 <section id="simulation-class">
-<h3>Simulation Class<a class="headerlink" href="#simulation-class" title="Permalink to this heading">¶</a></h3>
+<h2>Simulation Class<a class="headerlink" href="#simulation-class" title="Permalink to this heading">¶</a></h2>
 <p>The class <a class="reference internal" href="#orbit.pointing.simulation" title="orbit.pointing.simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">orbit.pointing.simulation</span></code></a> allows pointing error contributions to be simlated for
 a given orbit. The class methods allow implementation of the pointing error contributions described
 in <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a>.</p>
@@ -125,7 +120,7 @@ input pointing contributors as given in
 and
 <a class="reference external" href="../_static/PointingRequirementsJustification.pdf">Pointing Justification</a></p>
 <section id="id1">
-<h4>Methods<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h4>
+<h3>Methods<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>estimatePDF</dt><dd><p>Estimate a probability distribution function from data using histogram
 approach</p>
@@ -167,7 +162,7 @@ into histograms and compared with requirements.</p>
 
 </section>
 <section id="euler-angle-calculation-module">
-<h3>Euler Angle Calculation Module<a class="headerlink" href="#euler-angle-calculation-module" title="Permalink to this heading">¶</a></h3>
+<h2>Euler Angle Calculation Module<a class="headerlink" href="#euler-angle-calculation-module" title="Permalink to this heading">¶</a></h2>
 <p>This module provides computations between Euler angles and rotation matrices as specified in
 <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>. Several methods have been decorated with numba decorators to accelerate computations.</p>
 <span class="target" id="module-orbit.euler"></span><p>Module to transform between Euler angles and rotation matrices</p>
@@ -177,7 +172,7 @@ back and forth into rotation matrices. Similarly, Azimuth, elevation
 and tilt angles can also be transformed back and forth to correponding
 rotation matrices as defined in <a class="reference external" href="../_static/EnvisionReferenceFramesAndPointingAngleDefinitions.pdf">Reference Systems</a>.</p>
 <section id="id2">
-<h4>Methods<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h4>
+<h3>Methods<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>rpyFromRotation</dt><dd><p>Compute roll and pitch and yaw from rotation matrix</p>
 </dd>
@@ -195,7 +190,21 @@ roll, pitch and yaw angular errors</p>
 </dd>
 </dl>
 </section>
-</section>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="orbit/euler.html">The euler module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#methods">Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#orbit.euler.AEUfromRPY"><code class="docutils literal notranslate"><span class="pre">AEUfromRPY()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#orbit.euler.RPYfromAEU"><code class="docutils literal notranslate"><span class="pre">RPYfromAEU()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#orbit.euler.aeu2rot"><code class="docutils literal notranslate"><span class="pre">aeu2rot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#orbit.euler.aeuFromRotation"><code class="docutils literal notranslate"><span class="pre">aeuFromRotation()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#orbit.euler.rpyAnglesFromIJK"><code class="docutils literal notranslate"><span class="pre">rpyAnglesFromIJK()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orbit/euler.html#orbit.euler.rpyFromRotation"><code class="docutils literal notranslate"><span class="pre">rpyFromRotation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 </section>
 
@@ -218,10 +227,10 @@ roll, pitch and yaw angular errors</p>
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation of Pointing Errors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#orientation-orbit-class">Orientation Orbit Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-class">Simulation Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#euler-angle-calculation-module">Euler Angle Calculation Module</a></li>
 </ul>
 </li>
 </ul>
@@ -231,6 +240,7 @@ roll, pitch and yaw angular errors</p>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="../index.html" title="previous chapter">Welcome to sarsim’s documentation!</a></li>
+      <li>Next: <a href="orbit/euler.html" title="next chapter">The euler module</a></li>
   </ul></li>
 </ul>
 </div>
@@ -264,7 +274,7 @@ roll, pitch and yaw angular errors</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../_sources/radar/overview.rst.txt"
+      <a href="../_sources/radar/pointing.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

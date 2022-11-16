@@ -10,7 +10,7 @@ Welcome to sarsim's documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   radar/overview
+   radar/pointing.rst
 
 
 

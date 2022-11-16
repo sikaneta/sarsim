@@ -8,7 +8,7 @@ Created on Fri Mar 27 14:43:14 2020
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from common.utils import upsampleSignal
+from common.utils import upsampleSignal, upsampleMatrix
 
 #%% Define a function to do the mchan plots
 def mchanPlot(procData, 
@@ -147,6 +147,48 @@ def sarprocPlot(wkSignal,
            folder = folder,
            interactive=interactive)
 
+#%% Function to plot the processed signal
+def makeSurface(wkSignal, 
+                mxrow, 
+                mxcol, 
+                DX=10, 
+                DY=10, 
+                spacing = [1,1],                
+                oversample = [4,4],
+                folder = ".",
+                interactive = False):
+    rows, cols = wkSignal.shape
+    Y0 = np.max([0, mxrow-DY])
+    Y1 = np.min([rows, mxrow+DY])
+    X0 = np.max([0, mxcol-DX])
+    X1 = np.min([cols, mxcol+DX])
+    Z = upsampleMatrix(wkSignal[Y0:Y1,X0:X1], oversample)
+    m,n = Z.shape
+    r_array = np.arange(m)*spacing[0] 
+    s_array = np.arange(n)*spacing[1]
+    r_array -= np.mean(r_array)
+    s_array -= np.mean(s_array)
+    R,S = np.meshgrid(r_array,s_array)
+    
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    ax.plot_surface(R,S,np.abs(Z), cstride=1, rstride=1, cmap='viridis')
+    # plt.show()
+    
+    # plt.figure()
+    # plt.imshow(20.0*np.log10(np.abs(wkSignal[Y0:Y1,X0:X1])))
+    # plt.clim(cmin,0)
+    # plt.colorbar()
+    # plt.title("Response (dB)")
+    # plt.xlabel("Range sample")
+    # plt.ylabel("Azimuth sample")
+    if interactive:
+        plt.show()
+    else:
+        plt.savefig(os.path.join(folder, "wk_response_%dx%d.png" % (DX,DY)),
+                    transparent=True)
+        plt.close()
+        
 #%% Function to plot the processed signal
 def makePlot(wkSignal, 
              mxrow, 

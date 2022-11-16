@@ -36,3 +36,13 @@ def upsampleSignal(y, os_factor, k_off=0):
         Y_idx = np.round(FFT_freq(N, N, k_off)).astype(int)
         YY[Y_idx] = np.fft.fft(y)
         return np.fft.ifft(YY)*os_factor
+    
+
+#%% Function to oversample a signal
+def upsampleMatrix(y, os_factor, k_off=0):
+        N,M = y.shape
+        YY = np.zeros((N*os_factor[0],M*os_factor[1]), dtype=y.dtype)
+        idx0 = np.round(FFT_freq(N, N, k_off)).astype(int)
+        idx1 = np.round(FFT_freq(M, M, k_off)).astype(int)
+        YY[tuple(np.meshgrid(idx0, idx1, sparse=True, indexing='ij'))] = np.fft.fft2(y)
+        return np.fft.ifft2(YY)*np.prod(os_factor)

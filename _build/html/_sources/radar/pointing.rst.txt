@@ -1,20 +1,12 @@
-Overview
-========
+Simulation of Pointing Errors
+=============================
 
-Sarsim python code generates a range of satellite radar related simulations.
+This page outlines how pointing errors are Monte-Carlo-simulated.
 
-Installation
-------------
-
-This section will refer to readme.rst from folder above
-
-Usage
------
-
-There are several use cases for the code. 
-
-Python
-------
+Python classes and modules have been developed to assist with pointing
+error analysis. This code takes a satellite orbit around a given planet
+as input. It also takes parameters of various state-vector-related pointing 
+errors, as described in `Pointing Justification`_, as input parameters.
 
 Orientation Orbit Class
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,3 +30,9 @@ This module provides computations between Euler angles and rotation matrices as 
 `Reference Systems`_. Several methods have been decorated with numba decorators to accelerate computations.
 
 .. automodule:: orbit.euler
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+   
+   orbit/euler.rst
