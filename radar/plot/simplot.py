@@ -110,6 +110,18 @@ def sarprocPlot(wkSignal,
                  DY=2**k, 
                  folder=folder,
                  interactive=interactive)
+        
+    """ Make an oversampled surface plot """
+    makeSurface(wkSignal, 
+                mxrow, 
+                mxcol, 
+                DX=32, 
+                DY=32, 
+                spacing = [s[1]-s[0], r_sys.r[1] - r_sys.r[0]],
+                oversample = [4,4],
+                folder=folder,
+                interactive=interactive)
+    
     for k in range(3,10):
         makeAziPlot(wkSignal, 
                     mxrow, 
