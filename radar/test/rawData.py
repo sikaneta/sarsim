@@ -14,7 +14,7 @@ import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 #%%
-config_xml = r"C:\Users\ishuwa.sikaneta\local\data\simulation\1m_mode.xml"
+config_xml = r"/users/isikanet/local/data/1m_mode.xml"
 cargs = r"--config-xml %s" % config_xml
 ridx = [0, None]
 
@@ -36,7 +36,7 @@ data = np.fft.ifft(data, axis=1)
 data = data/np.max(np.abs(data[:]))
 
 #%%
-folder = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Presentations\SAR Course"
+folder = r"/users/isikanet/local/data"
 filename = os.path.join(folder, "compressed_range.png")
 #%% Plot the data
 s_skip = 25

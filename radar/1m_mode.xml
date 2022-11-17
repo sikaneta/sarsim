@@ -1,0 +1,62 @@
+<gmtiAuxDataParams schemaVersion="1.0">
+  <acquisitionParameters>
+    <mode>Ish_Burst_Mode</mode>
+    <instrument>
+      <antennaArray>
+        <carrierFrequency unit="Hz">9.650e9</carrierFrequency>
+        <azimuthPositions unit="m">-0.980000 -0.940000 -0.900000 -0.860000 -0.820000 -0.780000 -0.740000 -0.700000 -0.660000 -0.620000 -0.580000 -0.540000 -0.500000 -0.460000 -0.420000 -0.380000 -0.340000 -0.300000 -0.260000 -0.220000 -0.180000 -0.140000 -0.100000 -0.060000 -0.020000 0.020000 0.060000 0.100000 0.140000 0.180000 0.220000 0.260000 0.300000 0.340000 0.380000 0.420000 0.460000 0.500000 0.540000 0.580000 0.620000 0.660000 0.700000 0.740000 0.780000 0.820000 0.860000 0.900000 0.940000 0.980000</azimuthPositions>
+        <elevationPositions unit="m">0.75</elevationPositions>
+        <azimuthElementLengths unit="m">0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000 0.040000</azimuthElementLengths>
+        <elevationElementLengths unit="m">1.5</elevationElementLengths>
+        <transmitPowers unit="dB">10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0</transmitPowers>
+        <systemTemperature unit="degrees" system="Kelvin">297</systemTemperature>
+        <systemLosses unit="dB">-5.3</systemLosses>
+      </antennaArray>
+      <lookDirection>Right</lookDirection>
+      <orbit>
+        <inclination unit="degrees">98.6</inclination>
+        <eccentricity>0.00</eccentricity>
+        <semiMajorAxis unit="m">7071009</semiMajorAxis>
+        <angleOfPerigee unit="degrees">90.0</angleOfPerigee>
+        <orbitAngle unit="degrees">60</orbitAngle>
+      </orbit>
+    </instrument>
+    <platformLongitude unit="degrees" referenceEllipsoid="WGS84">90</platformLongitude>
+  </acquisitionParameters>
+  <signalData>
+    <azimuthStartTime iso="2015-01-01T00:00:00.000000000">
+      <year>2015</year>
+      <month>01</month>
+      <day>01</day>
+      <hour>00</hour>
+      <minute>00</minute>
+      <sec>00</sec>
+      <usec>000000</usec>
+      <time_system>2</time_system>
+    </azimuthStartTime>
+    <numRangeSamples unit="Pixels">1024</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">94254</numAzimuthSamples>
+    <nearRangeTime unit="s">5.5688565721e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">5.559402e-09</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">9000.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">149.896229</pulseBandwidth>
+    <pulseDuration unit="us">20.5000</pulseDuration>
+    <radarConfiguration channel="channel0-0">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <u0 unit="radians">-0.000000e+00</u0>
+        <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
+        <phase unit="radians">-0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000</phase>
+        <truedelay unit="ns">-0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <u0 unit="radians">-0.000000e+00</u0>
+        <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
+        <phase unit="radians">-0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000</phase>
+        <truedelay unit="ns">-0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 -0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+    <filename>/users/isikanet/local/src/sarsim/radar/simulation_data/raw/1m_mode_rX_c0b0.npy</filename>
+  </signalData>
+</gmtiAuxDataParams>
