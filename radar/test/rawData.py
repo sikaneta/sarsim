@@ -69,6 +69,13 @@ az_signal_phs = np.unwrap(np.angle(np.sum(data, axis=0)))
 az_signal_phs -= np.max(az_signal_phs)
 
 #%%
+plt.figure()
+m,n = data.shape
+plt.plot(20*np.log10(np.abs(data[:,int(n/2)])))
+plt.grid()
+plt.show()
+
+#%%
 filename = os.path.join(folder, "signalAmpPhs.png")
 fig, ax1 = plt.subplots()
 

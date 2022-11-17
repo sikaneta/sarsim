@@ -321,10 +321,12 @@ def antennaResponseMultiCPU(return_response,
     
     """ Find where t satisfies chirp length """
     chirp_win = np.zeros_like(t)
-    chirp_win[np.abs(t)<(chirp_duration/2)] = 1.0
+    half_duration = chirp_duration/2
+    chirp_win[np.abs(t-half_duration)<(half_duration)] = 1.0
+    pt = t - half_duration # Time argument to pulse baseband function
     
     response = np.fft.ifft(np.fft.fft(chirp_win*
-                                      np.exp(wcarrier*t + rate*t**2 ))*
+                                      np.exp(wcarrier*pt + rate*pt**2 ))*
                            freq_delay*dCorrection)
     
     # Mix the signal to baseband
@@ -333,13 +335,15 @@ def antennaResponseMultiCPU(return_response,
     # Pulse compress the signal
     """ Define the baseband signal """
     baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) 
-                                    - chirp_duration/2.0)**2 )
+                                    - half_duration)**2 )
+    
     """ Time shift the baseband signal to allow for DFT symmetry """
-    baseband_pulse = (np.fft.fft(baseband_pulse, N)
-                      *np.exp(1j*2*np.pi*freq*chirp_duration/2))
+    # baseband_pulse = (np.fft.fft(baseband_pulse, N)
+    #                   *np.exp(1j*2*np.pi*freq*chirp_duration/2))
     
     """ Pulse compress the signal """
-    response = np.fft.ifft(np.conj(baseband_pulse)*np.fft.fft(response))
+    response = np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, N))
+                           *np.fft.fft(response))
     
     
     for k in range(len(return_response)):

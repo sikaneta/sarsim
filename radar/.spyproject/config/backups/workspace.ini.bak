@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['generateXML\\rosel.py', 'generateXML\\base_XML.py', 'orbit\\timing.py', 'orbit\\stateVec2geospatial.py', 'orbit\\vensar_tests.py', 'orbit\\euler.py', 'measurement\\measurement.py', 'orbit\\orientation.py', 'orbit\\pointing.py', 'orbit\\keplerVersusESOC.py', '..\\index.rst', '..\\conf.py', 'generateXML\\sureConfig.xml', 'generateXML\\sure.py', 'generateSUREConfig.py', 'geoComputer\\geoComputer.py', 'configuration\\configuration.py', 'sarProcess.py', 'processMultiChannel.py', 'plotMultiChannel.py', 'plotSimRes.py', 'generateMsar.py', 'setupSimulation.py', 'antenna\\pattern.py', 'orbit\\pointing_tests.py', 'space\\planets.py', 'test\\rawData.py', 'orbit\\envision.py', 'incidence.py', 'plotSARprocessed.py', 'plot\\simplot.py']
+recent_files = ['processMultiChannel.py', 'plotMultiChannel.py', 'sarProcess.py', 'configuration\\configuration.py', 'generateMsar.py', 'setupSimulation.py', 'antenna\\pattern.py', 'utils\\fileio.py', 'test\\rawData.py', 'plotSARprocessed.py', 'plot\\simplot.py', 'orbit\\orientation.py', 'common\\utils.py']
 
 [main]
 version = 0.2.0
