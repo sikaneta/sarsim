@@ -115,8 +115,8 @@ def sarprocPlot(wkSignal,
     makeSurface(wkSignal, 
                 mxrow, 
                 mxcol, 
-                DX=32, 
-                DY=32, 
+                DX=8, 
+                DY=8, 
                 spacing = [s[1]-s[0], r_sys.r[1] - r_sys.r[0]],
                 oversample = [4,4],
                 folder=folder,
@@ -175,16 +175,20 @@ def makeSurface(wkSignal,
     X0 = np.max([0, mxcol-DX])
     X1 = np.min([cols, mxcol+DX])
     Z = upsampleMatrix(wkSignal[Y0:Y1,X0:X1], oversample)
+    Z = np.abs(Z)**2
+    Z /= np.max(Z[:])
     m,n = Z.shape
-    r_array = np.arange(m)*spacing[0] 
-    s_array = np.arange(n)*spacing[1]
+    r_array = np.arange(m)*spacing[0]/oversample[0] 
+    s_array = np.arange(n)*spacing[1]/oversample[1]
     r_array -= np.mean(r_array)
     s_array -= np.mean(s_array)
-    R,S = np.meshgrid(r_array,s_array)
+    S, R = np.meshgrid(s_array,r_array)
     
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    ax.plot_surface(R,S,np.abs(Z), cstride=1, rstride=1, cmap='viridis')
+    ax.plot_surface(R,S,Z, cstride=1, rstride=1, cmap='viridis')
+    ax.set_xlabel("range (m)")
+    ax.set_ylabel("azimuth (m)")
     # plt.show()
     
     # plt.figure()
