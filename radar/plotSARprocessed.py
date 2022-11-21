@@ -150,7 +150,7 @@ sim_folder = os.path.join(os.path.split(vv.config_xml)[0],
                           "simulation_plots")
 
 #%% Do the plotting
-sp.sarprocPlot(wkSignal, 
+S, R, Z = sp.sarprocPlot(wkSignal, 
                r_sys, 
                interactive=vv.interactive, 
                folder=sim_folder, 

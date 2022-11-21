@@ -112,7 +112,7 @@ def sarprocPlot(wkSignal,
                  interactive=interactive)
         
     """ Make an oversampled surface plot """
-    makeSurface(wkSignal, 
+    S, R, Z = makeSurface(wkSignal, 
                 mxrow, 
                 mxcol, 
                 DX=8, 
@@ -122,7 +122,7 @@ def sarprocPlot(wkSignal,
                 folder=folder,
                 interactive=interactive)
     
-    for k in range(3,10):
+    for k in range(3,5):
         makeAziPlot(wkSignal, 
                     mxrow, 
                     mxcol, 
@@ -130,7 +130,7 @@ def sarprocPlot(wkSignal,
                     DY=2**k, 
                     folder = folder,
                     interactive=interactive)
-    for k in range(3,6):
+    for k in range(3,5):
         makeRngPlot(wkSignal, 
                     mxrow, 
                     mxcol, 
@@ -138,7 +138,7 @@ def sarprocPlot(wkSignal,
                     DX=2**k, 
                     folder = folder,
                     interactive=interactive)
-    for k in range(3,10):
+    for k in range(3,5):
         makeOversampledPlot(wkSignal[:,mxcol],
                             mxrow,
                             s[1]-s[0],
@@ -149,6 +149,17 @@ def sarprocPlot(wkSignal,
                             xlabel = "Azimuth (arclength m)",
                             title = "Response (dB)",
                             filename = "wk_response_s_os_%d.png" % (2**k))
+    for k in range(3,5):
+        makeOversampledPlot(wkSignal[mxrow,:],
+                            mxcol,
+                            r_sys.r[1]-r_sys.r[0],
+                            D = 2**k,
+                            os_factor = 8,
+                            folder = folder,
+                            interactive = interactive,
+                            xlabel = "Range (m)",
+                            title = "Response (dB)",
+                            filename = "wk_response_r_os_%d.png" % (2**k))
     plotAngle(dSig, 
               r_sys, 
               folder = folder,
@@ -158,6 +169,8 @@ def sarprocPlot(wkSignal,
            r_sys, 
            folder = folder,
            interactive=interactive)
+    
+    return S, R, Z
 
 #%% Function to plot the processed signal
 def makeSurface(wkSignal, 
@@ -182,11 +195,11 @@ def makeSurface(wkSignal,
     s_array = np.arange(n)*spacing[1]/oversample[1]
     r_array -= np.mean(r_array)
     s_array -= np.mean(s_array)
-    S, R = np.meshgrid(s_array,r_array)
+    S, R = np.meshgrid(s_array, r_array)
     
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    ax.plot_surface(R,S,Z, cstride=1, rstride=1, cmap='viridis')
+    ax.plot_surface(S, R, Z, cstride=1, rstride=1, cmap='viridis')
     ax.set_xlabel("range (m)")
     ax.set_ylabel("azimuth (m)")
     # plt.show()
@@ -204,6 +217,8 @@ def makeSurface(wkSignal,
         plt.savefig(os.path.join(folder, "wk_response_%dx%d.png" % (DX,DY)),
                     transparent=True)
         plt.close()
+        
+    return S, R, Z
         
 #%% Function to plot the processed signal
 def makePlot(wkSignal, 
