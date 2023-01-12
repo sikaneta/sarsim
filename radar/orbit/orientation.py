@@ -77,6 +77,7 @@ class orbit:
                  e=0,
                  arg_perigee=0,
                  a=10000000.0,
+                 period = None,
                  inclination=np.pi/2,
                  planet = earth(),
                  angleUnits = "radians"
@@ -96,7 +97,12 @@ class orbit:
             from planet center to the ascending node to the vector from planet
             center to perigee.
         a : float (m)
-            The length of the orbit semi-major axis.
+            The length of the orbit semi-major axis. If this is given but the
+            period is not given, then the period will be computed according
+            to Kepler's 3rd law.
+        period : float (s)
+            The period of the orbit in seconds. If this is set, then the value
+            for a will be accordingly (Kepler's 3rd law) recomputed.
         inclination : (angleUnits according to angleUnits)
             The inclination angle of the orbit. This is the right-handed angle 
             around the vector from the planet center to the ascending node by 
@@ -116,10 +122,16 @@ class orbit:
         self.angleUnits = angleUnits
         self.e = e
         self.arg_perigee = self.toRadians(arg_perigee)
-        self.a = a
         self.inclination = self.toRadians(inclination)
         self.planet = planet
-        self.period = 2*np.pi*np.sqrt(a**3/planet.GM)
+        
+        if a is not None:
+            self.a = a
+            self.period = 2*np.pi*np.sqrt(a**3/planet.GM)
+        if period is not None:
+            self.period = period
+            self.a = (period*np.sqrt(planet.GM)/(2*np.pi))**(2/3)
+        
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
         cosP = np.cos(self.arg_perigee)

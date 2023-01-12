@@ -113,7 +113,7 @@ class simulation:
 
         Parameters
         ----------
-        d : `np.ndarray(N,)`
+        d : `np.ndarray(M,)`
             The data from which a PDF is to be estimated.
         N : int, optional
             The number of bins to use in the histogram. This values can also
@@ -122,9 +122,9 @@ class simulation:
 
         Returns
         -------
-        h : `np.ndarray(N,1)`
+        h : `np.ndarray(N-1,1)`
             The estimated PDF.
-        x : `np.ndarray(N,1)`
+        x : `np.ndarray(N-1,1)`
             The dependent variable of the PDF.
 
         """
