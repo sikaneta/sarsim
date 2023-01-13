@@ -30,7 +30,7 @@ Python libraries used include (bold entries are essential)
 
 These can be installed with anaconda using
 
-**conda install conda-build spyder jupyter jupyterlab numpy numba scipy lxml matplotlib cudatoolkit**
+**conda install conda-build spyder jupyter jupyterlab numpy numba scipy lxml matplotlib cudatoolkit tqdm astropy quaternion**
 
 ## Method of simulation
 Simulations are drived from XML configuration files. The goal is to model the signal capture 
