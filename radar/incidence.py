@@ -5,7 +5,7 @@ Created on Mon Nov  7 14:22:02 2022
 @author: ishuwa.sikaneta
 """
 
-from orbit.timing import getTiming
+from orbit.geometry import getTiming
 from orbit.envision import loadSV
 
 import numpy as np

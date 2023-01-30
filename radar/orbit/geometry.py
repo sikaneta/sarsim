@@ -41,21 +41,21 @@ def getTiming(sv, elev, idx = 0):
     return ranges, rhat, inc, tau, XgSwath
 
 #%%
-def surfaceNormal(XG, sv = state_vector(), planet = earth()):
+def surfaceNormal(XG, sv = state_vector()):
     lat, lon, _ = sv.xyz2SphericalPolar(XG)
     clat = np.cos(np.radians(lat))
     slat = np.sin(np.radians(lat))
     clon = np.cos(np.radians(lon))
     slon = np.sin(np.radians(lon))
     
-    n = np.array([planet.b*clat*clon,
-                  planet.b*clat*slon,
-                  planet.a*slat])
+    n = np.array([sv.planet.b*clat*clon,
+                  sv.planet.b*clat*slon,
+                  sv.planet.a*slat])
     
     return n/np.linalg.norm(n)
 
 #%%
-def satSurfaceGeometry(sv, off_nadir, azi_angle, planet = earth()):
+def satSurfaceGeometry(sv, off_nadir, azi_angle):
     soff_nadir = np.sin(off_nadir)
     coff_nadir = np.cos(off_nadir)
     sazi_angle = np.sin(azi_angle)
@@ -74,14 +74,49 @@ def satSurfaceGeometry(sv, off_nadir, azi_angle, planet = earth()):
         s = sv.measurementData[k]
         look = u[k]
         T = s[3:]/np.linalg.norm(s[3:])
-        N = -surfaceNormal(s, sv, planet)
+        N = -surfaceNormal(s, sv)
         C = np.cross(N,T)
         tcn_look = np.stack((T,C,N), axis=1).dot(look) 
         XG = sv.computeGroundPositionU(s, tcn_look)
         rvec[k,:] = s[0:3] - XG
         r[k] = np.linalg.norm(rvec[k,:])
         rhat = rvec[k,:]/r[k]
-        snormal[k] = surfaceNormal(XG, sv, planet)
+        snormal[k] = surfaceNormal(XG, sv)
         incidence[k] = np.arccos(rhat.dot(snormal[k]))
         
     return rvec, snormal, r, incidence
+
+
+#%% New find nearest based on ordered time
+def findNearest(timeArray, eta):
+    nElements = len(timeArray)
+    def new_bracket(bracket):
+        center = int((bracket[1] + bracket[0])/2)
+        if timeArray[center] < eta:
+            return center, bracket[1]
+        else:
+            return bracket[0], center
+    
+    bracket = new_bracket([0, nElements])
+    while bracket[1] - bracket[0] > 1:
+        bracket = new_bracket(bracket)
+        
+    if (np.abs(eta - timeArray[bracket[0]]) < 
+        np.abs(eta - timeArray[bracket[1]])):
+        return bracket[0]
+    else:
+        return bracket[1]
+
+#%%
+def computeImagingGeometry(sv, eta, xG, xG_snormal):
+    idx = findNearest(sv.measurementTime, eta)
+    
+    mysv = state_vector(planet=sv.planet)
+    mysv.add(sv.measurementTime[idx], sv.measurementData[idx])
+    
+    satSV = mysv.computeBroadsideToX(eta, xG)
+    
+    rvec = satSV[1][0:3] - xG
+    r = np.linalg.norm(rvec)
+    incidence = np.degrees(np.arccos((rvec/r).dot(xG_snormal)))
+    return rvec, incidence, satSV

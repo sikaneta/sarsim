@@ -562,8 +562,8 @@ class orbit:
         """
         Compute time given the orbit angle.
         
-        Computes the time from the ascending node given the orbit angle,
-        also measured from the ascending node.
+        Computes the time from perigee given the orbit angle,
+        beta, measured from the ascending node.
 
         Parameters
         ----------

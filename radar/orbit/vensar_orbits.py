@@ -60,7 +60,7 @@ R = X - Sx
 
 #%% Set the Kepler parameters
 venSAR = orbit(planet=venus(), angleUnits="radians")
-orbitAmgle, ascendingNode = venSAR.setFromStateVector(sv.measurementData[xidx])
+orbitAngle, ascendingNode = venSAR.setFromStateVector(sv.measurementData[xidx])
 
 #%% Compute the broadside position one orbit later
 t0 = sv.measurementTime[xidx]

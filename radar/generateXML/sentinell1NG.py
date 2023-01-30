@@ -14,52 +14,73 @@ import lxml.etree as etree
 from functools import reduce
 import os
 from scipy.constants import c
-from generateXML.base_XML import base_ROSEL
+from generateXML.base_XML import base_SentinelNG
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
 #%% Coefficients file
-roseLxsl = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\RoseL\performanceSheetROSELDUALPolSwath1-3.xlsx"
-elementPattern = pd.read_excel(roseLxsl, sheet_name = "patternSA")
-swath = 3
-coefficientsTX = pd.read_excel(roseLxsl, sheet_name = "excitationsSA_TX", 
-                               skiprows = (swath-1)*13, nrows=13)
-coefficientsRX = pd.read_excel(roseLxsl, sheet_name = "excitationsSA_RX",
-                               skiprows = (swath-1)*13, nrows=13)
+SentinelNGpath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Sentinel-NG\ISRR\SW01_aresys_Instrument Performance Mathematical Models including software\S1NG_pfsoftware\Inputs"
+SentinelNGxsl = os.path.join(SentinelNGpath, "S1NG_CP IW Ish.xlsx")
+elementPattern = pd.read_excel(SentinelNGxsl, sheet_name = "Antenna1D")
 
+#%% Excitation coefficients
+swath = 2
+elementPattern = pd.read_excel(SentinelNGxsl, sheet_name = "Antenna1D")
 
-#%% Get TX coefficients
-txAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
-txPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+#%% TX Abs
+txAmp = pd.read_excel(SentinelNGxsl, 
+                      sheet_name = "ExcitationCoeffs",
+                      skiprows = 1 + (swath-1)*25,
+                      usecols = "D:L").to_numpy()
 
-txAmp = coefficientsTX[txAmpCols].to_numpy()
-txPhs = np.radians(coefficientsTX[txPhsCols].to_numpy())
+#%% TX Phase
+txPhs = pd.read_excel(SentinelNGxsl, 
+                      sheet_name = "ExcitationCoeffs",
+                      skiprows = 1 + (swath-1)*25,
+                      usecols = "N:V").to_numpy()
+txPhs = np.radians(txPhs)
+
+#%% RX Abs
+rxAmp = pd.read_excel(SentinelNGxsl, 
+                      sheet_name = "ExcitationCoeffs",
+                      skiprows = 1 + (swath-1)*25,
+                      usecols = "X:AF").to_numpy()
+
+#%% RX Phase
+rxPhs = pd.read_excel(SentinelNGxsl, 
+                      sheet_name = "ExcitationCoeffs",
+                      skiprows = 1 + (swath-1)*25,
+                      usecols = "AH:AP").to_numpy()
+rxPhs = np.radians(rxPhs)
+
+# #%% Get TX coefficients
+# txAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
+# txPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+
+# txAmp = coefficientsTX[txAmpCols].to_numpy()
+# txPhs = np.radians(coefficientsTX[txPhsCols].to_numpy())
 
 TX = txAmp*np.exp(1j*txPhs)
 
 #%% Get RX coefficients
-rxAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
-rxPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+# rxAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
+# rxPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
 
-rxAmp = coefficientsRX[rxAmpCols].to_numpy()
-rxPhs = np.radians(coefficientsRX[rxPhsCols].to_numpy())
+# rxAmp = coefficientsRX[rxAmpCols].to_numpy()
+# rxPhs = np.radians(coefficientsRX[rxPhsCols].to_numpy())
 
 RX = rxAmp*np.exp(1j*rxPhs)
 
 #%% Get Element pattern
-dEpatternAbs = "elevationHP_abs / 1"
-dEpatternPhs = "elevationHP_phase / deg"
-dApatternAbs = "azimuthHP_abs / 1"
-dApatternPhs = "azimuthHP_phase / deg"
-dEAbs = elementPattern[dEpatternAbs].to_numpy()
-dEPhs = np.radians(elementPattern[dEpatternPhs].to_numpy())
-dAAbs = elementPattern[dApatternAbs].to_numpy()
-dAPhs = np.radians(elementPattern[dApatternPhs].to_numpy())
-u = elementPattern["u"].to_numpy()
-v = elementPattern["v"].to_numpy()
-ePattern = dEAbs*np.exp(1j*dEPhs)
-aPattern = dAAbs*np.exp(1j*dAPhs)
+dEpatternAbs = "ElmeanAmplitudeH"
+dApatternAbs = "AZmeanAmplitudeH"
+dEAbs = elementPattern[dEpatternAbs].to_numpy()[1:].astype('double')
+dAAbs = elementPattern[dApatternAbs].to_numpy()[1:].astype('double')
+u = elementPattern["u"].to_numpy()[1:].astype('double')
+v = elementPattern["v"].to_numpy()[1:].astype('double')
+ePattern = dEAbs#*np.exp(1j*dEPhs)
+aPattern = dAAbs#*np.exp(1j*dAPhs)
 
 #%% Plot the azimuth element pattern
 plt.figure()
@@ -68,18 +89,19 @@ plt.ylim(-70,0)
 plt.grid()
 plt.xlabel('u')
 plt.ylabel('Gain (dB)')
+plt.title('Element Pattern (Azimuth) Sentinel-1NG')
 plt.show()
 
 #%% get data from XML file
 pq = etree.XMLParser(remove_blank_text=True)
-xml = etree.XML(base_ROSEL,parser=pq)
+xml = etree.XML(base_SentinelNG,parser=pq)
 fc = float(xml.find(".//carrierFrequency").text)
 
-azimuthResolution = 11.8 #vv.az_resolution
-rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
-range_BANDWIDTH = c/2.0/rangeResolution
-deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
-swathWidth = 88e3 #vv.swath_width
+# azimuthResolution = 11.8 #vv.az_resolution
+# rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
+# range_BANDWIDTH = c/2.0/rangeResolution
+# deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
+# swathWidth = 88e3 #vv.swath_width
 
 elevationPositions = np.array([float(f) for f in xml.find(".//elevationPositions").text.split()])
 azimuthPositions = np.array([float(f) for f in xml.find(".//azimuthPositions").text.split()])
@@ -136,28 +158,29 @@ wavenumber = 2*np.pi/c*fc
 UPos, VPos = np.meshgrid(azimuthPositions, elevationPositions)
 
 """ Define matrices to do the pre-summing of the subarrays """
-rnSubArrayLen = 2
-azSubArrayLen = 12
-iElev = np.array([identityM(channel, rnSubArrayLen).T 
-                  for channel in np.eye(TX.shape[0])])
-iAzim = np.array([identityM(channel, azSubArrayLen)
+rnSubArrayLen = 6
+azSubArrayLen = 1
+iElev = np.array([identityM(channel, rnSubArrayLen) 
+                  for channel in np.eye(int(TX.shape[0]/rnSubArrayLen))])
+iAzim = np.array([identityM(channel, azSubArrayLen).T
                   for channel in np.eye(TX.shape[1])])
 
 my_iElev = np.sum(iElev, axis=0)
 my_iAzim = np.sum(iAzim, axis=0)
 
-#my_iElev = iElev[2,:,:]
-#my_iAzim = iAzim[2,:,:]
-
+# my_iElev = iElev[2,:,:]
+# my_iAzim = iAzim[2,:,:]
 """ Expand the subarray weightings across all the elements """
-tRX = my_iElev.dot(RX).dot(my_iAzim)
-tTX = my_iElev.dot(TX).dot(my_iAzim)
+el_channel = 0
+az_channel = 0
+tRX = np.outer(my_iElev[el_channel,:], my_iAzim[:,az_channel])
+tTX = TX
 
 #%% Compute the element pattern
 patternEF = np.outer(aPattern, ePattern)
 
 #%% Compute the one-way array factors
-tPattAF, rPattAF = arrayFactor2D(u, v, UPos, VPos, tTX, tRX, wavenumber)
+tPattAF, rPattAF = arrayFactor2D(u, v, UPos, VPos, TX, tRX, wavenumber)
 
 #%% Plot the element factor pattern
 plt.figure()
@@ -177,7 +200,54 @@ plt.show()
 #%% Compute the composite patterns
 tPatt = patternEF*tPattAF
 rPatt = patternEF*rPattAF
+twPatternAbs = 20*np.log10(np.abs(tPatt*rPatt))
+twPatternAbs -= np.max(twPatternAbs)
 
+#%% Plot cuts along patterns
+plt.figure()
+plt.plot(u, twPatternAbs[:,500])
+plt.grid()
+plt.title('Azimuth pattern')
+plt.xlabel('u')
+plt.ylabel('Response (dB)')
+plt.show()
+
+#%%
+satvel = 7590
+wavelength = c/fc
+prf = 1501
+fd = 2*u*satvel/wavelength
+y = twPatternAbs[:,500]
+plt.figure()
+plt.plot(2*u*satvel/wavelength, y)
+plt.grid()
+plt.title('2-way azimuth pattern IW swath 2')
+plt.xlabel('f_d (Hz)')
+plt.ylabel('Response (dB)')
+idx = np.argwhere(np.abs(fd) <= 9*prf/2)[:,0]
+fdup = np.arange(fd[idx[0]], fd[idx[-1]], 1)
+yup = np.interp(fdup, fd[idx], y[idx])
+colors = ['red', 'indianred', 'darksalmon', 'sienna', 'coral']
+for k in range(-4,5):
+    idx = np.argwhere(np.abs(fdup-k*prf) < prf/2)[:,0]
+    plt.fill_between(fdup[idx], 
+                     -90*np.ones_like(idx), 
+                     yup[idx], 
+                     color=colors[np.abs(k)], 
+                     alpha=0.5)
+plt.show()
+plt.ylim(-90,10)
+plt.xlim(-30000,30000)
+
+#%%
+plt.figure()
+plt.plot(v, twPatternAbs[500,:])
+plt.grid()
+plt.title('Elevation pattern')
+plt.xlabel('v')
+plt.ylabel('Response (dB)')
+plt.show()
+         
 #%% Plot the two-way pattern
 plt.figure()
 plt.imshow(20*np.log10(np.abs(tPatt*rPatt)))
@@ -249,7 +319,7 @@ def generateXML(vv,
     
     #%% Generate the base XML object
     pq = etree.XMLParser(remove_blank_text=True)
-    xml = etree.XML(base_ROSEL,parser=pq)
+    xml = etree.XML(base_SentinelNG,parser=pq)
     fc = float(xml.find(".//carrierFrequency").text)
         
     #%% Set some defaults

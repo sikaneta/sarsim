@@ -17,10 +17,10 @@ svfile = os.path.join(r"C:\Users",
                           r"ESTEC",
                           r"Envision",
                           r"Orbits",
-                          r"EnVision_ALT_T4_2032_SouthVOI.oem")
+                          r"EnVision_T1_2032_NorthVOI.oem")
 
 #%% Load an oem orbit state vector file from Venus
-def loadSV(orbitfile = svfile):
+def loadSV(orbitfile = svfile, toPCR = True):
     with open(svfile, 'r') as f:
         svecs = f.read().split('\n')
         
@@ -29,9 +29,19 @@ def loadSV(orbitfile = svfile):
     svs = [(np.datetime64(s[0]), np.array([float(x) for x in s[1:]])*1e3) 
            for s in svecs]
     
+    
     sv = state_vector(planet=venus())
-    for vec in svs:
-        sv.add(*vec)
+    if toPCR:
+        for vec in svs:
+            """ Compute the time so we can transform to PCR """
+            t = (vec[0] - svs[0][0])/np.timedelta64(1,'s')
+            
+            """ Add the state vector """
+            sv.add(vec[0], sv.toPCR(vec[1],t))
+    else:
+        for vec in svs:
+            """ Add the state vector """
+            sv.add(vec[0], vec[1])
         
     return sv
 

@@ -548,7 +548,7 @@ def plotSpaceTime(N, radar):
                     (16.0/256, 237.0/256, 217.0/256),
                     (206.0/256, 213.0/256, 59.0/256)]
     
-    plt.figure(0)
+    plt.figure()
     sN = len(symbol_ARRAY)
     cN = len(colors_ARRAY)
     for k in range(number_CHANNELS):
