@@ -67,10 +67,14 @@ covariances = {
         "R": (np.diag([4.53e-3, 0.31e-3, 0.31e-3])**2).tolist()
         },
     "instrument": {
-        "description": "Errors in the pointing of the antenna",
-        "referenceVariables": "AzimuthElevationPitch",
+        "description": """Errors in the pointing of the antenna. From JPL
+                          spreadsheet cells 'SAR APE Pointing Budget'!G24:26
+                          Here we have set cells 'SC Pointing Control'!D10:12
+                          to zero so there is no contribution from the orbit
+                          position error. These values include a 20% margin.""",
+        "referenceVariables": "AzimuthElevationTilt",
         "units": "radians",
-        "R": (np.diag([0.41e-3, 0.97e-3, 0.24e-3])**2).tolist()
+        "R": ((np.diag([0.49e-3, 1.40e-3, 0.23e-3])/2)**2).tolist()
         },
     "orbitVelocity": {
         "description": "Errors in the orbit velocity vector",

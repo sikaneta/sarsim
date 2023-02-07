@@ -17,8 +17,10 @@ def getTiming(sv, elev, idx = 0):
     T = svdata[3:]/np.linalg.norm(svdata[3:])
     C = np.cross(N, T)
     C = C/np.linalg.norm(C)
-    T = np.cross(C,N)
-    T = T/np.linalg.norm(T)
+    N = np.cross(T, C)
+    N = N/np.linalg.norm(N)
+    # T = np.cross(C,N)
+    # T = T/np.linalg.norm(T)
     uhats = np.array([np.cos(eang)*N + np.sin(eang)*C for eang in elev])
 
     # Calculate range vectors

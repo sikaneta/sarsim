@@ -419,11 +419,6 @@ class simulation:
                                    off_nadir, 
                                    covariances,
                                    N = 100000):
-                                   # R_RPY = np.diag([3e-3, 0.4e-3, 3e-3])**2,
-                                   # R_v = np.diag([0.2, 0.2, 0.2])**2,
-                                   # R_t = 5**2,
-                                   # R_p = 430**2,
-                                   # N = 100000):
         """
         This function combines source errors into an aeu covariance 
         matrix. 
@@ -478,7 +473,9 @@ class simulation:
                                           off_nadir, 
                                           np.array(covariances["orbitAlongTrack"]["R"]))
         
-        R_pos = covariances["orbitAcrossTrack"]["R"]/r**2
+        lookvec = np.array([np.cos(np.radians(off_nadir)), np.sin(np.radians(off_nadir))])
+        R_xtrack = np.diag(covariances["orbitAcrossTrack"]["R"])
+        R_pos = lookvec.dot(R_xtrack).dot(lookvec)/r**2
         
         R_ins = covariances["instrument"]["R"]
         
@@ -509,7 +506,7 @@ class simulation:
             The off-nadir angle of the desired look-direction. This angle is
             defined as a right-handed rotation around the velocity vector; 
             thus, a positive angle corresponds to left-looking while a negative
-            angle corresponds to right-looking.
+            angle corresponds to right-looking. Degrees units.
         R_RPY : `np.ndarray(3,3)`
             Covariance matrix of roll, pitch, yaw error.
         R_v : `np.ndarray(3,3)`, optional
@@ -660,10 +657,6 @@ class simulation:
                                                    np.linalg.norm(R),
                                                    off_nadir, 
                                                    covariances)
-                                                   # R_RPY = R_RPY,
-                                                   # R_v = R_v,
-                                                   # R_t = R_t,
-                                                   # R_p = R_p)
         
         R_AEU = AEU_m.dot(R).dot(AEU_m.T)
         aeu_e = self.generateGaussian(R_AEU, n_AEU)

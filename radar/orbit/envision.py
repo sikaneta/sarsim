@@ -17,10 +17,10 @@ svfile = os.path.join(r"C:\Users",
                           r"ESTEC",
                           r"Envision",
                           r"Orbits",
-                          r"EnVision_T1_2032_NorthVOI.oem")
+                          r"EnVision_ET1_2031_NorthVOI.oem")
 
 #%% Load an oem orbit state vector file from Venus
-def loadSV(orbitfile = svfile, toPCR = True):
+def loadSV(orbitfile = svfile, toPCR = False):
     with open(svfile, 'r') as f:
         svecs = f.read().split('\n')
         
