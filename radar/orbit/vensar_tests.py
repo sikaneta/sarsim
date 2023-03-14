@@ -12,28 +12,18 @@ from orbit.envision import loadSV
 import numpy as np
 import matplotlib.pyplot as plt
 import json
-from datetime import datetime as dt
 import os
 
 
 #%% Create a simulation object
 eSim = simulation(planet = venus(),
                   e_ang = 14.28,
-                  azAxis = 6.0,
-                  elAxis = 0.6,
+                  azAxis = 5.5,
+                  elAxis = 0.6125,
                   carrier = 3.15e9)
 
 #%% Load an oem orbit state vector file from Venus
-svfile = os.path.join(r"C:\Users",
-                          r"ishuwa.sikaneta",
-                          r"OneDrive - ESA",
-                          r"Documents",
-                          r"ESTEC",
-                          r"Envision",
-                          r"Orbits",
-                          r"EnVision_ALT_T4_2032_SouthVOI.oem")
-
-sv = loadSV(orbitfile = svfile)
+sv = loadSV()
 
 # with open(svfile, 'r') as f:
 #     svecs = f.read().split('\n')
@@ -45,7 +35,7 @@ sv = loadSV(orbitfile = svfile)
 
 #%% Define sample simulation parameters
 """ Select a subset of state vectors """
-selection_range = [270, 480, 10]
+selection_range = [270, 480, 2]
 mysvs = eSim.state(sv.measurementData, selection_range)
  
 times = [(sv.measurementTime[k] - sv.measurementTime[0])/np.timedelta64(1, 's') 
@@ -61,20 +51,19 @@ off_nadir = -18.7
 """ Generate the covariances """  
 covariances = {
     "spacecraft": {
-        "description": "Errors in the orientation of the spacecraft",
+        "description": "Errors in the orientation of the spacecraft.",
         "referenceVariables": "RollPitchYaw",
         "units": "radians",
-        "R": (np.diag([4.53e-3, 0.31e-3, 0.31e-3])**2).tolist()
+        "R": ((np.diag([8.2e-3, 0.93e-3, 0.93e-3])/2)**2).tolist()
         },
     "instrument": {
         "description": """Errors in the pointing of the antenna. From JPL
-                          spreadsheet cells 'SAR APE Pointing Budget'!G24:26
-                          Here we have set cells 'SC Pointing Control'!D10:12
-                          to zero so there is no contribution from the orbit
-                          position error. These values include a 20% margin.""",
+                          spreadsheet cells 'SAR APE Pointing Budget'!D34:36
+                          These are Allocation values and do not include a 20% 
+                          margin.""",
         "referenceVariables": "AzimuthElevationTilt",
         "units": "radians",
-        "R": ((np.diag([0.49e-3, 1.40e-3, 0.23e-3])/2)**2).tolist()
+        "R": ((np.diag([0.65e-3, 4.50e-3, 0.52e-3])/2)**2).tolist()
         },
     "orbitVelocity": {
         "description": "Errors in the orbit velocity vector",
@@ -86,13 +75,13 @@ covariances = {
         "description": "Error in the orbit time (error in orbit angle)",
         "referenceVariables": "t",
         "units": "s",
-        "R": 5**2
+        "R": (4.3/2)**2
         },
     "orbitAcrossTrack": {
         "description": "Error in the orbit across track position (orbit tube)",
         "referenceVariables": "dX",
         "units": "m",
-        "R": 430**2
+        "R": np.diag([(600/2)**2, (850/2)**2])
         }
     }
 
@@ -146,6 +135,8 @@ filepath = os.path.join(r"C:\Users",
                         r"ESTEC",
                         r"Envision",
                         r"PointingSimulations")
+
+#%%
 filename = r"pitchRoll49PitchYawRelation.json"
 with open(os.path.join(filepath, filename), "w") as f:
     f.write(json.dumps(res_array, indent=2))
@@ -167,28 +158,85 @@ for k in range(len(mysvs)):
 
 
 #%% Save the generated simulation results to file
-filename = r"sim-%s.json" % dt.now().strftime("%Y-%m-%dT%H%M%S")
+#filename = r"sim-%s.json" % dt.now().strftime("%Y-%m-%dT%H%M%S")
 with open(os.path.join(filepath, filename), "w") as f:
     f.write(json.dumps(res2, indent=2))
 
 #%% Reload the file and plot the some results
+filename = r"incidence20-2023-02-07T121846.json"
 with open(os.path.join(filepath, filename), "r") as f:
-    res2 = json.loads(f.read())
+    res18p7 = json.loads(f.read())
 
+    
 #%%    
 dErrorRate = np.array([r["ErrorRate"]["Doppler"] for r in res2])
 sErrorRate = np.array([r["ErrorRate"]["Swath"] for r in res2])
 plt.figure()
 plt.plot(times, dErrorRate)
 plt.plot(times, sErrorRate)
-plt.ylim((0,5))
+plt.ylim(0,5)
+plt.title("20 degree incidence angle")
 plt.ylabel("Percentage in excess of threshold")
 plt.xlabel("State Vector %s +Time (s)" % np.datetime_as_string(sv.measurementTime[0]))
+plt.legend(["Doppler", "Swath"])
 plt.grid()
 plt.show()
-plt.legend(["Doppler", "Swath"])
 print(np.mean(sErrorRate))
 print(np.var(sErrorRate))
 print(np.var(dErrorRate))
 print(np.mean(dErrorRate))
 
+
+#%% Read the data
+""" Save data to file """
+filename = r"pitchYawRoll5p5-%s.json" % "2023-02-09T200920"
+with open(os.path.join(filepath, filename), "r") as f:
+    res5p5 = json.loads(f.read())
+    
+filename = r"pitchYawRoll4p5-%s.json" % "2023-02-09T200920"
+with open(os.path.join(filepath, filename), "r") as f:
+    res4p5 = json.loads(f.read())
+    
+#%% Make plot
+parray = np.arange(0.3, 0.6, 0.05)*1.0e-3
+yarray = np.arange(0.3, 1.4, 0.05)*1.0e-3
+
+#%% 4p5
+dprate = np.array([r["ErrorRate"]["Doppler"]
+            for r in res4p5]).reshape((len(parray), len(yarray)))
+
+#%%
+plt.figure()
+plt.contour(yarray*1e3, parray*1e3, dprate, np.arange(1,10,1), origin='lower')
+plt.xlabel("yaw (mrad)")
+plt.ylabel("pitch (mrad)")
+plt.colorbar()
+plt.grid()
+plt.contour(yarray*1e3,
+            parray*1e3,
+            dprate,
+            np.array([5]),
+            origin='lower',
+            colors = ['red'])
+plt.title("Percentage of R-MIS-PER-1045 violations (Doppler)")
+plt.show()
+
+#%% Read the Doppler error rate from the result of the previous cell
+dprate = np.array([r["ErrorRate"]["Doppler"]
+            for r in res5p5]).reshape((len(parray), len(yarray)))
+
+#%% Make a contour plot of the percentage of Doppler errors
+plt.figure()
+plt.contour(yarray*1e3, parray*1e3, dprate, np.arange(1,10,1), origin='lower')
+plt.xlabel("yaw (mrad)")
+plt.ylabel("pitch (mrad)")
+plt.colorbar()
+plt.grid()
+plt.contour(yarray*1e3,
+            parray*1e3,
+            dprate,
+            np.array([5]),
+            origin='lower',
+            colors = ['red'])
+plt.title("Percentage of R-MIS-PER-1045 violations (Doppler)")
+plt.show()

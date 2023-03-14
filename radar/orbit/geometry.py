@@ -8,7 +8,6 @@ Created on Thu Sep 22 15:02:00 2022
 from measurement.measurement import state_vector
 import numpy as np
 from scipy.constants import c
-from space.planets import earth
 
 #%% Define the range of elevation angles to look at
 def getTiming(sv, elev, idx = 0):
@@ -35,10 +34,12 @@ def getTiming(sv, elev, idx = 0):
 
     # Calculate the incidence angles
     Xg = np.tile(svdata[:3], (len(elev),1)) + rangeVectors
-    XgSwath = np.insert(np.linalg.norm(Xg[1:,:] - Xg[:-1,:], axis=1).cumsum(), 0, 0,0)
-    Xg = Xg*np.tile(1/np.linalg.norm(Xg, axis=1), (3,1)).T
-
-    inc = np.degrees(np.arccos(-np.sum(Xg*rhat, axis=1)))
+    snorm = np.array([surfaceNormal(x) for x in Xg])
+    sgn = np.sign(np.sum(np.cross(T,snorm)*rhat, axis=1))
+    XgSwath = -sgn*np.insert(np.linalg.norm(Xg[1:,:] - Xg[:-1,:], axis=1).cumsum(), 0, 0,0)
+    #Xg = Xg*np.tile(1/np.linalg.norm(Xg, axis=1), (3,1)).T
+    
+    inc = np.degrees(sgn*np.arccos(-np.sum(snorm*rhat, axis=1)))
     
     return ranges, rhat, inc, tau, XgSwath
 
@@ -116,9 +117,20 @@ def computeImagingGeometry(sv, eta, xG, xG_snormal):
     mysv = state_vector(planet=sv.planet)
     mysv.add(sv.measurementTime[idx], sv.measurementData[idx])
     
-    satSV = mysv.computeBroadsideToX(eta, xG)
+    svtime, svdata, err = mysv.computeBroadsideToX(eta, xG)
     
-    rvec = satSV[1][0:3] - xG
-    r = np.linalg.norm(rvec)
-    incidence = np.degrees(np.arccos((rvec/r).dot(xG_snormal)))
-    return rvec, incidence, satSV
+    N = -svdata[:3]/np.linalg.norm(svdata[:3])
+    T = svdata[3:]/np.linalg.norm(svdata[3:])
+    C = np.cross(N, T)
+    C = C/np.linalg.norm(C)
+    N = np.cross(T, C)
+    N = N/np.linalg.norm(N)
+    
+    
+    rvec = xG - svdata[0:3] 
+    rhat = rvec/np.linalg.norm(rvec)
+    sgn = np.sign(np.cross(T,xG_snormal).dot(rhat))
+    
+    incidence = np.degrees(sgn*np.arccos(-rhat.dot(xG_snormal)))
+    
+    return rvec, incidence, [svtime, svdata, err]

@@ -18,71 +18,228 @@ from generateXML.base_XML import base_ROSEL
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+from types import SimpleNamespace
 
 #%% Coefficients file
 roseLxsl = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\RoseL\performanceSheetROSELDUALPolSwath1-3.xlsx"
-elementPattern = pd.read_excel(roseLxsl, sheet_name = "patternSA")
-swath = 3
-coefficientsTX = pd.read_excel(roseLxsl, sheet_name = "excitationsSA_TX", 
-                               skiprows = (swath-1)*13, nrows=13)
-coefficientsRX = pd.read_excel(roseLxsl, sheet_name = "excitationsSA_RX",
-                               skiprows = (swath-1)*13, nrows=13)
+
+#%%
+class sptRadar:
+    instrument = SimpleNamespace(antenna = SimpleNamespace(),
+                                 orbit = SimpleNamespace())
+    xlsx = SimpleNamespace()
+    signal = []
+    def __init__(self, xslxFile, swathNum=3):
+        self.update(xslxFile, swathNum)
+        
+    def elementFactor(self, u, v):
+        antenna = self.instrument.antenna
+        return np.outer(np.interp(u, antenna.u0, antenna.aPattern), 
+                        np.interp(v, antenna.v0, antenna.ePattern)) 
+    
+    def arrayFactor(self, u, v, tTX, tRX):
+        antenna = self.instrument.antenna
+        wavenumber = 2*np.pi/c*antenna.fc
+        UPos, VPos = np.meshgrid(antenna.azimuthPositions, 
+                                 antenna.elevationPositions)
+        MU = np.exp(-1j*wavenumber*np.einsum("ij,k -> kij", UPos, u))
+        MV = np.exp(-1j*wavenumber*np.einsum("ij,k -> ijk", VPos, v))
+        tPatt = np.einsum("ijk,jk,jkl -> il", MU, tTX, MV)
+        rPatt = np.einsum("ijk,jk,jkl -> il", MU, tRX, MV)
+        
+        nmRX = np.sqrt(np.real(np.sum(tRX*tRX.conj())))
+        
+        return tPatt, rPatt/nmRX
+    
+    def update(self, xslxFile, swathNum = 1):
+        antenna = self.instrument.antenna
+        xlsx = self.xlsx
+        xlsx.elementPattern = pd.read_excel(xslxFile, 
+                                            sheet_name = "patternSA")
+        
+        """ Fix the following so that we haven't hard coded 13 """
+        xlsx.coefficientsTX = pd.read_excel(xslxFile, 
+                                            sheet_name = "excitationsSA_TX", 
+                                            skiprows = (swathNum-1)*13, 
+                                            nrows=13)
+        xlsx.coefficientsRX = pd.read_excel(xslxFile, 
+                                            sheet_name = "excitationsSA_RX",
+                                            skiprows = (swathNum-1)*13, 
+                                            nrows=13)
+        """ End Fix """
+        
+        xlsx.swathTiming = pd.read_excel(xslxFile, sheet_name = "swath&timing")
+        xlsx.mode = pd.read_excel(xslxFile, sheet_name = "mode")
+        xlsx.system = pd.read_excel(xslxFile, sheet_name = "system")
+        xlsx.antenna = pd.read_excel(xslxFile, sheet_name = "antenna")
+
+        """ Get Element pattern """
+        dEpatternAbs = "elevationHP_abs / 1"
+        dEpatternPhs = "elevationHP_phase / deg"
+        dApatternAbs = "azimuthHP_abs / 1"
+        dApatternPhs = "azimuthHP_phase / deg"
+        dEAbs = xlsx.elementPattern[dEpatternAbs].to_numpy()
+        dEPhs = np.radians(xlsx.elementPattern[dEpatternPhs].to_numpy())
+        dAAbs = xlsx.elementPattern[dApatternAbs].to_numpy()
+        dAPhs = np.radians(xlsx.elementPattern[dApatternPhs].to_numpy())
+        antenna.u0 = xlsx.elementPattern["u"].to_numpy()
+        antenna.v0 = xlsx.elementPattern["v"].to_numpy()
+        antenna.ePattern = dEAbs*np.exp(1j*dEPhs)
+        antenna.aPattern = dAAbs*np.exp(1j*dAPhs)
+        
+        antenna.azimuthPositions, _, antenna.azSubArrayLen, antenna.azimuthLength = self.getSpacing("azimuth")
+        antenna.elevationPositions, _, antenna.rnSubArrayLen, antenna.elevationLength  = self.getSpacing("elevation")
+        antenna.fc = self.getParameterFloat(xlsx.system, "Center frequency")*1e9
+        return
+        
+    # def elementFactor2D(self, u, v):
+    #     antenna = self.instrument.antenna
+    #     return np.outer(np.interp(u, antenna.u0, antenna.aPattern), 
+    #                     np.interp(v, antenna.v0, antenna.ePattern))    
+    
+    # def arrayFactor2D(self, u, v, tTX, tRX):
+    #     antenna = self.instrument.antenna
+    #     wavenumber = 2*np.pi/c*antenna.fc
+    #     UPos, VPos = np.meshgrid(antenna.azimuthPositions, 
+    #                              antenna.elevationPositions)
+    #     MU = np.exp(-1j*wavenumber*np.einsum("ij,k -> kij", UPos, u))
+    #     MV = np.exp(-1j*wavenumber*np.einsum("ij,k -> ijk", VPos, v))
+    #     tPatt = np.einsum("ijk,jk,jkl -> il", MU, tTX, MV)
+    #     rPatt = np.einsum("ijk,jk,jkl -> il", MU, tRX, MV)
+        
+    #     nmRX = np.sqrt(np.real(np.sum(tRX*tRX.conj())))
+
+    #     return tPatt, rPatt/nmRX
 
 
-#%% Get TX coefficients
-txAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
-txPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+    
+    """ Some utility functions """
+    def getParameterFloat(self, sheet, paramName, column = "Value"):
+        return float(sheet.loc[sheet[sheet.keys()[0]] == paramName][column])
+    def getParameterInt(self, sheet, paramName, column = "Value"):
+        return int(sheet.loc[sheet[sheet.keys()[0]] == paramName][column])
+    def getSpacing(self, direction = "azimuth"):
+        nSa = self.getParameterInt(self.xlsx.antenna, "Number of subarrays in %s" % direction)
+        nRe = self.getParameterInt(self.xlsx.antenna,
+                              "Number of radiating elements per subarray in %s" % direction)
+        dim = "Length" if direction == "azimuth" else "Height"
+        lE = self.getParameterFloat(self.xlsx.antenna, "%s of the antenna" % dim)
+        nE = nSa*nRe
+        return np.arange(nE)*lE/nE + lE/nE/2, nSa, nRe, lE
+    
+    """ Function to create expansion matrix """
+    def identityM(self, indicator, k):
+        m = len(indicator)
+        iM = np.zeros((m,m*k))
+        for i in range(k):
+            iM[:, i::k] = np.diag(indicator)
+        return iM
+    
+    def readChannel(self, channel = 0, swathNum=1):
+        antenna = self.instrument.antenna
+        xlsx = self.xlsx
+        mode = xlsx.mode
+        swathTiming = xlsx.swathTiming
+        signal = SimpleNamespace()
+        signal.pulse = SimpleNamespace()
+        signal.delay = SimpleNamespace()
+        swathStr = "Swath%d" % swathNum
+        signal.swath = "Swath%d" % swathNum
+        signal.prf = self.getParameterFloat(swathTiming, "PRF", swathStr)
+        signal.pulse.bandwidth = self.getParameterFloat(swathTiming, 
+                                                        "Bandwith in Range",
+                                                        swathStr)*1e6
+        
+        signal.pulse.length = self.getParameterFloat(swathTiming, 
+                                                     "Pulse Length",
+                                                     swathStr)*1e-6
+        
+        signal.azimuthResolution = self.getParameterFloat(mode, 
+                                                          "Resolution - Azimuth")
+        signal.rangeResolution = self.getParameterFloat(mode, 
+                                                        "Resolution - Range")
+        
+        oversampleRn = self.getParameterFloat(mode, 
+                                              "Coefficient Over Sampling - Range")
+        signal.fs = oversampleRn*signal.pulse.bandwidth
+        signal.deltaR = 1.0/signal.fs*c/2
+        signal.swathWidth = self.getParameterFloat(swathTiming, 
+                                                   "Swath width", 
+                                                   swathStr)*1e3
+        
+        signal.burstDuration = self.getParameterFloat(swathTiming, 
+                                                      "Duration of the burst", 
+                                                      swathStr)
+        
+        signal.echoWindowLength = self.getParameterFloat(swathTiming,
+                                                         "Echo window length",
+                                                         swathStr)/1e6
+    
+        signal.nearRange = self.getParameterFloat(swathTiming, 
+                                                  "Minimum slant range", 
+                                                  swathStr)*1e3
+    
+        """ Get TX coefficients """
+        txAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
+        txPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+        txAmp = xlsx.coefficientsTX[txAmpCols].to_numpy()
+        txPhs = np.radians(xlsx.coefficientsTX[txPhsCols].to_numpy())
+        TX = txAmp*np.exp(1j*txPhs)
 
-txAmp = coefficientsTX[txAmpCols].to_numpy()
-txPhs = np.radians(coefficientsTX[txPhsCols].to_numpy())
+        """ Get RX coefficients """
+        rxAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
+        rxPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+        rxAmp = xlsx.coefficientsRX[rxAmpCols].to_numpy()
+        rxPhs = np.radians(xlsx.coefficientsRX[rxPhsCols].to_numpy())
+        RX = rxAmp*np.exp(1j*rxPhs)
+        
+        iElev = np.array([self.identityM(channel, antenna.rnSubArrayLen).T 
+                          for channel in np.eye(TX.shape[0])])
+        iAzim = np.array([self.identityM(channel, antenna.azSubArrayLen)
+                          for channel in np.eye(TX.shape[1])])
 
-TX = txAmp*np.exp(1j*txPhs)
+        tx_iElev = np.sum(iElev, axis=0)
+        tx_iAzim = np.sum(iAzim, axis=0)
 
-#%% Get RX coefficients
-rxAmpCols = ["SA Azimuth - %d" % (k+1) for k in range(5)]
-rxPhsCols = ["SA Azimuth - %d.1" % (k+1) for k in range(5)]
+        rx_iElev = np.sum(iElev, axis=0)
+        rx_iAzim = iAzim[channel,:,:]
 
-rxAmp = coefficientsRX[rxAmpCols].to_numpy()
-rxPhs = np.radians(coefficientsRX[rxPhsCols].to_numpy())
+        """ Expand the subarray weightings across all the elements """
+        signal.RX = rx_iElev.dot(RX).dot(rx_iAzim)
+        signal.TX = tx_iElev.dot(TX).dot(tx_iAzim)
+        
+        signal.delay.sampling = 0
+        wgtTx = np.abs(np.sum(signal.TX, axis=0))
+        wgtTx/=np.sum(wgtTx)
+        wgtRx = np.abs(np.sum(signal.RX, axis=0))
+        wgtRx/=np.sum(wgtRx)
+        signal.delay.baseline = (wgtTx + wgtRx).dot(antenna.azimuthPositions)/2
+        
+        return signal
 
-RX = rxAmp*np.exp(1j*rxPhs)
-
-#%% Get Element pattern
-dEpatternAbs = "elevationHP_abs / 1"
-dEpatternPhs = "elevationHP_phase / deg"
-dApatternAbs = "azimuthHP_abs / 1"
-dApatternPhs = "azimuthHP_phase / deg"
-dEAbs = elementPattern[dEpatternAbs].to_numpy()
-dEPhs = np.radians(elementPattern[dEpatternPhs].to_numpy())
-dAAbs = elementPattern[dApatternAbs].to_numpy()
-dAPhs = np.radians(elementPattern[dApatternPhs].to_numpy())
-u = elementPattern["u"].to_numpy()
-v = elementPattern["v"].to_numpy()
-ePattern = dEAbs*np.exp(1j*dEPhs)
-aPattern = dAAbs*np.exp(1j*dAPhs)
-
-#%% Plot the azimuth element pattern
-plt.figure()
-plt.plot(u,20*np.log10(np.abs(aPattern)/np.max(np.abs(aPattern))))
-plt.ylim(-70,0)
-plt.grid()
-plt.xlabel('u')
-plt.ylabel('Gain (dB)')
-plt.show()
-
+        
 #%% get data from XML file
-pq = etree.XMLParser(remove_blank_text=True)
-xml = etree.XML(base_ROSEL,parser=pq)
-fc = float(xml.find(".//carrierFrequency").text)
+# rnSubArrayLen = 2
+# azSubArrayLen = 12
+# pq = etree.XMLParser(remove_blank_text=True)
+# xml = etree.XML(base_ROSEL,parser=pq)
+# fc = system["Value"][10]*1e9
 
-azimuthResolution = 11.8 #vv.az_resolution
-rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
+# azimuthResolution = mode["Value"][3]
+# rangeResolution = mode["Value"][4] #c/2.0/54.5624802e6 #vv.rn_resolution
 range_BANDWIDTH = c/2.0/rangeResolution
 deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
-swathWidth = 88e3 #vv.swath_width
+swathWidth = getParameterFloat(swathTiming, "Swath width", swath)*1e3 
 
-elevationPositions = np.array([float(f) for f in xml.find(".//elevationPositions").text.split()])
-azimuthPositions = np.array([float(f) for f in xml.find(".//azimuthPositions").text.split()])
+#vv.swath_width
+
+# nE = antenna["Value"][3]*antenna["Value"][5]
+# lE = antenna["Value"][9]
+# dE = lE/nE
+# elevationPositions = np.arange(nE)*lE/nE + lE/nE/2
+
+# elevationPositions = np.array([float(f) for f in xml.find(".//elevationPositions").text.split()])
+# azimuthPositions = np.array([float(f) for f in xml.find(".//azimuthPositions").text.split()])
 
 #%% Write the element patterns
 # antennaArray = xml.find(".//antennaArray")
@@ -122,6 +279,10 @@ def arrayFactor2D(u, v, UPos, VPos, tTX, tRX, wavenumber):
 
     return tPatt, rPatt/nmRX
 
+def elementFactor2D(u,v):
+    return np.outer(np.interp(u, u0, aPattern), 
+                    np.interp(v, v0, ePattern))
+    
 #%% function to create expansion matrix
 def identityM(indicator, k):
     m = len(indicator)
@@ -129,6 +290,15 @@ def identityM(indicator, k):
     for i in range(k):
         iM[:, i::k] = np.diag(indicator)
     return iM
+        
+#%% Plot the azimuth element pattern
+plt.figure()
+plt.plot(u,20*np.log10(np.abs(aPattern)/np.max(np.abs(aPattern))))
+plt.ylim(-70,0)
+plt.grid()
+plt.xlabel('u')
+plt.ylabel('Gain (dB)')
+plt.show()
 
 #%%  
 wavenumber = 2*np.pi/c*fc
@@ -136,8 +306,8 @@ wavenumber = 2*np.pi/c*fc
 UPos, VPos = np.meshgrid(azimuthPositions, elevationPositions)
 
 """ Define matrices to do the pre-summing of the subarrays """
-rnSubArrayLen = 2
-azSubArrayLen = 12
+# rnSubArrayLen = 2
+# azSubArrayLen = 12
 iElev = np.array([identityM(channel, rnSubArrayLen).T 
                   for channel in np.eye(TX.shape[0])])
 iAzim = np.array([identityM(channel, azSubArrayLen)
@@ -158,6 +328,7 @@ patternEF = np.outer(aPattern, ePattern)
 
 #%% Compute the one-way array factors
 tPattAF, rPattAF = arrayFactor2D(u, v, UPos, VPos, tTX, tRX, wavenumber)
+tPattAF, rPattAF = sptRadar.arrayFactor2D(u, v, dd.TX, dd.RX)
 
 #%% Plot the element factor pattern
 plt.figure()
@@ -212,9 +383,69 @@ plt.show()
 plt.figure()
 plt.plot(v, 20*np.log10(np.abs(tDirectivity)))
 plt.grid()
-plt.xlabel("v")
+plt.xlabel("u")
 plt.ylabel("Directivity (dB)")
 plt.show()
+
+#%%
+eBeamWeights = np.ones((24,))
+eBeamWeights /= np.linalg.norm(eBeamWeights)
+
+#%%
+def readSignalDataElement(eBeamWeights, TX, RX, channel = 1):
+    iElev = np.array([identityM(channel, rnSubArrayLen).T 
+                      for channel in np.eye(TX.shape[0])])
+    iAzim = np.array([identityM(channel, azSubArrayLen)
+                      for channel in np.eye(TX.shape[1])])
+    my_iElev = np.sum(iElev, axis=0)
+    my_iAzim = np.sum(iAzim, axis=0)
+    tTX = my_iElev.dot(TX).dot(my_iAzim)
+    txCols = eBeamWeights.dot(tTX)
+    refRxCols = eBeamWeights.dot(my_iElev.dot(RX).dot(iAzim[0,:,:]))
+    rxCols = eBeamWeights.dot(my_iElev.dot(RX).dot(iAzim[channel,:,:]))
+    # txCols = np.array([m*np.complex(np.cos(p), np.sin(p)) for 
+    #           m,p in zip(sconv.toPowerArray('.//magnitude', tx), 
+    #                      sconv.toAngleArray('.//phase', tx))])
+    # txuZero = sconv.toAngle('.//u0', tx)
+    # rx = sconv.getXMLElement('.//receiveConfiguration', xmlroot)
+    # rxCols = np.array([m*np.complex(np.cos(p), np.sin(p)) for 
+    #           m,p in zip(sconv.toPowerArray('.//magnitude', rx), 
+    #                      sconv.toAngleArray('.//phase', rx))])
+    # rxuZero = sconv.toAngle('.//u0', rx)
+    
+    # txMag = np.array(sconv.toPowerArray('.//magnitude', tx))
+    # txDelay = np.array(sconv.toDurationArray('.//truedelay', tx))
+    # rxMag = np.array(sconv.toPowerArray('.//magnitude', rx))
+    # rxDelay = np.array(sconv.toDurationArray('.//truedelay', rx))
+    # rdrfilename = sconv.toString('.//filename', xmlroot)
+    prf = getParameterFloat(swathTiming, "PRF", swath)
+    pulseDuration = getParameterFloat(swathTiming, "Pulse Length", swath)*1e-6
+    pulseBandwidth = getParameterFloat(swathTiming, "Bandwith in Range", swath)*1e6
+    oversampleRn = getParameterFloat(mode, "Coefficient Over Sampling - Range")
+    fs = pulseBandwidth*oversampleRn
+    burstDuration = getParameterFloat(swathTiming, "Duration of the burst", swath)
+    nearRange = getParameterFloat(swathTiming, "Minimum slant range", swath)*1e3
+    radar = {'acquisition': {'startTime': np.datetime64("2022-01-01T00:00:00.000000000"),
+                             'numAzimuthSamples': int(prf*burstDuration+0.5),
+                             'numRangeSamples': int(fs*pulseDuration + 0.5),
+                             'prf': prf,
+                             'nearRangeTime': nearRange*2/c,
+                             'rangeSampleSpacing': 1.0/fs*c/2},
+             'chirp': {'length': pulseDuration,
+                       'pulseBandwidth': pulseBandwidth},
+             'mode': {'txColumns': txCols, 
+                      'rxColumns': rxCols,
+                      'txMagnitude': np.abs(txCols),
+                      'txDelay': txDelay,
+                      'txuZero': txuZero,
+                      'rxuZero': rxuZero,
+                      'rxMagnitude': np.abs(rxCols),
+                      'rxDelay': rxDelay},
+             'delay': {'baseline': (sum(np.abs(txCols)*antenna['azimuthPositions'])/sum(abs(txCols))/2.0 
+                          + sum(np.abs(rxCols)*antenna['azimuthPositions'])/sum(abs(rxCols))/2.0)},
+             'filename': rdrfilename
+             }
+    return radar
 
 #%% Write to file
 def createXMLStructure(folder): 
@@ -253,32 +484,39 @@ def generateXML(vv,
     fc = float(xml.find(".//carrierFrequency").text)
         
     #%% Set some defaults
-    azimuthResolution = 11.8 #vv.az_resolution
-    rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
-    range_BANDWIDTH = c/2.0/rangeResolution
-    deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
-    swathWidth = 88e3 #vv.swath_width
+    # azimuthResolution = 11.8 #vv.az_resolution
+    # rangeResolution = c/2.0/54.5624802e6 #vv.rn_resolution
+    # range_BANDWIDTH = c/2.0/rangeResolution
+    # deltaR = 1.0/1.2/range_BANDWIDTH #1.0/vv.rn_oversample/range_BANDWIDTH
     M = 4
         
     number_channels = M + 1
-    print("Number of channels: (M+1) = %d" % number_channels)
-    print("Ideal PRF: %0.4f Hz" % (va/(M+1)/azimuthResolution))
+    # print("Number of channels: (M+1) = %d" % number_channels)
+    # print("Ideal PRF: %0.4f Hz" % (va/(M+1)/azimuthResolution))
     
     #%% Compute some collection parameters
     number_beams = 1 #number_channels
+    range_BANDWIDTH = swathTiming[swath][12]*1e6
+    pulse_duration = swathTiming[swath][17]*1e-6
+    fs = mode["Value"][6]*range_BANDWIDTH
+    deltaR = 1.0/fs
+    vg = swathTiming[swath][11]
+    target_DOPPLER = swathTiming[swath][18]
+    azimuthResolution = vg/target_DOPPLER
     aziDoppler = va/azimuthResolution
     beam_DOPPLER = aziDoppler #/number_channels
-    prf = (va/(number_channels)/azimuthResolution)*1.2 #vv.az_oversample
-    near_RANGE = nearRange*c/2.0
-    far_RANGE = near_RANGE+swathWidth
-    channel_LEN = np.int(np.round(far_RANGE*(c/fc)
-                                  *(prf/number_channels)
-                                  *(beam_DOPPLER)
-                                  /2.0/(va**2)))
-    print("Doppler bandwidth per beam: %f Hz" % beam_DOPPLER)
-    print("Number of samples per beam in aperture: %d" % channel_LEN)
-    print("Number of samples/aperture (channels and beams combined): %d" 
-          % (channel_LEN*number_channels*number_beams))
+    prf = swathTiming[swath][13]
+    near_RANGE = swathTiming[swath][6]*1e3
+    far_RANGE = swathTiming[swath][7]*1e3
+    channel_LEN = np.round(swathTiming[swath][10]*1e3/vg*prf)
+    # channel_LEN = int(np.round(far_RANGE*(c/fc)
+    #                            *(prf/number_channels)
+    #                            *(beam_DOPPLER)
+    #                            /2.0/(va**2)))
+    # print("Doppler bandwidth per beam: %f Hz" % beam_DOPPLER)
+    print("Number of samples/burst: %d" % channel_LEN)
+    # print("Number of samples/aperture (channels and beams combined): %d" 
+    #       % (channel_LEN*number_channels*number_beams))
     print("Near range: %f m" % near_RANGE)
     print("Far range: %f m" % far_RANGE)
     print("Number of channels: %d" % number_channels)
@@ -301,19 +539,19 @@ def generateXML(vv,
     # print("Subarray Length: %f m" % subarray_length)
     # subarray_centres = [(pos-(number_channels-1)/2.0)*subarray_length 
     #                     for pos in range(number_channels)]
-    # azi_positions = [[subpos + element_spacing/2.0 - 
+    # azimuthPositions = [[subpos + element_spacing/2.0 - 
     #                   subarray_length/2.0 + k*element_spacing 
     #                   for k in range(subarray_elements)] 
     #                  for subpos in subarray_centres]
     
     #%% Write the azimuth positions, lengths and powers
     
-    # flattened_azi_positions = reduce(lambda x,y: x+y, azi_positions)
-    # str_azi_pos = ["%0.6f" % pos for pos in flattened_azi_positions]
+    # flattened_azimuthPositions = reduce(lambda x,y: x+y, azimuthPositions)
+    # str_azi_pos = ["%0.6f" % pos for pos in flattened_azimuthPositions]
     # str_azi_len = ["%0.6f" % element_length 
-    #                for pos in flattened_azi_positions]
+    #                for pos in flattened_azimuthPositions]
     # str_azi_pwr = ["%0.1f" % vv.element_power 
-    #                for pos in flattened_azi_positions]
+    #                for pos in flattened_azimuthPositions]
     # print_azi=False
     # if print_azi:
     #     print("Azimuth positions:")
@@ -326,6 +564,9 @@ def generateXML(vv,
     # azimuthPwrNode = xml.find('.//transmitPowers')
     # azimuthPwrNode.text = " ".join(str_azi_pwr)
     
+    #%% Define some parameters from the spreadsheet
+    beam_DC = [0]
+    
     #%% Calculate the Doppler centroids for each beam
     beam_DC = [beam_DOPPLER*(pos-(number_beams-1)/2.0) 
                for pos in range(number_beams)]
@@ -333,7 +574,7 @@ def generateXML(vv,
     print("Doppler frequencies:")
     print("----------------------------------------------------")
     print(beam_DC)
-    txChan = int((number_channels-1)/2)
+    txChan = 1 %int((number_channels-1)/2)
      
     #%% Generate the reference time from which to compute the offsets. e.t.c.
     reference_TIME = datetime.combine(date(2015,1,1),time(0,0,0))
@@ -385,9 +626,8 @@ def generateXML(vv,
                                      range(len(beam_DC)), 
                                      sample_TIMES, 
                                      nsample_TIMES):
-        phases = [[pi*x*fd/va for x in azipos] for azipos in azi_positions]
-        truedelay = [[1.0e9*x/(2.0*va)*fd/fc for x in azipos] 
-                     for azipos in azi_positions]
+        phases = [pi*x*fd/va for x in azimuthPositions]
+        truedelay = [1.0e9*x/(2.0*va)*fd/fc for x in azimuthPositions]
                 
         for channel in range(number_channels):
             signalData = etree.Element("signalData")
@@ -444,7 +684,7 @@ def generateXML(vv,
     
             pulseDuration = etree.SubElement(signalData,"pulseDuration")
             pulseDuration.set("unit","us")
-            pulseDuration.text = "%0.4f" % vv.pulse_duration
+            pulseDuration.text = "%0.4f" % pulse_duration
             
             # Add the radar configuration
             config = etree.Element("radarConfiguration")
@@ -456,8 +696,7 @@ def generateXML(vv,
             Rpol = etree.Element("polarization")
             Rpol.text = "H"
             txChanMask = [int(bool(x==txChan)) for x in range(number_beams)]
-            txWeight = [[y for x in azi_positions[channel]] 
-                        for y in txChanMask]
+            txWeight = [[y for x in azimuthPositions] for y in txChanMask]
             txMag = etree.Element("magnitude")
             txMag.set("unit", "natural")
             txMag.text = " ".join(["%d" % x for x in 
@@ -471,7 +710,7 @@ def generateXML(vv,
             txDelay.text = " ".join(["%0.6f" % x for x in 
                                      reduce(lambda x,y: x+y, truedelay)])
             rxChanMask = [int(bool(x==channel)) for x in range(number_beams)]
-            rxWeight = [[y for x in azi_positions[channel]] 
+            rxWeight = [[y for x in azimuthPositions[channel]] 
                         for y in rxChanMask]
             rxMag = etree.Element("magnitude")
             rxMag.set("unit", "natural")

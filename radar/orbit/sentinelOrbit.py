@@ -19,9 +19,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #%%
-sentinel_orb = orbit(e = 0.0001303, 
-                     arg_perigee = np.radians(79.7417), 
-                     a = 7167100, 
+sentinel_orb = orbit(e = 0.001185, 
+                     arg_perigee = np.radians(90.58), 
+                     a = 7070946, 
                      inclination = np.radians(98.1813))
 
 #%%

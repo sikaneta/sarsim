@@ -25,7 +25,7 @@ class orbit:
     satisfies the zero-Doppler requirement and the given off-nadir pointing
     requirement as a function of the orbit angle of the satellite orbit. This
     required look direction is the the required look direction in the inertial
-    reference frame, which is the naturaly reference frame in which the
+    reference frame, which is the natural reference frame in which the
     satellite operates.
     
     Because computations are based on Kepler orbit elements, and the steering

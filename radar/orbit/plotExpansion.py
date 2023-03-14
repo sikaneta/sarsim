@@ -17,9 +17,9 @@ from measurement.measurement import state_vector_RSO
 from measurement.measurement import state_vector
 from measurement.arclength import slow
 import argparse
-orbpath = "C:/Users/Ishuwa.Sikaneta/local/sarsim/radar/orbit"
-orbfile = "S1B_OPER_AUX_POEORB_OPOD_20180825T110641_V20180804T225942_20180806T005942.EOF"
-orbfile = "S1A_OPER_AUX_POEORB_OPOD_20211114T122414_V20211024T225942_20211026T005942.EOF"
+orbpath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\sarsim\radar\orbit"
+orbfile = r"S1B_OPER_AUX_POEORB_OPOD_20180825T110641_V20180804T225942_20180806T005942.EOF"
+orbfile = r"S1A_OPER_AUX_POEORB_OPOD_20211114T122414_V20211024T225942_20211026T005942.EOF"
 
 #%% Load the data
 purpose = """

@@ -5,12 +5,14 @@ Created on Mon Oct 10 17:30:18 2022
 @author: ishuwa.sikaneta
 """
 import numpy as np
+from numpy.linalg import LinAlgError
 from space.planets import earth
 from orbit.orientation import orbit
 from orbit.euler import rpyAnglesFromIJK
 from orbit.euler import aeuFromRotation
 from orbit.euler import RPYfromAEU, AEUfromRPY
 from orbit.euler import aeu2rot
+from orbit.geometry import getTiming
 from measurement.measurement import state_vector
 from numpy.random import default_rng
 import json
@@ -54,7 +56,7 @@ class simulation:
         `Pointing Justification`_
     rpy2aeuCovariance
         This method takes a covariance matrix for roll, pitch and yaw errors,
-        (assumed to be zero-mean Gaussian) and computes the associates 
+        (assumed to be zero-mean Gaussian) and computes the associated 
         covariance matrix of azimuth, elevation and tilt as defined in section
         6.1 of `Pointing Justification`_
     simulateError
@@ -156,9 +158,12 @@ class simulation:
 
         """
         m,n = R.shape
-        
+            
         """ Perform Cholesky decomposition """
-        cD = np.linalg.cholesky(R)
+        try:
+            cD = np.linalg.cholesky(R)
+        except LinAlgError:
+            cD = np.zeros_like(R)
         
         """ Generate the random data """
         return cD.dot(np.random.randn(m,N))
@@ -205,7 +210,7 @@ class simulation:
                                R_v = np.eye(3)*0.04,
                                N = 10000):
         """
-        Transform satellite velocity error in AEU covariance
+        Transform satellite velocity error into AEU covariance
         
         This method transforms satellite velocity error, which is assumed to
         be Gaussian with zero-mean with covariance matrix R_v into an 
@@ -277,7 +282,7 @@ class simulation:
     #%% Timing error
     def timing2aeuCovariance(self, X, off_nadir, Rt=5**2, N=10000):
         """
-        Transform along-track timing error in AEU covariance
+        Transform along-track timing error into AEU covariance
         
         This method transforms along-track timing error, which is assumed to
         be Gaussian with zero-mean with variance matrix Rt into an 
@@ -368,7 +373,7 @@ class simulation:
         AEU = self.generateGaussian(R_AEU, N)
         RPY = np.zeros_like(AEU)
         RPYfromAEU(AEU, M_er, RPY)
-        return RPY.dot(RPY)/N
+        return RPY.dot(RPY.T)/N
 
     #%%
     def rpy2aeuCovariance(self, R_RPY, N=100000):
@@ -376,7 +381,7 @@ class simulation:
         Estimate the AEU covariance matrix from a RPY covariance matrix.
         
         This function computes an estimate of covariance in AEU (azimuth, 
-        elevation, pitch) given covariance in RPY (roll, pitch, yaw). The
+        elevation, tilt) given covariance in RPY (roll, pitch, yaw). The
         random errors in roll, pitch and yaw are assumed to be zero-mean
         Gaussian.
         
@@ -413,9 +418,55 @@ class simulation:
         return AEU.dot(AEU.T)/N
 
     #%%
+    def xtrackOffset2aeuCovariance(self,
+                                   X,
+                                   off_nadir,
+                                   R_xtrack):
+        """
+        Translate x-track position errors to elevation pointing error
+        
+        This function translates across-track satellite position errors into
+        elevation angle pointing errors. The procedure follows the equation
+        defined in section 6.5 of the PRJ
+
+        Parameters
+        ----------
+        X : `np.ndarray(6, dtype=float)`
+            State vector of the satellite at the time of interest.
+        off_nadir : `float`
+            The off-nadir angle for the elevation boresight.
+        R_xtrack : `np.ndarray(2,2, dtype=float)`
+            The covariance matrix of the across-track error in terms of
+            errors in the c and n-directions, respecvely.
+
+        Returns
+        -------
+        `float`
+            Variance of the elevation angle error.
+
+        """
+        sv = state_vector(planet = self.planet)
+        sv.add(np.datetime64("2000-01-01T00:00:00.000000"), sv.toPCR(X, 0))
+        
+        t = X[3:]/np.linalg.norm(X[3:])
+        n = -X[:3]/np.linalg.norm(X[:3])
+        c = np.cross(n, t)
+        c /= np.linalg.norm(c)
+        n = np.cross(t,c)
+        n /= np.linalg.norm(n)
+        
+        r, rhat, inc, _, _ = getTiming(sv, [np.radians(off_nadir)], 0)
+        
+        d = np.cross(rhat[0], t) - rhat[0]/np.tan(np.radians(inc[0]))
+        
+        q = np.array([d.dot(c), d.dot(n)])
+        
+        return q.dot(R_xtrack).dot(q)/r[0]**2
+        
+        
+    #%%
     def contributors2aeuCovariance(self,
                                    X,
-                                   r,
                                    off_nadir, 
                                    covariances,
                                    N = 100000):
@@ -473,9 +524,13 @@ class simulation:
                                           off_nadir, 
                                           np.array(covariances["orbitAlongTrack"]["R"]))
         
-        lookvec = np.array([np.cos(np.radians(off_nadir)), np.sin(np.radians(off_nadir))])
-        R_xtrack = np.diag(covariances["orbitAcrossTrack"]["R"])
-        R_pos = lookvec.dot(R_xtrack).dot(lookvec)/r**2
+        # lookvec = np.array([np.cos(np.radians(off_nadir)), 
+        #                     np.sin(np.radians(off_nadir))])
+        # R_xtrack = np.diag(covariances["orbitAcrossTrack"]["R"])
+        # R_pos = lookvec.dot(R_xtrack).dot(lookvec)/r**2
+        R_pos = self.xtrackOffset2aeuCovariance(X,
+                                                off_nadir,
+                                                covariances["orbitAcrossTrack"]["R"])
         
         R_ins = covariances["instrument"]["R"]
         
@@ -515,7 +570,7 @@ class simulation:
         R_t : `float`, optional
             Variance of the along-track timing error.
         R_p : `float`, optional
-            Variance of the orbit tube in cross-lokk direction. The default is 
+            Variance of the orbit tube in cross-look direction. The default is 
             430x430.
         n_AEU : `int`, optional
             Number of AEU sample vectors to generate in the estimation process. 
@@ -654,7 +709,6 @@ class simulation:
         
         """ Generate random errors """ 
         R, AEU_m = self.contributors2aeuCovariance(X,
-                                                   np.linalg.norm(R),
                                                    off_nadir, 
                                                    covariances)
         
