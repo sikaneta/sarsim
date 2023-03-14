@@ -5,12 +5,17 @@ Created on Mon Oct 10 17:30:18 2022
 @author: ishuwa.sikaneta
 """
 import os
+import sys
 import numpy as np
 from measurement.measurement import state_vector
 from space.planets import venus
 
 #%% Define a default orbit file for Envision
-svfile = os.path.join(r"C:\Users",
+if 'linux' in sys.platform:
+    svfile = os.path.join(r"/users/isikanet/local/data/Orbits",
+                          r"EnVision_ET1_2031_NorthVOI.oem")
+else:
+    svfile = os.path.join(r"C:\Users",
                           r"ishuwa.sikaneta",
                           r"OneDrive - ESA",
                           r"Documents",

@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import json
 import os
 from glob import glob
+import sys
 
 #%% Load state vectors for envision
 sv = loadSV(toPCR = False)
@@ -47,49 +48,50 @@ while idx < N:
         idx = N + 1
 
 #%% Check the time differences
-kep = [venSAR.state2kepler(sv.measurementData[k]) for k in idxarr]
-z = [sv.measurementData[k][2] for k in idxarr]
-plt.figure()
-plt.plot(tascarr[0:-1], z)
-plt.grid()
-plt.show()
-
-period = [2*np.pi*np.sqrt(venSAR.state2kepler(sv.measurementData[k])['a']**3
-                          /venSAR.planet.GM) for k in idxarr]
-plt.figure()
-plt.plot(tascarr[0:-1], period)
-plt.xlabel('Time')
-plt.ylabel('Orbit Period (s)')
-plt.title('Orbit period for ET1 2031 N')
-plt.grid()
-plt.show()
-
-
-a = [venSAR.state2kepler(sv.measurementData[k])['a']/1e3 for k in idxarr]
-plt.figure()
-plt.plot(tascarr[0:-1], a)
-plt.xlabel('Time')
-plt.ylabel('Orbit semi-major axis (km)')
-plt.title('Orbit semi-major axis for ET1 2031 N')
-plt.grid()
-plt.show()
-
-plt.figure()
-plt.plot(tascarr[0:-1], np.diff(tascarr)/np.timedelta64(1,'m'))
-plt.grid()
-plt.title('Orbit period (minutes)')
-plt.xlabel('Time')
-plt.ylabel('Orbit period (minutes)')
-plt.show()
-
-perigee = [k["perigee"] for k in kep]
-plt.figure()
-plt.plot(tascarr[0:-1], np.degrees(np.unwrap(perigee)))
-plt.xlabel('Time')
-plt.ylabel('Orbit perigee angle (deg)')
-plt.title('Orbit perigee angle for ET1 2031 N')
-plt.grid()
-plt.show()
+if 'linux' not in sys.platform:
+    kep = [venSAR.state2kepler(sv.measurementData[k]) for k in idxarr]
+    z = [sv.measurementData[k][2] for k in idxarr]
+    plt.figure()
+    plt.plot(tascarr[0:-1], z)
+    plt.grid()
+    plt.show()
+    
+    period = [2*np.pi*np.sqrt(venSAR.state2kepler(sv.measurementData[k])['a']**3
+                              /venSAR.planet.GM) for k in idxarr]
+    plt.figure()
+    plt.plot(tascarr[0:-1], period)
+    plt.xlabel('Time')
+    plt.ylabel('Orbit Period (s)')
+    plt.title('Orbit period for ET1 2031 N')
+    plt.grid()
+    plt.show()
+    
+    
+    a = [venSAR.state2kepler(sv.measurementData[k])['a']/1e3 for k in idxarr]
+    plt.figure()
+    plt.plot(tascarr[0:-1], a)
+    plt.xlabel('Time')
+    plt.ylabel('Orbit semi-major axis (km)')
+    plt.title('Orbit semi-major axis for ET1 2031 N')
+    plt.grid()
+    plt.show()
+    
+    plt.figure()
+    plt.plot(tascarr[0:-1], np.diff(tascarr)/np.timedelta64(1,'m'))
+    plt.grid()
+    plt.title('Orbit period (minutes)')
+    plt.xlabel('Time')
+    plt.ylabel('Orbit period (minutes)')
+    plt.show()
+    
+    perigee = [k["perigee"] for k in kep]
+    plt.figure()
+    plt.plot(tascarr[0:-1], np.degrees(np.unwrap(perigee)))
+    plt.xlabel('Time')
+    plt.ylabel('Orbit perigee angle (deg)')
+    plt.title('Orbit perigee angle for ET1 2031 N')
+    plt.grid()
+    plt.show()
 
 cycle_jump = np.argwhere(np.diff(np.diff(tascarr)/np.timedelta64(1,'m')) > 0.02)[:,0] + 1
 
@@ -413,7 +415,10 @@ def matchIncidence(point, threshold = 1.5):
 # svindeces = [29803]
 # svindeces = [1507] # equator
 # svindeces = [idxarr[3443]]
-filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\PointingSimulations\cycles"
+if 'linux' in sys.platform:
+    filepath = '/users/isikanet/local/data/cycles'
+else:
+    filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\PointingSimulations\cycles"
 
 #%%
 svIndex = idxarr[147]
