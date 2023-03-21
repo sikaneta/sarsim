@@ -110,10 +110,19 @@ sv = loadSV(toPCR = True)
 #%% Function to find the orbit number
 def getOrbitNumber(timeArray, times):
     nearestOrbit = [findNearest(timeArray, t) for t in times]
-    orbitNumber = [oN if t > timeArray[oN] else oN-1 
-                   for oN, t in zip(nearestOrbit,times)]
-    return orbitNumber
+    # orbitNumber = [oN if t > timeArray[oN] else oN-1 
+    #                for oN, t in zip(nearestOrbit,times)]
+    # return orbitNumber
+    return nearestOrbit
 
+def fixPointTime(point, tascarr):
+    oN = findNearest(tascarr, np.datetime64(point["target"]["satReference"]["stateVector"]["time"]))
+    point["target"]["satReference"]["orbitNumber"] = oN
+    for cycle in point["cycle"]:
+        for pt in cycle:
+            pt["orbitNumber"] = findNearest(tascarr, np.datetime64(pt["state_vector"]["time"]))
+            
+        
 def testBroadside(pts, xG):
     svel = np.array([p["state_vector"]["satvel"] for p in pts])
     rvec = np.array([np.array(p["state_vector"]["satpos"]) - xG for p in pts])
@@ -184,15 +193,15 @@ def pointHistory(sv,
             an orbit """
         rvec, inc, satSV  = computeImagingGeometry(sv, eta, xG, xG_snormal)
         
-        """ Check that we're at the right solution """
-        if np.abs(inc - targetInc) > 30:
-            eta += np.timedelta64(int(venSAR.period/2), 's')
-            rvec, inc, satSV  = computeImagingGeometry(sv, eta, xG, xG_snormal)
-        
         """ The next two lines are to reset the period """
         myOrbit = orbit(planet=sv.planet, angleUnits="radians")
         orbitAngle, ascendingNode = myOrbit.setFromStateVector(satSV[1])
         period = np.timedelta64(int(myOrbit.period*1e6),'us')
+        
+        """ Check that we're at the right solution """
+        if np.abs(inc - targetInc) > 30:
+            eta += np.timedelta64(int(period/2), 's')
+            rvec, inc, satSV  = computeImagingGeometry(sv, eta, xG, xG_snormal)
         
         """ Generate an array of times to examine """
         etarange = satSV[0] + orbitRange*period
@@ -202,7 +211,7 @@ def pointHistory(sv,
             options = [computeImagingGeometry(sv, eta, xG, xG_snormal) 
                        for eta in etarange]
         except IndexError:
-            print("Faile for time: %s" % eta.astype(str))
+            print("Failed for time: %s" % eta.astype(str))
             continue
         
         """ Compute the orbit number """
@@ -396,20 +405,422 @@ def matchIncidence(point, threshold = 1.5):
                      for p in cycle] 
                     for cycle in point["cycle"]]
     
-    myorbitNum = [[p["orbitNumber"]%5 for p in cycle] 
+    myorbitNum = [[p["orbitNumber"] for p in cycle] 
                   for cycle in point["cycle"]]
     
     #refOrbitNumber = point["target"]["satReference"]["orbitNumber"]
     targetInc = point["target"]["satReference"]["incidence"]
     
-    pl = [[[x for x,k in zip(myinc, myorb) if k == n] 
+    pl = [[[(x,k) for x,k in zip(myinc, myorb) if k%5 == n] 
             for n in oNS] for myinc, myorb in zip(myincidences, myorbitNum)]
     
-    matches = [[len([l for l in p if np.abs(l-targetInc) < threshold]) 
-                for p in ple] 
-               for ple in pl]
+    candidates = [[[l for l in p if np.abs(l[0]-targetInc) < threshold] 
+                   for p in ple] for ple in pl]
+    
+    matches = [[len(p) for p in ple] for ple in candidates]
+ 
+    # matches = [[len([l for l in p if np.abs(l[0]-targetInc) < threshold]) 
+    #             for p in ple] 
+    #            for ple in pl]
 
-    return matches
+    return matches, candidates
+
+    
+    
+# #%% Analyze simulated data
+# flist = glob(os.path.join(filepath, "*.json"))
+
+# counts = []
+# llh = []
+# cycle1OrbitNumber = []
+
+# for simfile in flist:
+#     with open(simfile, "r") as f:
+#         point = json.loads(f.read())
+#     llh.append(point["target"]["llh"])
+#     cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
+#     counts.append(matchIncidence(point, threshold = 1.5))
+
+# #%% Analyse for random orbit number on cycle 1
+# dist = np.array([len(np.where(np.sum(x[0], axis=0)>0)[0]) for x in counts])
+# h = np.array([len(np.where(dist==k)[0]) for k in range(6)])
+# rp = h.dot(np.arange(6)/5)/len(dist)*100
+# print("Repeat incidence probability %4.2f" % rp)
+
+# #%% Analyze for a particular orbit number on cycle 1 and the following orbits
+# orbitElement = 4
+# allowedCycles = [3,5]
+# allowedCyclesString = ",".join([str(a) for a in sorted(allowedCycles)])
+# dd = np.array([(sum([y[orbitElement] for k,y in enumerate(x[0]) if k+2 in allowedCycles]), oN, l[1]) 
+#                for x,oN,l in zip(counts, cycle1OrbitNumber, llh) 
+#                if oN%5 == orbitElement])
+
+# reImageChance = len([1 for d in dd if d[0]>0])/len(dd)*100
+# plt.figure()
+# plt.plot([d[-1] for d in dd], [d[0] for d in dd], '.')
+# plt.grid()
+# plt.xlabel("longitude")
+# plt.ylabel("Number of repeated observations")
+# plt.title("Repeat observations for orbit element number %d\nusing cycles %s. Success Rate %4.2f" % (orbitElement, allowedCyclesString, reImageChance))
+
+#
+def toMatrix(incidences, initOEN, fill = np.nan):
+    incidences = [np.nan for k in range(0,initOEN)] + incidences
+    append = range(len(incidences)%5,5) if len(incidences)%5 > 0 else []
+    incidences += [np.nan for k in append]
+    rows = len(incidences)//5
+    return np.array(incidences).reshape((rows,5)).T
+
+# Function to find the number of cases where all cycles work
+def bestValue(mtx, offset, index, threshold):
+    idx = np.nanargmin(np.abs(mtx - offset[0]), axis=1)[index]
+    cost = np.abs(mtx[index, idx] - offset[0])/threshold
+    m,n = mtx.shape
+    orbitNumber = n*index + idx
+    return mtx[index, idx], idx, cost, orbitNumber, offset[1]
+
+def bestIncidence(mtx, offset, index, threshold):
+    idx = np.nanargmin(np.abs(mtx - offset), axis=1)[index]
+    m,n = mtx.shape
+    orbitNumber = n*index + idx
+    return mtx[index, idx], idx, orbitNumber
+
+def pathRS(cr, cs, idx):
+    r = len(list(set([(x[0], x[2]) for x in cr if x[1] == idx and x[2] < 1])))
+    s = len(list(set([(x[0], x[2]) for x in cs if x[1] == idx and x[2] < 1])))
+    
+    return np.array([r,s])
+
+    # try:
+    #     r = min([x[2] for x in cr if x[1] == idx])
+    # except ValueError:
+    #     r = np.nan
+    # try:
+    #     s = min([x[2] for x in cs if x[1] == idx])
+    # except ValueError:
+    #     s = np.nan
+    
+    # return np.array([r,s])
+
+def matchIncidenceOp(point, rThreshold = 1.5, sOffset = 5.5, sThreshold = 1.5):
+    # oNS = np.arange(5)
+    
+    c1inc = point["target"]["satReference"]["incidence"]
+    c1ON = point["target"]["satReference"]["orbitNumber"]
+    c1OEN = c1ON%5
+    
+    # cAindex = [3,5]
+    # cBindex = [2,4,6]
+    
+    # setA = [point["cycle"][k-2] for k in cAindex]
+    # setB = [point["cycle"][k-2] for k in cBindex]
+    
+    myincidences = [[p["incidence"] for p in c] for c in point["cycle"]]
+    myorbitNum = [[p["orbitNumber"] for p in c] for c in point["cycle"]]
+    [cyc2, cyc3, cyc4, cyc5, cyc6] = [toMatrix(inc, num[0]%5) for inc, num 
+                                      in zip(myincidences, myorbitNum)]
+    
+    dataOrbitNumber = [m[0] - m[0]%5 for m in myorbitNum]
+    # myincidencesA = [[p["incidence"] for p in c] for c in setA]
+    # myincidencesB = [[p["incidence"] for p in c] for c in setB]
+    
+    # myorbitNumA = [[p["orbitNumber"] for p in c] for c in setA]
+    # myorbitNumB = [[p["orbitNumber"] for p in c] for c in setB]
+
+    # dataA = [toMatrix(inc, num[0]%5) for inc, num in zip(myincidencesA, myorbitNumA)]
+    # dataB = [toMatrix(inc, num[0]%5) for inc, num in zip(myincidencesB, myorbitNumB)]
+    allCycles = [cyc2, cyc3, cyc4, cyc5, cyc6]
+    
+    def prev(cyc, prev_res, offset, threshold):
+        offset = [i[0] + offset for i in prev_res]
+        return [bestIncidence(cyc, o, c1OEN, threshold) for o in offset]
+    
+    c1 = [(c1inc, c1OEN, None)]
+        
+    c2 = prev(cyc2, c1, sOffset, sThreshold)
+    
+    c3 = list(set(prev(cyc3, c1, 0, rThreshold) + 
+                  prev(cyc3, c2, -sOffset, sThreshold)))
+    
+    c4 = list(set(prev(cyc4, c1, sOffset, sThreshold) + 
+                  prev(cyc4, c2, 0, rThreshold) +
+                  prev(cyc4, c3, sOffset, sThreshold)))
+    
+    c5 = list(set(prev(cyc5, c1, 0, rThreshold) +
+                  prev(cyc5, c2, -sOffset, sThreshold) + 
+                  prev(cyc5, c3, 0, rThreshold) +
+                  prev(cyc5, c4, -sOffset, sThreshold)))
+    
+    c6 = list(set(prev(cyc6, c1, sOffset, sThreshold) + 
+                  prev(cyc6, c2, 0, rThreshold) +
+                  prev(cyc6, c3, sOffset, sThreshold) + 
+                  prev(cyc6, c4, 0, rThreshold) +
+                  prev(cyc6, c5, sOffset, sThreshold)))
+    
+    paths = [[c2[0][1], w[1], x[1], y[1], z[1]] 
+             for w in c3 
+             for x in c4 
+             for y in c5 
+             for z in c6]
+    
+    orbNumbers = np.array([[dON + cyc.shape[0]*p + c1OEN 
+                            for p, cyc, dON in zip(path, 
+                                                   allCycles, 
+                                                   dataOrbitNumber)] 
+                            for path in  paths])
+    
+    angles = np.array([[c1inc, c2[0][0], w[0], x[0], y[0], z[0]] 
+                       for w in c3 
+                       for x in c4 
+                       for y in c5 
+                       for z in c6])
+    
+    sVct = np.array([0,1,0,1,0,1])*sOffset
+    rThrVct = np.array([1,0,1,0,1,0])*rThreshold
+    sThrVct = np.array([0,1,0,1,0,1])*sThreshold
+    
+    sMtx = np.array([[0,1,0,1,0,1],
+                     [0,0,1,0,1,0],
+                     [0,0,0,1,0,1],
+                     [0,0,0,0,1,0],
+                     [0,0,0,0,0,1],
+                     [0,0,0,0,0,0]])
+                     
+    rMtx = np.array([[0,0,1,0,1,0],
+                     [0,0,0,1,0,1],
+                     [0,0,0,0,1,0],
+                     [0,0,0,0,0,1],
+                     [0,0,0,0,0,0],
+                     [0,0,0,0,0,0]])
+    
+    costs = []
+    for ang in angles:
+        x = (ang - sVct)/(rThrVct + sThrVct)
+        y = np.abs(np.tile(x, 6).reshape((6,6)) - 
+                   np.tile(x, 6).reshape((6,6)).T)
+        
+        rVals = y*rMtx
+        sVals = y*sMtx
+        costs.append([np.sum((rVals>0).astype(int) * (rVals<1).astype(int)),
+              np.sum((sVals>0).astype(int) * (sVals<1).astype(int))])
+    
+    return np.array(costs), angles[:,1:], orbNumbers
+    
+    # c1r = [(c1inc, None, None)]
+    
+    # """ Examine cycle 2 """
+    # offset = [(i + sOffset, c) for i,c in zip([c1inc], ['c1r'])]
+    # c2s = [bestValue(cyc2, o, c1OEN, sThreshold) for o in offset]
+    
+    # """ Examine cycle 3 """
+    # offset = [(i, c) for i,c in zip([c1inc], ['c1r'])]
+    # c3r = [bestValue(cyc3, o, c1OEN, rThreshold) for o in offset]
+    
+    # """ Examine cycle 4 """
+    # offset = [(i[0], c) for i,c in zip(c2s, len(c2s)*['c2s'])]
+    # c4r = [bestValue(cyc4, o, c1OEN, rThreshold) for o in offset]
+    # offset = [(i[0] + sOffset, c) for i,c in  zip(c1r + c3r,
+    #                                               len(c1r)*['c1r'] + len(c3r)*['c3r'])]
+    # c4s = [bestValue(cyc4, o, c1OEN, sThreshold) for o in offset]
+        
+    # """ Examine cycle 5 """ 
+    # offset = [(i[0], c) for i,c in  zip(c1r + c3r,
+    #                                     len(c1r)*['c1r'] + len(c3r)*['c3r'])]
+    # c5r = [bestValue(cyc5, o, c1OEN, rThreshold) for o in offset]
+    # offset = [(i[0] - sOffset, c) for i,c in  zip(c2s + c4r + c4s,
+    #                                               len(c2s)*['c2s'] +
+    #                                               len(c4r)*['c4r'] +
+    #                                               len(c4s)*['c4s'])]
+    # c5s = [bestValue(cyc5, o, c1OEN, sThreshold) for o in offset]
+            
+    # """ Examine cycle 6 """
+    # offset = [(i[0], c) for i,c in  zip(c2s + c4s,
+    #                                     len(c2s)*['c2s'] + 
+    #                                     len(c4s)*['c4s'])]
+    # #offset = [c[0] for c in c2s + c4r + c4s]
+    # c6r = [bestValue(cyc6, o, c1OEN, rThreshold) for o in offset]
+    # offset = [(i[0] + sOffset, c) for i,c in  zip(c1r + c3r + c5r + c5s,
+    #                                               len(c2s)*['c1r'] +
+    #                                               len(c4r)*['c3r'] +
+    #                                               len(c4s)*['c5r'] +
+    #                                               len(c4s)*['c5s'])]
+    # #offset = [c[0] + sOffset for c in  [(c1inc, None, None)] + c3r + c5r + c5s]
+    # c6s = [bestValue(cyc6, o, c1OEN, sThreshold) for o in offset]
+    
+    # c4i = list(set([x[1] for x in c4r + c4s]))
+    # c5i = list(set([x[1] for x in c5r + c5s]))
+    # c6i = list(set([x[1] for x in c6r + c6s]))
+    
+    # paths = [[c2s[0][1], c3r[0][1], x, y, z] for x in c4i for y in c5i for z in c6i]
+    
+    # seq = [([], c2s),
+    #        (c3r, []),
+    #        (c4r, c4s),
+    #        (c5r, c5s),
+    #        (c6r, c6s)]
+    
+    # opts = [[pathRS(x[0], x[1], k) for x, k in zip(seq, path)] for path in paths]
+    # costs = np.array([np.sum(np.array(opt), axis=0) for opt in opts])
+    
+    # # solution = [path for cost, path in zip(paths, costs) if np.sum(cost) > 0]
+    
+    # # incSets = np.array([[cyc[c1OEN, path[k]] 
+    # #                      for k, cyc in enumerate(allCycles)] 
+    # #                      for path in  paths])
+    # incSets = np.array([[cyc[c1OEN, p] 
+    #                      for p, cyc in zip(path, allCycles)] 
+    #                      for path in  paths])
+    # orbNumbers = np.array([[dON + cyc.shape[0]*p + c1OEN 
+    #                         for p, cyc, dON in zip(path, allCycles, dataOrbitNumber)] 
+    #                         for path in  paths])
+    # return costs, incSets, orbNumbers
+def matchIncidencePermute(point, 
+                          incidence_range = [23,37],
+                          criteria = [(0, 1.5), (5.5, 1.5)]):
+    oem = point["target"]["satReference"]["orbitNumber"]%5
+    flt_cyc = [[p for p in cyc if p["incidence"] < incidence_range[1] 
+                and p["incidence"] > incidence_range[0]
+                and p["orbitNumber"]%5 == oem] 
+                for cyc in point["cycle"]]
+    #if any([1 for f in flt_cyc if len(f) == 0]):
+    orbit_fix = {"append": np.arange(1,21),
+                 "prepend": -np.arange(1,21)}
+    for k, fl in enumerate(flt_cyc):
+        if len(fl)== 0:
+            i_vals = [x["incidence"] for x in point["cycle"][k]]
+            i_max = max(i_vals)
+            i_min = min(i_vals)
+            slope = np.sign(i_vals[2]-i_vals[0])
+            operation = "append"
+            if i_min > incidence_range[0]:
+                if slope < 0:
+                    """ append values """
+                    pass
+                else:
+                    """ prepend values """
+                    operation= "prepend"
+            elif i_max < incidence_range[1]:
+                if slope < 0:
+                    """ prepend values """
+                    operation = "prepend"
+                else:
+                    """ append values """
+                    pass
+            else:
+                print("I don't know what to do! Cycle %d" % (k+2))
+                print(40*"=")
+                print("Orbit: %d Slope %f" % (k, slope))
+                print("Incidence %f,%f" % (i_min, i_max))
+                print(40*"=")
+                raise ValueError
+                    
+            """ Assume that we found the right operation """
+            print("Cycle %d needs a(n) %s" % (k+2,operation))
+            additional_orbits = extend(point, 
+                                       sv, 
+                                       k, 
+                                       orbitRange = orbit_fix[operation])
+            if operation == "append":
+                point["cycle"][k] = point["cycle"][k] + additional_orbits
+            else:
+                point["cycle"][k] = additional_orbits + point["cycle"][k]
+                
+            flt_cyc = [[p for p in cyc if p["incidence"] < incidence_range[1] 
+                        and p["incidence"] > incidence_range[0]
+                        and p["orbitNumber"]%5 == oem] 
+                        for cyc in point["cycle"]]
+        
+    reference = {"incidence": point["target"]["satReference"]["incidence"],
+                 "orbitNumber": point["target"]["satReference"]["orbitNumber"]}
+    perms = [[reference,v,w,x,y,z] 
+              for v in flt_cyc[0] 
+              for w in flt_cyc[1] 
+              for x in flt_cyc[2]
+              for y in flt_cyc[3]
+              for z in flt_cyc[4]]
+    
+    upper = np.array([[0,1,1,1,1,1],
+                      [0,0,1,1,1,1],
+                      [0,0,0,1,1,1],
+                      [0,0,0,0,1,1],
+                      [0,0,0,0,0,1],
+                      [0,0,0,0,0,0]])
+    lower = upper.T
+    orbNumbers = []
+    incidences = []
+    scores = []
+    for perm in perms:
+        x = np.array([p["incidence"] for p in perm])
+        incidences.append(x)
+        orbNumbers.append(np.array([p["orbitNumber"] for p in perm]))
+        score = []
+        for offset, threshold in criteria:
+            y = np.abs((np.tile(x, 6).reshape((6,6)) - 
+                        np.tile(x, 6).reshape((6,6)).T - offset)/threshold)
+            
+            uVals = y*upper
+            lVals = y*lower
+            uScore = (uVals>0).astype(int) * (uVals<1).astype(int)
+            lScore = (lVals>0).astype(int) * (lVals<1).astype(int)
+            score.append(np.sum((uScore + lScore.T > 0).astype(int)))
+        scores.append(score)
+        
+    return np.array(scores), np.array(incidences), np.array(orbNumbers), point
+
+#%%    
+def extend(point, 
+           sv,
+           cycle_num,
+           orbitRange = np.arange(1,21)):
+    
+    cycle = point["cycle"][cycle_num]
+    
+    r_cycle = cycle[-1] if orbitRange[0]>0 else cycle[0]
+    
+    # Compute the orbit number on reference cycle
+    refOrbitNumber = r_cycle["orbitNumber"]
+    refTime = np.datetime64(r_cycle["state_vector"]["time"])
+    refSV = np.array(r_cycle["state_vector"]["satpos"] + 
+                     r_cycle["state_vector"]["satvel"])
+    
+    xG = np.array(point["target"]["xyz"])
+    xG_snormal = np.array(point["target"]["normal"])
+    
+    """ The next two lines are to reset the period """
+    myOrbit = orbit(planet=sv.planet, angleUnits="radians")
+    orbitAngle, ascendingNode = myOrbit.setFromStateVector(refSV)
+    period = np.timedelta64(int(myOrbit.period*1e6),'us')
+    
+    """ Generate an array of times to examine """
+    etarange = refTime + orbitRange*period
+    
+    """ Compute the imaging geometry to broadside at these times """
+    try:
+        options = [computeImagingGeometry(sv, eta, xG, xG_snormal) 
+                   for eta in etarange]
+    except IndexError:
+        print("Failed extend for cycle : %d" % cycle_num)
+    
+    """ Compute the orbit number """
+    orbitNumber = refOrbitNumber + orbitRange
+    
+    """ Write to json/dict """
+    add_orbits = [
+             {
+              "incidence": o[1],
+              "range": np.linalg.norm(o[0]),
+              "orbitNumber": oN,
+              "state_vector": 
+                  {
+                   "time": np.datetime_as_string(o[2][0]),
+                   "satpos": o[2][1][:3].tolist(),
+                   "satvel": o[2][1][3:].tolist()
+                  },
+              "llh": list(sv.xyz2polar(o[2][1][:3]))
+             } for o, oN in zip(options, orbitNumber)
+            ]
+    
+    return add_orbits
  
 #%%#%% Generate some data The orbit number is the actually the state vector number
 # svindeces = [29803]
@@ -420,7 +831,7 @@ if 'linux' in sys.platform:
 else:
     filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\PointingSimulations\cycles"
 
-#%%
+#%% Generate the incidence angle data. TIME INTESIVE
 svIndex = idxarr[147]
 rand_indexes = np.random.randint(0, cycle_jump[0]-1, 500)
 
@@ -430,7 +841,10 @@ for k, idx in enumerate(rand_indexes):
     refSV = {"time": sv.measurementTime[svIndex].astype(str),
              "posvel": sv.measurementData[svIndex].tolist()}
     
-    xG, xG_snorm, targetInc = groundPoint(sv, svIndex, targetIncidenceAngle = 30)
+    xG, xG_snorm, targetInc = groundPoint(sv, 
+                                          svIndex, 
+                                          targetIncidenceAngle = 30,
+                                          plotSwaths = False)
     
     try:
         point = pointHistory(sv,
@@ -440,25 +854,63 @@ for k, idx in enumerate(rand_indexes):
                              targetInc,
                              tascarr)
         #_ = plotSpiderFigure(point)
+        #_ = plotIncidenceFigure(point)
         
         #print(np.array(matchIncidence(point, threshold = 1.5)))
         
         writePointFile(filepath, point)
     except ValueError:
         print("Failed for svIndex %d" % svIndex)
-    
-    
-#%% Analyze simulated data
+        
+#%% Analyze simulated data split
 flist = glob(os.path.join(filepath, "*.json"))
 
-counts = []
-
+#%% Analyze data from computed points
+llh = []
+cycle1OrbitNumber = []
+repeatStereo = []
+incidenceAngles = []
+orbitNumbers = []
+tests = {"points": []}
 for simfile in flist:
     with open(simfile, "r") as f:
         point = json.loads(f.read())
-    counts.append(matchIncidence(point, threshold = 1.5))
-    # dd = np.sum(matchIncidence(point, threshold = 1.5), axis=0)
-    # if np.any(dd == 0):
-    #     fail_list.append((simfile, len(np.where(dd > 0)[0])))
-    
-dist = np.array([len(np.where(np.sum(x, axis=0)>0)[0]) for x in counts])
+        
+    #_ = plotIncidenceFigure(point)
+    #_ = plotSpiderFigure(point)
+    fixPointTime(point, tascarr) # Needed to solve start of orbit problem at equator
+    try:
+        costs, incSets, orbNumbers, point = matchIncidencePermute(point)
+        llh.append(point["target"]["llh"])
+        cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
+        repeatStereo.append(costs)
+        incidenceAngles.append(incSets)
+        orbitNumbers.append(orbNumbers)
+        point["solution"] = {"repeatStereo": costs.tolist(),
+                             "incidenceAngles": incSets.tolist(),
+                             "orbitNumbers": orbNumbers.tolist()}
+        tests["points"].append(point)
+    except ValueError:
+        print("Please re-analyse: %s" % simfile)
+
+#%%
+# llh.append(point["target"]["llh"])
+# cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
+#counts.append(matchIncidence(point, threshold = 1.5))
+lon = [l[1] for l in llh]
+repeat = np.array([int(np.sum(d, axis=0)[0] > 0) for d in repeatStereo])
+stereo = np.array([int(np.sum(d, axis=0)[1] > 0) for d in repeatStereo])
+bth = repeat*stereo
+print(np.argwhere(bth==0))
+
+plt.figure()
+plt.plot(lon, repeat, 'd', lon, stereo, 'o')
+plt.grid()
+plt.show()
+plt.xlabel('longitude (deg)')
+plt.ylabel('inidcator')
+plt.legend(['repeat','stereo'])
+
+plt.title('Possibility of repeat and stereo\nmeasurements near equator as a function of longitude\n orbit file: ET1 2031 N')
+
+#%% New function to compute valid options
