@@ -341,7 +341,7 @@ class simulation:
                              (a*(1-e**2))**3)
         
         """ Generate random orbit angle deviances """
-        dO = rng.standard_normal(N)*np.sqrt(Rt)*C
+        dO = rng.standard_normal(N)*np.sqrt(Rt)*np.degrees(C)
         
         """ Calculate the DAEU frame """
         daeu, _ = planetOrbit.computeAEU(orbitAngle, v)
@@ -530,7 +530,7 @@ class simulation:
         # R_pos = lookvec.dot(R_xtrack).dot(lookvec)/r**2
         R_pos = self.xtrackOffset2aeuCovariance(X,
                                                 off_nadir,
-                                                covariances["orbitAcrossTrack"]["R"])
+                                                np.array(covariances["orbitAcrossTrack"]["R"]))
         
         R_ins = covariances["instrument"]["R"]
         
@@ -546,6 +546,8 @@ class simulation:
                       off_nadir,
                       covariances,
                       n_AEU = 1000000,
+                      dopErrThreshold = 1/15,
+                      eleErrThreshold = 1/15,
                       loglevel = 0
                       ):
         """
@@ -740,19 +742,19 @@ class simulation:
         """ Plot the histogram of the maximum Doppler centroids across the 
             beam. """
         hD, xD = self.estimatePDF(dc_max, N=200)
-        dError = 100*np.sum(np.abs(dc_max) > 1/15*dopBW)/n_AEU
+        dError = 100*np.sum(np.abs(dc_max) > dopErrThreshold*dopBW)/n_AEU
         if loglevel > 2:
             print("Percent of Doppler centroids in violation: %0.4f" % dError)
             
         if loglevel > 1:
             plt.figure()
             plt.plot(xD, hD)
-            plt.axvline(x = 1/15*dopBW, 
+            plt.axvline(x = dopErrThreshold*dopBW, 
                         color = 'r', 
-                        label = '1/30 of Doppler Bandwdith')
-            plt.axvline(x = -1/15*dopBW, 
+                        label = '%0.2f of Doppler Bandwdith' % (dopErrThreshold/2))
+            plt.axvline(x = -dopErrThreshold*dopBW, 
                         color = 'r', 
-                        label = '-1/30 of Doppler Bandwdith')
+                        label = '-%0.2f of Doppler Bandwdith' % (dopErrThreshold/2))
             plt.xlabel('Doppler centroid (Hz)')
             plt.ylabel('Histogram count')
             mytitle = r"Error Rate %0.2e" % (dError/100.0)
@@ -781,20 +783,24 @@ class simulation:
         coverage = (minofmax-maxofmin)/(np.max(refRng) - np.min(refRng))
         
         hS, xS = self.estimatePDF(coverage, N=50)
-        sError = 100*np.sum(coverage < 14/15)/n_AEU
+        sError = 100*np.sum(coverage < (1-eleErrThreshold))/n_AEU
         if loglevel > 2:
             print("Percent of Swaths in violation: %0.4f" % sError)
             
         if loglevel > 1:
             plt.figure()
             plt.plot(xS, hS)
-            plt.axvline(x = 14/15, color = 'r', label = '14/15 of beamwidth')
+            plt.axvline(x = 1-eleErrThreshold, color = 'r', 
+                        label = '%0.2f of beamwidth' % (1-eleErrThreshold))
             plt.xlabel('Elevation beam overlap on ground (fraction)')
             plt.ylabel('Histogram count')
             mytitle = r"Error Rate %0.2e" % (sError/100.0)
             plt.title(mytitle)
             plt.grid()
             plt.show()
+            
+        res["ErrorThreshold"] = {"Doppler": dopErrThreshold,
+                                 "Swath": eleErrThreshold}
         res["ErrorRate"] = {"Doppler": dError,
                             "Swath": sError}
         

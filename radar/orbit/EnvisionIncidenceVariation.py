@@ -93,6 +93,7 @@ if 'linux' not in sys.platform:
     plt.grid()
     plt.show()
 
+#%%
 cycle_jump = np.argwhere(np.diff(np.diff(tascarr)/np.timedelta64(1,'m')) > 0.02)[:,0] + 1
 
 
@@ -199,8 +200,8 @@ def pointHistory(sv,
         period = np.timedelta64(int(myOrbit.period*1e6),'us')
         
         """ Check that we're at the right solution """
-        if np.abs(inc - targetInc) > 30:
-            eta += np.timedelta64(int(period/2), 's')
+        if np.abs(inc - targetInc) > 90:
+            eta += period/2
             rvec, inc, satSV  = computeImagingGeometry(sv, eta, xG, xG_snormal)
         
         """ Generate an array of times to examine """
@@ -394,8 +395,11 @@ def writePointFile(filepath, point):
     incidence = point["target"]["satReference"]["incidence"]
     sgn = "m" if incidence < 0 else "p"
     filename = "analysis_%0.4d_%s%6.4f.json" % (orbitNumber, sgn, np.abs(incidence))
+    targetFile = os.path.join(filepath, filename)
     with open(os.path.join(filepath, filename), 'w') as f:
         f.write(json.dumps(point, indent = 2))
+        
+    return targetFile
         
 # Function to find the number of cases where all cycles work
 def matchIncidence(point, threshold = 1.5):
@@ -418,52 +422,9 @@ def matchIncidence(point, threshold = 1.5):
                    for p in ple] for ple in pl]
     
     matches = [[len(p) for p in ple] for ple in candidates]
- 
-    # matches = [[len([l for l in p if np.abs(l[0]-targetInc) < threshold]) 
-    #             for p in ple] 
-    #            for ple in pl]
 
     return matches, candidates
 
-    
-    
-# #%% Analyze simulated data
-# flist = glob(os.path.join(filepath, "*.json"))
-
-# counts = []
-# llh = []
-# cycle1OrbitNumber = []
-
-# for simfile in flist:
-#     with open(simfile, "r") as f:
-#         point = json.loads(f.read())
-#     llh.append(point["target"]["llh"])
-#     cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
-#     counts.append(matchIncidence(point, threshold = 1.5))
-
-# #%% Analyse for random orbit number on cycle 1
-# dist = np.array([len(np.where(np.sum(x[0], axis=0)>0)[0]) for x in counts])
-# h = np.array([len(np.where(dist==k)[0]) for k in range(6)])
-# rp = h.dot(np.arange(6)/5)/len(dist)*100
-# print("Repeat incidence probability %4.2f" % rp)
-
-# #%% Analyze for a particular orbit number on cycle 1 and the following orbits
-# orbitElement = 4
-# allowedCycles = [3,5]
-# allowedCyclesString = ",".join([str(a) for a in sorted(allowedCycles)])
-# dd = np.array([(sum([y[orbitElement] for k,y in enumerate(x[0]) if k+2 in allowedCycles]), oN, l[1]) 
-#                for x,oN,l in zip(counts, cycle1OrbitNumber, llh) 
-#                if oN%5 == orbitElement])
-
-# reImageChance = len([1 for d in dd if d[0]>0])/len(dd)*100
-# plt.figure()
-# plt.plot([d[-1] for d in dd], [d[0] for d in dd], '.')
-# plt.grid()
-# plt.xlabel("longitude")
-# plt.ylabel("Number of repeated observations")
-# plt.title("Repeat observations for orbit element number %d\nusing cycles %s. Success Rate %4.2f" % (orbitElement, allowedCyclesString, reImageChance))
-
-#
 def toMatrix(incidences, initOEN, fill = np.nan):
     incidences = [np.nan for k in range(0,initOEN)] + incidences
     append = range(len(incidences)%5,5) if len(incidences)%5 > 0 else []
@@ -491,17 +452,6 @@ def pathRS(cr, cs, idx):
     
     return np.array([r,s])
 
-    # try:
-    #     r = min([x[2] for x in cr if x[1] == idx])
-    # except ValueError:
-    #     r = np.nan
-    # try:
-    #     s = min([x[2] for x in cs if x[1] == idx])
-    # except ValueError:
-    #     s = np.nan
-    
-    # return np.array([r,s])
-
 def matchIncidenceOp(point, rThreshold = 1.5, sOffset = 5.5, sThreshold = 1.5):
     # oNS = np.arange(5)
     
@@ -509,26 +459,13 @@ def matchIncidenceOp(point, rThreshold = 1.5, sOffset = 5.5, sThreshold = 1.5):
     c1ON = point["target"]["satReference"]["orbitNumber"]
     c1OEN = c1ON%5
     
-    # cAindex = [3,5]
-    # cBindex = [2,4,6]
-    
-    # setA = [point["cycle"][k-2] for k in cAindex]
-    # setB = [point["cycle"][k-2] for k in cBindex]
-    
     myincidences = [[p["incidence"] for p in c] for c in point["cycle"]]
     myorbitNum = [[p["orbitNumber"] for p in c] for c in point["cycle"]]
     [cyc2, cyc3, cyc4, cyc5, cyc6] = [toMatrix(inc, num[0]%5) for inc, num 
                                       in zip(myincidences, myorbitNum)]
     
     dataOrbitNumber = [m[0] - m[0]%5 for m in myorbitNum]
-    # myincidencesA = [[p["incidence"] for p in c] for c in setA]
-    # myincidencesB = [[p["incidence"] for p in c] for c in setB]
     
-    # myorbitNumA = [[p["orbitNumber"] for p in c] for c in setA]
-    # myorbitNumB = [[p["orbitNumber"] for p in c] for c in setB]
-
-    # dataA = [toMatrix(inc, num[0]%5) for inc, num in zip(myincidencesA, myorbitNumA)]
-    # dataB = [toMatrix(inc, num[0]%5) for inc, num in zip(myincidencesB, myorbitNumB)]
     allCycles = [cyc2, cyc3, cyc4, cyc5, cyc6]
     
     def prev(cyc, prev_res, offset, threshold):
@@ -606,74 +543,6 @@ def matchIncidenceOp(point, rThreshold = 1.5, sOffset = 5.5, sThreshold = 1.5):
     
     return np.array(costs), angles[:,1:], orbNumbers
     
-    # c1r = [(c1inc, None, None)]
-    
-    # """ Examine cycle 2 """
-    # offset = [(i + sOffset, c) for i,c in zip([c1inc], ['c1r'])]
-    # c2s = [bestValue(cyc2, o, c1OEN, sThreshold) for o in offset]
-    
-    # """ Examine cycle 3 """
-    # offset = [(i, c) for i,c in zip([c1inc], ['c1r'])]
-    # c3r = [bestValue(cyc3, o, c1OEN, rThreshold) for o in offset]
-    
-    # """ Examine cycle 4 """
-    # offset = [(i[0], c) for i,c in zip(c2s, len(c2s)*['c2s'])]
-    # c4r = [bestValue(cyc4, o, c1OEN, rThreshold) for o in offset]
-    # offset = [(i[0] + sOffset, c) for i,c in  zip(c1r + c3r,
-    #                                               len(c1r)*['c1r'] + len(c3r)*['c3r'])]
-    # c4s = [bestValue(cyc4, o, c1OEN, sThreshold) for o in offset]
-        
-    # """ Examine cycle 5 """ 
-    # offset = [(i[0], c) for i,c in  zip(c1r + c3r,
-    #                                     len(c1r)*['c1r'] + len(c3r)*['c3r'])]
-    # c5r = [bestValue(cyc5, o, c1OEN, rThreshold) for o in offset]
-    # offset = [(i[0] - sOffset, c) for i,c in  zip(c2s + c4r + c4s,
-    #                                               len(c2s)*['c2s'] +
-    #                                               len(c4r)*['c4r'] +
-    #                                               len(c4s)*['c4s'])]
-    # c5s = [bestValue(cyc5, o, c1OEN, sThreshold) for o in offset]
-            
-    # """ Examine cycle 6 """
-    # offset = [(i[0], c) for i,c in  zip(c2s + c4s,
-    #                                     len(c2s)*['c2s'] + 
-    #                                     len(c4s)*['c4s'])]
-    # #offset = [c[0] for c in c2s + c4r + c4s]
-    # c6r = [bestValue(cyc6, o, c1OEN, rThreshold) for o in offset]
-    # offset = [(i[0] + sOffset, c) for i,c in  zip(c1r + c3r + c5r + c5s,
-    #                                               len(c2s)*['c1r'] +
-    #                                               len(c4r)*['c3r'] +
-    #                                               len(c4s)*['c5r'] +
-    #                                               len(c4s)*['c5s'])]
-    # #offset = [c[0] + sOffset for c in  [(c1inc, None, None)] + c3r + c5r + c5s]
-    # c6s = [bestValue(cyc6, o, c1OEN, sThreshold) for o in offset]
-    
-    # c4i = list(set([x[1] for x in c4r + c4s]))
-    # c5i = list(set([x[1] for x in c5r + c5s]))
-    # c6i = list(set([x[1] for x in c6r + c6s]))
-    
-    # paths = [[c2s[0][1], c3r[0][1], x, y, z] for x in c4i for y in c5i for z in c6i]
-    
-    # seq = [([], c2s),
-    #        (c3r, []),
-    #        (c4r, c4s),
-    #        (c5r, c5s),
-    #        (c6r, c6s)]
-    
-    # opts = [[pathRS(x[0], x[1], k) for x, k in zip(seq, path)] for path in paths]
-    # costs = np.array([np.sum(np.array(opt), axis=0) for opt in opts])
-    
-    # # solution = [path for cost, path in zip(paths, costs) if np.sum(cost) > 0]
-    
-    # # incSets = np.array([[cyc[c1OEN, path[k]] 
-    # #                      for k, cyc in enumerate(allCycles)] 
-    # #                      for path in  paths])
-    # incSets = np.array([[cyc[c1OEN, p] 
-    #                      for p, cyc in zip(path, allCycles)] 
-    #                      for path in  paths])
-    # orbNumbers = np.array([[dON + cyc.shape[0]*p + c1OEN 
-    #                         for p, cyc, dON in zip(path, allCycles, dataOrbitNumber)] 
-    #                         for path in  paths])
-    # return costs, incSets, orbNumbers
 def matchIncidencePermute(point, 
                           incidence_range = [23,37],
                           criteria = [(0, 1.5), (5.5, 1.5)]):
@@ -766,8 +635,7 @@ def matchIncidencePermute(point,
         scores.append(score)
         
     return np.array(scores), np.array(incidences), np.array(orbNumbers), point
-
-#%%    
+   
 def extend(point, 
            sv,
            cycle_num,
@@ -792,7 +660,7 @@ def extend(point,
     period = np.timedelta64(int(myOrbit.period*1e6),'us')
     
     """ Generate an array of times to examine """
-    etarange = refTime + orbitRange*period
+    etarange = refTime + orbitRange*period + period/2
     
     """ Compute the imaging geometry to broadside at these times """
     try:
@@ -872,6 +740,7 @@ repeatStereo = []
 incidenceAngles = []
 orbitNumbers = []
 tests = {"points": []}
+to_fix = []
 for simfile in flist:
     with open(simfile, "r") as f:
         point = json.loads(f.read())
@@ -891,6 +760,7 @@ for simfile in flist:
                              "orbitNumbers": orbNumbers.tolist()}
         tests["points"].append(point)
     except ValueError:
+        to_fix.append(simfile)
         print("Please re-analyse: %s" % simfile)
 
 #%%
@@ -914,3 +784,36 @@ plt.legend(['repeat','stereo'])
 plt.title('Possibility of repeat and stereo\nmeasurements near equator as a function of longitude\n orbit file: ET1 2031 N')
 
 #%% New function to compute valid options
+modified = []
+to_remove = []
+for simfile in to_fix:
+    with open(simfile, "r") as f:
+        point = json.loads(f.read())
+    svIndex = idxarr[point["target"]["satReference"]["orbitNumber"]]    
+    refSV = {"time": sv.measurementTime[svIndex].astype(str),
+             "posvel": sv.measurementData[svIndex].tolist()}
+    
+    xG, xG_snorm, targetInc = groundPoint(sv, 
+                                          svIndex, 
+                                          targetIncidenceAngle = 30,
+                                          plotSwaths = False)
+    
+    try:
+        point = pointHistory(sv,
+                             refSV,
+                             xG, 
+                             xG_snorm, 
+                             targetInc,
+                             tascarr)
+        #_ = plotSpiderFigure(point)
+        #_ = plotIncidenceFigure(point)
+        
+        #print(np.array(matchIncidence(point, threshold = 1.5)))
+        
+        simfile2 = writePointFile(filepath, point)
+        if simfile2 != simfile:
+            modified.append(simfile2)
+            to_remove.append(simfile)
+    except ValueError:
+        print("Failed for svIndex %d" % svIndex)
+    
