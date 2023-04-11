@@ -152,8 +152,8 @@ class sptRadar:
             swath.rnSubArrayLenTX, swath.azSubArrayLenTX = (sTX/np.array(swath.TX.shape)).astype(int)
             swath.rnSubArrayLenRX, swath.azSubArrayLenRX = (sRX/np.array(swath.RX.shape)).astype(int)
             
-            swath.TX = np.dot(swath.TX, spt.vectorM(wTX, swath.TX.shape[-1]))
-            swath.RX = np.dot(swath.RX, spt.vectorM(wRX, swath.RX.shape[-1]))
+            swath.TX = np.dot(swath.TX, self.vectorM(wTX, swath.TX.shape[-1]))
+            swath.RX = np.dot(swath.RX, self.vectorM(wRX, swath.RX.shape[-1]))
                    
             swath.numSubArraysRn = int(swath.RX.shape[0]/swath.rnSubArrayLenRX)
             swath.numSubArraysAz = int(swath.RX.shape[1]/swath.azSubArrayLenRX)
@@ -399,10 +399,26 @@ TX = spt.swaths[0].signal.channels[0].TX
 aPtx, aPrx = spt.arrayFactor(u, v, TX, RX)
 ePtH, ePtV = spt.elementFactor(u, v)
 
+#%% Define a function to compute the azimuth two-way antenna pattern
+def twoWayAzimuthPattern(u,
+                         v0,
+                         spt,
+                         swathnum = 0,
+                         polarization = "HH"):
+    RX = spt.swaths[swathnum].signal.channels[swathnum].RX
+    TX = spt.swaths[swathnum].signal.channels[swathnum].TX
+    aPtx, aPrx = spt.arrayFactor(u, [v0], TX, RX)
+    pol = {"H": None,
+           "V": None}
+    pol["H"], pol["V"] = spt.elementFactor(u, [v0])
+    return np.abs(aPtx*aPrx*pol[polarization[0]]*pol[polarization[1]])**2
+    
 #%%
 plt.figure()
-twPtH = aPtx*aPrx*ePtH*ePtH
-twPtV = aPtx*aPrx*ePtV*ePtV
+twPtH = twoWayAzimuthPattern(u,0,spt,polarization="HH")
+twPtV = twoWayAzimuthPattern(u,0,spt,polarization="VV")
+#twPtH = aPtx*aPrx*ePtH*ePtH
+#twPtV = aPtx*aPrx*ePtV*ePtV
 #twPt = ePtH#*ePtH
 plt.plot(u*180, 10*np.log10(np.abs(twPtH)))
 plt.plot(u*180, 10*np.log10(np.abs(twPtV)))

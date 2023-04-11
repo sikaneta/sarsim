@@ -1,0 +1,88 @@
+<gmtiAuxDataParams schemaVersion="1.0">
+  <acquisitionParameters>
+    <mode>Ish_Burst_Mode</mode>
+    <instrument>
+      <antennaArray>
+        <carrierFrequency unit="Hz">5.405e9</carrierFrequency>
+        <azimuthPositions unit="m">0.4688 1.4062 2.3438 3.2812 4.2188 5.1562 6.0938 7.0312 7.9688 8.9062 9.8438 10.7812 11.7188 12.6562 13.5938 14.5312</azimuthPositions>
+        <elevationPositions unit="m">0.75</elevationPositions>
+        <azimuthElementLengths unit="m">0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286</azimuthElementLengths>
+        <elevationElementLengths unit="m">1.5</elevationElementLengths>
+        <transmitPowers unit="dB">30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30</transmitPowers>
+        <systemTemperature unit="degrees" system="Kelvin">297</systemTemperature>
+        <systemLosses unit="dB">-5.3</systemLosses>
+      </antennaArray>
+      <lookDirection>Right</lookDirection>
+      <orbit>
+        <inclination unit="degrees">98.6</inclination>
+        <eccentricity>0.00</eccentricity>
+        <semiMajorAxis unit="m">7071009</semiMajorAxis>
+        <angleOfPerigee unit="degrees">90.0</angleOfPerigee>
+        <orbitAngle unit="degrees">60</orbitAngle>
+      </orbit>
+    </instrument>
+    <platformLongitude unit="degrees" referenceEllipsoid="WGS84">90</platformLongitude>
+  </acquisitionParameters>
+  <signalData>
+    <azimuthStartTime>
+      <year>2015</year>
+      <month>01</month>
+      <day>01</day>
+      <hour>00</hour>
+      <minute>00</minute>
+      <sec>00</sec>
+      <usec>000000</usec>
+      <time_system>2</time_system>
+    </azimuthStartTime>
+    <numRangeSamples unit="Pixels">256</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">8192</numAzimuthSamples>
+    <nearRangeTime unit="s">5.568856572102291e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.776133220079680e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">500.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">5.001628063000000e+01</pulseBandwidth>
+    <pulseDuration unit="us">4.159703826904297e+01</pulseDuration>
+    <radarConfiguration channel="MODEX-1 Aft HH">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>
+      <year>2015</year>
+      <month>01</month>
+      <day>01</day>
+      <hour>00</hour>
+      <minute>00</minute>
+      <sec>00</sec>
+      <usec>000000</usec>
+      <time_system>2</time_system>
+    </azimuthStartTime>
+    <numRangeSamples unit="Pixels">256</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">8192</numAzimuthSamples>
+    <nearRangeTime unit="s">5.568856572102291e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.776133220079680e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">500.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">5.001628063000000e+01</pulseBandwidth>
+    <pulseDuration unit="us">4.159703826904297e+01</pulseDuration>
+    <radarConfiguration channel="MODEX-1 Fore HH">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+</gmtiAuxDataParams>

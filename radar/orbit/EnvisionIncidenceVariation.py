@@ -546,7 +546,8 @@ def matchIncidenceOp(point, rThreshold = 1.5, sOffset = 5.5, sThreshold = 1.5):
 def matchIncidencePermute(point, 
                           incidence_range = [23,37],
                           criteria = [(0, 1.5), (5.5, 1.5)]):
-    oem = point["target"]["satReference"]["orbitNumber"]%5
+    orbitNumber = point["target"]["satReference"]["orbitNumber"]
+    oem = orbitNumber%5
     flt_cyc = [[p for p in cyc if p["incidence"] < incidence_range[1] 
                 and p["incidence"] > incidence_range[0]
                 and p["orbitNumber"]%5 == oem] 
@@ -584,7 +585,9 @@ def matchIncidencePermute(point,
                 raise ValueError
                     
             """ Assume that we found the right operation """
-            print("Cycle %d needs a(n) %s" % (k+2,operation))
+            print("Orbit: %d, Cycle: %d needs a(n) %s" % (orbitNumber,
+                                                          k+2,
+                                                          operation))
             additional_orbits = extend(point, 
                                        sv, 
                                        k, 
@@ -660,7 +663,7 @@ def extend(point,
     period = np.timedelta64(int(myOrbit.period*1e6),'us')
     
     """ Generate an array of times to examine """
-    etarange = refTime + orbitRange*period + period/2
+    etarange = refTime + orbitRange*period
     
     """ Compute the imaging geometry to broadside at these times """
     try:
@@ -677,10 +680,10 @@ def extend(point,
              {
               "incidence": o[1],
               "range": np.linalg.norm(o[0]),
-              "orbitNumber": oN,
+              "orbitNumber": int(oN),
               "state_vector": 
                   {
-                   "time": np.datetime_as_string(o[2][0]),
+                   "time": str(np.datetime_as_string(o[2][0])),
                    "satpos": o[2][1][:3].tolist(),
                    "satvel": o[2][1][3:].tolist()
                   },
@@ -704,6 +707,7 @@ svIndex = idxarr[147]
 rand_indexes = np.random.randint(0, cycle_jump[0]-1, 500)
 
 for k, idx in enumerate(rand_indexes):
+#for k, idx in enumerate(idxs):
     print(k)
     svIndex = idxarr[idx]    
     refSV = {"time": sv.measurementTime[svIndex].astype(str),
@@ -741,13 +745,20 @@ incidenceAngles = []
 orbitNumbers = []
 tests = {"points": []}
 to_fix = []
+to_from = []
 for simfile in flist:
+#for simfile in to_fix:
     with open(simfile, "r") as f:
         point = json.loads(f.read())
         
     #_ = plotIncidenceFigure(point)
     #_ = plotSpiderFigure(point)
+    orbitNumA = point["target"]["satReference"]["orbitNumber"]
     fixPointTime(point, tascarr) # Needed to solve start of orbit problem at equator
+    orbitNumB = point["target"]["satReference"]["orbitNumber"]
+    if orbitNumB != orbitNumA:
+        to_from.append((orbitNumB, orbitNumA))
+        continue
     try:
         costs, incSets, orbNumbers, point = matchIncidencePermute(point)
         llh.append(point["target"]["llh"])
@@ -759,6 +770,7 @@ for simfile in flist:
                              "incidenceAngles": incSets.tolist(),
                              "orbitNumbers": orbNumbers.tolist()}
         tests["points"].append(point)
+        _ = writePointFile(filepath, point)
     except ValueError:
         to_fix.append(simfile)
         print("Please re-analyse: %s" % simfile)
@@ -816,4 +828,7 @@ for simfile in to_fix:
             to_remove.append(simfile)
     except ValueError:
         print("Failed for svIndex %d" % svIndex)
-    
+   
+#%%
+with open(os.path.join(filepath, "analysis.json"), 'w') as f:
+    f.write(json.dumps(tests, indent=2))

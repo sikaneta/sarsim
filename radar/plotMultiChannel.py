@@ -166,7 +166,7 @@ plt.show()
 proc_signal = arc_signal*np.conj(rC)
 ang = np.unwrap(np.angle(proc_signal))
 half_n_ang = int(len(ang)/2)
-D = 0.2
+D = 10
 
 plt.figure()
 plt.plot(s, ang)

@@ -173,11 +173,11 @@ class stringConverters:
         
         
 #%% The configuration XML file from pickle file if possible
-def loadConfiguration(configFile = None):
+def loadConfiguration(configFile = None, usePickle = True):
     # Make sure there is a config file
     configFile = configFile or defaultConfig
     pkl_file = ".".join(configFile.split(".")[0:-1]) + "_radar.pickle"
-    if os.path.exists(pkl_file):
+    if os.path.exists(pkl_file) and usePickle:
         print("Loading radar metadata from pickle file...")
         with open(pkl_file, 'rb') as f:
            radar = pickle.load(f)
@@ -609,6 +609,7 @@ def generateTimeDomainSignal(rad, pointXYZ):
 #%% Array pattern function (FUNDAMENTAL)
 def twoWayArrayPattern(angles, rd, aFM = None):
     anglesShape = angles.shape
+    du = rd['platform']['satelliteVelocity']*rd['delay']['sampling']
     wavelength = rd['antenna']['wavelength']
     if aFM is None:
         aFM = arrayFactorMatrix(angles, rd['antenna'])
@@ -974,7 +975,7 @@ def multiChannelProcessMem(radar,
     _, n_r, n_x = data.shape
     n_b = r_sys.n_bands
     
-    """Defining the noise covariance"""
+    """Define the noise covariance"""
     Rn = np.eye(len(radar))/np.sqrt(SNR)
     
     # print("Multi-channel processing ...")

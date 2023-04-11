@@ -11,12 +11,89 @@ from math import pi
 import urllib
 from copy import deepcopy
 import lxml.etree as etree
+import argparse
+from scipy.constants import c
+
+#%% Do the argument parsing stuff here
+def get_parser():
+    description = """ Generate an XML file for multi-channel signal
+                      processing.
+                      
+                      This program sets up also for a burst mode."""
+    parser = argparse.ArgumentParser(description=description)
+    
+    parser.add_argument("--config-xml", 
+                        required=True,
+                        help="The name of the xml file to write")
+    
+    parser.add_argument("--prf",
+                        default = 1000.0,
+                        type = float)
+    
+    parser.add_argument("--mode",
+                        help="""The mode to use. Choices from:
+                                    "MODEX",
+                                    "UltraFine",
+                                    "Classical"
+                                The default choice is MODEX""",
+                        choices=["MODEX",
+                                 "UltraFine",
+                                 "Classical"],
+                        default="MODEX")
+    
+    parser.add_argument("--burst-length",
+                        default = 1,
+                        type = int,
+                        help="Number of Samples in a burst")
+    
+    parser.add_argument("--centroids",
+                        help="Doppler centroids for beams",
+                        nargs = "*",
+                        default = [0.0],
+                        type = float)
+    
+    parser.add_argument("--num-azimuth-samples",
+                        default = 8192,
+                        type = int)
+    
+    parser.add_argument("--range-samples",
+                        help=""""Instead of simulating the entire swath, 
+                                 use fewer samples. Subset of the swath (int)""",
+                        type = int,
+                        default = 1024)
+    
+    
+    parser.add_argument("--rn-resolution",
+                        help="The desired range resolution (m)",
+                        type = float,
+                        default = 5.0)
+    parser.add_argument("--swath-width",
+                        help="The desired swath width (m)",
+                        type = float,
+                        default = 10000.0)
+    parser.add_argument("--rn-oversample",
+                        help="The desired range oversample factor",
+                        type = float,
+                        default = 1.2)
+    # parser.add_argument("--az-oversample",
+    #                     help="The desired azimuth oversample factor",
+    #                     type = float,
+    #                     default = 1.2)
+    parser.add_argument("--pulse-duration",
+                        help="Desired pulse duration in us",
+                        type = float,
+                        default = 20.5)
+
+    return parser
 
 def main(argv):
     print("Wiper burst configuration generator")
-    prf = 1000.0
-    numAziSamples = 8192
-    burst_LENGTH = 4 
+    parser = get_parser()
+    vv = parser.parse_args()
+    
+    prf = vv.prf
+    numAziSamples = vv.num_azimuth_samples
+    burst_LENGTH = vv.burst_length 
     p = etree.XMLParser(remove_blank_text=True)
     base_XML = """
     <gmtiAuxDataParams schemaVersion="1.0">
@@ -53,7 +130,7 @@ def main(argv):
     azimuthPosNode = xml.findall('.//azimuthPositions')
     xpos = [float(pos) for pos in azimuthPosNode[0].text.split()]
 
-    beam_DOPPLER = [-250.0,250.0]
+    beam_DOPPLER = vv.centroids
     modeSnippet1 = """
     <mode>
         <radarConfiguration channel="MODEX-1 Aft HH">
@@ -131,46 +208,46 @@ def main(argv):
     modeSnippet={'MODEX': modeSnippet1, 'UltraFine': modeSnippet2, 'Classical': modeSnippet3}
     
     va = 7500.0
-    output_FILE = "burstConfig.xml"
-    radarConfigURL = "/home/sikaneta/Documents/Radarsat_Modes/radarConfiguration.xml"
-    modeChoice = 'MODEX'
+    output_FILE = vv.config_xml
+    #radarConfigURL = "/home/sikaneta/Documents/Radarsat_Modes/radarConfiguration.xml"
+    #modeChoice = 'MODEX'
 
     # Load the configuration file
-    try:
-        opts, args = getopt.getopt(argv,"hp:l:f:a:d:m:",["help","prf=","burst_samples=","xmlfile=","numAzimuthSamples=","dopplerSpread=","mode="])
-    except getopt.GetoptError as err:
-        print('Options error')
-        print(err)
-        print('generateBurstConfig -p <--prf=> -l <--burst_samples=> -f <--xmlfile=> -a <--numAzimuthSamples> -d <--dopplerSpread> -m <--mode>')
-        sys.exit(2)
+    # try:
+    #     opts, args = getopt.getopt(argv,"hp:l:f:a:d:m:",["help","prf=","burst_samples=","xmlfile=","numAzimuthSamples=","dopplerSpread=","mode="])
+    # except getopt.GetoptError as err:
+    #     print('Options error')
+    #     print(err)
+    #     print('generateBurstConfig -p <--prf=> -l <--burst_samples=> -f <--xmlfile=> -a <--numAzimuthSamples> -d <--dopplerSpread> -m <--mode>')
+    #     sys.exit(2)
 
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print('generateBurstConfig -p <--prf=> -l <--burst_samples=> -f <--xmlfile=>')
-        elif opt in ("-p", "--prf"):
-            prf = float(arg)
-        elif opt in ("-l", "--burst_samples"):
-            burst_LENGTH = int(arg)
-        elif opt in ("-d", "--dopplerSpread"):
-            #beam_DOPPLER = [-float(arg),float(arg)]
-            beam_DOPPLER = [int(k) for k in arg.split(',')]
-        elif opt in ("-f", "--xmlfile"):
-            output_FILE = arg
-        elif opt in ("-a", "--numAzimuthSamples"):
-            numAziSamples = int(arg)
-        elif opt in ("-m", "--mode"):
-            if(arg in modeSnippet):
-                modeChoice = arg
-            else:
-                print('(E) Error: Mode not recognized')
-                print('Choose from:')
-                print('------------')
-                for key in modeSnippet.keys():
-                    print(key)
-                sys.exit(2)
+    # for opt, arg in opts:
+    #     if opt in ("-h", "--help"):
+    #         print('generateBurstConfig -p <--prf=> -l <--burst_samples=> -f <--xmlfile=>')
+    #     elif opt in ("-p", "--prf"):
+    #         prf = float(arg)
+    #     elif opt in ("-l", "--burst_samples"):
+    #         burst_LENGTH = int(arg)
+    #     elif opt in ("-d", "--dopplerSpread"):
+    #         #beam_DOPPLER = [-float(arg),float(arg)]
+    #         beam_DOPPLER = [int(k) for k in arg.split(',')]
+    #     elif opt in ("-f", "--xmlfile"):
+    #         output_FILE = arg
+    #     elif opt in ("-a", "--numAzimuthSamples"):
+    #         numAziSamples = int(arg)
+    #     elif opt in ("-m", "--mode"):
+    #         if(arg in modeSnippet):
+    #             modeChoice = arg
+    #         else:
+    #             print('(E) Error: Mode not recognized')
+    #             print('Choose from:')
+    #             print('------------')
+    #             for key in modeSnippet.keys():
+    #                 print(key)
+    #             sys.exit(2)
 
     # Read the mode XML snippet
-    modeXML = [etree.XML(modeSnippet[modeChoice],parser=p) for doppler in beam_DOPPLER]
+    modeXML = [etree.XML(modeSnippet[vv.mode],parser=p) for doppler in beam_DOPPLER]
     
     # Compute the channel tables for each pulse in the g vector. i.e. put in the squint
     allModes = []
@@ -196,7 +273,7 @@ def main(argv):
 
     # Generate the reference time from which to compute the offsets. e.t.c.
     reference_TIME = datetime.combine(date(2015,1,1),time(0,0,0))
-
+    
     # Now generate the start times
     n_BEAMS = len(beam_DOPPLER)
     sample_TIMES = [[reference_TIME + timedelta(seconds=float(s+burst_LENGTH*beam)/(prf)) for s in range(burst_LENGTH)] for beam in range(n_BEAMS)]
@@ -228,7 +305,7 @@ def main(argv):
 
                 numRangeSamples = etree.SubElement(signalData,"numRangeSamples")
                 numRangeSamples.set("unit","Pixels")
-                numRangeSamples.text = "256"
+                numRangeSamples.text = "%d" % vv.range_samples
 
                 numAzimuthSamples = etree.SubElement(signalData,"numAzimuthSamples")
                 numAzimuthSamples.set("unit","Pixels")
@@ -241,7 +318,7 @@ def main(argv):
 
                 rangeSampleSpacing = etree.SubElement(signalData,"rangeSampleSpacing")
                 rangeSampleSpacing.set("unit","s")
-                rangeSampleSpacing.text = "1.776133220079680e-08"
+                rangeSampleSpacing.text = "%0.8e" % (2*vv.rn_resolution/(vv.rn_oversample*c))
 
                 pulseRepetitionFrequency = etree.SubElement(signalData,"pulseRepetitionFrequency")
                 pulseRepetitionFrequency.set("unit","Hz")
@@ -249,16 +326,16 @@ def main(argv):
 
                 pulseBandwidth = etree.SubElement(signalData,"pulseBandwidth")
                 pulseBandwidth.set("unit","MHz")
-                pulseBandwidth.text = "5.001628063000000e+01"
+                pulseBandwidth.text = "%0.8f" % (c/(2*vv.rn_resolution)/1e6)
 
                 pulseDuration = etree.SubElement(signalData,"pulseDuration")
                 pulseDuration.set("unit","us")
-                pulseDuration.text = "4.159703826904297e+01"
+                pulseDuration.text = "%f" % vv.pulse_duration
 
                 signalData.append(deepcopy(config))
 
     with open(output_FILE,'w') as outfile:
-        outfile.write(etree.tostring(xml, pretty_print=True))
+        outfile.write(etree.tostring(xml, pretty_print=True).decode())
 
 
 # def modifyRadarConfigurations(gmtiDataPool, radarConfigURL, directory):

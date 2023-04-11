@@ -17,13 +17,17 @@ parser.add_argument("--config-xml", help="The config XML file",
 parser.add_argument("--processed-file",
                     help="The name of the processed output file",
                     default = None)
+parser.add_argument("--p",
+                    help="The value of p to use in the MCHAN filter",
+                    type=float,
+                    default = 0.9)
 parser.add_argument("--ridx",
                     help="""The range indeces to process. The process is
                             independent of the range variable so we can
                             easily split it into chunks""",
                     type=int,
                     nargs="+",
-                    default=[0,None])
+                    default=[0,-1])
 parser.add_argument("--xblock-size",
                     help="Size of the output data block in the X direction",
                     type=int,
@@ -31,6 +35,10 @@ parser.add_argument("--xblock-size",
 
 #%%
 vv = parser.parse_args()
+
+#%%
+if vv.ridx[-1] == -1:
+    vv.ridx[-1] = None
 
 #%% Load the radar configuration
 radar = cfg.loadConfiguration(vv.config_xml)
@@ -46,7 +54,7 @@ output_file = fio.fileStruct(radar[0]['filename'],
 #%% Multi-channel process the data
 procData, _ = cfg.multiChannelProcessMem(radar, 
                                          vv.ridx, 
-                                         p=0.9)
+                                         p=vv.p)
 
 #%% Write data to file
 fio.writeSimFiles(output_file, 

@@ -159,11 +159,14 @@ class simulation:
         """
         m,n = R.shape
             
-        """ Perform Cholesky decomposition """
-        try:
-            cD = np.linalg.cholesky(R)
-        except LinAlgError:
-            cD = np.zeros_like(R)
+        # """ Perform Cholesky decomposition """
+        # try:
+        #     cD = np.linalg.cholesky(R)
+        # except LinAlgError:
+        #     cD = np.zeros_like(R)
+        """ Perform an eigenvale/eigenvector decomposition """
+        D, U = np.linalg.eig(R)
+        cD = U.dot(np.diag(np.sqrt(D)))
         
         """ Generate the random data """
         return cD.dot(np.random.randn(m,N))
@@ -532,7 +535,10 @@ class simulation:
                                                 off_nadir,
                                                 np.array(covariances["orbitAcrossTrack"]["R"]))
         
+        """ Get the instrument contribution and convert accordingly. """
         R_ins = covariances["instrument"]["R"]
+        if covariances["instrument"]["referenceVariables"] == "RollPitchYaw":
+            R_ins = self.rpy2aeuCovariance(np.array(R_ins), N)
         
         R = np.array(block_diag(R_att, R_tme, R_vel, R_pos, R_ins))
         AEU_m = np.array([[1,0,0,1,0,0,1,0,0,0,1,0,0],
@@ -806,7 +812,7 @@ class simulation:
         
         del aeuPe
         
-        if loglevel > 0:
+        if loglevel > 3:
             print(json.dumps(res, indent=2))
         
         return res
