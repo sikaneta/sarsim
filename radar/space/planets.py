@@ -49,11 +49,21 @@ class solar_planet:
     sphericalHarmonicsFile = os.path.join(harmonicsPath , "egm96.txt")
     nharmonics = 360
     
+    """ 
+    The following values, to relate to J2000 EME2000 from:
+    https://web.archive.org/web/20111024101856/http://astrogeology.usgs.gov/Projects/WGCCRE/constants/iau2000_table1.html
+    """
+    alpha = 0.0
+    delta = 90.0
+    w0 = 190.147
+    
+    
     def __init__(self):
         self.e = np.sqrt(1 - (self.b/self.a)**2)
         self.nbody = {"name": [],
                       "GM": [],
                       "position": np.array([])}
+        self.EME_R = self.EME2Planet()
     
     def set_nbody(self, t, names=[]):
         """
@@ -165,6 +175,25 @@ class solar_planet:
         p = p1*np.exp((h-h1)/H)
         V = X[3:6]
         return -p/2*ballistic*V*np.linalg.norm(V)
+    
+    def EME2Planet(self):
+        c_alpha = np.cos(np.radians(self.alpha))
+        s_alpha = np.sin(np.radians(self.alpha))
+        s_delta = np.sin(np.radians(self.delta))
+        c_delta = np.cos(np.radians(self.delta))
+        
+        zv = np.array([c_alpha*c_delta, s_alpha*c_delta, s_delta])
+        xv = (np.eye(3) - np.outer(zv, zv)).dot([1,0,0])
+        xv = xv/np.linalg.norm(xv)
+        yv = np.cross(zv, xv)
+        yv = yv/np.linalg.norm(yv)
+        
+        R = np.array([xv,yv,zv])
+        
+        #R_alpha = np.array([[c_alpha, -s_alpha, 0],[s_alpha, c_alpha, 0],[0,0,1]])
+        #R_delta = np.array([[c_delta,0,s_delta],[0,1,0],[-s_delta,0,c_delta]])
+        #R = R_alpha.dot(R_delta)
+        return np.block([[R, np.zeros_like(R)],[np.zeros_like(R), R]])
         
         
         
@@ -183,6 +212,14 @@ class earth(solar_planet):
     J8 = -0.00000000001427
     sphericalHarmonicsFile = os.path.join(harmonicsPath , "egm96.txt")
     nharmonics = 360
+        
+    """ 
+    The following values, to relate to J2000 EME2000 from:
+    https://web.archive.org/web/20111024101856/http://astrogeology.usgs.gov/Projects/WGCCRE/constants/iau2000_table1.html
+    """
+    alpha = 0.0
+    delta = 90.0
+    w0 = 190.147
     
 class venus(solar_planet):
     M = 3.24858592079e14/G
@@ -197,6 +234,14 @@ class venus(solar_planet):
     J8 = 0
     sphericalHarmonicsFile = os.path.join(harmonicsPath , "shgj180u.txt")
     nharmonics = 180
+    
+    """ 
+    The following values, to relate to J2000 EME2000 from: 
+    https://web.archive.org/web/20111024101856/http://astrogeology.usgs.gov/Projects/WGCCRE/constants/iau2000_table1.html
+    """
+    alpha = 272.76
+    delta = 67.16
+    w0 = 160.2
     
 # earth = planet()
 
