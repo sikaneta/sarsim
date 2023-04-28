@@ -24,9 +24,10 @@ import sys
 #%%
 class envisionIncidence:
     
-    def __init__(self):
+    def __init__(self, do_plots = False):
         #pass
         
+        self.plots = do_plots
         self.__tascarr = []
         self.__idxarr = []
         self.__sv = None
@@ -62,7 +63,7 @@ class envisionIncidence:
                 idx = N + 1
 
         # Check the time differences
-        if 'linux' not in sys.platform and 0:
+        if 'linux' not in sys.platform and self.plots:
             kep = [venSAR.state2kepler(sv.measurementData[k]) for k in self.__idxarr]
             z = [sv.measurementData[k][2] for k in self.__idxarr]
             plt.figure()

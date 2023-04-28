@@ -1789,10 +1789,10 @@ class state_vector(measurement):
             ivect.append(float(vel))
         return ivect
     
-    def toPCI(self, mData, t):
+    def toPCI(self, mData, t, w0 = 0.0):
         w = self.planet.w;
-        cosWT = np.cos(w*t)
-        sinWT = np.sin(w*t)
+        cosWT = np.cos(w*t + w0)
+        sinWT = np.sin(w*t + w0)
         X = np.array([[cosWT, -sinWT, 0],
                       [sinWT,  cosWT, 0],
                       [0,      0,     1]])
@@ -1821,10 +1821,10 @@ class state_vector(measurement):
             ivect.append(float(iv[k]))
         return ivect
     
-    def toPCR(self, mData, t):
+    def toPCR(self, mData, t, w0 = 0.0):
         w = self.planet.w;
-        cosWT = np.cos(w*t)
-        sinWT = np.sin(w*t)
+        cosWT = np.cos(w*t + w0)
+        sinWT = np.sin(w*t + w0)
         X = np.array([[cosWT,  sinWT, 0],
                       [-sinWT, cosWT, 0],
                       [0,      0,     1]])

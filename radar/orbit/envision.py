@@ -36,18 +36,21 @@ def loadSV(orbitfile = svfile, toPCR = False):
     
     
     sv = state_vector(planet=venus())
-    R = sv.planet.EME_R
+    R_EMEVEN = sv.planet.EME_R
     if toPCR:
+        w0 = sv.planet.w*((svs[0][0] - np.datetime64("2000-01-01T12:00"))
+                          /np.timedelta64(1,'s'))
+        w0 = np.mod(w0, 2*np.pi)
         for vec in svs:
             """ Compute the time so we can transform to PCR """
             t = (vec[0] - svs[0][0])/np.timedelta64(1,'s')
             
             """ Add the state vector """
-            sv.add(vec[0], sv.toPCR(R.dot(vec[1]),t))
+            sv.add(vec[0], sv.toPCR(R_EMEVEN.dot(vec[1]), t, w0))
     else:
         for vec in svs:
             """ Add the state vector """
-            sv.add(vec[0], R.dot(vec[1]))
+            sv.add(vec[0], R_EMEVEN.dot(vec[1]))
         
     return sv
 
