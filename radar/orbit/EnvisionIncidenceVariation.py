@@ -449,7 +449,8 @@ class envisionIncidence:
         return surfaceNormal(X, self.__sv)
     
     def llh2xyz(self, point):
-        return self.__sv.llh2xyz([point["geometry"]["coordinates"][k] for k in [1,0,2]])
+        return self.__sv.llh2xyz([point["geometry"]["coordinates"][k] 
+                                  for k in [1,0,2]])
     
     def getSV(self):
         return self.__sv
@@ -531,14 +532,6 @@ for pType in passTypes:
         filename = "%s_%s.geojson" % (polygon["properties"]["ROI_No"], pType)
         with open(os.path.join(filepath, filename), "w") as f:
             f.write(json.dumps(pointAnalysis, indent=2))
-    
-# for k in range(20):
-#     satPoint = incidenceZeroDoppler(sv, 
-#                                     cidx,
-#                                     k,
-#                                     point)
-    
-#     pointAnalysis["features"].append(satPoint)
 
 
 #%% Test
@@ -546,133 +539,133 @@ with open(os.path.join(filepath, "pointTStereo.geojson"), "w") as f:
     f.write(json.dumps(pointAnalysis, indent=2))
     
 #%% Generate the incidence angle data. TIME INTESIVE
-svIndex = idxarr[147]
-rand_indexes = np.random.randint(0, cycle_jump[0]-1, 500)
+# svIndex = idxarr[147]
+# rand_indexes = np.random.randint(0, cycle_jump[0]-1, 500)
 
-for k, idx in enumerate(rand_indexes):
-#for k, idx in enumerate(idxs):
-    print(k)
-    svIndex = idxarr[idx]    
-    refSV = {"time": sv.measurementTime[svIndex].astype(str),
-             "posvel": sv.measurementData[svIndex].tolist()}
+# for k, idx in enumerate(rand_indexes):
+# #for k, idx in enumerate(idxs):
+#     print(k)
+#     svIndex = idxarr[idx]    
+#     refSV = {"time": sv.measurementTime[svIndex].astype(str),
+#              "posvel": sv.measurementData[svIndex].tolist()}
     
-    xG, xG_snorm, targetInc = groundPoint(sv, 
-                                          svIndex, 
-                                          targetIncidenceAngle = 30,
-                                          plotSwaths = False)
+#     xG, xG_snorm, targetInc = groundPoint(sv, 
+#                                           svIndex, 
+#                                           targetIncidenceAngle = 30,
+#                                           plotSwaths = False)
     
-    try:
-        point = pointHistory(sv,
-                             refSV,
-                             xG, 
-                             xG_snorm, 
-                             targetInc,
-                             tascarr)
-        #_ = plotSpiderFigure(point)
-        #_ = plotIncidenceFigure(point)
+#     try:
+#         point = pointHistory(sv,
+#                              refSV,
+#                              xG, 
+#                              xG_snorm, 
+#                              targetInc,
+#                              tascarr)
+#         #_ = plotSpiderFigure(point)
+#         #_ = plotIncidenceFigure(point)
         
-        #print(np.array(matchIncidence(point, threshold = 1.5)))
+#         #print(np.array(matchIncidence(point, threshold = 1.5)))
         
-        writePointFile(filepath, point)
-    except ValueError:
-        print("Failed for svIndex %d" % svIndex)
+#         writePointFile(filepath, point)
+#     except ValueError:
+#         print("Failed for svIndex %d" % svIndex)
         
-#%% Analyze simulated data split
-flist = glob(os.path.join(filepath, "*.json"))
+# #%% Analyze simulated data split
+# flist = glob(os.path.join(filepath, "*.json"))
 
-#%% Analyze data from computed points
-llh = []
-cycle1OrbitNumber = []
-repeatStereo = []
-incidenceAngles = []
-orbitNumbers = []
-tests = {"points": []}
-to_fix = []
-to_from = []
-for simfile in flist:
-#for simfile in to_fix:
-    with open(simfile, "r") as f:
-        point = json.loads(f.read())
+# #%% Analyze data from computed points
+# llh = []
+# cycle1OrbitNumber = []
+# repeatStereo = []
+# incidenceAngles = []
+# orbitNumbers = []
+# tests = {"points": []}
+# to_fix = []
+# to_from = []
+# for simfile in flist:
+# #for simfile in to_fix:
+#     with open(simfile, "r") as f:
+#         point = json.loads(f.read())
         
-    #_ = plotIncidenceFigure(point)
-    #_ = plotSpiderFigure(point)
-    orbitNumA = point["target"]["satReference"]["orbitNumber"]
-    fixPointTime(point, tascarr) # Needed to solve start of orbit problem at equator
-    orbitNumB = point["target"]["satReference"]["orbitNumber"]
-    if orbitNumB != orbitNumA:
-        to_from.append((orbitNumB, orbitNumA))
-        continue
-    try:
-        costs, incSets, orbNumbers, point = matchIncidencePermute(point,
-                                                                  incidence_range = [22,32])
-        llh.append(point["target"]["llh"])
-        cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
-        repeatStereo.append(costs)
-        incidenceAngles.append(incSets)
-        orbitNumbers.append(orbNumbers)
-        point["solution"] = {"repeatStereo": costs.tolist(),
-                             "incidenceAngles": incSets.tolist(),
-                             "orbitNumbers": orbNumbers.tolist()}
-        tests["points"].append(point)
-        _ = writePointFile(filepath, point)
-    except ValueError:
-        to_fix.append(simfile)
-        print("Please re-analyse: %s" % simfile)
+#     #_ = plotIncidenceFigure(point)
+#     #_ = plotSpiderFigure(point)
+#     orbitNumA = point["target"]["satReference"]["orbitNumber"]
+#     fixPointTime(point, tascarr) # Needed to solve start of orbit problem at equator
+#     orbitNumB = point["target"]["satReference"]["orbitNumber"]
+#     if orbitNumB != orbitNumA:
+#         to_from.append((orbitNumB, orbitNumA))
+#         continue
+#     try:
+#         costs, incSets, orbNumbers, point = matchIncidencePermute(point,
+#                                                                   incidence_range = [22,32])
+#         llh.append(point["target"]["llh"])
+#         cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
+#         repeatStereo.append(costs)
+#         incidenceAngles.append(incSets)
+#         orbitNumbers.append(orbNumbers)
+#         point["solution"] = {"repeatStereo": costs.tolist(),
+#                              "incidenceAngles": incSets.tolist(),
+#                              "orbitNumbers": orbNumbers.tolist()}
+#         tests["points"].append(point)
+#         _ = writePointFile(filepath, point)
+#     except ValueError:
+#         to_fix.append(simfile)
+#         print("Please re-analyse: %s" % simfile)
 
-#%%
-# llh.append(point["target"]["llh"])
-# cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
-#counts.append(matchIncidence(point, threshold = 1.5))
-lon = [l[1] for l in llh]
-repeat = np.array([int(np.sum(d, axis=0)[0] > 0) for d in repeatStereo])
-stereo = np.array([int(np.sum(d, axis=0)[1] > 0) for d in repeatStereo])
-bth = repeat*stereo
-print(np.argwhere(bth==0))
+# #%%
+# # llh.append(point["target"]["llh"])
+# # cycle1OrbitNumber.append(point["target"]["satReference"]["orbitNumber"])
+# #counts.append(matchIncidence(point, threshold = 1.5))
+# lon = [l[1] for l in llh]
+# repeat = np.array([int(np.sum(d, axis=0)[0] > 0) for d in repeatStereo])
+# stereo = np.array([int(np.sum(d, axis=0)[1] > 0) for d in repeatStereo])
+# bth = repeat*stereo
+# print(np.argwhere(bth==0))
 
-plt.figure()
-plt.plot(lon, repeat, 'd', lon, stereo, 'o')
-plt.grid()
-plt.show()
-plt.xlabel('longitude (deg)')
-plt.ylabel('inidcator')
-plt.legend(['repeat','stereo'])
+# plt.figure()
+# plt.plot(lon, repeat, 'd', lon, stereo, 'o')
+# plt.grid()
+# plt.show()
+# plt.xlabel('longitude (deg)')
+# plt.ylabel('inidcator')
+# plt.legend(['repeat','stereo'])
 
-plt.title('Possibility of repeat and stereo\nmeasurements near equator as a function of longitude\n orbit file: ET1 2031 N')
+# plt.title('Possibility of repeat and stereo\nmeasurements near equator as a function of longitude\n orbit file: ET1 2031 N')
 
-#%% New function to compute valid options
-modified = []
-to_remove = []
-for simfile in to_fix:
-    with open(simfile, "r") as f:
-        point = json.loads(f.read())
-    svIndex = idxarr[point["target"]["satReference"]["orbitNumber"]]    
-    refSV = {"time": sv.measurementTime[svIndex].astype(str),
-             "posvel": sv.measurementData[svIndex].tolist()}
+# #%% New function to compute valid options
+# modified = []
+# to_remove = []
+# for simfile in to_fix:
+#     with open(simfile, "r") as f:
+#         point = json.loads(f.read())
+#     svIndex = idxarr[point["target"]["satReference"]["orbitNumber"]]    
+#     refSV = {"time": sv.measurementTime[svIndex].astype(str),
+#              "posvel": sv.measurementData[svIndex].tolist()}
     
-    xG, xG_snorm, targetInc = groundPoint(sv, 
-                                          svIndex, 
-                                          targetIncidenceAngle = 30,
-                                          plotSwaths = False)
+#     xG, xG_snorm, targetInc = groundPoint(sv, 
+#                                           svIndex, 
+#                                           targetIncidenceAngle = 30,
+#                                           plotSwaths = False)
     
-    try:
-        point = pointHistory(sv,
-                             refSV,
-                             xG, 
-                             xG_snorm, 
-                             targetInc,
-                             tascarr)
-        #_ = plotSpiderFigure(point)
-        #_ = plotIncidenceFigure(point)
+#     try:
+#         point = pointHistory(sv,
+#                              refSV,
+#                              xG, 
+#                              xG_snorm, 
+#                              targetInc,
+#                              tascarr)
+#         #_ = plotSpiderFigure(point)
+#         #_ = plotIncidenceFigure(point)
         
-        #print(np.array(matchIncidence(point, threshold = 1.5)))
+#         #print(np.array(matchIncidence(point, threshold = 1.5)))
         
-        simfile2 = writePointFile(filepath, point)
-        if simfile2 != simfile:
-            modified.append(simfile2)
-            to_remove.append(simfile)
-    except ValueError:
-        print("Failed for svIndex %d" % svIndex)
+#         simfile2 = writePointFile(filepath, point)
+#         if simfile2 != simfile:
+#             modified.append(simfile2)
+#             to_remove.append(simfile)
+#     except ValueError:
+#         print("Failed for svIndex %d" % svIndex)
    
-#%%
-with open(os.path.join(filepath, "analysis.json"), 'w') as f:
-    f.write(json.dumps(tests, indent=2))
+# #%%
+# with open(os.path.join(filepath, "analysis.json"), 'w') as f:
+#     f.write(json.dumps(tests, indent=2))

@@ -26,6 +26,36 @@ else:
 
 #%% Load an oem orbit state vector file from Venus
 def loadSV(orbitfile = svfile, toPCR = False):
+    """
+    Load Envision State Vector data
+    
+    This function loads Envision state vector data from files
+    provided by ESOC in the form of text *.oem files. It is
+    assumed that the state vectors contained in this file
+    correspond to the EME2000 inertial coordinate system and 
+    that they need to be converted to a Venus-rotation-axis-related
+    coordinate system.
+    
+    Assumptions
+    -----------
+    Data in the input file are in the EME2000 coordinate system. This
+    assumption can be checked by reading the header of the file.
+
+    Parameters
+    ----------
+    orbitfile : str, optional
+        DESCRIPTION. The oem file to load. If not specified, the default
+        defined in the svfile variable will be used.
+    toPCR : bool, optional
+        DESCRIPTION. Flag to specify that the state vectors should be
+        converted to the IAU_VENUS reference frame.
+
+    Returns
+    -------
+    sv : TYPE
+        DESCRIPTION.
+
+    """
     with open(svfile, 'r') as f:
         svecs = f.read().split('\n')
         
@@ -38,9 +68,9 @@ def loadSV(orbitfile = svfile, toPCR = False):
     sv = state_vector(planet=venus())
     R_EMEVEN = sv.planet.EME_R
     if toPCR:
-        w0 = sv.planet.w*((svs[0][0] - np.datetime64("2000-01-01T12:00"))
-                          /np.timedelta64(1,'s'))
-        w0 = np.mod(w0, 2*np.pi)
+        # w0 = sv.planet.w*((svs[0][0] - np.datetime64("2000-01-01T12:00"))
+        #                   /np.timedelta64(1,'s'))
+        w0 = sv.planet.wOffset(svs[0][0])#np.mod(w0, 2*np.pi)
         for vec in svs:
             """ Compute the time so we can transform to PCR """
             t = (vec[0] - svs[0][0])/np.timedelta64(1,'s')

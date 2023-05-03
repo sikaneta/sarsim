@@ -63,7 +63,7 @@ class solar_planet:
         self.nbody = {"name": [],
                       "GM": [],
                       "position": np.array([])}
-        self.EME_R = self.EME2Planet()
+        self.EME_R = self.ICRF2Planet()
     
     def set_nbody(self, t, names=[]):
         """
@@ -176,23 +176,23 @@ class solar_planet:
         V = X[3:6]
         return -p/2*ballistic*V*np.linalg.norm(V)
     
-    def EME2Planet(self):
+    def wOffset(self, 
+                target_time, 
+                ref_time = np.datetime64("2000-01-01T12:00")):
+        w1 = self.w*((target_time - ref_time)
+                     /np.timedelta64(1,'s'))
+        return np.mod(w1 + np.radians(self.w0), 2*np.pi) 
+        
+    def ICRF2Planet(self):
         c_alpha = np.cos(np.radians(self.alpha))
         s_alpha = np.sin(np.radians(self.alpha))
         s_delta = np.sin(np.radians(self.delta))
         c_delta = np.cos(np.radians(self.delta))
         
-        zv = np.array([c_alpha*c_delta, s_alpha*c_delta, s_delta])
-        xv = (np.eye(3) - np.outer(zv, zv)).dot([1,0,0])
-        xv = xv/np.linalg.norm(xv)
-        yv = np.cross(zv, xv)
-        yv = yv/np.linalg.norm(yv)
+        R = np.array([[-s_alpha, -c_alpha*s_delta, c_alpha*c_delta],
+                      [c_alpha, -s_alpha*s_delta, s_alpha*c_delta],
+                      [0, c_delta, s_delta]]).T
         
-        R = np.array([xv,yv,zv])
-        
-        #R_alpha = np.array([[c_alpha, -s_alpha, 0],[s_alpha, c_alpha, 0],[0,0,1]])
-        #R_delta = np.array([[c_delta,0,s_delta],[0,1,0],[-s_delta,0,c_delta]])
-        #R = R_alpha.dot(R_delta)
         return np.block([[R, np.zeros_like(R)],[np.zeros_like(R), R]])
         
         
@@ -227,7 +227,9 @@ class venus(solar_planet):
     a = 6051878.0
     b = 6051878.0
     siderealSeconds = 243.0226*24*60*60
-    w = -2*np.pi/(243.0226*24*60*60)
+    #w = -2*np.pi/(243.0226*24*60*60)
+    """ Changed in favour of IAU specs for Venus """
+    w = -np.radians(1.4813688/24/60/60)
     J2 = 4.4044e-6
     J4 = -2.1474e-6
     J6 = 0
@@ -243,16 +245,3 @@ class venus(solar_planet):
     delta = 67.16
     w0 = 160.2
     
-# earth = planet()
-
-# #%% Define planet Venus.
-# venus = planet()
-# venus.GM = 4.8675e24*G
-# venus.a = 6051800
-# venus.b = 6051800
-# venus.J2 = 4.458e-6
-# venus.J4 = 0
-# venus.J6 = 0
-# venus.J8 = 0
-# venus.siderealSeconds = (243.01*60*60*24)
-# venus.w = 2*np.pi/venus.siderealSeconds
