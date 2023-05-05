@@ -137,12 +137,14 @@ class orbit:
         cosP = np.cos(self.arg_perigee)
         sinP = np.sin(self.arg_perigee)
         self.rotIfromAnode = np.eye(3)
-        self.rotOfromE = np.array([[sinP, -cosP, 0],
-                                   [cosP,  sinP, 0],
+        
+        self.rotOfromE = np.array([[-cosP, sinP, 0],
+                                   [-sinP, -cosP, 0],
                                    [0,     0   , 1]])
-        self.rotIfromO = np.array([[cosI,  0, sinI],
-                                   [0,     1, 0   ],
-                                   [-sinI, 0, cosI]])
+        
+        self.rotIfromO = np.array([[1,   0,    0    ],
+                                   [0,   cosI, -sinI],
+                                   [0,   sinI, cosI ]])
 
     
     def setFromStateVector(self, X):
@@ -182,15 +184,17 @@ class orbit:
         cosP = np.cos(self.arg_perigee)
         sinP = np.sin(self.arg_perigee)
         
-        self.rotIfromAnode = np.array([[sinA,  cosA, 0],
-                                       [-cosA, sinA, 0],
+        self.rotIfromAnode = np.array([[cosA, -sinA, 0],
+                                       [sinA,  cosA, 0],
                                        [0,     0   , 1]])
-        self.rotOfromE = np.array([[sinP, -cosP, 0],
-                                   [cosP,  sinP, 0],
+    
+        self.rotOfromE = np.array([[-cosP, sinP, 0],
+                                   [-sinP, -cosP, 0],
                                    [0,     0   , 1]])
-        self.rotIfromO = np.array([[cosI,  0, sinI],
-                                   [0,     1, 0   ],
-                                   [-sinI, 0, cosI]])
+        
+        self.rotIfromO = np.array([[1,   0,    0    ],
+                                   [0,   cosI, -sinI],
+                                   [0,   sinI, cosI ]])
         
         return orbitAngle, ascendingNode
         
@@ -306,10 +310,10 @@ class orbit:
         v = self.computeV(beta)
         r = self.a*(1-self.e**2)/(1+self.e*np.cos(U)) 
         
-        """ Compute the position and velocity vectors in OCS frame """
-        Xo = r*np.array([-sinB, cosB, 0])
-        Vo = -np.sqrt(GM/a/(1-e**2))*np.array([cosB + e*cosP,
-                                               sinB + e*sinP,
+        """ Compute the position and velocity vectors in VCIP frame """
+        Xo = r*np.array([cosB, sinB, 0])
+        Vo = np.sqrt(GM/a/(1-e**2))*np.array([-sinB - e*sinP,
+                                               cosB + e*cosP,
                                                0])
         
         """ Rotate by the longitude of the ascending node

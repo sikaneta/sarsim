@@ -5,7 +5,6 @@ Created on Mon Oct 10 17:30:18 2022
 @author: ishuwa.sikaneta
 """
 import numpy as np
-from numpy.linalg import LinAlgError
 from space.planets import earth
 from orbit.orientation import orbit
 from orbit.euler import rpyAnglesFromIJK
