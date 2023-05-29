@@ -133,4 +133,4 @@ def computeImagingGeometry(sv, eta, xG, xG_snormal):
     
     incidence = np.degrees(sgn*np.arccos(-rhat.dot(xG_snormal)))
     
-    return rvec, incidence, [svtime, svdata, err]
+    return rvec, incidence, [svtime, svdata], err

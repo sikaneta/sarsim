@@ -450,6 +450,46 @@ class simulation:
         sv = state_vector(planet = self.planet)
         sv.add(np.datetime64("2000-01-01T00:00:00.000000"), sv.toPCR(X, 0))
         
+        # t = X[3:]/np.linalg.norm(X[3:])
+        # n = -X[:3]/np.linalg.norm(X[:3])
+        # c = np.cross(n, t)
+        # c /= np.linalg.norm(c)
+        # n = np.cross(t,c)
+        # n /= np.linalg.norm(n)
+        tcn = self.tcnFromX(X)
+        
+        r, rhat, inc, _, _ = getTiming(sv, [np.radians(off_nadir)], 0)
+        
+        d = np.cross(rhat[0], tcn[:,0]) - rhat[0]/np.tan(np.radians(inc[0]))
+        
+        q = d.dot(tcn[:,1:])#np.array([d.dot(c), d.dot(n)])
+        
+        return q.dot(R_xtrack).dot(q)/r[0]**2
+        
+    #%%
+    def tcnFromX(self, X):
+        """
+        Generate tcn frame from state vector
+        
+        Generates the tcn vector from the state vector which is given in some
+        reference frame. This tcn frame has a t vector in the direction of
+        the velocity vector, a c vector aligned with the orbit angular
+        velocity vector and an n vector completing the right-handed coordinate
+        system
+
+        Parameters
+        ----------
+        X : `np.ndarray(6,)`
+            A given state vector in some reference frame.
+
+        Returns
+        -------
+        tcn : `np.ndarray(3,3)`
+            A matrix corresponding to the tcn frame with column vectors, in
+            order, given by the t, c and n vectors
+
+        """
+        
         t = X[3:]/np.linalg.norm(X[3:])
         n = -X[:3]/np.linalg.norm(X[:3])
         c = np.cross(n, t)
@@ -457,14 +497,7 @@ class simulation:
         n = np.cross(t,c)
         n /= np.linalg.norm(n)
         
-        r, rhat, inc, _, _ = getTiming(sv, [np.radians(off_nadir)], 0)
-        
-        d = np.cross(rhat[0], t) - rhat[0]/np.tan(np.radians(inc[0]))
-        
-        q = np.array([d.dot(c), d.dot(n)])
-        
-        return q.dot(R_xtrack).dot(q)/r[0]**2
-        
+        return np.array([t,c,n]).T
         
     #%%
     def contributors2aeuCovariance(self,
@@ -518,13 +551,23 @@ class simulation:
         
         R_att = self.rpy2aeuCovariance(np.array(covariances["spacecraft"]["R"]), N)
         
+        """ Check if we need to change frames """
+        R_orbvel = np.array(covariances["orbitVelocity"]["R"])
+        if covariances["orbitVelocity"]["referenceVariables"] == "VtVcVn":
+            M_tcn = self.tcnFromX(X)
+            R_orbvel = M_tcn.dot(R_orbvel).dot(M_tcn.T)
         R_vel = self.velocity2aeuCovariance(X, 
                                             off_nadir, 
-                                            np.array(covariances["orbitVelocity"]["R"]))
+                                            R_orbvel)
         
+        """ Check if we need to scale to time """
+        R_orbalong = np.array(covariances["orbitAlongTrack"]["R"])
+        if covariances["orbitAlongTrack"]["units"] == "m":
+            M_s = 1/np.linalg.norm(X[3:])
+            R_orbalong = M_s*R_orbalong*M_s  
         R_tme = self.timing2aeuCovariance(X, 
                                           off_nadir, 
-                                          np.array(covariances["orbitAlongTrack"]["R"]))
+                                          R_orbalong)
         
         # lookvec = np.array([np.cos(np.radians(off_nadir)), 
         #                     np.sin(np.radians(off_nadir))])

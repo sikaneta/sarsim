@@ -182,20 +182,79 @@ class solar_planet:
         w1 = self.w*((target_time - ref_time)
                      /np.timedelta64(1,'s'))
         return np.mod(w1 + np.radians(self.w0), 2*np.pi) 
-        
-    def ICRF2Planet(self):
-        c_alpha = np.cos(np.radians(self.alpha))
-        s_alpha = np.sin(np.radians(self.alpha))
-        s_delta = np.sin(np.radians(self.delta))
-        c_delta = np.cos(np.radians(self.delta))
+       
+    def getAlpha(self, target_time):
+        return self.alpha
+    
+    def getDelta(self, target_time):
+        return self.delta
+    
+    def ICRF2Planet(self, target_time = np.datetime64("2000-01-01T12:00:00")):
+        c_alpha = np.cos(np.radians(self.getAlpha(target_time)))
+        s_alpha = np.sin(np.radians(self.getAlpha(target_time)))
+        s_delta = np.sin(np.radians(self.getDelta(target_time)))
+        c_delta = np.cos(np.radians(self.getDelta(target_time)))
         
         R = np.array([[-s_alpha, -c_alpha*s_delta, c_alpha*c_delta],
                       [c_alpha, -s_alpha*s_delta, s_alpha*c_delta],
                       [0, c_delta, s_delta]]).T
         
         return np.block([[R, np.zeros_like(R)],[np.zeros_like(R), R]])
+      
+    def ICRFtoPCI(self, target_time, X):
+        return target_time, self.EME_R.dot(X)
+    
+    def PCItoICRF(self, target_time, X):
+        return target_time, self.EME_R.T.dot(X)
+    
+    def PCRtoICRF(self, target_time, X):
+        return self.PCItoICRF(*self.PCRtoME2000(target_time, X))
+    
+    def ICRFtoPCR(self, target_time, X):
+        return self.ME2000toPCR(*self.ICRFtoPCI(target_time, X))
         
+    def ME2000toPCR(self, target_time, X):
+        w = self.w
+        w0 = self.wOffset(target_time)
+        cosW = np.cos(w0)
+        sinW = np.sin(w0)
+        """
+        The following matrix multiplication cast into only scalar 
+        multiplications
         
+        M = np.array([[cosW,  sinW, 0],
+                      [-sinW, cosW, 0],
+                      [0,      0,     1]])
+        dM = w*np.array([[-sinW,  cosW, 0],
+                         [-cosW, -sinW, 0],
+                         [0,      0,     0]])
+
+        ix = M.dot(X[0:3])
+        iv = M.dot(X[3:6]) + dM.dot(X[0:3])
+        return np.concatenate((ix, iv))    
+        """
+        return (target_time, 
+                np.array([cosW*X[0] + sinW*X[1],
+                          -sinW*X[0] + cosW*X[1],
+                          X[2],
+                          cosW*X[3] + sinW*X[4] - w*sinW*X[0] + w*cosW*X[1],
+                          -sinW*X[3] + cosW*X[4] - w*cosW*X[0] - w*sinW*X[1],
+                          X[5]]))
+    
+    def PCRtoME2000(self, target_time, X):
+        w = -self.w
+        w0 = self.wOffset(target_time)
+        cosW = np.cos(-w0)
+        sinW = np.sin(-w0)
+        
+        return (target_time,
+                np.array([cosW*X[0] + sinW*X[1],
+                          -sinW*X[0] + cosW*X[1],
+                          X[2],
+                          cosW*X[3] + sinW*X[4] - w*sinW*X[0] + w*cosW*X[1],
+                          -sinW*X[3] + cosW*X[4] - w*cosW*X[0] - w*sinW*X[1],
+                          X[5]]))
+                        
         
             
 #%% Define planet Earth. The default

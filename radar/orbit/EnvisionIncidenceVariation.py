@@ -12,6 +12,7 @@ from orbit.geometry import computeImagingGeometry
 from orbit.orientation import orbit
 from orbit.envision import loadSV
 from measurement.measurement import state_vector
+from sarsimlog import logger
 
 from tqdm import tqdm
 import numpy as np
@@ -21,6 +22,15 @@ import os
 from glob import glob
 import sys
 
+#%% Define class to capture convergence errors
+class ConvergenceError(Exception):
+    def __init__(self, algorithm, maxiter):
+        self.algorithm = algorithm
+        self.maxiter = maxiter
+    def __str__(self):
+        logger.warning('(%s) did not converge after %d iterations' % 
+                       (self.algorithm, self.maxiter))
+    
 #%%
 class envisionIncidence:
     
@@ -34,6 +44,9 @@ class envisionIncidence:
         self.__cycle_jump = []
         self.estimateAscendingTimes()#%% Reload state vectors but in VCR frame
         self.__sv = loadSV(toPCR = True)
+    
+    def getApproximateAscNodeTimes(self):
+        return self.__tascarr, self.__idxarr
     
     def estimateAscendingTimes(self):
         # Load state vectors for envision
@@ -113,8 +126,26 @@ class envisionIncidence:
         
         return
 
-
-
+    def getCycleIdx(self):
+        return self.__cycle_jump
+    
+    def getCycleFromOrbit(self, orbitNumber):
+        if orbitNumber < 0 or orbitNumber > self.__idxarr[-1]:
+            return None
+        for k,cyc in enumerate(self.__cycle_jump):
+            if orbitNumber < cyc:
+                return k + 1
+        return len(self.__cycle_jump) + 1
+        
+    
+    def getCycleFromTime(self, utc):
+        if utc < self.__tascarr[0] or utc > self.__tascarr[-1]:
+            return None
+        for k,cyc in enumerate(self.__cycle_jump):
+            if utc < self.__tascarr[cyc]:
+                return k + 1
+        return len(self.__cycle_jump) + 1
+    
     # Function to find the orbit number
     def getOrbitNumber(self, times):
         nearestOrbit = [findNearest(self.__tascarr, t) for t in times]
@@ -339,7 +370,7 @@ class envisionIncidence:
             options = [computeImagingGeometry(self.__sv, eta, xG, xG_snormal) 
                        for eta in etarange]
         except IndexError:
-            print("Failed extend for cycle : %d" % cycle_num)
+            logger.warning("Failed extend for cycle : %d" % cycle_num)
         
         """ Compute the orbit number """
         orbitNumber = refOrbitNumber + orbitRange
@@ -392,8 +423,10 @@ class envisionIncidence:
         ridx = self.orbitPointIndex(orbitNumber, point)
             
         targetSVtime = self.__sv.measurementTime[ridx]
-        R, inc, satSV = computeImagingGeometry(self.__sv, targetSVtime, X, N)
+        R, inc, satSV, err = computeImagingGeometry(self.__sv, targetSVtime, X, N)
         dopError = R.dot(satSV[1][3:])
+        satSVME = self.__sv.planet.PCRtoME2000(*satSV)
+        satSVICRF = self.__sv.planet.PCRtoICRF(*satSV)
     
         spoint = {"type": "Feature",
                   "geometry": {
@@ -403,18 +436,29 @@ class envisionIncidence:
                       },
                   "properties": {
                       "object": "VenSAR",
-                      "orbitNumber": orbitNumber,
+                      "orbitNumber": int(orbitNumber),
+                      "cycle": self.getCycleFromOrbit(orbitNumber),
                       "orbitDirection": "Ascending" if satSV[1][-1] > 0 else "Descending",
                       "incidence": inc,
                       "range": np.linalg.norm(R),
                       "rdotv": dopError,
-                      "stateVector": { 
-                                      "time": satSV[0].astype(str),
-                                      "xyzVxVyVz": satSV[1].tolist()
-                                 },
+                      "stateVector": {
+                          "IAU_VENUS": {
+                              "time": satSV[0].astype(str),
+                              "xyzVxVyVz": satSV[1].tolist()
+                              },
+                          "VME2000": {
+                              "time": satSVME[0].astype(str),
+                              "xyzVxVyVz": satSVME[1].tolist()
+                              },
+                          "J2000": {
+                              "time": satSVICRF[0].astype(str),
+                              "xyzVxVyVz": satSVICRF[1].tolist()
+                              }
+                          },
                       "processingTimestamp": np.datetime64("now").astype(str),
                       "targetID": point["properties"]["targetID"]
-                     }
+                      }
                   }
         
         return spoint
@@ -427,7 +471,8 @@ class envisionIncidence:
         start_idx = self.__idxarr[start_idxs[cycle-1]]
         end_idx = self.__idxarr[end_idxs[cycle-1]]
         
-        cycX = np.array(self.__sv.measurementData[start_idx:end_idx])[:,:3]
+        # cycX = np.array(self.__sv.measurementData[start_idx:end_idx])[:,:3]
+        cycX = self.__sv.measurementData[start_idx:end_idx]
         
         # Find the minimum distance state vector over the cycle
         try:
@@ -436,13 +481,22 @@ class envisionIncidence:
             X = self.llh2xyz(point)
             point["properties"]["target"]["xyz"] = X.tolist()
         
-        cidx = np.argmin(np.linalg.norm(cycX 
-                                        - np.tile(X, (len(cycX),1)), axis=1))
+        rngs = [np.linalg.norm(s[:3] - X) for s in cycX]
         
-        cidx += start_idx
+        rngsAsc = [r if s[-1]>0 else np.nan for r,s in zip(rngs, cycX)]
+        rngsDsc = [r if s[-1]<0 else np.nan for r,s in zip(rngs, cycX)]
+        
+        idxAsc = start_idx + np.nanargmin(rngsAsc)
+        idxDsc = start_idx + np.nanargmin(rngsDsc)
+        
+        #cidx = np.argmin(np.linalg.norm(cycX 
+        #                                - np.tile(X, (len(cycX),1)), axis=1))
+        
+        #cidx += start_idx
         
         # Get the orbit number
-        return self.getOrbitNumber([self.__sv.measurementTime[cidx]])[0]
+        return (self.getOrbitNumber([self.__sv.measurementTime[idxAsc]])[0],
+                self.getOrbitNumber([self.__sv.measurementTime[idxDsc]])[0])
         
     def surfaceNormal(self, point):
         X = self.llh2xyz(point)
@@ -454,6 +508,41 @@ class envisionIncidence:
     
     def getSV(self):
         return self.__sv
+    
+    def computeIncidences(self,
+                          initOrbit,
+                          targetIncidenceStart = 22,
+                          targetIncidenceEnd = 36,
+                          dIncidence = 2.0,
+                          maxIter=100):
+        pointAnalysis = {
+            "type": "FeatureCollection",
+            "features": []
+            }
+        
+        guess = 1
+        infLoop = 0
+        while guess != 0:
+            spoint = self.incidenceZeroDoppler(initOrbit, point)
+            guess = int((spoint["properties"]["incidence"]
+                         - targetIncidenceStart)/dIncidence)
+            sgn = 1 if spoint["properties"]["orbitDirection"] == "Ascending" else -1
+            initOrbit += sgn*guess
+            infLoop += 1
+            if infLoop > maxIter:
+                raise ConvergenceError("Find targetIncidenceStart", maxIter)
+        
+        pointAnalysis["features"].append(spoint)
+        increment = -sgn*np.sign(targetIncidenceStart)
+        infLoop = 0
+        while np.abs(spoint["properties"]["incidence"]) < np.abs(targetIncidenceEnd): 
+            initOrbit += increment
+            spoint = self.incidenceZeroDoppler(initOrbit, point)
+            pointAnalysis["features"].append(spoint)
+            infLoop += 1
+            if infLoop > maxIter:
+                raise ConvergenceError("Iterate to targetIncidenceEnd", maxIter)
+        return pointAnalysis
 
 #%% Get an instance of the envisionIncidence class
 eI = envisionIncidence()
@@ -469,35 +558,69 @@ if 'linux' in sys.platform:
 else:
     filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\ROIs\incidence"
     
-#%%
-polygon = featureCollection["features"][1]
-
-point = { 
-    "type": "Feature",
-    "geometry": {
-        "type": "Point",
-        "coordinates": list(np.mean(polygon["geometry"]["coordinates"][0][0:-1], axis=0))
-    },
-    "properties": {
-        "object": "target",
-        "targetID": polygon["properties"]["ROI_No"],
-        "target": {}
+#%% Loop through points
+for polygon in featureCollection["features"]:
+    logger.info("ROI: %s" % polygon["properties"]["ROI_No"])
+    point = { 
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": list(np.mean(polygon["geometry"]["coordinates"][0][0:-1], axis=0))
+        },
+        "properties": {
+            "object": "target",
+            "targetID": polygon["properties"]["ROI_No"],
+            "target": {}
+        }
     }
-}
-# targetIDStr = "https://www.esa.int/%0.2f/%0.2f/%0.1f" % tuple(point["geometry"]["coordinates"])
-# # X = eI.llh2xyz(point)
-# # N = eI.surfaceNormal(point)
-# # point["properties"]["target"] = {"xyz": X.tolist(), 
-# #                                  "normal": N.tolist()}
-# point["properties"]["targetID"] = str(uuid.uuid3(uuid.NAMESPACE_URL, targetIDStr))
+    
+    """ Compute coordinates of center of roI """
+    X = eI.llh2xyz(point)
+    point["properties"]["target"]["xyz"] = X.tolist()
+    
+    """ Write point to file """
+    filename = "%s_%s.geojson" % (polygon["properties"]["ROI_No"], "center")
+    with open(os.path.join(filepath, filename), "w") as f:
+        f.write(json.dumps(point, indent=2))    
+        
+    """ Loop through cycles """
+    pointAnalysis = {
+        "type": "FeatureCollection",
+        "features": []
+        }
+    
+    for cycle in tqdm(range(1,7)):
+        closestAscOrbit, closestDscOrbit = eI.cyclePointOrbitNumber(cycle, point)
+        
+        """ Define parameters to compute """
+        parameters = [(closestAscOrbit, 22, 36),    # Ascending, left
+                      (closestAscOrbit, -22, -36),  # Ascending, right
+                      (closestDscOrbit, 22, 36),    # Descending, left
+                      (closestDscOrbit, -22, -36)]  # Descending, right
+        
+        for params in parameters:
+            try:
+                pointAnalysis["features"] += eI.computeIncidences(*params)["features"]
+            except ConvergenceError:
+                logger.warning("Error in convergence: ROI: %s, orbitNumber: %d, incidences: [%d, %d]" % 
+                               (polygon["properties"]["ROI_No"],
+                                params[0],
+                                params[1],
+                                params[2]))
+                logger.warning("Error in covergence for cycle %d" % cycle)
+            except IndexError:
+                logger.warning("Orbit out of range: ROI: %s, orbitNumber: %d, incidences: [%d, %d]" % 
+                               (polygon["properties"]["ROI_No"],
+                                params[0],
+                                params[1],
+                                params[2]))
+                
+    
+    """ Write point to file """
+    filenameInc = "%s_%s.geojson" % (polygon["properties"]["ROI_No"], "incidence")
+    with open(os.path.join(filepath, filenameInc), "w") as f:
+        f.write(json.dumps(pointAnalysis, indent=2))
 
-
-
-
-#%% Write point to file
-filename = "%s_%s.geojson" % (polygon["properties"]["ROI_No"], "center")
-with open(os.path.join(filepath, filename), "w") as f:
-    f.write(json.dumps(point, indent=2))
     
 #%% Find the closest satellite point
 passTypes = ["standard", "stereo", "polarimetry", "highRes"]

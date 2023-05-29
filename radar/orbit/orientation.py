@@ -131,7 +131,9 @@ class orbit:
         if period is not None:
             self.period = period
             self.a = (period*np.sqrt(planet.GM)/(2*np.pi))**(2/3)
+        self.__setRotations()
         
+    def __setRotations(self):
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
         cosP = np.cos(self.arg_perigee)
@@ -147,6 +149,55 @@ class orbit:
                                    [0,   sinI, cosI ]])
 
     
+    def setFromDict(self, 
+                    pool, 
+                    planet = earth(),
+                    angleUnits = "degrees"):
+        """
+        Set the orbit from a dictionary
+
+        Parameters
+        ----------
+        pool : dictionary
+            A dictionary with parameters defining the orbit.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.toRadians = self.angleFunction[angleUnits]
+        keys = pool.keys()
+        def period2a(x):
+            if x is None:
+                return None
+            return (x*np.sqrt(planet.GM)/(2*np.pi))**(2/3)
+        
+        def orbits_per_day2a(x):
+            if x is None:
+                return None
+            return period2a(24*60*60/x)
+        
+        identity = lambda x: x
+        flds = [("e", 0.0, identity), 
+                ("arg_perigee", 0.0, identity), 
+                ("a", None, identity), 
+                ("period", None, period2a),
+                ("orbits_per_day", None, orbits_per_day2a),
+                ("inclination", 90.0, identity)]
+        args = [x[2](pool[x[0]]) if x[0] in keys else x[2](x[1]) 
+                for x in flds]
+        self.e = args[0]
+        self.arg_perigee = self.toRadians(args[1])
+        self.a = [x for x in args[2:5] if x is not None][0]
+        self.inclination = self.toRadians(args[5])
+        self.period = 2*np.pi*np.sqrt(self.a**3/planet.GM)
+        self.planet = planet
+        self.__setRotations()
+        
+        
+        
+        
     def setFromStateVector(self, X):
         """
         Set the orbit parameters for this object using a state vector
