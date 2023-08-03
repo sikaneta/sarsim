@@ -12,7 +12,7 @@ import logging.handlers
 import os
 import json
 from datetime import datetime
-filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\ROIs\incidence"
+filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\ROIs"
 logfile = os.path.join(filepath, "processing.log")
 
 #%% To lowercase
@@ -40,7 +40,7 @@ class ecsMsg:
             
         mesgDict.update(**self.kwargs)
         
-        return json.dumps(mesgDict, separators=(',',':'))
+        return json.dumps(mesgDict, separators=(',',':'), indent = 2)
 
 #%%
 class CustomAdapter(logging.LoggerAdapter):
@@ -82,7 +82,7 @@ logconfig = {
             'filename': logfile,
             'mode': 'w',
             'backupCount': 10,
-            'maxBytes': 50000
+            'maxBytes': 5000000
         },
         'staticFileHandler': {
             'class': 'logging.FileHandler',
@@ -95,7 +95,7 @@ logconfig = {
     'loggers': {
         'foo': {
             # 'handlers': ['console', 'fileHandler']
-            'handlers': ['console', 'staticFileHandler']
+            'handlers': ['console', 'rotatingFileHandler']
         }
     },
     'root': {

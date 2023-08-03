@@ -363,6 +363,29 @@ class simulation:
 
     #%%
     def aeu2rpyCovariance(self, R_AEU, N=100000):
+        """
+        Estimate roll, pitch, yaw covariance from azimuth, elevation tilt
+        
+        By simulation, estimate the covariance matrix for roll, pitch
+        and yaw that corresponds to the input covariance matrix for azimuth,
+        elevation and tilt errors
+
+        Parameters
+        ----------
+        R_AEU : `np.ndarray(3,3, dtype=double)`
+            The input covariance matrix of azimuth, elevation and tilt.
+        N : `int`
+            The number of samples to use in the simulatino. The default 
+            is 100000.
+
+        Returns
+        -------
+        `np.ndarray(3,3)`
+            The estimated covariance matrix of roll, pitch and yaw angle
+            errors.
+
+        """
+        
         """ Compute the rotation matrix to go from aeu to ijk_s """
         c_ep = np.cos(self.e_ang)
         s_ep = np.sin(self.e_ang)
@@ -372,9 +395,23 @@ class simulation:
                         [0, -s_ep, c_ep]
                        ])
         
+        """ Generate N 3-element vectors with covariance matrix given by
+            R_AEU """
         AEU = self.generateGaussian(R_AEU, N)
+        
+        """ Initialize a data set for the transformation of each of the
+            vectors generated above from AEU to RPY """
         RPY = np.zeros_like(AEU)
+        
+        """ For each triplet of AEU (azimuth, elevationand tilt) error 
+            angles, compute the equivalent roll, pitch and yaw angles
+            that would rotate the spacecraft from nominal pointing, so 
+            that it would cause mispointing in accordance with the AEU 
+            values. """
         RPYfromAEU(AEU, M_er, RPY)
+        
+        """ Estimate the covariance matrix of the RPY generated triplets
+            and return """
         return RPY.dot(RPY.T)/N
 
     #%%
@@ -428,6 +465,78 @@ class simulation:
         Translate x-track position errors to elevation pointing error
         
         This function translates across-track satellite position errors into
+        elevation angle pointing errors. The procedure follows the old
+        approach of defining the elevation error as the error between the
+        actual incidence angle and the predicted incidence angle. The analysis
+        was captured in an old version of the PRJ document.
+
+        Parameters
+        ----------
+        X : `np.ndarray(6, dtype=float)`
+            State vector of the satellite at the time of interest.
+        off_nadir : `float`
+            The off-nadir angle for the elevation boresight.
+        R_xtrack : `np.ndarray(2,2, dtype=float)`
+            The covariance matrix of the across-track error in terms of
+            errors in the c and n-directions, respecvely.
+
+        Returns
+        -------
+        `float`
+            Variance of the elevation angle error.
+
+        """
+        sv = state_vector(planet = self.planet)
+        sv.add(np.datetime64("2000-01-01T00:00:00.000000"), sv.toPCR(X, 0))
+        
+        tcn = self.tcnFromX(X)
+        
+        r, rhat, inc, _, _ = getTiming(sv, [np.radians(off_nadir)], 0)
+        
+        q = rhat[0].dot(tcn[:,1:])#.dot(np.array([[0,1],[1,0]]))
+        
+        return q.dot(R_xtrack).dot(q)/r[0]**2
+
+    #%%
+    def xtrackOffset2aeuCovarianceTCN(self,
+                                      X,
+                                      off_nadir,
+                                      R_xtrack):
+        """
+        Translate x-track position errors to elevation pointing error
+        
+        This function translates across-track satellite position errors into
+        elevation angle pointing errors. The procedure follows the definition
+        of pointing error that has nothing to do with the measured imagery.
+
+        Parameters
+        ----------
+        X : `np.ndarray(6, dtype=float)`
+            State vector of the satellite at the time of interest.
+        R_xtrack : `np.ndarray(2,2, dtype=float)`
+            The covariance matrix of the across-track error in terms of
+            errors in the c and n-directions, respecvely.
+
+        Returns
+        -------
+        `float`
+            Variance of the elevation angle error.
+
+        """
+        
+        q = np.array([1,0])
+        
+        return q.T.dot(R_xtrack).dot(q)/np.linalg.norm(X[:3])**2
+    
+    #%%
+    def xtrackOffset2aeuCovarianceSwath(self,
+                                        X,
+                                        off_nadir,
+                                        R_xtrack):
+        """
+        Translate x-track position errors to elevation pointing error
+        
+        This function translates across-track satellite position errors into
         elevation angle pointing errors. The procedure follows the equation
         defined in section 6.5 of the PRJ
 
@@ -450,12 +559,6 @@ class simulation:
         sv = state_vector(planet = self.planet)
         sv.add(np.datetime64("2000-01-01T00:00:00.000000"), sv.toPCR(X, 0))
         
-        # t = X[3:]/np.linalg.norm(X[3:])
-        # n = -X[:3]/np.linalg.norm(X[:3])
-        # c = np.cross(n, t)
-        # c /= np.linalg.norm(c)
-        # n = np.cross(t,c)
-        # n /= np.linalg.norm(n)
         tcn = self.tcnFromX(X)
         
         r, rhat, inc, _, _ = getTiming(sv, [np.radians(off_nadir)], 0)
@@ -465,7 +568,8 @@ class simulation:
         q = d.dot(tcn[:,1:])#np.array([d.dot(c), d.dot(n)])
         
         return q.dot(R_xtrack).dot(q)/r[0]**2
-        
+
+    
     #%%
     def tcnFromX(self, X):
         """
@@ -569,13 +673,18 @@ class simulation:
                                           off_nadir, 
                                           R_orbalong)
         
-        # lookvec = np.array([np.cos(np.radians(off_nadir)), 
-        #                     np.sin(np.radians(off_nadir))])
-        # R_xtrack = np.diag(covariances["orbitAcrossTrack"]["R"])
-        # R_pos = lookvec.dot(R_xtrack).dot(lookvec)/r**2
-        R_pos = self.xtrackOffset2aeuCovariance(X,
-                                                off_nadir,
-                                                np.array(covariances["orbitAcrossTrack"]["R"]))
+        """ Select an elevation pointing angle error definition """
+        AcrossTrackFn = {"TCN": self.xtrackOffset2aeuCovarianceTCN,
+                         "SwathCentre": self.xtrackOffset2aeuCovarianceSwath,
+                         "BeamIntersection": self.xtrackOffset2aeuCovariance}
+        try:
+            errDef = AcrossTrackFn[covariances["orbitAcrossTrack"]["errorDefinition"]]
+        except KeyError:
+            errDef = AcrossTrackFn["SwathCentre"]
+            
+        R_pos = errDef(X, 
+                       off_nadir, 
+                       np.array(covariances["orbitAcrossTrack"]["R"]))
         
         """ Get the instrument contribution and convert accordingly. """
         R_ins = covariances["instrument"]["R"]

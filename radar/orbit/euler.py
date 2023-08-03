@@ -146,7 +146,7 @@ def RPYfromAEU(AEU, M_e, RPY):
     tilt errors
     
     This function computes the Roll angle, Pitch angle
-    and Yaw angle errors from given azimuth, elevation and tile
+    and Yaw angle errors from given azimuth, elevation and tilt
     errors. The algorithm for computing these values can be found
     in my notes.
     
@@ -160,7 +160,7 @@ def RPYfromAEU(AEU, M_e, RPY):
     M_e : `numpy.ndarray, [3,3]`
         The matrix that rotates aeu into jki_s.
     RPY : `numpy.ndarray, [3, N]`
-        Numoy array to hold computed roll pitch yaw vales.
+        Numpy array to hold computed roll pitch yaw vales.
 
     Returns
     -------
