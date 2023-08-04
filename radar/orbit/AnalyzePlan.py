@@ -71,6 +71,18 @@ class imagingSolutions:
         """
         self.solutions.append(pair)
         
+    def length(self):
+        """
+        Return the number of solutions
+
+        Returns
+        -------
+        int
+            The number of solutions.
+
+        """
+        return len(self.solutions)
+        
     def minimum(self):
         """
         Compute the minimum of the imagingPair costs
@@ -82,7 +94,10 @@ class imagingSolutions:
             held by this imagingSolutions class.
 
         """
-        return min([x.T for x in self.solutions])
+        if len(self.solutions) == 0:
+            return None
+        minidx = np.argmin([x.T for x in self.solutions])
+        return self.solutions[minidx].toJson()
     
     def testFilter(self, fn):
         """
@@ -265,7 +280,7 @@ class imagingPair:
         self.T = np.abs(np.abs(self.ops[0].incidence - self.ops[1].incidence) 
                         - self.offset) - self.threshold
     
-    def consistentWith(self, myPair):
+    def consistentWith(self, other):
         """
         Check if opportunities are consistent
         
@@ -274,7 +289,7 @@ class imagingPair:
 
         Parameters
         ----------
-        myPair : :py:class:`<orbit.AnalyzePlan.imagingPair>`
+        other: :py:class:`<orbit.AnalyzePlan.imagingPair>`
             imagingPair object to compare with.
 
         Returns
@@ -283,7 +298,7 @@ class imagingPair:
             True if consistent.
 
         """
-        for x,y in product(self.ops, myPair.ops):
+        for x,y in product(self.ops, other.ops):
             if not x.consistentWith(y):
                 return False
         return True
@@ -300,8 +315,20 @@ class imagingPair:
         """
 
         return {"type": self.type,
-                "pair": [x.toJson() for x in self.ops]}
+                "score": self.T,
+                "events": [x.toJson() for x in self.ops]}
         
+class imagingUnit(imagingPair):
+    def __init__(self, x):
+        self.ops = [x]
+        self.type = "unit"
+        self.offset = 30
+        self.threshold = 7
+        self.computeScore()
+        
+    def computeScore(self):
+        self.T = np.abs(self.ops[0].incidence - self.offset) - self.threshold
+    
 class opportunity:
     """
     Class to represent an imaging opportunity
@@ -319,14 +346,16 @@ class opportunity:
         Load class data from a geojson snippet
     
     """
+    time_threshold = 10
+    inc_threshold = 1
     def __init__(self, 
                  incidence = None,
                  orbitNumber = None,
                  cycle = None,
                  UTC = None,
                  ROI = None,
-                 time_threshold = 10, 
-                 inc_threshold = 1):
+                 time_threshold = None, 
+                 inc_threshold = None):
         """
         Class constructor
 
@@ -344,10 +373,10 @@ class opportunity:
             The name of the ROI that uses this opportunity
         time_threshold : float, optional
             Time threshold (minutes) for comparison. 
-            The default is 10.
+            The default is None, in which case 10 is used.
         inc_threshold : float, optional
             Incidence threshold (degrees) for comparison. 
-            The default is np.radians(1).
+            The default is None, in which case 1 is used.
 
         Returns
         -------
@@ -359,8 +388,8 @@ class opportunity:
         self.cycle = cycle
         self.UTC = UTC
         self.ROI = ROI
-        self.inc_threshold = inc_threshold
-        self.time_threshold = time_threshold
+        self.inc_threshold = inc_threshold or self.inc_threshold
+        self.time_threshold = time_threshold or self.time_threshold
         
     def consistentWith(self,  other):
         """
@@ -460,8 +489,8 @@ class opportunityJson(opportunity):
     
     def __init__(self, 
                  myjson,
-                 time_threshold = 10, 
-                 inc_threshold = 1):
+                 time_threshold = None, 
+                 inc_threshold = None):
         """
         Constructor
 
@@ -471,10 +500,10 @@ class opportunityJson(opportunity):
             Input json dictionary from which to set parameters.
         time_threshold : float, optional
             Time threshold (minutes) for comparison. 
-            The default is 10.
+            The default is None, in which case 10 is used.
         inc_threshold : float, optional
             Incidence threshold (degrees) for comparison. 
-            The default is np.radians(1).
+            The default is None, in which case 1 is used.
 
         Returns
         -------
@@ -483,8 +512,8 @@ class opportunityJson(opportunity):
         """
         
         self.fromJson(myjson)
-        self.inc_threshold = inc_threshold
-        self.time_threshold = time_threshold
+        self.inc_threshold = inc_threshold or self.inc_threshold
+        self.time_threshold = time_threshold or self.time_threshold
         
 
 class opportunityGeoJson(opportunity):
@@ -494,8 +523,8 @@ class opportunityGeoJson(opportunity):
     """
     def __init__(self, 
                  mygeojson,
-                 time_threshold = 10, 
-                 inc_threshold = 1):
+                 time_threshold = None, 
+                 inc_threshold = None):
         """
         Constructor
 
@@ -505,10 +534,10 @@ class opportunityGeoJson(opportunity):
             Input geojson dictionary from which to set parameters.
         time_threshold : float, optional
             Time threshold (minutes) for comparison. 
-            The default is 10.
+            The default is None, in which case 10 is used.
         inc_threshold : float, optional
             Incidence threshold (degrees) for comparison. 
-            The default is np.radians(1).
+            The default is None, in which case 1 is used.
 
         Returns
         -------
@@ -517,17 +546,8 @@ class opportunityGeoJson(opportunity):
         """
         
         self.fromGeoJson(mygeojson)
-        self.inc_threshold = inc_threshold
-        self.time_threshold = time_threshold
-        
-#%% Test the class
-# opA = opportunity()
-# opB = opportunity()
-# opB.fromJson(eplan.scores[0]["imagingOptions"]["Repeat"][0][0])
-# opA.fromJson(eplan.scores[0]["imagingOptions"]["Repeat"][0][0])
-# opB.UTC = '2035-07-18T12:52:47.090259939'
-# opA == opB
-
+        self.inc_threshold = inc_threshold or self.inc_threshold
+        self.time_threshold = time_threshold or self.time_threshold
 
 #%%
 class roiPlan:
@@ -661,6 +681,10 @@ class roiPlan:
             for a,b in product(*cycle_pair):
                 for score in criteria:
                     solutions.add(imagingPair(a,b, score))
+                    
+        self.units = imagingSolutions()
+        for z in [x for y in cycleOps for x in y]:
+            self.units.add(imagingUnit(z))
         
         self.allRepeat = solutions.filt(roiPlan.fnRepeat)
         self.allStereo = solutions.filt(roiPlan.fnStereo)
@@ -687,19 +711,44 @@ class roiPlan:
 
         Returns
         -------
-        data : TYPE
-            DESCRIPTION.
+        data : `dict`
+            Json snippet as python dictionary.
 
         """
-        solutions = self.fltRepeat.toJson() + self.fltStereo.toJson()
+        solutions = self.fltRepeat.toJson() 
+        solutions += self.fltStereo.toJson()
+        solutions += self.units.filt(roiPlan.fnCompliant).toJson()
         both = distributeSolutions([self.fltRepeat, self.fltStereo])
-        data = {"bestStereo": self.allStereo.minimum(),
-                "bestRepeat": self.allRepeat.minimum(),
-                "imagingSolutions": solutions,
-                "both": [x.toJson() for x in both]}
-        if len(data["both"]) == 0:
-            data.pop("both")
-        return data
+        fltStereoMin = self.fltStereo.minimum()
+        fltRepeatMin = self.fltRepeat.minimum()
+        if both:
+            minboth = np.argmin([x.filt(roiPlan.fnStereo).minimum()["score"] 
+                                 for x in both])
+            option = {"type": "Both Stereo and Repeat",
+                      "solution": both[minboth].toJson()}
+        elif fltStereoMin is not None and fltRepeatMin is not None:
+            option = {"type": "Either Stereo or Repeat",
+                      "solution": [fltStereoMin, fltRepeatMin]}
+        elif fltStereoMin is not None:
+            option = {"type": "Only Stereo",
+                      "solution": [fltStereoMin]}
+        elif fltRepeatMin is not None:
+            option = {"type": "Only Repeat",
+                      "solution": [fltRepeatMin]}
+        else:
+            option = {"type": "Neither Stereo nor Repeat",
+                      "solution": [self.units.minimum()]}
+            
+        properties = {"ROI_No": self.roi["properties"]["ROI_No"],
+                      "plan": self.roi["properties"]["plan"],
+                      "minima": [self.allStereo.minimum(), 
+                                 self.allRepeat.minimum()],
+                      "imagingSolutions": solutions,
+                      "compliant": option}
+        
+        return {"type": self.roi["type"],
+                "geometry": self.roi["geometry"],
+                "properties": properties}
         
 #%% Define function to see if we have a solution
 class plan:
@@ -720,20 +769,70 @@ class plan:
         represent this class as a json snippet
     
     """
+    validOrbitFile = "quindec_cycle_orbit_table.txt"
+    roiFile = "roi.geojson"
 
     def __init__(self, filepath, version = "Plan"):
         self.filepath = filepath
+        self.version = version
+        self.readPlan()
+        self.readValidOrbits()
+        
+    def readPlan(self, roiFile = None):
+        """
+        Ingest the imaging plan
+        
+        This method reads an roi geojson file to determine the coordinates of 
+        a set of ROIs as well as the plan for imaging. This plan for imaging 
+        defines what SAR modes will be used on what cycle for each ROI.
+        
+        If roiFile is not supplied, then the default is used. If roiFile is
+        supplied, then the class roiFile variable is updated.
+
+        Parameters
+        ----------
+        roiFile : str, optional
+            The name of the ROI file. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.roiFile = roiFile or self.roiFile
         
         # Open the roi file
-        with open(os.path.join(filepath, version, "roi.geojson"), "r") as f:
+        with open(os.path.join(self.filepath, 
+                               self.version, 
+                               self.roiFile), "r") as f:
             self.plan = json.loads(f.read())
         self.nFeatures = len(self.plan["features"])
         self.rois = [None]*self.nFeatures
         self.UTC_filter = [[] for x in range(self.nFeatures)]
-            
-        # Open the Jayne-supplied orbit file for filtering SAR orbit
-        with open(os.path.join(filepath, 
-                               "quindec_cycle_orbit_table.txt"), "r") as f:
+        
+
+    def readValidOrbits(self, validOrbitFile = None):
+        """
+        Ingest the valid SAR orbits
+        
+        This method reads a file describing which orbit numbers can be
+        allocated to SAR imaging.
+        
+        if validOrbitFile is None, then the default file will be read. If it
+        is not None, then the class variable is set to the supplied value.
+
+        Parameters
+        ----------
+        validOrbitFile : str, optional
+            The orbit file to read. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.validOrbitFile = validOrbitFile or self.validOrbitFile
+        with open(os.path.join(filepath, self.validOrbitFile), "r") as f:
             pool = [x.split() for x in f.read().split("\n")]
             pool = pool[0:-1]
             
@@ -754,6 +853,20 @@ class plan:
             self.computeElement(k)
             
     def similarity(self):
+        """
+        Compute the similarity between ROIs
+        
+        This method computes the similarity matrix for the set of ROIs. The
+        similarity is defined as 1 if the two ROIs can potentially be imaged
+        in a way that would require the SAR to change orientation (slew) in
+        an unrealisable amount of time. Otherwise, the similarity is 0.
+
+        Returns
+        -------
+        sim : TYPE
+            DESCRIPTION.
+
+        """
         sim = np.zeros((self.nFeatures, self.nFeatures))
         for k in range(self.nFeatures):
             for l in range(k+1, self.nFeatures):
@@ -761,6 +874,41 @@ class plan:
                 sim[l,k] = sim[k,l]
             sim[k,k] = 1
         return sim
+    
+    def cluster(self):
+        """
+        Compute clusters of ROIs that use the same SAR resources
+        
+        This function clusters ROIs according to their use of SAR as a 
+        resource. That is, for instance, if the SAR cannot change orientation 
+        in time to suit a the potential imaging geometry requirements for a 
+        pair different ROIs, then both ROIs compete for the SAR as a resource. 
+        The ROIs must either avoid using the potentially inconsistent geometry
+        requirements, or if this is not possible, one ROI must use the SAR at 
+        the expense of the other. 
+
+        Returns
+        -------
+        None.
+
+        """
+        sim = self.similarity()
+
+        model = AgglomerativeClustering(
+          metric='precomputed',
+          linkage='complete',
+          n_clusters = None,
+          distance_threshold=0.5
+        ).fit(1-sim)
+
+        labels = model.labels_
+        clst = []
+        for k in labels:
+            if k not in clst:
+                clst.append(k)
+        self.clusters = [[k for k,l in enumerate(labels) if l==m] 
+                         for m in clst]
+        self.fltClusters = list(filter(lambda x: len(x) > 1, self.clusters))
         
     def computeElement(self, k):
         """
@@ -794,48 +942,43 @@ class plan:
         plan = self.plan
         with open(os.path.join(filepath, version, filename), "w") as f:
             f.write(json.dumps(plan, indent=2))
-        
-# Define further filtering functions
-# """ Filtering functions """
-# fnCompliant = lambda x: x.T < 0
-# fnRepeat = lambda x: x.type == "Repeat"
-# fnStereo = lambda x: x.type == "Stereo"
-
-# Define function to return possibility of simultaneous solutions
-# def distributeSolutions(myOptions):
-#     return [imagingSolutions(test)
-#             for test in product(*[z.solutions for z in myOptions])
-#             if all([x & y for x,y in combinations(test,2)])]
 
 #%% Instantiate a plan object
 eplan = plan(filepath)
 eplan.computeElements()
 
 #%%
-sim = eplan.similarity()
+sim = eplan.cluster()
 
 #%%
-model = AgglomerativeClustering(
-  metric='precomputed',
-  linkage='complete',
-  n_clusters = None,
-  distance_threshold=0.5
-).fit(1-sim)
+def fnConsistent(idxs):
+    """
+    Function to determine imaging consistency.
+    
+    This function tests whether the filtered repeat and stereo imaging 
+    options for each ROI in a set are consistent with each other. That is, 
+    that they do not place unrealisable demands on the SAR to switch 
+    incidence angles from one ROI to another.
 
-labels = model.labels_
-clusters = []
-for k in labels:
-    if k not in clusters:
-        clusters.append(k)
-myclusters = [[k for k,l in enumerate(labels) if l==m] for m in clusters]
-myclusters = [x for x in myclusters if len(x)>1]
+    Parameters
+    ----------
+    idxs : list of int
+        indexes of rois to test.
 
-#%%
-noncomp = []
-for idxs in myclusters:
-    y = distributeSolutions([eplan.rois[k].compliant for k in idxs])
-    if len(y) == 0:
-        noncomp.append(idxs)
+    Returns
+    -------
+    bool
+        True if the rois are consistent, False otherwise.
+
+    """
+    x = [[eplan.rois[k].fltRepeat,
+          eplan.rois[k].fltStereo] for k in idxs]
+    x = [u for v in x for u in v if u.solutions]      
+    y = distributeSolutions(x)
+    
+    return len(y) > 0
+        
+noncomp = list(filter(lambda x: not fnConsistent(x), eplan.fltClusters))
         
 """
 Note to self here. Some options are showing conflict because the
@@ -844,4 +987,39 @@ minutes when the default that I've use is 1 degree in 10 minutes.
 Some refinement of this condition seems important
 """
 
+#%%
+def bestStereo(idxs, fltFn = roiPlan.fnStereo):
+    """
+    Find the best options for non-consistent ROIs
 
+    Parameters
+    ----------
+    idxs : `list` of int
+        Indexes of the ROIs that are inconsistent.
+    fltFn : `function`, optional
+        A function used to filter the solutions. The default is 
+        roiPlan.fnStereo and seeks to find the best stereo solution.
+
+    Returns
+    -------
+    int
+        The number of instances of the type selected by fltFn.
+    list of imageSolutions. None if there are no consistent solutions.
+        Consistent imagingSolutions with the maximum of the type slected
+        by fltFn. None if there are no consistent solutions.
+
+    """
+    x = [[eplan.rois[k].fltRepeat,
+          eplan.rois[k].fltStereo] for k in idxs]
+    x = [u for v in x for u in v if u.solutions]
+    N = len(x)
+    for r in range(N,0,-1):
+        y = [distributeSolutions(z) for z in combinations(x,r)]
+        y = list(filter(lambda x: len(x) > 1, y))
+        y = [x for v in y for x in v]
+        mx = [x.filt(fltFn).length() for x in y]
+        if len(mx) > 0:
+            maxStereo = max(mx)
+            return maxStereo, [z for k,z in enumerate(y) if mx[k]==maxStereo] 
+    return None, None
+            
