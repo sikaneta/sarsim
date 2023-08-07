@@ -71,6 +71,9 @@ class imagingSolutions:
         """
         self.solutions.append(pair)
         
+    def __contains__(self, pair):
+        return pair in self.solutions
+    
     def length(self):
         """
         Return the number of solutions
@@ -89,15 +92,15 @@ class imagingSolutions:
 
         Returns
         -------
-        float
-            The minimum of all costs imagingPair.T for the pairs
-            held by this imagingSolutions class.
+        `imagingPair`
+            The imagingPair with the minimum of all costs imagingPair.T
+            for the imagingPairs held by this imagingSolutions object.
 
         """
         if len(self.solutions) == 0:
             return None
         minidx = np.argmin([x.T for x in self.solutions])
-        return self.solutions[minidx].toJson()
+        return self.solutions[minidx]
     
     def testFilter(self, fn):
         """
@@ -138,6 +141,24 @@ class imagingSolutions:
         imS.solutions += self.testFilter(fn)
         return imS
     
+    def intersection(self, other):
+        """
+        Find the intersection between imagingSolutions
+
+        Parameters
+        ----------
+        other : `imagingSolutions`
+            The imagingSolutions to find the intersection with.
+
+        Returns
+        -------
+        `imagingSolutions`
+            An imaging solutions object containing the intersection of self
+            with other. 
+
+        """
+        return self.filt(lambda x: x in other)
+        
     def consistentWith(self, other):
         return all([x & y for x,y in product(self.solutions,
                                              other.solutions)])
@@ -228,6 +249,31 @@ class imagingPair:
         self.offset = criteria["offset"]
         self.threshold = criteria["threshold"]
         self.computeScore()
+        
+    def __eq__(self, other):
+        """
+        Test for equality with another imagingPair
+
+        Parameters
+        ----------
+        other : `imagingPair`
+            Another imaging pair to test against.
+
+        Returns
+        -------
+        bool
+            True if objects hold the same data, False otherwise.
+
+        """
+        return all(x == y for x,y in
+                   zip(self.ops + [self.type, 
+                                   self.offset, 
+                                   self.threshold,
+                                   self.T],
+                       other.ops + [other.type,
+                                    other.offset,
+                                    other.threshold,
+                                    other.T]))
         
     def __and__(self, Y):
         """
@@ -391,6 +437,37 @@ class opportunity:
         self.inc_threshold = inc_threshold or self.inc_threshold
         self.time_threshold = time_threshold or self.time_threshold
         
+    def __eq__(self, other):
+        """
+        Test for equality with another opportunity
+
+        Parameters
+        ----------
+        other : `opportunity`
+            The other opportunity to test against.
+
+        Returns
+        -------
+        bool
+            True if objects contain the same data, False otherwise.
+
+        """
+        return all([x==y for x,y in
+                    zip([self.incidence,
+                         self.orbitNumber,
+                         self.cycle,
+                         self.UTC,
+                         self.ROI,
+                         self.inc_threshold,
+                         self.time_threshold],
+                        [other.incidence,
+                         other.orbitNumber,
+                         other.cycle,
+                         other.UTC,
+                         other.ROI,
+                         other.inc_threshold,
+                         other.time_threshold])])
+        
     def consistentWith(self,  other):
         """
         Check for consistency with another opportunity
@@ -399,8 +476,12 @@ class opportunity:
         with another within the time and incidence thresholds. Consistency
         evaluates to True if the incidence angle can be changed from the
         incidence angle of this object to the incidence angle of myobj in
-        the time difference between planned measurements. In all other cases,
-        consistency evaluates to False
+        the time difference between planned measurements.
+        
+        Another opportunity is also, by definition, inconsistent if it shares
+        the same ROI and the same cycle, but uses a different orbit number.
+        This is because the plan is to sequentially image across the longitude
+        of an ROI by using the same incidence angle every 5 orbits or so.
         
         Parameters
         ----------
@@ -414,6 +495,11 @@ class opportunity:
             the set thresholds (incidence and time) for this opprotunity.
 
         """
+        if (self.cycle == other.cycle and 
+            self.ROI == other.ROI and
+            self.orbitNumber != other.orbitNumber):
+            return False
+        
         num = np.abs(self.incidence - other.incidence)
         den = np.abs((np.datetime64(self.UTC) - 
                 np.datetime64(other.UTC))/np.timedelta64(1, 'm'))
@@ -558,6 +644,8 @@ class roiPlan:
     -------
     computeOptions:
         Computes imagingSolutions (stereo, repeat, both) for the roi
+    filt:
+        Filter this roiPlan with an imagingSolutions object
     toJson:
         Represents the class as a json snippet
         
@@ -694,6 +782,23 @@ class roiPlan:
         
     def consistentWith(self, other):
         return self.compliant.consistentWith(other.compliant)
+    
+    def filt(self, solution):
+        """
+        Filter this roiPlan by its intersection with an imagingSolutions
+
+        Parameters
+        ----------
+        solution : `imagingSolutions`
+            An imagingSolutions object against which to filter.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.fltRepeat = self.fltRepeat.intersection(solution)
+        self.fltStereo = self.fltStereo.intersection(solution)
         
     def toJson(self):
         """
@@ -722,27 +827,28 @@ class roiPlan:
         fltStereoMin = self.fltStereo.minimum()
         fltRepeatMin = self.fltRepeat.minimum()
         if both:
-            minboth = np.argmin([x.filt(roiPlan.fnStereo).minimum()["score"] 
+            minboth = np.argmin([x.filt(roiPlan.fnStereo).minimum().T 
                                  for x in both])
             option = {"type": "Both Stereo and Repeat",
                       "solution": both[minboth].toJson()}
         elif fltStereoMin is not None and fltRepeatMin is not None:
             option = {"type": "Either Stereo or Repeat",
-                      "solution": [fltStereoMin, fltRepeatMin]}
+                      "solution": [fltStereoMin.toJson(), 
+                                   fltRepeatMin.toJson()]}
         elif fltStereoMin is not None:
             option = {"type": "Only Stereo",
-                      "solution": [fltStereoMin]}
+                      "solution": [fltStereoMin.toJson()]}
         elif fltRepeatMin is not None:
             option = {"type": "Only Repeat",
-                      "solution": [fltRepeatMin]}
+                      "solution": [fltRepeatMin.toJson()]}
         else:
             option = {"type": "Neither Stereo nor Repeat",
-                      "solution": [self.units.minimum()]}
+                      "solution": [self.units.minimum().toJson()]}
             
         properties = {"ROI_No": self.roi["properties"]["ROI_No"],
                       "plan": self.roi["properties"]["plan"],
-                      "minima": [self.allStereo.minimum(), 
-                                 self.allRepeat.minimum()],
+                      "minima": [self.allStereo.minimum().toJson(), 
+                                 self.allRepeat.minimum().toJson()],
                       "imagingSolutions": solutions,
                       "compliant": option}
         
@@ -934,14 +1040,80 @@ class plan:
                      UTC_filter = self.UTC_filter[k])
         pE.computeOptions()
         self.rois[k] = pE
+        
+    #%%
+    def fnConsistent(self, idxs):
+        """
+        Function to determine imaging consistency.
+        
+        This function tests whether the filtered repeat and stereo imaging 
+        options for each ROI in a set are consistent with each other. That is, 
+        that they do not place unrealisable demands on the SAR to switch 
+        incidence angles from one ROI to another.
+
+        Parameters
+        ----------
+        idxs : list of int
+            indexes of rois to test.
+
+        Returns
+        -------
+        bool
+            True if the rois are consistent, False otherwise.
+
+        """
+        x = [[self.rois[k].fltRepeat,
+              self.rois[k].fltStereo] for k in idxs]
+        x = [u for v in x for u in v if u.solutions]      
+        y = distributeSolutions(x)
+        
+        return len(y) > 0
+    
+    #%%
+    def bestOption(self, idxs, fltFn = roiPlan.fnStereo):
+        """
+        Find the best options for non-consistent ROIs
+
+        Parameters
+        ----------
+        idxs : `list` of int
+            Indexes of the ROIs that are inconsistent.
+        fltFn : `function`, optional
+            A function used to filter the solutions. The default is 
+            roiPlan.fnStereo and seeks to find the best stereo solution.
+
+        Returns
+        -------
+        int
+            The number of instances of the type selected by fltFn.
+        list of imageSolutions. None if there are no consistent solutions.
+            Consistent imagingSolutions with the maximum of the type slected
+            by fltFn. None if there are no consistent solutions.
+
+        """
+        x = [[self.rois[k].fltRepeat,
+              self.rois[k].fltStereo] for k in idxs]
+        x = [u for v in x for u in v if u.solutions]
+        N = len(x)
+        for r in range(N,0,-1):
+            y = [distributeSolutions(z) for z in combinations(x,r)]
+            y = filter(lambda x: len(x) > 0, y)
+            y = [x for v in y for x in v]
+            mx = [x.filt(fltFn).length() for x in y]
+            if len(mx) > 0:
+                maxStereo = max(mx)
+                return [z for k,z in enumerate(y) if mx[k]==maxStereo] 
+        return None
+    
+    def toJson(self):
+        return{"type": "FeatureCollection",
+               "features": [x.toJson() for x in self.rois]}
     
     def writePlan(self, filename):
         filepath = self.filepath
         version = self.version
-        self.computeNewJson()
-        plan = self.plan
         with open(os.path.join(filepath, version, filename), "w") as f:
-            f.write(json.dumps(plan, indent=2))
+            f.write(json.dumps(self.toJson(), indent=2))
 
 #%% Instantiate a plan object
 eplan = plan(filepath)
@@ -950,35 +1122,9 @@ eplan.computeElements()
 #%%
 sim = eplan.cluster()
 
-#%%
-def fnConsistent(idxs):
-    """
-    Function to determine imaging consistency.
-    
-    This function tests whether the filtered repeat and stereo imaging 
-    options for each ROI in a set are consistent with each other. That is, 
-    that they do not place unrealisable demands on the SAR to switch 
-    incidence angles from one ROI to another.
 
-    Parameters
-    ----------
-    idxs : list of int
-        indexes of rois to test.
-
-    Returns
-    -------
-    bool
-        True if the rois are consistent, False otherwise.
-
-    """
-    x = [[eplan.rois[k].fltRepeat,
-          eplan.rois[k].fltStereo] for k in idxs]
-    x = [u for v in x for u in v if u.solutions]      
-    y = distributeSolutions(x)
-    
-    return len(y) > 0
         
-noncomp = list(filter(lambda x: not fnConsistent(x), eplan.fltClusters))
+noncomp = list(filter(lambda x: not eplan.fnConsistent(x), eplan.fltClusters))
         
 """
 Note to self here. Some options are showing conflict because the
@@ -987,39 +1133,31 @@ minutes when the default that I've use is 1 degree in 10 minutes.
 Some refinement of this condition seems important
 """
 
-#%%
-def bestStereo(idxs, fltFn = roiPlan.fnStereo):
-    """
-    Find the best options for non-consistent ROIs
 
-    Parameters
-    ----------
-    idxs : `list` of int
-        Indexes of the ROIs that are inconsistent.
-    fltFn : `function`, optional
-        A function used to filter the solutions. The default is 
-        roiPlan.fnStereo and seeks to find the best stereo solution.
-
-    Returns
-    -------
-    int
-        The number of instances of the type selected by fltFn.
-    list of imageSolutions. None if there are no consistent solutions.
-        Consistent imagingSolutions with the maximum of the type slected
-        by fltFn. None if there are no consistent solutions.
-
-    """
-    x = [[eplan.rois[k].fltRepeat,
-          eplan.rois[k].fltStereo] for k in idxs]
-    x = [u for v in x for u in v if u.solutions]
-    N = len(x)
-    for r in range(N,0,-1):
-        y = [distributeSolutions(z) for z in combinations(x,r)]
-        y = list(filter(lambda x: len(x) > 1, y))
-        y = [x for v in y for x in v]
-        mx = [x.filt(fltFn).length() for x in y]
-        if len(mx) > 0:
-            maxStereo = max(mx)
-            return maxStereo, [z for k,z in enumerate(y) if mx[k]==maxStereo] 
-    return None, None
             
+#%%
+myStereo = [eplan.bestOption(idxs) for idxs in noncomp]
+
+#%%
+mySolutions = []
+for mySt in myStereo:
+    stMin = [x.filt(roiPlan.fnStereo) for x in mySt]
+    stMinArray = [x.minimum() for x in mySt]
+    stMinArray = [x.T if x is not None else np.nan for x in stMinArray]
+    try:
+        idx = np.nanargmin(stMinArray)
+        mySolutions.append(stMin[idx])
+    except ValueError:
+        rpMin = [x.filt(roiPlan.fnRepeat) for x in mySt]
+        rpMinArray = [x.minimum() for x in rpMin]
+        rpMinArray = [x.T if x is not None else np.nan for x in rpMin]
+        idx = np.nanargmin(rpMinArray)
+        mySolutions.append(rpMin[idx])
+
+#%% Filter solutions
+for idxs, soln in zip(noncomp, mySolutions):
+    for idx in idxs:
+        eplan.rois[idx].filt(soln)
+        
+#%%
+eplan.writePlan("roiNewRefined.geojson")
