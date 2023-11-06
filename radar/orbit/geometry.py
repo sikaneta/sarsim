@@ -10,17 +10,12 @@ import numpy as np
 from scipy.constants import c
 
 #%% Define the range of elevation angles to look at
-def getTiming(sv, elev, idx = 0):
-    svdata = sv.measurementData[idx] 
-    N = -svdata[:3]/np.linalg.norm(svdata[:3])
-    T = svdata[3:]/np.linalg.norm(svdata[3:])
-    C = np.cross(N, T)
-    C = C/np.linalg.norm(C)
-    N = np.cross(T, C)
-    N = N/np.linalg.norm(N)
-    # T = np.cross(C,N)
-    # T = T/np.linalg.norm(T)
-    uhats = np.array([np.cos(eang)*N + np.sin(eang)*C for eang in elev])
+def getTiming(sv, off_nadir, idx = 0):
+    svdata = sv.measurementData[idx]
+    eta = sv.measurementTime[idx]
+    T,C,N = tcn(svdata)
+
+    uhats = np.array([np.cos(eang)*N + np.sin(eang)*C for eang in off_nadir])
 
     # Calculate range vectors
     rangeVectors = sv.computeRangeVectorsU(svdata, uhats)
@@ -32,16 +27,18 @@ def getTiming(sv, elev, idx = 0):
     # Calculate the times
     tau = 2*ranges/c
 
-    # Calculate the incidence angles
-    Xg = np.tile(svdata[:3], (len(elev),1)) + rangeVectors
-    snorm = np.array([surfaceNormal(x) for x in Xg])
+    # Calculate the ground points
+    xG = np.tile(svdata[:3], (len(off_nadir),1)) + rangeVectors
+    
+    geometry = [computeImagingGeometry(sv, eta, x) for x in xG]
+    
+    snorm = np.array([surfaceNormal(x) for x in xG])
     sgn = np.sign(np.sum(np.cross(T,snorm)*rhat, axis=1))
-    XgSwath = -sgn*np.insert(np.linalg.norm(Xg[1:,:] - Xg[:-1,:], axis=1).cumsum(), 0, 0,0)
-    #Xg = Xg*np.tile(1/np.linalg.norm(Xg, axis=1), (3,1)).T
+    xGSwath = -sgn*np.insert(np.linalg.norm(xG[1:,:] - xG[:-1,:], axis=1).cumsum(), 0, 0,0)
     
     inc = np.degrees(sgn*np.arccos(-np.sum(snorm*rhat, axis=1)))
     
-    return ranges, rhat, inc, tau, XgSwath
+    return ranges, rhat, inc, tau, xGSwath
 
 #%%
 def surfaceNormal(XG, sv = state_vector()):
@@ -56,6 +53,30 @@ def surfaceNormal(XG, sv = state_vector()):
                   sv.planet.a*slat])
     
     return n/np.linalg.norm(n)
+
+#%%
+def pointFrame(XG, sv = state_vector()):
+    lat, lon, _ = sv.xyz2SphericalPolar(XG)
+    clat = np.cos(np.radians(lat))
+    slat = np.sin(np.radians(lat))
+    clon = np.cos(np.radians(lon))
+    slon = np.sin(np.radians(lon))
+    norm = np.sqrt(sv.planet.a**2*slat**2 + sv.planet.b**2*clat**2)
+    
+    u_lat = np.array([-sv.planet.a*slat*clon,
+                      -sv.planet.a*slat*slon,
+                      sv.planet.b*clat])/norm
+    
+    u_lon = np.array([-slon,
+                      clon,
+                      0])
+    
+    u_s = np.array([sv.planet.b*clat*clon,
+                    sv.planet.b*clat*slon,
+                    sv.planet.a*slat])/norm
+    
+    
+    return np.array([u_lon, u_lat, u_s]).T
 
 #%%
 def satSurfaceGeometry(sv, off_nadir, azi_angle):
@@ -110,8 +131,21 @@ def findNearest(timeArray, eta):
     else:
         return bracket[1]
 
+#%% Function to get body-fixed TCN frame from state vector
+def tcn(svdata):
+    N = -svdata[:3]/np.linalg.norm(svdata[:3])
+    T = svdata[3:]/np.linalg.norm(svdata[3:])
+    C = np.cross(N, T)
+    C = C/np.linalg.norm(C)
+    N = np.cross(T, C)
+    N = N/np.linalg.norm(N)
+    return T, C, N
+
 #%%
-def computeImagingGeometry(sv, eta, xG, xG_snormal):
+def computeImagingGeometry(sv, eta, xG, xG_snormal = None):
+    if xG_snormal is None:
+        xG_snormal = surfaceNormal(xG, sv)
+        
     idx = findNearest(sv.measurementTime, eta)
     
     mysv = state_vector(planet=sv.planet)
@@ -119,18 +153,20 @@ def computeImagingGeometry(sv, eta, xG, xG_snormal):
     
     svtime, svdata, err = mysv.computeBroadsideToX(eta, xG)
     
-    N = -svdata[:3]/np.linalg.norm(svdata[:3])
-    T = svdata[3:]/np.linalg.norm(svdata[3:])
-    C = np.cross(N, T)
-    C = C/np.linalg.norm(C)
-    N = np.cross(T, C)
-    N = N/np.linalg.norm(N)
+    T,C,N = tcn(svdata)
     
     
     rvec = xG - svdata[0:3] 
     rhat = rvec/np.linalg.norm(rvec)
+    
+    pFrame = pointFrame(xG, sv)
+    rhat_pFrame = (-rhat).dot(pFrame)
+    
+    incidence = np.degrees(np.arccos(rhat_pFrame[-1]))
+    azimuth = np.degrees(np.arctan2(rhat_pFrame[1], rhat_pFrame[0]))
+    
     sgn = np.sign(np.cross(T,xG_snormal).dot(rhat))
     
     incidence = np.degrees(sgn*np.arccos(-rhat.dot(xG_snormal)))
     
-    return rvec, incidence, [svtime, svdata], err
+    return rvec, incidence, azimuth, [svtime, svdata], err

@@ -287,7 +287,7 @@ class state_vector(measurement):
     
     def computeBroadsideToX(self, eta, X, maxiter = 10, etol=1e-6):
         """
-        Compute the braodside state vector to vector X
+        Compute the broadside state vector to vector X
         
         Given a curve described with state vectors, there is a time when the
         vector between the curve c(t) and the position X is perpendicular to
@@ -1597,7 +1597,7 @@ class state_vector(measurement):
                          [h12, h22, h23],
                          [h13, h23, h33]])
         
-    def expandedState(self,X,t):
+    def expandedState(self,X, t=0):
         """
         Compute the expanded state vector
         

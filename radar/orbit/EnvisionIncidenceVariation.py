@@ -27,7 +27,8 @@ class ConvergenceError(Exception):
         self.algorithm = algorithm
         self.maxiter = maxiter
     def __str__(self):
-        return '(%s) did not converge after %d iterations' % (self.algorithm, self.maxiter)
+        return '(%s) did not converge after %d iterations' % (self.algorithm, 
+                                                              self.maxiter)
 
 #%% Define class to capture convergence errors
 class BoundsError(Exception):
@@ -36,7 +37,9 @@ class BoundsError(Exception):
         self.lowerBound = lowerBound
         self.upperBound = upperBound
     def __str__(self):
-        return 'Value: %d outside of set [%d, %d]' % (self.index, self.lowerBound, self.upperBound)
+        return 'Value: %d outside of set [%d, %d]' % (self.index, 
+                                                      self.lowerBound, 
+                                                      self.upperBound)
         
 #%%
 class envisionIncidence:
@@ -47,13 +50,35 @@ class envisionIncidence:
         self.__idxarr = []
         self.__sv = None
         self.__cycle_jump = []
-        self.estimateAscendingTimes()#%% Reload state vectors but in VCR frame
+        self.estimateOrbitStartTimes() #%% Reloads state vectors but in VCR frame
         self.__sv = loadSV(toPCR = True)
     
     def getApproximateAscNodeTimes(self):
         return self.__tascarr, self.__idxarr
     
     def estimateOrbitAngleTimes(self, targetOrbitAngle):
+        """
+        Scan the state vector file for times where the satellite position
+        is at the given orbit angle.
+
+        Parameters
+        ----------
+        targetOrbitAngle : `float`
+            The desired orbit angle in radians.
+
+        Raises
+        ------
+        ConvergenceError
+            Raised when the function does not converge to a solution.
+
+        Returns
+        -------
+        list
+            Times corresponding to the desired orbit angle.
+        list
+            Indeces of the state vector array corresponding to the orbit angle.
+
+        """
         """ Load state vectors for envision """ 
         sv = loadSV(toPCR = False)
 
@@ -66,7 +91,7 @@ class envisionIncidence:
         times = []
         idxarr = []
 
-        """ Define a function to compute the time and closest index
+        """ Define a function to compute the time and closest index to
             the given seed idx where the orbitAngle equals the target
             orbit angle. """
         def findClosestIndex(idx, maxIter = 10):
@@ -112,83 +137,33 @@ class envisionIncidence:
                 
         return times, idxarr
     
-    def estimateAscendingTimes(self):
-        self.__tascarr, self.__idxarr = self.estimateOrbitAngleTimes(np.pi/2)
-        # # # Load state vectors for envision
-        # # sv = loadSV(toPCR = False)
+    def estimateOrbitStartTimes(self, 
+                                orbitStartAngle = np.pi/2,
+                                minute_err = 0.002,
+                                idx_err = 10):
+        """
+        Compute the start times and indeces of each orbit. Also compute the
+        start time of each cycle.
 
-        # # # Get the period
-        # # venSAR = orbit(planet=sv.planet, angleUnits="radians")
+        Parameters
+        ----------
+        orbitStartAngle: `float`, optional
+            The angle from the Ascending node that defines the start of an
+            orbit.
+        minute_err : 'float', optional
+            Timing error threhold to find cycle jumps. The default is 0.002.
+        idx_err : `int`, optional
+            Indexing threhold to find cycle jumps. The default is 10.
 
-        # # # Estimate ascending Node times
-        # # idx = 0
-        # # N = len(sv.measurementTime)
-        # # self.__tascarr = []
-        # # self.__idxarr = []
+        Returns
+        -------
+        None.
 
-        # # """ Iterate and find all asceding node crossing times """
-        # # while idx < N:
-        # #     orbitAngle, ascendingNode = venSAR.setFromStateVector(sv.measurementData[idx])
-        # #     dtasc = venSAR.period + venSAR.computeT(0)-venSAR.computeT(orbitAngle)
-        # #     tasc = sv.measurementTime[idx] + np.timedelta64(int(dtasc), 's')
-        # #     self.__tascarr.append(tasc)
-        # #     try:
-        # #         idx = findNearest(sv.measurementTime, tasc)
-        # #         self.__idxarr.append(idx)
-        # #         if idx%1000 == 1:
-        # #             print(idx)
-        # #     except IndexError:
-        # #         idx = N + 1
-
-        # # Check the time differences
-        # if 'linux' not in sys.platform and self.plots:
-        #     kep = [venSAR.state2kepler(sv.measurementData[k]) for k in self.__idxarr]
-        #     z = [sv.measurementData[k][2] for k in self.__idxarr]
-        #     plt.figure()
-        #     plt.plot(self.__tascarr[0:-1], z)
-        #     plt.grid()
-        #     plt.show()
-            
-        #     period = [2*np.pi*np.sqrt(venSAR.state2kepler(sv.measurementData[k])['a']**3
-        #                               /venSAR.planet.GM) for k in self.__idxarr]
-        #     plt.figure()
-        #     plt.plot(self.__tascarr[0:-1], period)
-        #     plt.xlabel('Time')
-        #     plt.ylabel('Orbit Period (s)')
-        #     plt.title('Orbit period for ET1 2031 N')
-        #     plt.grid()
-        #     plt.show()
-            
-            
-        #     a = [venSAR.state2kepler(sv.measurementData[k])['a']/1e3 for k in self.__idxarr]
-        #     plt.figure()
-        #     plt.plot(self.__tascarr[0:-1], a)
-        #     plt.xlabel('Time')
-        #     plt.ylabel('Orbit semi-major axis (km)')
-        #     plt.title('Orbit semi-major axis for ET1 2031 N')
-        #     plt.grid()
-        #     plt.show()
-            
-        #     plt.figure()
-        #     plt.plot(self.__tascarr[0:-1], np.diff(self.__tascarr)/np.timedelta64(1,'m'))
-        #     plt.grid()
-        #     plt.title('Orbit period (minutes)')
-        #     plt.xlabel('Time')
-        #     plt.ylabel('Orbit period (minutes)')
-        #     plt.show()
-            
-        #     perigee = [k["perigee"] for k in kep]
-        #     plt.figure()
-        #     plt.plot(self.__tascarr[0:-1], np.degrees(np.unwrap(perigee)))
-        #     plt.xlabel('Time')
-        #     plt.ylabel('Orbit perigee angle (deg)')
-        #     plt.title('Orbit perigee angle for ET1 2031 N')
-        #     plt.grid()
-        #     plt.show()
-        
-        #
-        cj = np.argwhere(np.diff(np.diff(self.__tascarr)/np.timedelta64(1,'m')) > 0.002)[:,0] + 1
-        idx = np.argwhere(np.diff(cj)<10)
+        """
+        self.__tascarr, self.__idxarr = self.estimateOrbitAngleTimes(orbitStartAngle)
+        cj = np.argwhere(np.diff(np.diff(self.__tascarr)/np.timedelta64(1,'m')) 
+                         > minute_err)[:,0] + 1
+        idx = np.argwhere(np.diff(cj)<idx_err)
         self.__cycle_jump = [cj[k] for k in range(len(cj)) if k not in idx]
         return
 
@@ -196,6 +171,24 @@ class envisionIncidence:
         return self.__cycle_jump
     
     def getCycleFromOrbit(self, orbitNumber):
+        """
+        Get the cycle for given orbit number
+
+        There are 5000-6000 orbits per cycle. This function returns the 
+        cycle from the provided orbit number
+        
+        Parameters
+        ----------
+        orbitNumber : `int`
+            The orbit number.
+
+        Returns
+        -------
+        `int`
+            The computed cycle number.
+
+        """
+        
         if orbitNumber < 0 or orbitNumber > self.__idxarr[-1]:
             return None
         for k,cyc in enumerate(self.__cycle_jump):
@@ -218,249 +211,27 @@ class envisionIncidence:
         branch = [int(t > self.__tascarr[k]) for k,t in zip(nearestOrbit, times)]
         return [nO + br for nO, br in zip(nearestOrbit, branch)]
 
-    # def plotIncidenceFigure(self, point):
-    #     symbols = ['.', 'o', 'x', 'd', 's']
-    #     groundPoint = tuple(point["target"]["llh"])
-    #     targetInc = point["target"]["satReference"]["incidence"]
-    #     plt.figure()
-    #     myincidences = [[p["incidence"]
-    #                      for p in cycle] 
-    #                     for cycle in point["cycle"]]
-        
-    #     for data,symbol in zip(myincidences, symbols):
-    #         plt.plot(range(len(data)), data, symbol)
-            
-    #     plt.grid()
-    #     x_axis = np.arange(len(myincidences[0]))
-    #     y_axis = np.ones_like(x_axis)*targetInc
-    #     plt.plot(range(len(data)), y_axis)
-    #     plt.xlabel('orbit')
-    #     plt.ylabel('Incidence Angle (deg)')
-    #     plt.legend(['cycle 2', 'cycle 3', 'cycle 4', 'cycle 5', 'cycle 6', 'cycle 1'])
-    #     plt.title('Incidence to point lat: %0.2f (deg), lon %0.2f (deg), hae: %0.2f (m)' % groundPoint)
-    #     plt.show()
-        
-    #     return plt
-
-    # def plotSpiderFigure(self, point):
-    #     oNS = np.arange(5)
-    #     groundPoint = tuple(point["target"]["llh"])
-    #     myincidences = [[p["incidence"]
-    #                      for p in cycle] 
-    #                     for cycle in point["cycle"]]
-        
-    #     myorbitNum = [[p["orbitNumber"]%5 for p in cycle] 
-    #                   for cycle in point["cycle"]]
-        
-    #     pl = [[[x for x,k in zip(myinc, myorb) if k == n] 
-    #             for n in oNS] for myinc, myorb in zip(myincidences, myorbitNum)]
-        
-    #     # Compute the orbit number on cycle 1
-    #     refOrbitNumber = point["target"]["satReference"]["orbitNumber"]
-    #     targetInc = point["target"]["satReference"]["incidence"]
-        
-    #     # Plot the incidence differences
-    #     lblstr = 'lat: %0.2f (deg), lon %0.2f (deg), hae: %0.2f (m)' % groundPoint
-    #     cplot = [(0, '1b'),
-    #              (1, 'xr'),
-    #              (2, '+g'),
-    #              (3, '*k'),
-    #              (4, '2m')]
-        
-    #     fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-        
-    #     for cycleNum, symbol in cplot:
-    #         lbl = "Cycle %d" % (cycleNum + 2)
-    #         for k in range(5):
-    #             r = np.array(pl[cycleNum][k]) - targetInc
-    #             th = np.angle(np.exp(k*1j*np.pi/5)*r)
-    #             if k>0:
-    #                 ax.plot(th, 
-    #                         np.abs(r), 
-    #                         symbol)
-    #             else:
-    #                 ax.plot(th, 
-    #                         np.abs(r), 
-    #                         symbol,
-    #                         label = lbl)
-            
-    #     ax.set_rticks([1.5, 4, 7]) 
-    #     ax.set_rlim([0,7])
-    #     xT = np.arange(0,2*np.pi,np.pi/5)
-    #     xL = ['orbit 1', 
-    #           'orbit 2', 
-    #           'orbit 3', 
-    #           'orbit 4', 
-    #           'orbit 5', 
-    #           'orbit 1', 
-    #           'orbit 2', 
-    #           'orbit 3', 
-    #           'orbit 4', 
-    #           'orbit 5']
-    #     plt.xticks(xT, xL)
-    #     plt.title("Ref orbit: %d, incidence %0.4f (deg)\n%s" % (refOrbitNumber, 
-    #                                                             targetInc, 
-    #                                                             lblstr))
-    #     plt.legend()
-    #     plt.show()
-        
-    #     return plt
-    
-    # def matchIncidencePermute(self,
-    #                           point, 
-    #                           incidence_range = [23,37],
-    #                           criteria = [(0, 1.5), (5.5, 1.5)]):
-    #     orbitNumber = point["target"]["satReference"]["orbitNumber"]
-    #     oem = orbitNumber%5
-    #     flt_cyc = [[p for p in cyc if p["incidence"] < incidence_range[1] 
-    #                 and p["incidence"] > incidence_range[0]
-    #                 and p["orbitNumber"]%5 == oem] 
-    #                 for cyc in point["cycle"]]
-    #     #if any([1 for f in flt_cyc if len(f) == 0]):
-    #     orbit_fix = {"append": np.arange(1,21),
-    #                  "prepend": -np.arange(1,21)}
-    #     for k, fl in enumerate(flt_cyc):
-    #         if len(fl)== 0:
-    #             i_vals = [x["incidence"] for x in point["cycle"][k]]
-    #             i_max = max(i_vals)
-    #             i_min = min(i_vals)
-    #             slope = np.sign(i_vals[2]-i_vals[0])
-    #             operation = "append"
-    #             if i_min > incidence_range[0]:
-    #                 if slope < 0:
-    #                     """ append values """
-    #                     pass
-    #                 else:
-    #                     """ prepend values """
-    #                     operation= "prepend"
-    #             elif i_max < incidence_range[1]:
-    #                 if slope < 0:
-    #                     """ prepend values """
-    #                     operation = "prepend"
-    #                 else:
-    #                     """ append values """
-    #                     pass
-    #             else:
-    #                 print("I don't know what to do! Cycle %d" % (k+2))
-    #                 print(40*"=")
-    #                 print("Orbit: %d Slope %f" % (k, slope))
-    #                 print("Incidence %f,%f" % (i_min, i_max))
-    #                 print(40*"=")
-    #                 raise ValueError
-                        
-    #             """ Assume that we found the right operation """
-    #             print("Orbit: %d, Cycle: %d needs a(n) %s" % (orbitNumber,
-    #                                                           k+2,
-    #                                                           operation))
-    #             additional_orbits = self.extend(point, 
-    #                                             self.__sv, 
-    #                                             k, 
-    #                                             orbitRange = orbit_fix[operation])
-    #             if operation == "append":
-    #                 point["cycle"][k] = point["cycle"][k] + additional_orbits
-    #             else:
-    #                 point["cycle"][k] = additional_orbits + point["cycle"][k]
-                    
-    #             flt_cyc = [[p for p in cyc if p["incidence"] < incidence_range[1] 
-    #                         and p["incidence"] > incidence_range[0]
-    #                         and p["orbitNumber"]%5 == oem] 
-    #                         for cyc in point["cycle"]]
-            
-    #     reference = {"incidence": point["target"]["satReference"]["incidence"],
-    #                  "orbitNumber": point["target"]["satReference"]["orbitNumber"]}
-    #     perms = [[reference,v,w,x,y,z] 
-    #               for v in flt_cyc[0] 
-    #               for w in flt_cyc[1] 
-    #               for x in flt_cyc[2]
-    #               for y in flt_cyc[3]
-    #               for z in flt_cyc[4]]
-        
-    #     upper = np.array([[0,1,1,1,1,1],
-    #                       [0,0,1,1,1,1],
-    #                       [0,0,0,1,1,1],
-    #                       [0,0,0,0,1,1],
-    #                       [0,0,0,0,0,1],
-    #                       [0,0,0,0,0,0]])
-    #     lower = upper.T
-    #     orbNumbers = []
-    #     incidences = []
-    #     scores = []
-    #     for perm in perms:
-    #         x = np.array([p["incidence"] for p in perm])
-    #         incidences.append(x)
-    #         orbNumbers.append(np.array([p["orbitNumber"] for p in perm]))
-    #         score = []
-    #         for offset, threshold in criteria:
-    #             y = np.abs((np.tile(x, 6).reshape((6,6)) - 
-    #                         np.tile(x, 6).reshape((6,6)).T - offset)/threshold)
-                
-    #             uVals = y*upper
-    #             lVals = y*lower
-    #             uScore = (uVals>0).astype(int) * (uVals<1).astype(int)
-    #             lScore = (lVals>0).astype(int) * (lVals<1).astype(int)
-    #             score.append(np.sum((uScore + lScore.T > 0).astype(int)))
-    #         scores.append(score)
-            
-    #     return np.array(scores), np.array(incidences), np.array(orbNumbers), point
-       
-    # def extend(self,
-    #            point, 
-    #            cycle_num,
-    #            orbitRange = np.arange(1,21)):
-        
-    #     cycle = point["cycle"][cycle_num]
-        
-    #     r_cycle = cycle[-1] if orbitRange[0]>0 else cycle[0]
-        
-    #     # Compute the orbit number on reference cycle
-    #     refOrbitNumber = r_cycle["orbitNumber"]
-    #     refTime = np.datetime64(r_cycle["state_vector"]["time"])
-    #     refSV = np.array(r_cycle["state_vector"]["satpos"] + 
-    #                      r_cycle["state_vector"]["satvel"])
-        
-    #     xG = np.array(point["target"]["xyz"])
-    #     xG_snormal = np.array(point["target"]["normal"])
-        
-    #     """ The next two lines are to reset the period """
-    #     myOrbit = orbit(planet=self.__sv.planet, angleUnits="radians")
-    #     orbitAngle, ascendingNode = myOrbit.setFromStateVector(refSV)
-    #     period = np.timedelta64(int(myOrbit.period*1e6),'us')
-        
-    #     """ Generate an array of times to examine """
-    #     etarange = refTime + orbitRange*period
-        
-    #     """ Compute the imaging geometry to broadside at these times """
-    #     try:
-    #         options = [computeImagingGeometry(self.__sv, eta, xG, xG_snormal) 
-    #                    for eta in etarange]
-    #     except IndexError:
-    #         logger.warning("Failed extend for cycle : %d" % cycle_num)
-        
-    #     """ Compute the orbit number """
-    #     orbitNumber = refOrbitNumber + orbitRange
-        
-    #     """ Write to json/dict """
-    #     add_orbits = [
-    #              {
-    #               "incidence": o[1],
-    #               "range": np.linalg.norm(o[0]),
-    #               "orbitNumber": int(oN),
-    #               "state_vector": 
-    #                   {
-    #                    "time": str(np.datetime_as_string(o[2][0])),
-    #                    "satpos": o[2][1][:3].tolist(),
-    #                    "satvel": o[2][1][3:].tolist()
-    #                   },
-    #               "llh": list(self.__sv.xyz2polar(o[2][1][:3]))
-    #              } for o, oN in zip(options, orbitNumber)
-    #             ]
-        
-    #     return add_orbits
-
-    #
     def orbitPointIndex(self, 
                         orbitNumber,
                         point):
+        """
+        Get the index of the state vector on a given orbit that is closest to 
+        the given point
+
+        Parameters
+        ----------
+        orbitNumber : `int`
+            The orbit number.
+        point : `dict`
+            Dictionary representation of the point.
+
+        Returns
+        -------
+        `int`
+            The index of the state vector file on the given orbit that is
+            closest to the given point.
+
+        """
         start_idx = self.__idxarr[orbitNumber-1]
         end_idx = self.__idxarr[orbitNumber]
         satX = np.array(self.__sv.measurementData[start_idx:end_idx])[:,:3]
@@ -472,6 +243,29 @@ class envisionIncidence:
     def incidenceZeroDoppler(self, 
                              orbitNumber,
                              point):
+        """
+        Compute imaging parameters for the given point in the Zero Doppler
+        geometry on the given orbit.
+        
+        This function relies on computeImagingGeometry, a function that 
+        propagates the orbit to the right time for Zero-Doppler imaging.
+
+        Parameters
+        ----------
+        orbitNumber : `int`
+            The orbit number.
+        point : `dict`
+            Dictionary representation of point of interest.
+
+        Returns
+        -------
+        spoint : `dict`
+            Dictionary description of the imaging geometry. This description 
+            includes the incidence angle and the satellite position when 
+            imaging in a number of reference frames. It also includes the
+            range and rdotv (which relates to the Zero Doppler value).
+
+        """
         try:
             X = np.array(point["properties"]["target"]["xyz"])
         except KeyError:
@@ -487,7 +281,10 @@ class envisionIncidence:
         ridx = self.orbitPointIndex(orbitNumber, point)
             
         targetSVtime = self.__sv.measurementTime[ridx]
-        R, inc, satSV, err = computeImagingGeometry(self.__sv, targetSVtime, X, N)
+        R, inc, satSV, err = computeImagingGeometry(self.__sv, 
+                                                    targetSVtime, 
+                                                    X, 
+                                                    N)
         dopError = R.dot(satSV[1][3:])
         satSVME = self.__sv.planet.PCRtoME2000(*satSV)
         satSVICRF = self.__sv.planet.PCRtoICRF(*satSV)
@@ -532,16 +329,41 @@ class envisionIncidence:
                           distance = 20000,
                           boundaryThreshold = 1e6,
                           makeplot = False):
-        # Find the nearest state vectors to X
+        """
+        Function to compute points in the state vector file where there is a
+        local minimum in range to the given point.
+
+        Parameters
+        ----------
+        point : `dict`
+            Dictionary representing the point.
+        distance : `float`, optional
+            Distance parameter to pass to the find_peaks function. The default 
+            is 20000. Local peaks must be at least this distance apart in 
+            samples
+        boundaryThreshold : `float`, optional
+            Threshold used to test for peaks near the boundaries of the state
+            vector file. The default is 1e6.
+        makeplot : `bool`, optional
+            Flag to generate a plot of the solution. The default is False.
+
+        Returns
+        -------
+        times : `list`
+            List of times of local minima in state vector file.
+
+        """
+        """ Get a pointer to the state vector """
         sv = self.__sv
                
-        # Find the minimum distance state vector over the cycle
+        """ Get a 3-D representation of the point """
         try:
             X = np.array(point["properties"]["target"]["xyz"])
         except KeyError:
             X = self.llh2xyz(point)
             point["properties"]["target"]["xyz"] = X.tolist()
             
+        """ Compute the range vector to X for all state vectors """
         rvec = np.array([s[:3] - X for s in sv.measurementData])
         rngs = np.linalg.norm(rvec, axis=1)
         vels = np.array([s[3:] for s in sv.measurementData])
@@ -567,50 +389,6 @@ class envisionIncidence:
         times = [sv.measurementTime[i] for i in idx]
         
         return times
-        
-        
-    def cyclePointOrbitNumber(self, cycle, point):              
-        # Find the nearest state vector to X
-        cycle_jump = self.__cycle_jump
-        idxarr = self.__idxarr
-        sv = self.__sv
-        
-        start_idxs = [0] + [x+1 for x in cycle_jump]
-        end_idxs = list(cycle_jump) + [len(idxarr)-1]
-        
-        start_idx = idxarr[start_idxs[cycle-1]]
-        end_idx = idxarr[end_idxs[cycle-1]]
-        
-        # cycX = np.array(self.__sv.measurementData[start_idx:end_idx])[:,:3]
-        cycX = sv.measurementData[start_idx:end_idx]
-        
-        # Find the minimum distance state vector over the cycle
-        try:
-            X = np.array(point["properties"]["target"]["xyz"])
-        except KeyError:
-            X = self.llh2xyz(point)
-            point["properties"]["target"]["xyz"] = X.tolist()
-        
-        rvec = np.array([s[:3] - X for s in cycX])
-        rngs = np.linalg.norm(rvec, axis=1)
-        vels = np.array([s[3:] - X for s in cycX])
-        rdotv = np.sum(rvec*vels, axis=1)
-        rdotv /= np.linalg.norm(vels, axis=1)
-        
-        rngsAsc = [r if s[-1]>0 else np.nan for r,s in zip(rngs, cycX)]
-        rngsDsc = [r if s[-1]<0 else np.nan for r,s in zip(rngs, cycX)]
-        
-        idxAsc = start_idx + np.nanargmin(rngsAsc)
-        idxDsc = start_idx + np.nanargmin(rngsDsc)
-        
-        #cidx = np.argmin(np.linalg.norm(cycX 
-        #                                - np.tile(X, (len(cycX),1)), axis=1))
-        
-        #cidx += start_idx
-        
-        # Get the orbit number
-        return (self.getOrbitNumber([sv.measurementTime[idxAsc]])[0],
-                self.getOrbitNumber([sv.measurementTime[idxDsc]])[0])
         
     def surfaceNormal(self, point):
         X = self.llh2xyz(point)
@@ -666,15 +444,20 @@ class envisionIncidence:
 eI = envisionIncidence()
 
 #%% Read ROI file
-rootfolder = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\ROIs\PlanB"
-with open(os.path.join(rootfolder, "roi.geojson"), "r") as f:
-    featureCollection = json.loads(f.read())
-
-#%% Define the path for writing data
 if 'linux' in sys.platform:
     filepath = '/users/isikanet/local/data/cycles'
 else:
-    filepath = os.path.join(rootfolder, "incidence")
+    filepath = os.path.join(r"C:\Users",
+                            r"ishuwa.sikaneta",
+                            r"OneDrive - ESA",
+                            r"Documents",
+                            r"ESTEC",
+                            r"Envision",
+                            r"ROIs",
+                            r"Plan")
+
+with open(os.path.join(filepath, "roi.geojson"), "r") as f:
+    featureCollection = json.loads(f.read())
     
 #%% Loop through points
 for polygon in featureCollection["features"]:
@@ -734,6 +517,7 @@ for polygon in featureCollection["features"]:
                 
     
     """ Write point to file """
-    filenameInc = "%s_%s.geojson" % (polygon["properties"]["ROI_No"], "incidence")
+    filenameInc = "%s_%s.geojson" % (polygon["properties"]["ROI_No"], 
+                                     "incidence")
     with open(os.path.join(filepath, filenameInc), "w") as f:
         f.write(json.dumps(pointAnalysis, indent=2))\

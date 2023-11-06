@@ -76,7 +76,8 @@ class simulation:
                  e_ang = 14.28,
                  azAxis = 6.0,
                  elAxis = 0.6,
-                 carrier = 3.15e9):
+                 carrier = 3.15e9,
+                 mode = np.eye(3)):
         """
         Constructor
 
@@ -95,6 +96,10 @@ class simulation:
             Dimension of the SAR antenna elevation axis. The default is 0.6.
         carrier : `float`, optional
             Carrier frequency of the SAR signal. The default is 3.15e9.
+        mode: `numpy.array`, [3,3]
+            A matrix allowing a rotation of the a, e and u axis. The default is 
+            the identity (for the VenSAR mode), but could be defined to switch the
+            a and e axis to put the system in to altimeter mode.
 
         Returns
         -------
@@ -106,6 +111,7 @@ class simulation:
         self.azAxis = azAxis
         self.elAxis = elAxis
         self.carrier = carrier
+        self.mode = mode
         
     # Define a function to estimate the PDF given a histogram
     def estimatePDF(self, d, N=400):
@@ -165,7 +171,7 @@ class simulation:
         #     cD = np.zeros_like(R)
         """ Perform an eigenvale/eigenvector decomposition """
         D, U = np.linalg.eig(R)
-        cD = U.dot(np.diag(np.sqrt(D)))
+        cD = U.dot(np.diag(np.sqrt(np.abs(D))))
         
         """ Generate the random data """
         return cD.dot(np.random.randn(m,N))
@@ -252,9 +258,6 @@ class simulation:
 
         """
         
-        """ Define the off-nadir directional cosine """
-        v = np.cos(np.radians(off_nadir))
-        
         """ Create an orbit around Venus """
         planetOrbit = orbit(planet=self.planet, angleUnits="degrees")
         
@@ -265,14 +268,14 @@ class simulation:
         """ Compute the reference aueIe frame that is in error 
             from wrong velocity """
         orbitAngle, ascendingNode = planetOrbit.setFromStateVector(X)
-        aaeu, _ = planetOrbit.computeAEU(orbitAngle, v)
+        aaeu, _ = planetOrbit.computeAEU(orbitAngle, off_nadir, self.mode)
         
         """ Compute the desired aeuI frame for each true velocity """
         daeu = np.zeros((3,3,N), dtype = np.double)
         for k in range(N):
             (orbitAngle, 
              ascendingNode) = planetOrbit.setFromStateVector(X + SVe[:,k])
-            daeu[:,:,k], _ = planetOrbit.computeAEU(orbitAngle, v)
+            daeu[:,:,k], _ = planetOrbit.computeAEU(orbitAngle, off_nadir, self.mode)
             
         """ Compute the tilt, elevation and azimuth angles """
         AEU = aeuFromRotation(daeu.T.dot(aaeu))
@@ -324,9 +327,6 @@ class simulation:
 
         """
         
-        """ Define the off-nadir directional cosine """
-        v = np.cos(np.radians(off_nadir))
-        
         """ Create an orbit around Venus """
         planetOrbit = orbit(planet=self.planet, angleUnits="degrees")
         
@@ -346,12 +346,13 @@ class simulation:
         dO = rng.standard_normal(N)*np.sqrt(Rt)*np.degrees(C)
         
         """ Calculate the DAEU frame """
-        daeu, _ = planetOrbit.computeAEU(orbitAngle, v)
+        daeu, _ = planetOrbit.computeAEU(orbitAngle, off_nadir, self.mode)
         
         """ Loop over deviations in orbit angle """
         aaeu = np.zeros((3,3,N), dtype = np.double)
         for k in range(N):
-            aaeu[:,:,k], _ = planetOrbit.computeAEU(orbitAngle + dO[k], v)
+            aaeu[:,:,k], _ = planetOrbit.computeAEU(orbitAngle + dO[k], 
+                                                    off_nadir, self.mode)
             
         """ Compute the tilt, elevation and azimuth angles. The moveaxis
             function ensures that the input is (N,3,3) """
@@ -794,7 +795,7 @@ class simulation:
                          }
         e1, e2 = planetOrbit.computeE(orbitAngle, v)
     
-        aeuI, aeuTCN = planetOrbit.computeAEU(orbitAngle, off_nadir)
+        aeuI, aeuTCN = planetOrbit.computeAEU(orbitAngle, off_nadir, self.mode)
         tcnI = aeuI.dot(aeuTCN.T)
         
         """ Compute the rotation matrix to go from aeu to ijk_s """

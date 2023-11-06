@@ -4,16 +4,15 @@ Created on Thu Jul 25 12:36:20 2019
 
 @author: SIKANETAI
 """
-import datetime
 import numpy as np
 
 #%% Define a class for the slow time arclength
 class slow:
-    def __init__(self, datetimes):
+    def __init__(self, datetimes=[]):
         self.N = len(datetimes)
         self.refIDX = int(self.N/2)
-        self.ref = datetimes[self.refIDX]
-        self.t = np.array([(t - self.ref)/np.timedelta64(1,'s') for t in datetimes])
+        self.t = np.array([(t - datetimes[self.refIDX])/np.timedelta64(1,'s') 
+                           for t in datetimes])
     
     def diffG(self, exp_state):
         X = exp_state[0,:]

@@ -7,7 +7,6 @@ Created on Fri Jan 28 14:10:22 2022
 """
 from space.planets import earth, venus
 import numpy as np
-import quaternion
 
 # Define the orbit class
 class orbit:
@@ -77,6 +76,7 @@ class orbit:
                  e=0,
                  arg_perigee=0,
                  a=10000000.0,
+                 ascendingNode = 0.0,
                  period = None,
                  inclination=np.pi/2,
                  planet = earth(),
@@ -100,6 +100,8 @@ class orbit:
             The length of the orbit semi-major axis. If this is given but the
             period is not given, then the period will be computed according
             to Kepler's 3rd law.
+        ascendingNode : float (angleUnits according to angleUnits)
+            The argument of the ascending node.
         period : float (s)
             The period of the orbit in seconds. If this is set, then the value
             for a will be accordingly (Kepler's 3rd law) recomputed.
@@ -123,6 +125,7 @@ class orbit:
         self.e = e
         self.arg_perigee = self.toRadians(arg_perigee)
         self.inclination = self.toRadians(inclination)
+        self.ascendingNode = self.toRadians(ascendingNode)
         self.planet = planet
         
         if a is not None:
@@ -134,11 +137,15 @@ class orbit:
         self.__setRotations()
         
     def __setRotations(self):
+        cosA = np.cos(self.ascendingNode + 0*self.arg_perigee) # Because of my 
+        sinA = np.sin(self.ascendingNode + 0*self.arg_perigee) # definition of beta
         cosI = np.cos(self.inclination)
         sinI = np.sin(self.inclination)
         cosP = np.cos(self.arg_perigee)
         sinP = np.sin(self.arg_perigee)
-        self.rotIfromAnode = np.eye(3)
+        self.rotIfromAnode = np.array([[cosA, -sinA, 0],
+                                       [sinA,  cosA, 0],
+                                       [0,     0   , 1]])
         
         self.rotOfromE = np.array([[-cosP, sinP, 0],
                                    [-sinP, -cosP, 0],
@@ -184,13 +191,15 @@ class orbit:
                 ("a", None, identity), 
                 ("period", None, period2a),
                 ("orbits_per_day", None, orbits_per_day2a),
-                ("inclination", 90.0, identity)]
+                ("inclination", 90.0, identity),
+                ("ascendingNode", 0.0, identity)]
         args = [x[2](pool[x[0]]) if x[0] in keys else x[2](x[1]) 
                 for x in flds]
         self.e = args[0]
         self.arg_perigee = self.toRadians(args[1])
         self.a = [x for x in args[2:5] if x is not None][0]
         self.inclination = self.toRadians(args[5])
+        self.ascendingNode = self.toRadians(args[6])
         self.period = 2*np.pi*np.sqrt(self.a**3/planet.GM)
         self.planet = planet
         self.__setRotations()
@@ -429,7 +438,7 @@ class orbit:
         return np.sqrt((GM/a)*(1+2*e*np.cos(self.toRadians(beta)-w) 
                                + e**2)/(1-e**2))
     
-    def computeAEU(self, beta, off_nadir):
+    def computeAEU(self, beta, off_nadir, mode = np.eye(3)):
         """
         Compute the look direction, azimuth and elevation vectors
         
@@ -449,12 +458,16 @@ class orbit:
             
         Returns
         -------
-        aeuI: `npmpy.array`, [3,3]
+        aeuI: `numpy.array`, [3,3]
             The azimuth, elevation and look vectors in the Inertial reference
             frame arranged as the columns of a matrix (respective order)
-        aeuTCN: `npmpy.array`, [3,3]
+        aeuTCN: `numpy.array`, [3,3]
             The azimuth, elevation and look vectors in the TCN frame arranged 
             as the columns of a matrix (respective order)
+        mode: `numpy.array`, [3,3]
+            A matrix allowing a rotation of the a, e and u axis. The default is 
+            the identity (for the VenSAR mode), but could be defined to switch the
+            a and e axis to put the system in to altimeter mode.
                 
         Notes
         -----
@@ -516,7 +529,7 @@ class orbit:
         eTCN/= np.linalg.norm(eTCN)
         
         """ Compute the aeuTCN matrix """
-        aeuTCN = np.stack((aTCN, eTCN, uTCN), axis=1)
+        aeuTCN = mode.dot(np.stack((aTCN, eTCN, uTCN), axis=1))
         
         """ compute the aeuI matrix """
         aeuI = TCN.dot(aeuTCN)

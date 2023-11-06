@@ -1,0 +1,68 @@
+[
+    {
+        "tag": "F1",
+        "ndays": 2,
+        "UTC_time": "2037-10-13T00:00:00",
+        "Tpos_error": {"n_sigma": 3, "value": 5133.0},
+        "Cpos_error": {"n_sigma": 3, "value": 28.0},
+        "Npos_error": {"n_sigma": 3, "value": 71.0},
+        "Tvel_error": {"n_sigma": 3, "value": 0.024},
+        "Cvel_error": {"n_sigma": 3, "value": 0.023},
+        "Nvel_error": {"n_sigma": 3, "value": 0.473}
+    },
+    {
+        "tag": "F6",
+        "ndays": 2,
+        "UTC_time": "2037-10-13T00:00:00",
+        "Tpos_error": {"n_sigma": 3, "value": 12161.0},
+        "Cpos_error": {"n_sigma": 3, "value": 46.0},
+        "Npos_error": {"n_sigma": 3, "value": 152.0},
+        "Tvel_error": {"n_sigma": 3, "value": 0.016},
+        "Cvel_error": {"n_sigma": 3, "value": 0.037},
+        "Nvel_error": {"n_sigma": 3, "value": 0.685}
+    },
+    {
+        "tag": "E1",
+        "ndays": 2,
+        "UTC_time": "2037-10-13T00:00:00",
+        "Tpos_error": {"n_sigma": 3, "value": 2761.0},
+        "Cpos_error": {"n_sigma": 3, "value": 847.0},
+        "Npos_error": {"n_sigma": 3, "value": 35.0},
+        "Tvel_error": {"n_sigma": 3, "value": 0.006},
+        "Cvel_error": {"n_sigma": 3, "value": 0.951},
+        "Nvel_error": {"n_sigma": 3, "value": 0.270}
+    },
+    {
+        "tag": "E6",
+        "ndays": 2,
+        "UTC_time": "2037-10-13T00:00:00",
+        "Tpos_error": {"n_sigma": 3, "value": 2053.0},
+        "Cpos_error": {"n_sigma": 3, "value": 777.0},
+        "Npos_error": {"n_sigma": 3, "value": 29.0},
+        "Tvel_error": {"n_sigma": 3, "value": 0.012},
+        "Cvel_error": {"n_sigma": 3, "value": 0.866},
+        "Nvel_error": {"n_sigma": 3, "value": 0.319}
+    },
+    {
+        "tag": "L2",
+        "ndays": 2,
+        "UTC_time": "2037-10-13T00:00:00",
+        "Tpos_error": {"n_sigma": 3, "value": 11868.0},
+        "Cpos_error": {"n_sigma": 3, "value": 658.0},
+        "Npos_error": {"n_sigma": 3, "value": 153.0},
+        "Tvel_error": {"n_sigma": 3, "value": 0.028},
+        "Cvel_error": {"n_sigma": 3, "value": 0.736},
+        "Nvel_error": {"n_sigma": 3, "value": 1.273}
+    },
+    {
+        "tag": "L6",
+        "ndays": 2,
+        "UTC_time": "2037-10-13T00:00:00",
+        "Tpos_error": {"n_sigma": 3, "value": 4778.0},
+        "Cpos_error": {"n_sigma": 3, "value": 160.0},
+        "Npos_error": {"n_sigma": 3, "value": 94.0},
+        "Tvel_error": {"n_sigma": 3, "value": 0.020},
+        "Cvel_error": {"n_sigma": 3, "value": 0.174},
+        "Nvel_error": {"n_sigma": 3, "value": 1.257}
+    }
+]
