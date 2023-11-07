@@ -30,13 +30,14 @@ def sv2geojson(svPCR, kepler_orbit):
               },
               "properties": {
                   "version": "8",
-                  "referenceDocument": "ESA-ENVIS-ESOC-MIS-ML-008",
+                  "referenceDocument": "Hydroterra E12 proposal",
                   "object": "Hydroterra+",
                   "timeUTC": satSVICRF[0].astype(str),
                   "orbitAngle": np.degrees(np.arctan2(np.sin(oarg), np.cos(oarg))),
                   "argPerigee": np.degrees(np.arctan2(np.sin(parg), np.cos(parg))),
                   "semiMajorAxis": kepler_orbit.a,
                   "eccentricity": kepler_orbit.e,
+                  "period": kepler_orbit.period,
                   "ascendingNode": np.degrees(kepler_orbit.ascendingNode),
                   "stateVector": [
                       {
@@ -69,9 +70,10 @@ def svFromJsonArgs(kepler_params):
     
     sv = state_vector(planet = hPlus.planet)
     prf = 1.0/kepler_params["delta_t"]
+    N_samples = kepler_params["n_samples"]
     t0 = np.datetime64(kepler_params["epoch"])
     dT = np.timedelta64(int(1/prf*1e9), 'ns')
-    time_array = np.arange(0,int(hPlus.period),1/prf)
+    time_array = np.arange(N_samples)/prf
     orbit_angles = list(map(lambda t: hPlus.computeO(t)[0], time_array))
     sv_inertial = [(t0 + k*dT, hPlus.computeSV(o)[0]) 
                    for k,o in enumerate(orbit_angles)]
