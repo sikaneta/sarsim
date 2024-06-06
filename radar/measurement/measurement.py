@@ -10,6 +10,8 @@ import math
 from timeit import default_timer as timer
 from numba import njit, prange
 from space.planets import earth
+from types import SimpleNamespace
+import bisect
 
 
 class measurement:
@@ -41,20 +43,24 @@ class measurement:
     def __init__(self, mTime=[], mData=[]):
         self.reference_time = datetime.datetime.now()
         if(mTime):
-            self.measurementTime.append(mTime)
-            self.measurementData.append(mData)
+            idxs = np.argsort(mTime)
+            self.measurementTime = [mTime[idx] for idx in idxs]
+            self.measurementData = [mData[idx] for idx in idxs]
 
     def add(self, mTime, mData):
         try:
-            self.measurementTime.append(mTime)
-            self.measurementData.append(np.array(mData))
+            pos = bisect.bisect_left(self.measurementTime, mTime)
+            if (pos == len(self.measurementTime) or 
+                self.measurementTime[pos] != mTime):
+                self.measurementTime.insert(pos, mTime)
+                self.measurementData.insert(pos, np.array(mData))
         except AttributeError:
             self.measurementTime = []
             self.measurementData = []
             self.measurementTime.append(mTime)
             self.measurementData.append(np.array(mData))
             
-
+            
     def get(self, mTime):
         # return the measurement or estimate at the given time
         for cT, cM in zip(self.measurementTime, self.measurementData):
@@ -284,6 +290,12 @@ class state_vector(measurement):
         Y = (N+h)*cos(phi)*sin(lam)
         Z = (b**2*N/a**2+h)*sin(phi)
         return np.array([X,Y,Z])
+    
+    def computeBroadsideToLLH(self, eta, llh, maxiter = 10, etol=1e-6):
+        return self.computeBroadsideToX(eta, 
+                                        self.llh2xyz(llh), 
+                                        maxiter = maxiter, 
+                                        etol = etol)
     
     def computeBroadsideToX(self, eta, X, maxiter = 10, etol=1e-6):
         """
@@ -1938,6 +1950,8 @@ class state_vector(measurement):
                                     rtol = rtol,
                                     atol = atol,
                                     intmethod = intmethod)
+        else:
+            nState = SimpleNamespace(y=np.ones((6,0)))
             
         # Integrate
         if(len(pTimes) > 1):
@@ -1947,7 +1961,9 @@ class state_vector(measurement):
                                     rtol = rtol,
                                     atol = atol,
                                     intmethod = intmethod)
-         
+        else:
+            pState = SimpleNamespace(y=np.ones((6,0)))
+
             
         # Create and return the output
         if 0.0 in integrationTimes:
@@ -1956,6 +1972,7 @@ class state_vector(measurement):
         else:
             y_array = np.concatenate((np.fliplr(nState.y[:,1:]), 
                                       pState.y[:,1:]), axis=1).T
+
             
         return y_array
     

@@ -38,7 +38,7 @@ class slow:
         dN = np.dot(Pw, dw)/norm_v/norm_w
         dkappa = np.dot(dw,N)/norm_v**3 - 2*norm_w*np.dot(ddX,T)/norm_v**5
         tau = np.dot(dN,B)
-        print("kappa: %0.9e tau: %0.9e dkappa: %0.9e" % (kappa, tau, dkappa))
+        #print("kappa: %0.9e tau: %0.9e dkappa: %0.9e" % (kappa, tau, dkappa))
         cdf = [X, T, kappa*N, -kappa**2*T + dkappa*N + kappa*tau*B]
         tdf = [0.0, norm_v, np.dot(ddX,v), np.dot(ddX,w)/norm_v + np.dot(dddX,v)]
         
@@ -97,10 +97,45 @@ class slow:
             print("Warning!. arclength to time failed to converge!")
         
         return t
+    
+    def state(self, s):
+        """
+        Compute the state vector at arclength s
+
+        Parameters
+        ----------
+        s : `float`
+            unitless arclength parameter.
+
+        Returns
+        -------
+        c : `numpy.nbdarray`
+            Position vector.
+        dcdt : `numpy.nbdarray`
+            Velocity vector.
+        d2cdt2 : `numpy.nbdarray`
+            Acceleration vector.
+
+        """
+        t = self.s2t(s)
+        tdf = self.tdf
+        cdf = self.cdf
+        dsdt = tdf[1] + t*tdf[2] + 0.5*t**2*tdf[3]
+        d2sdt2 = tdf[2] + t*tdf[3]
+        c = (np.outer(cdf[0], np.ones_like(s)) + 
+             np.outer(cdf[1], s) + 
+             np.outer(cdf[2], s**2/2.0) + 
+             np.outer(cdf[3], s**3/6.0))
+        dcds = (np.outer(cdf[1], np.ones_like(s)) + 
+                np.outer(cdf[2], s) + 
+                np.outer(cdf[3], s**2/2.0))
+        d2cds2 = (np.outer(cdf[2], np.ones_like(s)) + 
+                  np.outer(cdf[3], s))
+        dcdt = dcds*dsdt
+        d2cdt2 = d2cds2*(dsdt)**2 + dcds*d2sdt2
+        return t, c, dcdt, d2cdt2
         
     def sFromX(self, X, squint = 0.0):
-        print("Squint")
-        print(squint)
         cdf = self.cdf
         def c(s):
             return cdf[0] + cdf[1]*s + cdf[2]*s**2/2.0 + cdf[3]*s**3/6.0

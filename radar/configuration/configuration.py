@@ -473,7 +473,7 @@ def satellitePositionsArclength(rd):
     # Create a slow time object
     C = slow([reference_time])
 
-    # Generate the differntial geometry parameters
+    # Generate the differential geometry parameters
     cdf, tdf, T, N, B, kappa, tau, dkappa = C.diffG(xState)
 
     # Convert time to arclength in the slow-time object

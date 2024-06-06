@@ -478,7 +478,7 @@ class orbit:
 
         """
         
-        look = -np.sign(off_nadir)
+        look = -np.sign(off_nadir) if off_nadir != 0.0 else 1
         v = np.cos(self.toRadians(off_nadir))
         U = self.toRadians(beta) - self.arg_perigee
         e = self.e

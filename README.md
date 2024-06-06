@@ -33,6 +33,8 @@ These can be installed with anaconda using
 
 **conda install conda-build spyder jupyter jupyterlab numpy numba scipy lxml matplotlib cudatoolkit tqdm astropy quaternion openpyxl**
 
+**conda install numpy numba scipy matplotlib flask gdal=3.6.2 astropy pandas elasticsearch jupyter jupyterlab scikit-learn quaternion tqdm spyder**
+
 ## Method of simulation
 Simulations are drived from XML configuration files. The goal is to model the signal capture 
 configuration in these XML files and produce the expected Point Spread Function (PSF), also 

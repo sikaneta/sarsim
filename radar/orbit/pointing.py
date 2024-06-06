@@ -111,6 +111,9 @@ class simulation:
         self.azAxis = azAxis
         self.elAxis = elAxis
         self.carrier = carrier
+        self.wavelength = c/carrier
+        self.elBW = self.wavelength/self.elAxis
+        self.azBW = self.wavelength/self.azAxis
         self.mode = mode
         
     # Define a function to estimate the PDF given a histogram
