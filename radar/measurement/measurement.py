@@ -1,7 +1,7 @@
 import datetime
-from math import asin, atan, atan2, pi
+from math import asin, atan, atan2
 from scipy.integrate import solve_ivp
-from scipy import mat
+# import numpy.matrix as mat
 import xml.etree.ElementTree as etree
 import numpy as np
 from numpy import meshgrid, arange, sqrt, zeros, cumprod, array, diag, cos, sin
@@ -544,7 +544,8 @@ class state_vector(measurement):
             if(int(x[0])==idx):
                 C.append(float(x[2]))
                 S.append(float(x[3]))
-        return mat([C,S]).H
+        # return mat([C,S]).H
+        return np.array([C,S]).T
     
     def grs80radius(self, lat):
         """
@@ -1384,84 +1385,84 @@ class state_vector(measurement):
         return reshuffle.dot(np.concatenate((Jtr, Jtu, Jtt)))
     
         
-    def satEQMold(self,X,t):
-        """
-        Return the satellite equations of motion for the given state vector
-        X
+    # def satEQMold(self,X,t):
+    #     """
+    #     Return the satellite equations of motion for the given state vector
+    #     X
         
-        Return M from the first-order system of differential equations such 
-        that dX/dt = MX
+    #     Return M from the first-order system of differential equations such 
+    #     that dX/dt = MX
         
-        Parameters
-        ----------
-        X : `numpy.ndarray`, (6,)
-            Six element array describing the state vector.
-        t : `float`
-            The time of the state vector information in s.
+    #     Parameters
+    #     ----------
+    #     X : `numpy.ndarray`, (6,)
+    #         Six element array describing the state vector.
+    #     t : `float`
+    #         The time of the state vector information in s.
             
-        Returns
-        -------
-        `numpy.ndarray`, (6,)
-            Satellite velocity and acceleration.
+    #     Returns
+    #     -------
+    #     `numpy.ndarray`, (6,)
+    #         Satellite velocity and acceleration.
             
-        """
-        # Define some constants
-        wE = self.planet.w
+    #     """
+    #     # Define some constants
+    #     wE = self.planet.w
         
-        # Get n-body positions
-        nbody = self.planet.nbodyacc(t, X[0:3])
+    #     # Get n-body positions
+    #     nbody = self.planet.nbodyacc(t, X[0:3])
         
-        # Transform to lat/long/r spherical polar
-        llh = self.xyz2SphericalPolar(X)
-        lat, lon = np.radians(llh[0:2])
+    #     # Transform to lat/long/r spherical polar
+    #     llh = self.xyz2SphericalPolar(X)
+    #     lat, lon = np.radians(llh[0:2])
 
-        # Compute the norm
-        r = llh[2]
-        p = np.sqrt(X[0]**2 + X[1]**2)
-        Xp = mat(X[0:3])
-        Xv = mat(X[3:])
+    #     # Compute the norm
+    #     r = llh[2]
+    #     p = np.sqrt(X[0]**2 + X[1]**2)
+    #     Xp = mat(X[0:3])
+    #     Xv = mat(X[3:])
 
-        nmLegendreCoeffs, cosines, sines = self._getLCS(lat, lon)
+    #     nmLegendreCoeffs, cosines, sines = self._getLCS(lat, lon)
         
         
-        # nmLegendreCoeffs = self.myLegendre(self.Nharmonics, sin(lat))
-        # cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
-        # sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
-        # Compute the component of the gradient due to r, theta, phi
-        delVdelR, delVdelU, delVdelT = self.harmonicsdel(r,
-                                                      lat,
-                                                      lon,
-                                                      nmLegendreCoeffs,
-                                                      cosines = cosines,
-                                                      sines = sines)
+    #     # nmLegendreCoeffs = self.myLegendre(self.Nharmonics, sin(lat))
+    #     # cosines = [cos(l*lon) for l in range (0, self.Nharmonics+1)]
+    #     # sines = [sin(l*lon) for l in range (0, self.Nharmonics+1)]
+    #     # Compute the component of the gradient due to r, theta, phi
+    #     delVdelR, delVdelU, delVdelT = self.harmonicsdel(r,
+    #                                                   lat,
+    #                                                   lon,
+    #                                                   nmLegendreCoeffs,
+    #                                                   cosines = cosines,
+    #                                                   sines = sines)
 
-        # Calculate factors to transform sperical polar to Cartesian 
-        # derivatives
-        delVdelRX = delVdelR/r*mat(X[0:3])
-        delVdelUX = delVdelU*mat([-X[0]*X[2]/r**2/p, 
-                                  -X[1]*X[2]/r**2/p, 
-                                  p/r**2])
-        delVdelTX = delVdelT*mat([-X[1]/p**2, X[0]/p**2, 0.0])
+    #     # Calculate factors to transform sperical polar to Cartesian 
+    #     # derivatives
+    #     delVdelRX = delVdelR/r*mat(X[0:3])
+    #     delVdelUX = delVdelU*mat([-X[0]*X[2]/r**2/p, 
+    #                               -X[1]*X[2]/r**2/p, 
+    #                               p/r**2])
+    #     delVdelTX = delVdelT*mat([-X[1]/p**2, X[0]/p**2, 0.0])
 
 
-        # Compute some shifting matrices
-        I2 = mat([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.0]])
-        Q2 = mat([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
+    #     # Compute some shifting matrices
+    #     I2 = mat([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.0]])
+    #     Q2 = mat([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
         
-        XM = mat([[1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 0.0, 1.0, 0.0, 0.0, 0.0]])
-        VM = mat([[0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-                  [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
-                  [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
+    #     XM = mat([[1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    #               [0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+    #               [0.0, 0.0, 1.0, 0.0, 0.0, 0.0]])
+    #     VM = mat([[0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+    #               [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+    #               [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
         
         
-        # Do the calculation
-        return np.array(X[3:]*XM + (wE**2*Xp*I2 
-                                    + 2.0*wE*Xv*Q2 
-                                    + delVdelRX 
-                                    + delVdelTX 
-                                    + delVdelUX)*VM).flatten()
+    #     # Do the calculation
+    #     return np.array(X[3:]*XM + (wE**2*Xp*I2 
+    #                                 + 2.0*wE*Xv*Q2 
+    #                                 + delVdelRX 
+    #                                 + delVdelTX 
+    #                                 + delVdelUX)*VM).flatten()
     
             
     def satEQM(self,X,t):
@@ -1785,21 +1786,22 @@ class state_vector(measurement):
         return p
 
     def toInertial(self,mData, t):
-        w = self.planet.w;
-        X = mat([[cos(w*t),-sin(w*t),0.0],
-                 [sin(w*t),cos(w*t),0.0],
-                 [0.0,0.0,1.0]])
-        V = w*mat([[-sin(w*t),-cos(w*t),0.0],
-                   [cos(w*t),-sin(w*t),0.0],
-                   [0.0,0.0,0.0]])
-        ix = X*mat(mData[0:3]).H
-        iv = X*mat(mData[3:6]).H + V*mat(mData[0:3]).H
-        ivect = []
-        for pos in ix:
-            ivect.append(float(pos))
-        for vel in iv:
-            ivect.append(float(vel))
-        return ivect
+        return self.toPCI(mData, t)
+        # w = self.planet.w;
+        # X = mat([[cos(w*t),-sin(w*t),0.0],
+        #          [sin(w*t),cos(w*t),0.0],
+        #          [0.0,0.0,1.0]])
+        # V = w*mat([[-sin(w*t),-cos(w*t),0.0],
+        #            [cos(w*t),-sin(w*t),0.0],
+        #            [0.0,0.0,0.0]])
+        # ix = X*mat(mData[0:3]).H
+        # iv = X*mat(mData[3:6]).H + V*mat(mData[0:3]).H
+        # ivect = []
+        # for pos in ix:
+        #     ivect.append(float(pos))
+        # for vel in iv:
+        #     ivect.append(float(vel))
+        # return ivect
     
     def toPCI(self, mData, t, w0 = 0.0):
         w = self.planet.w;
@@ -1817,21 +1819,22 @@ class state_vector(measurement):
         return np.concatenate((ix, iv))
     
     def toECEF(self,mData, t):
-        w = self.planet.w;
-        X = mat([[cos(w*t),sin(w*t),0.0],
-                 [-sin(w*t),cos(w*t),0.0],
-                 [0.0,0.0,1.0]])
-        V = w*mat([[-sin(w*t),cos(w*t),0.0],
-                   [-cos(w*t),-sin(w*t),0.0],
-                   [0.0,0.0,0.0]])
-        ix = X*mat(mData[0:3]).H
-        iv = X*mat(mData[3:6]).H + V*mat(mData[0:3]).H
-        ivect = []
-        for k in range(0,3):
-            ivect.append(float(ix[k]))
-        for k in range(0,3):
-            ivect.append(float(iv[k]))
-        return ivect
+        return self.toPCR(mData, t)
+        # w = self.planet.w;
+        # X = mat([[cos(w*t),sin(w*t),0.0],
+        #          [-sin(w*t),cos(w*t),0.0],
+        #          [0.0,0.0,1.0]])
+        # V = w*mat([[-sin(w*t),cos(w*t),0.0],
+        #            [-cos(w*t),-sin(w*t),0.0],
+        #            [0.0,0.0,0.0]])
+        # ix = X*mat(mData[0:3]).H
+        # iv = X*mat(mData[3:6]).H + V*mat(mData[0:3]).H
+        # ivect = []
+        # for k in range(0,3):
+        #     ivect.append(float(ix[k]))
+        # for k in range(0,3):
+        #     ivect.append(float(iv[k]))
+        # return ivect
     
     def toPCR(self, mData, t, w0 = 0.0):
         w = self.planet.w;
