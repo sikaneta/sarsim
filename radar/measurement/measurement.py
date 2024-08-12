@@ -175,7 +175,7 @@ class state_vector(measurement):
                  planet = None,
                  harmonicsfile=None, 
                  harmonicsCoeff=None):
-        self.reference_time = datetime.datetime.now()
+        super().__init__()
         self.planet = planet or earth()
         harmonicsFile = harmonicsfile or self.planet.sphericalHarmonicsFile
         harmonicsCoeff = harmonicsCoeff or self.planet.nharmonics

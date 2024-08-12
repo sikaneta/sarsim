@@ -4,6 +4,7 @@ Created on Wed Sep 11 12:00:28 2019
 
 @author: SIKANETAI
 """
+
 import numpy as np
 
 #%% Function to convert seconds to a timedelta64 object
@@ -19,6 +20,31 @@ def secondsToDelta(s):
 
 #%% Function to return the indeces of a DFT
 def FFT_freq(N, fp, f0):
+    """
+    Find the appropriate frequencies for a DFT dataset
+    
+    Due to the aliasing nature of discrete sampling and the "butterfly"
+    effect of the DFT operation, it is sometimes difficult to relate a
+    value in the array of a DFT transformed sequence to the related pysical
+    frequency value. This function computes these values. This function
+    replaces the *limited* and often incorrect use of fftshift.
+
+    Parameters
+    ----------
+    N : int
+        The number of samples in the data sequence.
+    fp : float
+        The physical sampling frequency.
+    f0 : float
+        The centre frequncy of the "unaliased" real sequence.
+
+    Returns
+    -------
+    ndarray
+        The real frequency values in each index of the related DFT transformed
+        sequence.
+
+    """
     freq = np.arange(N, dtype=int)
     fidx = freq>=(N/2)
     freq[fidx] -= N

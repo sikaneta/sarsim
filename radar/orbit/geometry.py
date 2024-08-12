@@ -63,14 +63,11 @@ class perspective:
         
     """
     
-    def __init__(self, sPosVel = None, sTime = None, planet = earth()):
+    def __init__(self, sPosVel, sTime, planet = earth()):
         self.sv = state_vector(planet = planet)
-        self.sPosVel = sPosVel
-        self.sTime = sTime
-        if sPosVel is not None:
-            self.setSatPosVel(sPosVel, sTime)
+        self.setSatPosVel(sPosVel, sTime)
     
-    def setSatPosVel(self, sPosVel, sTime = None):
+    def setSatPosVel(self, sPosVel, sTime):
         """
         Set the satellite position and velocity
         
@@ -94,6 +91,8 @@ class perspective:
         self.sTime = sTime
         self.T, self.C, self.N = self.tcn(sPosVel)
         self.satLat, self.satLong, self.satHAE = self.sv.xyz2polar(sPosVel)
+        rVecNadir = self.sv.computeRangeVectorsU(sPosVel, self.N)
+        self.SubSatPt = sPosVel[:3] + rVecNadir
         
     def setSatPosVelFromZeroDoppler(self, sv, xG, eta0):
         """
@@ -123,8 +122,7 @@ class perspective:
         """
         
         svtime, svdata, err = sv.computeBroadsideToX(eta0, xG)
-        self.setSatPosVel(svdata)
-        self.sTime = svtime
+        self.setSatPosVel(svdata, svtime)
         
     def surfaceNormal(self, Xg):
         """
@@ -249,6 +247,13 @@ class perspective:
         
         return rvec, look, incidence, bearing
     
+    def computeSurfaceDistance(self, Xg):
+        Xgl = np.vstack((self.SubSatPt, Xg[0:-1]))
+        lnorm = np.linalg.norm(Xgl, axis=1)
+        rnorm = np.linalg.norm(Xg, axis=1)
+        ldotr = np.sum(Xgl*Xg,axis=1)
+        return np.sqrt(lnorm*rnorm)*np.arccos(ldotr/lnorm/rnorm)
+        
     def computeGeometry(self, off_nadir):
         """
         Compute range and angles for a series of off-nadir angles
@@ -292,14 +297,14 @@ class perspective:
         incidence = [g[2] for g in geometry]
         bearing = [g[-1] for g in geometry]
         
-        """ Compute the sign of the ground swath """
-        sgn = -np.sign(np.mean(off_nadir))
-        dXg = Xg[1:,:] - Xg[:-1,:]
-        
         """ Compute the ground swath """
-        cumXg = np.insert(np.linalg.norm(dXg, axis=1).cumsum(), 0, 0,0)
+        Xgswath = self.computeSurfaceDistance(Xg).cumsum()
         
-        return ranges, incidence, bearing, sgn*cumXg
+        return {"range": ranges,
+                "off_nadir": np.degrees(off_nadir),
+                "incidence": incidence, 
+                "bearing": bearing, 
+                "swath": Xgswath} 
     
     @staticmethod
     def tcn(svdata):
