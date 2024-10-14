@@ -12,7 +12,7 @@ import logging.handlers
 import os
 import json
 from datetime import datetime
-filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\ROIs"
+filepath = r"C:\Users\ishuwa.sikaneta\OneDrive - ESA\Documents\ESTEC\Envision\visor"
 logfile = os.path.join(filepath, "processing.log")
 
 #%% To lowercase

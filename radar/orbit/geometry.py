@@ -63,10 +63,15 @@ class perspective:
         
     """
     
-    def __init__(self, sPosVel, sTime, planet = earth()):
+    def __init__(self, sPosVel = None, sTime = None, planet = earth()):
         self.sv = state_vector(planet = planet)
-        self.setSatPosVel(sPosVel, sTime)
+        if sPosVel is not None and sTime is not None:
+            self.setSatPosVel(sPosVel, sTime)
     
+    def setGroundPoint(self, Xg):
+        self.Xg = Xg
+        self.pFrame = self.pointFrame(Xg)
+        
     def setSatPosVel(self, sPosVel, sTime):
         """
         Set the satellite position and velocity
@@ -93,8 +98,24 @@ class perspective:
         self.satLat, self.satLong, self.satHAE = self.sv.xyz2polar(sPosVel)
         rVecNadir = self.sv.computeRangeVectorsU(sPosVel, self.N)
         self.SubSatPt = sPosVel[:3] + rVecNadir
+        self.orbitDir = "Ascending" if sPosVel[-1] > 0 else "Descending"
         
-    def setSatPosVelFromZeroDoppler(self, sv, xG, eta0):
+    def geometryFromSatPosVel(self, sPosVel, sTime):
+        self.setSatPosVel(sPosVel, sTime)
+        rvec = self.Xg - self.sPosVel[:3]
+        rhat = rvec/np.linalg.norm(rvec)
+        
+        """ Compute the representation of the look vector in the pFrame """
+        rhat_pFrame = (-rhat).dot(self.pFrame)
+        
+        """ Compute the imaging angles """
+        look = np.degrees(np.arccos(rhat.dot(self.N)))
+        incidence = np.degrees(np.arccos(rhat_pFrame[-1]))
+        bearing = np.degrees(np.arctan2(rhat_pFrame[0], rhat_pFrame[1]))
+        
+        return rvec, look, incidence, bearing
+        
+    def setSatPosVelFromZeroDoppler(self, sv, Xg, eta0):
         """
         Set the satellite position and velocity from zero-Doppler
         
@@ -109,7 +130,7 @@ class perspective:
         ----------
         sv : `measurement.state_vector`
             State vector object to propagate to the zero-Doppler condition.
-        xG : `np.ndarray(3,)`
+        Xg : `np.ndarray(3,)`
             The ground position of the target of interest.
         eta0 : `numpy.datetime64`
             A starting point in time for searching for the zero-Doppler
@@ -121,7 +142,7 @@ class perspective:
 
         """
         
-        svtime, svdata, err = sv.computeBroadsideToX(eta0, xG)
+        svtime, svdata, err = sv.computeBroadsideToX(eta0, Xg)
         self.setSatPosVel(svdata, svtime)
         
     def surfaceNormal(self, Xg):
@@ -291,6 +312,7 @@ class perspective:
 
         """ Calculate the ground points """
         Xg = np.array([self.sPosVel[:3] + rV for rV in rangeVectors])
+        XgLLH = [self.sv.xyz2polar(x) for x in Xg]
         
         """ Compute the angles """
         geometry = [self.pointGeometry(x) for x in Xg]
@@ -304,7 +326,10 @@ class perspective:
                 "off_nadir": np.degrees(off_nadir),
                 "incidence": incidence, 
                 "bearing": bearing, 
-                "swath": Xgswath} 
+                "swath": Xgswath,
+                "groundXYZ": Xg,
+                "groundLat": [x[0] for x in XgLLH],
+                "groundLon": [x[1] for x in XgLLH]} 
     
     @staticmethod
     def tcn(svdata):

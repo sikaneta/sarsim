@@ -7,20 +7,28 @@ import matplotlib.cm
 
     
 class instrument:
-    def __init__(self, duty_cycle = 0.05, antenna_az = 6.0):
+    def __init__(self, 
+                 duty_cycle = 0.05, 
+                 antenna_az = 6.0,
+                 antenna_el = 0.6,
+                 carrier = 3.15e9):
         self.duty_cycle = duty_cycle
-        self.antenna_az = 6.0
+        self.antenna_az = antenna_az
+        self.antenna_el = antenna_el
+        self.carrier = carrier
 
 class timingPlot:
     def __init__(self,
                  persp, 
                  off_nadir = None, 
                  prf_range = None, 
+                 iminmax = [15,45],
                  field = {"name": "incidence",
                           "scaling_factor": 1,
                           "target_incidence_range": [25.5,34.5],
                           "label": r"Angle incidence $\theta_i$ / deg"},
                  instr = instrument()):
+        self.iminmax = iminmax
         self.prf_range = prf_range or np.arange(1000, 5000, 10)
         self.instr = instr
         self.setPerspective(persp)
@@ -50,6 +58,14 @@ class timingPlot:
         tx_trigger = self.min_rank/prf_range
         self.tx_forbidden = [tx_trigger - instr.duty_cycle/prf_range,
                              tx_trigger + instr.duty_cycle/prf_range]
+                
+        """ Determine the minimum rank """
+        rk = 1
+        while (max(rk/prf_range + self.tx_forbidden[0]) 
+               < min(self.time_of_arrival) 
+               and rk < 100):
+            rk = rk + 1
+        self.min_rank = rk
         
     def computeForbidden(self, domain):
         nadir_polygons = self.computeForbiddenPolygons(self.nadir_forbidden,
@@ -63,7 +79,7 @@ class timingPlot:
                                    #time_of_arrival, 
                                    forbidden_times, 
                                    #prf_range,
-                                   rank = 1):
+                                   rank = None):
         """
         Find forbidden return events
         
@@ -150,6 +166,8 @@ class timingPlot:
         prf_range = self.prf_range
         
         pri_range = 1/prf_range
+        rank = rank or self.min_rank
+        
         idxs = np.arange(len(time_of_arrival))
         allIdxs = []
         rankIdxs = np.array([None])
@@ -178,17 +196,15 @@ class timingPlot:
                           right = np.nan)
         validInc = myinc != np.nan
         return {"prf": targetIdx["prf"][validInc],
-                "domain": myinc[validInc]}
+                "domain": myinc[validInc],
+                "rank": targetIdx["rank"]}
     
     def computeForbiddenPolygons(self,
-                                 #time_of_arrival,
                                  forbiddenTimeArrays,
-                                 #prf_range,
-                                 domain):
-        fIdxs = [self.computeForbiddenReturnIdxs(#self.time_of_arrival, 
-                                                 forbidden_times, 
-                                                 #self.prf_range
-                                                 )
+                                 domain,
+                                 rank=None):
+            
+        fIdxs = [self.computeForbiddenReturnIdxs(forbidden_times, rank=rank)
                  for forbidden_times in forbiddenTimeArrays]
         
         fLines = [[self.computeForbiddenLine(Idx, domain) for Idx in lIdxs]
@@ -200,10 +216,50 @@ class timingPlot:
                                           l2['prf'][::-1])))).T
                     for l1, l2 in zip(fLines[0], fLines[1])]
         
-        return polygons
+        return polygons, [x['rank'] for x in fIdxs[0]]
       
+    def field2incidence(self,
+                        field,
+                        fieldVals):
+        
+        return np.interp(fieldVals,
+                         self.my_geometry[field],
+                         self.my_geometry["incidence"])
     
-    def iPatch(self, min_inc, max_inc, domain, facecolor='lightblue'):
+    def incidencePatch(self, 
+                       min_inc, 
+                       max_inc, 
+                       field, 
+                       name = None, 
+                       color = 'lightgreen',
+                       prf_range = None,
+                       fillpattern = None,
+                       showlegend=True):
+        prf_range = prf_range or self.prf_range
+        domain = self.my_geometry[field]
+        incidence = self.my_geometry["incidence"]
+        x_min, x_max = np.interp([min_inc, max_inc], 
+                                 incidence, 
+                                 domain)
+        y_min = min(prf_range)
+        y_max = max(prf_range)
+        return_dict = {'x': [x_min, x_min, x_max, x_max],
+                'y': [y_min, y_max, y_max, y_min],
+                'name': name,
+                'fillpattern': fillpattern,
+                'mode': 'lines',
+                'fill': 'toself',
+                'showlegend': showlegend,
+                'line': {'color': color, 'width': 2}}
+        
+        return {k:v for k,v in return_dict.items() if v is not None}
+        
+    def iPatch(self, 
+               min_inc, 
+               max_inc, 
+               domain,
+               fillpattern = None,
+               facecolor='lightblue'):
         prf_range = self.prf_range
         incidence = self.my_geometry["incidence"]
         x_min, x_max = np.interp([min_inc, max_inc], incidence, domain)
@@ -213,6 +269,7 @@ class timingPlot:
             (x_min, y_min), x_max - x_min, y_max - y_min,
             linewidth=1, 
             edgecolor='r', 
+            fillpattern=fillpattern,
             facecolor=facecolor, 
             alpha=0.4, 
             label= "Incidence (%0.1f to %0.1f deg)" % (min_inc, max_inc)
@@ -232,7 +289,10 @@ class timingPlot:
         min_rank = self.min_rank
         domain = self.my_geometry[field]*scale
         rect = self.iPatch(iminmax[0], iminmax[-1], domain)
-        trect = self.iPatch(tminmax[0], tminmax[-1], domain, 
+        trect = self.iPatch(tminmax[0], 
+                            tminmax[-1], 
+                            domain,
+                            fillpattern = {'shape': '-'},
                             facecolor = 'lightgreen')
         axs.add_patch(rect)
         axs.add_patch(trect)
@@ -263,7 +323,8 @@ class timingPlot:
     
         """ Plot Nadir return lines """
         nadir_polygons = self.computeForbiddenPolygons(self.nadir_forbidden,
-                                                       domain)
+                                                       domain,
+                                                       rank=1)
         nadpatches = [patches.Polygon(p, 
                                       closed = True,
                                       facecolor = 'darkorange',
