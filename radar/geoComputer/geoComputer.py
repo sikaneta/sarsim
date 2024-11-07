@@ -147,7 +147,7 @@ class satGeometry:
                          2.0*(sX-X)/range**2, sV])
         
         
-    def computeECEF(self, sVec, u, range, h, X = None):
+    def computeECEF(self, sVec, u, rng, h, X = None, sF = 1.0, maxIter=10):
         """
         Computes the ECEF XYZ position from radar parameters
         
@@ -164,7 +164,7 @@ class satGeometry:
         u : `float`
             Look direction in azimuth in range [-1,1]. For braodside, or 
             zero-Doppler, u=0.
-        range : `float`
+        rng : `float`
             Range to the target point (m).
         h : `float`
             Height of the target point above the ellipsoid (m).
@@ -181,6 +181,8 @@ class satGeometry:
         """
         sX = sVec[0:3]
         sV = sVec[3:6]
+        a = self.body.a
+        b = self.body.b
         
         if X is None:
             # Calculate the vector orthogonal to the position and velocity
@@ -188,20 +190,20 @@ class satGeometry:
             su = su/np.linalg.norm(su)
             
             # Calculate a dummy variable
-            srange = np.sqrt(range**2-(np.linalg.norm(sX) 
-                                       - self.body.a/2.0 
-                                       - self.body.b/2.0)**2 )
+            srange = np.sqrt(rng**2-(np.linalg.norm(sX) 
+                                       - a/2.0 
+                                       - b/2.0)**2 )
             
             # Generate an intial guess
             wP = sX - np.cos(u)*su*srange
             # wP = sX - su*srange
-            X =  wP*(self.body.a/2.0 + self.body.b/2.0)/np.linalg.norm(wP)
+            X =  wP*(a/2.0 + b/2.0)/np.linalg.norm(wP)
         
         # Now apply the Newton Raphson method
-        for j in np.arange(10):
-            f = self.sysEq(X, range, u, h, sX, sV)
-            J = self.sysJac(X, range, h, sX, sV)
-            dX = np.dot(np.linalg.inv(J), f)
+        for j in np.arange(maxIter):
+            f = self.sysEq(X, rng, u, h, sX, sV)
+            J = self.sysJac(X, rng, h, sX, sV)
+            dX = np.dot(sF*np.linalg.inv(J), f)
             X = X - dX
             error = np.linalg.norm(dX)
             if(error < 1.0e-6):
@@ -212,7 +214,7 @@ class satGeometry:
     def computeLLHwithDEM(self, 
                           sVec, 
                           u, 
-                          range, 
+                          rng, 
                           dem = None, 
                           geoidHeightFunction=None, 
                           X=None):
@@ -231,7 +233,7 @@ class satGeometry:
         u : `float`
             Look direction in azimuth in range [-1,1]. For braodside, or 
             zero-Doppler, u=0.
-        range : `float`
+        rng : `float`
             Range to the target point (m).
         DEM : :class:`~sip_tools.DEM.DEM.DEM`
             A DEM object to compute heights.
@@ -261,7 +263,7 @@ class satGeometry:
         
         for k in np.arange(10):
             h = demH
-            (X, error) = self.computeECEF(sVec, u, range, h, X)
+            (X, error) = self.computeECEF(sVec, u, rng, h, X)
             (crds, perror) = self.xyz2polar(X)
             crdsDeg = crds*rad2deg
             

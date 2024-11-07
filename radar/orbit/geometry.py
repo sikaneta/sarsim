@@ -100,18 +100,27 @@ class perspective:
         self.SubSatPt = sPosVel[:3] + rVecNadir
         self.orbitDir = "Ascending" if sPosVel[-1] > 0 else "Descending"
         
-    def geometryFromSatPosVel(self, sPosVel, sTime):
+    def geometryFromSatPosVel(self, sPosVel, sTime, Xg = None, pFrame = None):
+        """ Set the current satellite position and velocity data """
         self.setSatPosVel(sPosVel, sTime)
-        rvec = self.Xg - self.sPosVel[:3]
+        
+        """ Use the supplied ground point and point frame if supplied.
+            Otherwise use the point defined by setGroundPoint(). """
+        Xg = self.Xg if Xg is None else Xg
+        pFrame = self.pFrame if pFrame is None else pFrame
+        
+        """ Compute the range vector """
+        rvec = Xg - self.sPosVel[:3]
         rhat = rvec/np.linalg.norm(rvec)
         
         """ Compute the representation of the look vector in the pFrame """
-        rhat_pFrame = (-rhat).dot(self.pFrame)
+        rhat_pFrame = (-rhat).dot(pFrame)
         
         """ Compute the imaging angles """
         look = np.degrees(np.arccos(rhat.dot(self.N)))
         incidence = np.degrees(np.arccos(rhat_pFrame[-1]))
         bearing = np.degrees(np.arctan2(rhat_pFrame[0], rhat_pFrame[1]))
+        bearing = np.mod(bearing, 360)
         
         return rvec, look, incidence, bearing
         
@@ -265,6 +274,7 @@ class perspective:
         look = np.degrees(np.arccos(rhat.dot(self.N)))
         incidence = np.degrees(np.arccos(rhat_pFrame[-1]))
         bearing = np.degrees(np.arctan2(rhat_pFrame[0], rhat_pFrame[1]))
+        bearing = np.mod(bearing, 360)
         
         return rvec, look, incidence, bearing
     
