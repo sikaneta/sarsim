@@ -104,6 +104,5 @@ logconfig = {
     }
 }    
 
-#%%
 logging.config.dictConfig(logconfig)
 logger = CustomAdapter(logging.getLogger('foo'))

@@ -554,7 +554,7 @@ class state_vector(measurement):
         Parameters
         ----------
         lat : `float`
-            Latitude.
+            Latitude (rad).
             
         Returns
         -------
@@ -577,9 +577,9 @@ class state_vector(measurement):
         Parameters
         ----------
         lat : `float`
-            Latitude.
+            Latitude in (rad).
         lon : `float`
-            Longitude.
+            Longitude in (rad).
             
         Returns
         -------
