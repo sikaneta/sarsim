@@ -286,9 +286,13 @@ class venus(solar_planet):
     a = 6051878.0
     b = 6051878.0
     siderealSeconds = 243.0226*24*60*60
-    #w = -2*np.pi/(243.0226*24*60*60)
-    """ Changed in favour of IAU specs for Venus """
+    # w = -2*np.pi/(243.0226*24*60*60)
+    """ IAU specs for Venus """
     w = -np.radians(1.4813688/24/60/60)
+    
+    """ Proposed change in favor of 243.020 days/revolution as per Envision 
+        standard
+    w = -2*np.pi/(243.020*24*60*60) """
     J2 = 4.4044e-6
     J4 = -2.1474e-6
     J6 = 0
