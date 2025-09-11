@@ -280,19 +280,19 @@ class earth(solar_planet):
     delta = 90.0
     w0 = 190.147
     
-class venus(solar_planet):
+class venusIAU(solar_planet):
     M = 3.24858592079e14/G
     GM = 3.24858592079e14
-    a = 6051878.0
-    b = 6051878.0
-    siderealSeconds = 243.0226*24*60*60
-    # w = -2*np.pi/(243.0226*24*60*60)
-    """ IAU specs for Venus """
-    w = -np.radians(1.4813688/24/60/60)
+    """ Changed to 6051800 to conform with DART 
+    a = 6051878.0 = b = 6051878.0
+    """
+    a = b = 6051800.0
+
+    """ spin rate """
+    spinRate = 243.01848
     
-    """ Proposed change in favor of 243.020 days/revolution as per Envision 
-        standard
-    w = -2*np.pi/(243.020*24*60*60) """
+    siderealSeconds = spinRate*24*60*60
+    w = -2*np.pi/(spinRate*24*60*60)
     J2 = 4.4044e-6
     J4 = -2.1474e-6
     J6 = 0
@@ -306,5 +306,19 @@ class venus(solar_planet):
     """
     alpha = 272.76
     delta = 67.16
+
+    """ Venus initial meridian state """
     w0 = 160.2
+
     
+class venus(venusIAU):
+    """
+    Update on the Venus solar planet class to incorporate new values
+    for the spin rate and initial state of the prime meridian on the
+    reference epoch. This definition deviates from the IAU definition"""
+
+    """ spin rate """
+    spinRate = 243.0202
+
+    """ Venus initial meridian state """
+    w0 = 160.23

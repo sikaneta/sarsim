@@ -251,9 +251,9 @@ class state_vector(measurement):
         Returns
         -------
         latitude : `float`
-            Latitude anlge.
+            Latitude angle.
         longitude : `float`
-            Longitude anlge.
+            Longitude angle.
         r : `float`
             The raidus.
             

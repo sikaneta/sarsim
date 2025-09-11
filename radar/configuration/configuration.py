@@ -579,8 +579,8 @@ class waveform:
     
 class chirpWaveform(waveform):
     def sample(self, t, carrier=0.0):
-        rate = 2.0*np.pi*np.complex(0,0.5)*self.bandwidth/self.duration
-        wcarrier = 2.0*np.pi*np.complex(0,1.0)*carrier
+        rate = 2.0*np.pi*complex(0,0.5)*self.bandwidth/self.duration
+        wcarrier = 2.0*np.pi*complex(0,1.0)*carrier
         idx = (t>=0.0) & (t<self.duration)
         y = np.zeros(t.shape, dtype='complex64')
         if carrier == 0.0:

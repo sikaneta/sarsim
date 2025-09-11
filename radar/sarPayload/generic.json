@@ -1,0 +1,159 @@
+{
+    "pool": {
+        "pulseBandwidth": 15.5e6,
+        "receiverBandwidth": 17e6,
+        "pulseLength": 20e-6,
+        "stateVectors": [
+            {
+                "tag": "low",
+                "altitude": 226121,
+                "time": "2038-03-07T23:45:48.1981",
+                "vector": [
+                    -4567145.653358738,
+                    3491347.274270271,
+                    2522884.156820172,
+                    2175.772015292436,
+                    -1963.9187868504648,
+                    6652.290664702469,
+                    5.997335653680401,
+                    -4.582388554172705,
+                    -3.3122627566053087,
+                    -0.0028481155266012453,
+                    0.002577202150012329,
+                    -0.008736927267658293
+                ]
+            },
+            {
+                "tag": "medium",
+                "altitude": 352093,
+                "time": "2038-03-07T23:23:48.1981",
+                "vector": [
+                    -2211301.351958198,
+                    1954373.5494709597,
+                    -5683433.354579419,
+                    -4983.485484526058,
+                    3786.532808025835,
+                    3410.962927919423,
+                    2.7329390370600675,
+                    -2.420306225243402,
+                    7.029755256814527,
+                    0.0063578026797526995,
+                    -0.004852170271243692,
+                    -0.003722930976170579
+                ]
+            },
+            {
+                "tag": "high",
+                "altitude": 498120,
+                "time": "2038-03-07T22:57:48.1981",
+                "vector": [
+                    4843682.245261232,
+                    -3746497.433487055,
+                    -2324640.757953013,
+                    -1810.749605691721,
+                    1684.4347613953096,
+                    -6513.972508715595,
+                    -5.600729639364018,
+                    4.330210217022034,
+                    2.6874330252058667,
+                    0.0021142641956178447,
+                    -0.001968577620212356,
+                    0.007519764461911627
+                ]
+            }
+        ],
+        "antennaTemperature": 700,
+        "referenceTemperature": 290,
+        "sincFactor": 0.866
+    },
+    "EuroSAR1_1": {
+        "type": "reflector",
+        "elevation": 0.6,
+        "azimuth": 5.7,
+        "carrier": 3.2e9,
+        "ohmicLoss": 0.95,
+        "beamSpreadEl": 1.22,
+        "beamSpreadAz": 1.22,
+        "transmitPower": 1390,
+        "noiseFigure": 3,
+        "systemLosses": 3,
+        "twoWayAtmosphericLoss": 2,
+        "ADCbits": 6,
+        "dutyCycle": 0.05
+    },
+    "EuroSAR2_1": {
+        "type": "reflector",
+        "elevation": 0.6,
+        "azimuth": 2.7,
+        "carrier": 3.2e9,
+        "ohmicLoss": 0.95,
+        "beamSpreadEl": 1.22,
+        "beamSpreadAz": 1.22,
+        "transmitPower": 600,
+        "noiseFigure": 3,
+        "systemLosses": 3,
+        "twoWayAtmosphericLoss": 2,
+        "ADCbits": 6,
+        "dutyCycle": 0.05
+    },
+    "EuroSAR3_2": {
+        "type": "reflector",
+        "elevation": 0.6,
+        "azimuth": 2.8,
+        "carrier": 5.4e9,
+        "ohmicLoss": 0.95,
+        "beamSpreadEl": 1.22,
+        "beamSpreadAz": 1.22,
+        "transmitPower": 2200,
+        "noiseFigure": 3,
+        "systemLosses": 3,
+        "twoWayAtmosphericLoss": 6,
+        "ADCbits": 6,
+        "dutyCycle": 0.05
+    },
+    "EuroSAR3_2small": {
+        "type": "reflector",
+        "elevation": 0.4,
+        "azimuth": 2.8,
+        "carrier": 5.4e9,
+        "ohmicLoss": 0.95,
+        "beamSpreadEl": 1.22,
+        "beamSpreadAz": 1.22,
+        "transmitPower": 2200,
+        "noiseFigure": 3,
+        "systemLosses": 3,
+        "twoWayAtmosphericLoss": 6,
+        "ADCbits": 6,
+        "dutyCycle": 0.05
+    },
+    "EuroSAR3_2medium": {
+        "type": "reflector",
+        "elevation": 0.6,
+        "azimuth": 2.8,
+        "carrier": 5.4e9,
+        "ohmicLoss": 0.95,
+        "beamSpreadEl": 1.22,
+        "beamSpreadAz": 1.22,
+        "transmitPower": 2200,
+        "noiseFigure": 3,
+        "systemLosses": 3,
+        "twoWayAtmosphericLoss": 6,
+        "ADCbits": 6,
+        "dutyCycle": 0.05
+    },
+    "EuroSAR3_2b": {
+        "type": "reflector",
+        "elevation": 1.0,
+        "azimuth": 2.8,
+        "carrier": 5.405e9,
+        "ohmicLoss": 0.95,
+        "beamSpreadEl": 1.4,
+        "beamSpreadAz": 1.0,
+        "transmitPower": 1100,
+        "noiseFigure": 3,
+        "systemLosses": 4,
+        "twoWayAtmosphericLoss": 6,
+        "ADCbits": 6,
+        "dutyCycle": 0.1
+    }
+}

@@ -6,16 +6,34 @@ import matplotlib.patches as patches
 import matplotlib.cm
 
     
-class instrument:
+class antenna:
     def __init__(self, 
-                 duty_cycle = 0.05, 
-                 antenna_az = 6.0,
-                 antenna_el = 0.6,
-                 carrier = 3.15e9):
-        self.duty_cycle = duty_cycle
-        self.antenna_az = antenna_az
-        self.antenna_el = antenna_el
+                 dutyCycle = 0.05, 
+                 antennaAz = 6.0,
+                 antennaEl = 0.6,
+                 carrier = 3.15e9,
+                 beamSpreadEl = 1.22,
+                 beamSpreadAz = 1.22,
+                 ohmicLoss = 0.95):
+        self.dutyCycle = dutyCycle
+        self.antennaAz = antennaAz
+        self.antennaEl = antennaEl
+        self.beamSpreadEl = beamSpreadEl
+        self.beamSpreadAz = beamSpreadAz
+        self.antennaElEff = antennaEl/beamSpreadEl
+        self.antennaAzEff = antennaAz/beamSpreadAz
         self.carrier = carrier
+        self.wavelength = const.c/carrier
+        self.beamwidthEl = self.wavelength/self.antennaElEff
+        self.beamwidthAz = self.wavelength/self.antennaAzEff
+        self.ohmicLoss = ohmicLoss
+        self.antennaArea = antennaAz*antennaEl
+        self.antennaAreaEff = self.antennaArea/beamSpreadEl/beamSpreadAz
+        self.efficiency = self.ohmicLoss/beamSpreadEl/beamSpreadAz
+        self.gain = 10*np.log10(4*np.pi
+                                *self.efficiency
+                                *self.antennaArea
+                                /self.wavelength**2)
 
 class timingPlot:
     def __init__(self,
@@ -27,17 +45,17 @@ class timingPlot:
                           "scaling_factor": 1,
                           "target_incidence_range": [25.5,34.5],
                           "label": r"Angle incidence $\theta_i$ / deg"},
-                 instr = instrument()):
+                 instr = None):
         self.iminmax = iminmax
-        self.prf_range = prf_range or np.arange(1000, 5000, 10)
-        self.instr = instr
+        self.instr = instr or antenna()
         self.setPerspective(persp)
+        self.prf_range = prf_range or np.linspace(self.dopp_BW/2, 1.5*self.dopp_BW, 400)
         off_nadir = off_nadir or np.radians(np.linspace(15, 40, 40))
         self.computeGeometry(off_nadir)
         
     def setPerspective(self, persp):
         self.persp = persp
-        self.dopp_BW = 2*np.linalg.norm(persp.sPosVel[3:])/self.instr.antenna_az
+        self.dopp_BW = 2*np.linalg.norm(persp.sPosVel[3:])/self.instr.antennaAzEff
         self.nadir_time = 2*persp.satHAE/const.c
         self.plot_title = "Time: %s, HAE: %0.1f km" % (persp.sTime, 
                                                        persp.satHAE/1e3)
@@ -52,12 +70,12 @@ class timingPlot:
         """ Compute forbidden times from nadir returns """
         self.nadir_forbidden = [self.nadir_time*np.ones_like(prf_range),
                                 self.nadir_time*np.ones_like(prf_range) + 
-                                self.instr.duty_cycle/prf_range]
+                                self.instr.dutyCycle/prf_range]
                     
         """ Compute forbidden times from transmit events """  
         tx_trigger = self.min_rank/prf_range
-        self.tx_forbidden = [tx_trigger - instr.duty_cycle/prf_range,
-                             tx_trigger + instr.duty_cycle/prf_range]
+        self.tx_forbidden = [tx_trigger - instr.dutyCycle/prf_range,
+                             tx_trigger + instr.dutyCycle/prf_range]
                 
         """ Determine the minimum rank """
         rk = 1
@@ -377,7 +395,7 @@ class timingPlot:
 #     """ Compute forbidden times from nadir returns """
 #     nadir_forbidden = [nadir_time*np.ones_like(prf_range),
 #                        nadir_time*np.ones_like(prf_range) + 
-#                        instr.duty_cycle/prf_range]
+#                        instr.dutyCycle/prf_range]
     
 #     nadir_polygons = computeForbiddenPolygons(time_of_arrival, 
 #                                               nadir_forbidden,
@@ -388,8 +406,8 @@ class timingPlot:
                 
 #     """ Compute forbidden times from transmit events """  
 #     tx_trigger = min_rank/prf_range
-#     forbidden = [tx_trigger - instr.duty_cycle/prf_range,
-#                  tx_trigger + instr.duty_cycle/prf_range]
+#     forbidden = [tx_trigger - instr.dutyCycle/prf_range,
+#                  tx_trigger + instr.dutyCycle/prf_range]
     
 #     polygons = computeForbiddenPolygons(time_of_arrival, 
 #                                         forbidden,
