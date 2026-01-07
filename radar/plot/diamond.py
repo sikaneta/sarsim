@@ -5,7 +5,7 @@ from matplotlib.collections import PatchCollection
 import matplotlib.patches as patches
 import matplotlib.cm
 
-    
+#%%
 class antenna:
     def __init__(self, 
                  dutyCycle = 0.05, 
@@ -49,8 +49,15 @@ class timingPlot:
         self.iminmax = iminmax
         self.instr = instr or antenna()
         self.setPerspective(persp)
-        self.prf_range = prf_range or np.linspace(self.dopp_BW/2, 1.5*self.dopp_BW, 400)
-        off_nadir = off_nadir or np.radians(np.linspace(15, 40, 40))
+        if prf_range is None:
+            self.prf_range = np.linspace(self.dopp_BW/2, 
+                                         1.5*self.dopp_BW, 400)
+        else:
+            self.prf_range = prf_range
+            
+        if off_nadir is None:
+            off_nadir = np.radians(np.linspace(15, 40, 40))
+        
         self.computeGeometry(off_nadir)
         
     def setPerspective(self, persp):

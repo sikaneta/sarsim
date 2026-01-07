@@ -19,16 +19,16 @@ The gravitational potential, $U(r,\phi,\lambda)$, is defined in \eqref{eq:egm96m
  &= \left[\prt{(r,\phi,\lambda)}{(x,y,z)}\right]^T\del_{r,\phi,\lambda}U.
  \end{split}
 \end{equation}
-Note that, although the above equation does explicitely show a time dependence on the left side, the time variable has been supressed on the right to allow for more compact notation. In actual fact, the position coordinates do depend on time. More explicitely, the position of a body is given by $x(\tparm), y(\tparm), z(\tparm)$. Thus, to compute the derivative of the acceleration, one must compute
+Note that, although the above equation does explicitely show a time dependence on the left side, the time variable has been supressed on the right to allow for more compact notation. In actual fact, the position coordinates do depend on time. More explicitely, the position of a body is given by $x(\time), y(\time), z(\time)$. Thus, to compute the derivative of the acceleration, one must compute
 \begin{equation}
- \dddot{\vct{x}}_i(t) = \dtv{\del_{x,y,z}U}{\tparm} = 
+ \dddot{\vct{x}}_i(t) = \dtv{\del_{x,y,z}U}{\time} = 
  \begin{bmatrix}
  \prttwoa{U}{x} & \prttwob{U}{y}{x} & \prttwob{U}{z}{x}\\
  \prttwob{U}{x}{y} & \prttwoa{U}{y} & \prttwob{U}{z}{y}\\
  \prttwob{U}{x}{z} & \prttwob{U}{y}{z} & \prttwoa{U}{z}
  \end{bmatrix}
  \begin{bmatrix}
- \dtv{x}{\tparm} \\ \dtv{y}{\tparm} \\ \dtv{z}{\tparm}  
+ \dtv{x}{\time} \\ \dtv{y}{\time} \\ \dtv{z}{\time}  
  \end{bmatrix}
 \end{equation}
 A representative component of the matrix in the above may be written as
@@ -82,7 +82,7 @@ A representative component of the matrix in the above may be written as
 One can consolidate all the terms into matrix form via
 \begin{equation}
 \begin{split}
- &\dddot{\vct{x}}_i(t) = \dtv{\del_{x,y,z}U}{\tparm} = \\
+ &\dddot{\vct{x}}_i(t) = \dtv{\del_{x,y,z}U}{\time} = \\
  &\begin{bmatrix}
   \prt{U}{r} & \prt{U}{\phi} & \prt{U}{\lambda} & 0 & 0 & 0 & 0 & 0 & 0\\
   0 & 0 & 0 & \prt{U}{r} & \prt{U}{\phi} & \prt{U}{\lambda} & 0 & 0 & 0\\
@@ -99,7 +99,7 @@ One can consolidate all the terms into matrix form via
   \prttwob{\lambda}{z}{x} & \prttwob{\lambda}{z}{y} & \prttwob{\lambda}{z}{z}
  \end{bmatrix}
  \begin{bmatrix}
-  \dtv{x}{\tparm} \\ \dtv{y}{\tparm} \\ \dtv{z}{\tparm}  
+  \dtv{x}{\time} \\ \dtv{y}{\time} \\ \dtv{z}{\time}  
  \end{bmatrix}\\
  +
  &\begin{bmatrix}
@@ -118,7 +118,7 @@ One can consolidate all the terms into matrix form via
   \prt{\lambda}{x} & \prt{\lambda}{y} & \prt{\lambda}{z}
  \end{bmatrix}
  \begin{bmatrix}
-  \dtv{x}{\tparm} \\ \dtv{y}{\tparm} \\ \dtv{z}{\tparm}  
+  \dtv{x}{\time} \\ \dtv{y}{\time} \\ \dtv{z}{\time}  
  \end{bmatrix}
  \end{split}
 \end{equation}

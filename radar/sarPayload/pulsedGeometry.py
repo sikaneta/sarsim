@@ -8,7 +8,7 @@ Created on Thu Aug 15 08:36:28 2024
 #from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.colors as plc
-from shapely import LineString, Polygon, MultiPolygon
+from shapely import LineString, Polygon, MultiPolygon, MultiLineString
 from shapely import difference
 import numpy as np
 from elasticOrbit import estimateSV
@@ -25,8 +25,10 @@ class diamondFigure:
                  persp,
                  field = "incidence",
                  field_xaxis=None,
+                 prf_range = None,
                  max_PRF = 3600,
                  boresight=30.0,
+                 off_nadir = None,
                  mode = None,
                  figNum = 1,
                  subtitle = None,
@@ -44,7 +46,10 @@ class diamondFigure:
             
             
         self.targetIncidence = [30]
-        self.tP = timingPlot(self.persp, instr = instr)
+        self.tP = timingPlot(self.persp, 
+                             instr = instr, 
+                             prf_range = prf_range,
+                             off_nadir = off_nadir)
         self.max_PRF = self.tP.prf_range[-1]
         self.elevBW = np.degrees(cnst.c/
                                  self.tP.instr.carrier/
@@ -233,6 +238,12 @@ class diamondFigure:
         ln = LineString([(prf,min(tP.my_geometry["incidence"])),
                          (prf,max(tP.my_geometry["incidence"]))])
         wins = difference(ln, self.mypoly)
+        
+        """ Check for the geometry type since wins.geoms will not
+            work for a line string """
+        if wins.geom_type == 'LineString':
+            wins = MultiLineString([wins])
+            
         incs = [i.coords.xy[1].tolist() for i in wins.geoms]
         return incs
         

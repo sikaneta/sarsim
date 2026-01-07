@@ -12,6 +12,28 @@ import numpy as np
 from tqdm import tqdm
 import json
 
+#%% Define tranlation dictionary for different naming convention
+babel = {
+    "a": ["semi_major_axis"],
+    "e": ["eccentricity"],
+    "ascendingNode": ["raan"],
+    "epoch": ["epoch_time"],
+    "arg_perigee": [],
+    "inclination": [],
+    "true_anomaly": []
+}
+
+def getKey(key, mydict):
+    mykeys = list(mydict.keys())
+    bbkeys = list(babel.keys())
+    if key in mykeys:
+        return mydict[key]
+    if key in bbkeys:
+        try:
+            return [mydict[x] for x in babel[key] if x in mykeys][0]
+        except IndexError:
+            raise KeyError
+            
 #%%     
 def sv2geojson(svPCR, kepler_orbit):
     stateVectors = {"type": "FeatureCollection",
@@ -64,18 +86,30 @@ def sv2geojson(svPCR, kepler_orbit):
     return stateVectors
 
 #%%
-def svFromJsonArgs(kepler_params):
+def svFromJsonArgs(kepler_params, planet = earth()):
     hPlus = orbit()
-    hPlus.setFromDict(kepler_params, planet=earth())
+    k_params = {k:getKey(k, kepler_params) for k in babel.keys()}
+    hPlus.setFromDict(k_params, planet=planet)
     
-    sv = state_vector(planet = hPlus.planet)
-    prf = 1.0/kepler_params["delta_t"]
-    N_samples = kepler_params["n_samples"]
-    t0 = np.datetime64(kepler_params["epoch"])
+    sv = state_vector(planet = planet)
+    if "delta_t" in kepler_params:
+        prf = 1.0/kepler_params["delta_t"]
+    else:
+        prf = 1000
+        
+    if "n_samples" in kepler_params:
+        N_samples = kepler_params["n_samples"]
+    else:
+        N_samples = 10
+        
+    t0 = np.datetime64(k_params["epoch"])
     dT = np.timedelta64(int(1/prf*1e9), 'ns')
-    time_array = np.arange(N_samples)/prf
+    t_offset = hPlus.computeT(k_params["true_anomaly"] +
+                              k_params["arg_perigee"])
+    t_dT = np.timedelta64(int(t_offset*1e9), 'ns')
+    time_array = t_offset + np.arange(N_samples)/prf
     orbit_angles = list(map(lambda t: hPlus.computeO(t)[0], time_array))
-    sv_inertial = [(t0 + k*dT, hPlus.computeSV(o)[0]) 
+    sv_inertial = [(t0 + t_dT + k*dT, hPlus.computeSV(o)[0]) 
                    for k,o in enumerate(orbit_angles)]
     
     for vec in sv_inertial:

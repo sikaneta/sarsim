@@ -55,6 +55,39 @@ def FFT_freq(N, fp, f0):
     freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
     return freq*fp/N
 
+def castType(array, toType):
+    """
+    Simple function to convert data from one type to another
+    
+    This function will make all values less than zero
+    equal to zero
+
+    Parameters
+    ----------
+    array : ndarray
+        The input array to cast.
+    toType : string
+        The destination datatype.
+
+    Returns
+    -------
+    ndarray
+        The ndarray cast to the desired type.
+
+    """
+    """ """
+    if toType in ['uint8', 'uint16', 'uint32', 'uint64']:
+        # Trim on the low end
+        array[array<0] = 0
+        
+        # Trim on the high end
+        if toType == 'uint8':
+            array[array>255] = 255
+        if toType == 'uint16':
+            array[array>65535] = 65535
+            
+    return array.astype(toType)
+
 #%% Function to oversample a signal
 def upsampleSignal(y, os_factor, k_off=0):
         N = len(y)

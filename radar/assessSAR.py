@@ -11,24 +11,49 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
-
+import os
+import argparse
 
 #%%
-altitude = "medium"
-sysOption = "EuroSAR3_2small"
-mySAR = sar(source = r"sarPayload/generic.json",
-            sysOption = sysOption, 
-            altitude = altitude)
+description = """
+Generate performance and timing diagram for a given SAR instrument
+in a given state. Performance plots at http://localhost:8050/
+"""
+parser = argparse.ArgumentParser(description=description)
+
+parser.add_argument("--source",
+                    help=""" Source json file with parameters for both
+                             the SAR instrument and the state vectors """,
+                    type=str,
+                    required=True)
+parser.add_argument("--sys-tag",
+                    help="Tag for instrument to assess",
+                    type=str,
+                    required=True)
+parser.add_argument("--state-tag",
+                    help="Tag for state vector to use for assessment",
+                    type=str,
+                    required=True)
+
+#%%
+tt = " --source ../../Envision/EuroSAR/generic.json --sys-tag EuroSAR1_1 --state-tag low"
+#tt = " --source ../../Envision/EuroSAR/fromMarc.json --state-tag Hydroterra+ --sys-tag HYDROTERRA"
+
+#%%
+vv = parser.parse_args()
+
+#%%
+mySAR = sar(source = vv.source,
+            sys_tag = vv.sys_tag, 
+            state_tag = vv.state_tag)
 
 #%% Plot the diamond figure
 """ Define reference look """
-ref_look = 30.0
+ref_look = np.mean(np.degrees(mySAR.off_nadir))
+min_look = np.degrees(np.min(mySAR.off_nadir))
+max_look = np.degrees(np.max(mySAR.off_nadir))
 
-""" Create the Dash layout and place items """
-app = Dash(__name__,
-           external_stylesheets=[dbc.themes.SOLAR])
-
-look_range = [float("%0.1f" % k) for k in np.arange(20,40,0.1)]
+look_range = [float("%0.1f" % k) for k in np.arange(min_look,max_look,0.1)]
 look_angle_slider = html.Div(
     [
      dbc.Label("Off Nadir Angle", html_for="Look label"),
@@ -37,7 +62,7 @@ look_angle_slider = html.Div(
                 id="ref_look",
                 tooltip={"placement": "top", 
                          "always_visible": True},
-                value=30)
+                value=ref_look)
     ],
     className = "row"
 )
@@ -134,13 +159,13 @@ form = html.Div([
 )
 
 """ Create an instance of the app """
-app = Dash(external_stylesheets=[dbc.themes.SPACELAB])
+app = Dash(external_stylesheets=[dbc.themes.FLATLY])
 
 """ Setup the layout """
 app.layout = html.Div(className='row', children=[
-    html.H2("Diamond Timing Diagram: %s" % sysOption, className="mytitle"),
+    html.H2("Instrument: %s" % vv.sys_tag, className="mytitle"),
     html.Img(src=get_asset_url('esaLogo.svg'), className="logo"),
-    html.H2("Altitude: %s" % altitude, className='myh2'),
+    html.H2("State Vector: %s" % vv.state_tag, className='myh2'),
     dcc.Store(id="diamondData", data=mySAR.mydF_dict),
     #radio_field,
     form,

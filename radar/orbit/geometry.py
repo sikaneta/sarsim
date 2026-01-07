@@ -96,7 +96,7 @@ class perspective:
         self.sTime = sTime
         self.T, self.C, self.N = self.tcn(sPosVel)
         self.satLat, self.satLong, self.satHAE = self.sv.xyz2polar(sPosVel)
-        rVecNadir = self.sv.computeRangeVectorsU(sPosVel, self.N)
+        rVecNadir, _ = self.sv.computeRangeVectorsU(sPosVel, self.N)
         self.SubSatPt = sPosVel[:3] + rVecNadir
         self.orbitDir = "Ascending" if sPosVel[-1] > 0 else "Descending"
         
@@ -315,7 +315,8 @@ class perspective:
                           for eang in off_nadir])
 
         """ Calculate range vectors """
-        rangeVectors = self.sv.computeRangeVectorsU(self.sPosVel, uhats)
+        rangeVectors, vidxs = self.sv.computeRangeVectorsU(self.sPosVel, 
+                                                            uhats)
 
         """ Calculate the ranges """
         ranges = np.linalg.norm(rangeVectors, axis=1)
@@ -333,7 +334,7 @@ class perspective:
         Xgswath = self.computeSurfaceDistance(Xg).cumsum()
         
         return {"range": ranges,
-                "off_nadir": np.degrees(off_nadir),
+                "off_nadir": np.degrees(off_nadir[vidxs]),
                 "incidence": incidence, 
                 "bearing": bearing, 
                 "swath": Xgswath,
@@ -359,7 +360,7 @@ def computeGeometry(sv, off_nadir, idx = 0):
     uhats = np.array([np.cos(eang)*N + np.sin(eang)*C for eang in off_nadir])
 
     # Calculate range vectors
-    rangeVectors = sv.computeRangeVectorsU(svdata, uhats)
+    rangeVectors, _ = sv.computeRangeVectorsU(svdata, uhats)
 
     # Calculate the ranges
     ranges = np.linalg.norm(rangeVectors, axis=1)
@@ -387,7 +388,7 @@ def getTiming(sv, off_nadir, idx = 0):
     uhats = np.array([np.cos(eang)*N + np.sin(eang)*C for eang in off_nadir])
 
     # Calculate range vectors
-    rangeVectors = sv.computeRangeVectorsU(svdata, uhats)
+    rangeVectors, _ = sv.computeRangeVectorsU(svdata, uhats)
 
     # Calculate the ranges
     ranges = np.linalg.norm(rangeVectors, axis=1)

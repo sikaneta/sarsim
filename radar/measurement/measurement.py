@@ -410,8 +410,12 @@ class state_vector(measurement):
         
         return Xs + mt*uhat
     
-    def computeRangeVectorsU(self, X, uhats, h=0):
-
+    def computeRangeVectorsU(self, X, in_uhats, h=0):
+        if in_uhats.ndim == 1:
+            uhats = np.array([in_uhats])
+        else:
+            uhats = in_uhats
+        
         """ Find where the vector hits the ground """
         Xs = X[:3]
         a = self.planet.a
@@ -423,16 +427,25 @@ class state_vector(measurement):
         mA = np.sum(mu*mu, axis=-1)
         mB = 2*np.matmul(mu, mXs)
         mC = (mXs.dot(mXs) - 1)*np.ones_like(mA)
-
-        mtA = (-mB + np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
-        mtB = (-mB - np.sqrt(mB**2 - 4*mA*mC))/(2*mA)
+        
+        discrim = mB**2 - 4*mA*mC
+        vidxs = np.argwhere(discrim >= 0).flatten()
+        mA = mA[vidxs]
+        mB = mB[vidxs]
+        mC = mC[vidxs]
+        discrim = discrim[vidxs]
+        mtA = (-mB + np.sqrt(discrim))/(2*mA)
+        mtB = (-mB - np.sqrt(discrim))/(2*mA)
 
         msk = (np.abs(mtA) < np.abs(mtB)).astype(int)
         mt = mtA*msk + mtB*(1-msk)
 
         """ Compute the range vectors and return """
-        return np.stack((mt, mt, mt), axis=-1)*uhats
-        
+        if in_uhats.ndim == 1:
+            return ((np.stack((mt, mt, mt), axis=-1)*uhats[vidxs])[0,:], vidxs)
+        else:
+            return (np.stack((mt, mt, mt), axis=-1)*uhats[vidxs], vidxs)
+    
     def getDateTimeXML(self, XMLDateTimeElement):
         """
         Read a datetime from an XML snippet

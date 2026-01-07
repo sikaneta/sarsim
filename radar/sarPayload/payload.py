@@ -6,10 +6,11 @@ Created on Thu Sep 11 15:14:37 2025
 """
 import json
 from orbit.geometry import perspective
-from space.planets import venus
+from space.planets import venus, earth
 import numpy as np
 from scipy.constants import c, Boltzmann
 from sarPayload.pulsedGeometry import diamondFigure as dF
+from orbit.kepler import svFromJsonArgs
 import plotly.graph_objects as go
 import scipy.integrate as integrate
 import pandas as pd
@@ -18,9 +19,6 @@ import portion as P
 
 #%% Define a class for computing various things
 class sar:
-    
-    """ Define range of off nadir angles for the boresight """
-    off_nadir = np.radians(np.arange(5,55,0.01))
 
     perf_colors = {
         "NESZ": "#00FFFF", 
@@ -31,12 +29,14 @@ class sar:
     
     def __init__(self, 
                  source = "generic.json",
-                 sysOption = "EuroSAR3_2", 
-                 altitude = "low"):
+                 sys_tag= "EuroSAR3_2", 
+                 state_tag = "low",
+                 off_nadir = np.radians(np.arange(5,55,0.01))):
         
+        self.off_nadir = off_nadir
         radar = {"source": source,
-                 "altitude": altitude,
-                 "option": sysOption}
+                 "svtag": state_tag,
+                 "option": sys_tag}
         
         off_nadir = self.off_nadir
         
@@ -45,36 +45,63 @@ class sar:
             parameters = json.loads(f.read())
         
         pool = parameters["pool"]
-        option = parameters[sysOption]
-
+        option = [x for x in pool["instruments"] 
+                  if x["tag"]==sys_tag][0]
+            
         """ Choose the right state vector for the altitude """
         svdata = [x for x in pool["stateVectors"] 
-                  if x["tag"] == altitude][0]
+                  if x["tag"] == state_tag][0]
+        
+        """ Choose the right body """
+        if svdata["frame"] in ["IAU_VENUS", "VME2000"]:
+            planet = venus()
+        elif svdata["frame"] in ["IAU_EARTH", "ECEF", "ICRF", "J2000"]:
+            planet = earth()
+        
+        if svdata["type"] == 'keplerian':
+            """ Convert to Cartesian state vector """
+            tmp = svFromJsonArgs(svdata["elements"], planet = planet)
+            mycart = [x for x in tmp["features"][0]["properties"]["stateVector"] 
+                      if "IAU_" in x["frame"]][0]
+            svdata["time"] = mycart["time"]
+            svdata["vector"] = mycart["xyzVxVyVz"]
+        
         self.v = np.linalg.norm(svdata["vector"][3:6])
         self.myAntenna = sar.getInstrument(option)
         
         self.sF = pool["sincFactor"]
         
+        """ Create a perspective object """
         persp = perspective(np.array(svdata["vector"][:6]),
                             svdata["time"],
-                            planet = venus())
-
-        option["systemTemperature"] = (pool["antennaTemperature"] + 
+                            planet = planet)
+            
+        option["systemTemperature"] = (option["antennaTemperature"] + 
                                       (10**((option["noiseFigure"])/10)-1)*
                                       pool["referenceTemperature"])
-        P_N = Boltzmann*option["systemTemperature"]*pool["receiverBandwidth"]
+        P_N = Boltzmann*option["systemTemperature"]*option["receiverBandwidth"]
         option["noisePower"] = P_N
         
-        self.mygeom = persp.computeGeometry(off_nadir)
-        self.mydF = dF(persp, instr = self.myAntenna)
+        self.mygeom = persp.computeGeometry(self.off_nadir)
+        self.off_nadir = np.radians(self.mygeom["off_nadir"])
+        try:
+            prf_range = np.linspace(*option["prf_range"])
+        except KeyError:
+            prf_range = None
+            
+        self.mydF = dF(persp, 
+                       instr = self.myAntenna, 
+                       prf_range = prf_range,
+                       off_nadir = self.off_nadir)
         self.mydF_dict = self.mydF.fig.to_dict()
         self.option = option
         self.pool = pool
         self.radar = radar
         
-        self.echoWindowPRFs = np.arange(min(self.mydF.tP.prf_range),
-                                        max(self.mydF.tP.prf_range), 
-                                        10)
+        # self.echoWindowPRFs = np.arange(min(self.mydF.tP.prf_range),
+        #                                 max(self.mydF.tP.prf_range), 
+        #                                 10)
+        self.echoWindowPRFs = self.mydF.tP.prf_range
         
         self.echoWindows = [[P.closed(*x) for x in self.mydF.echoWindows(k)] 
                             for k in self.echoWindowPRFs]
@@ -164,7 +191,6 @@ class sar:
 
     def powerPerformance(self, look, fp, bands=[-2,-1,0,1,2]):
         mygeom = self.mygeom
-        pool = self.pool
         option = self.option
         v = self.v
         wavelength = self.myAntenna.wavelength
@@ -176,7 +202,7 @@ class sar:
         look_range = np.interp(look, 
                                mygeom["off_nadir"],
                                mygeom["range"])
-        dT = 1/fp - 2*pool["pulseLength"]
+        dT = 1/fp - 2*option["pulseLength"]
         look_range_time = look_range*2/c
         echo_times = np.array([list(np.linspace(-dT/2, dT/2, 100)) 
                               + look_range_time
@@ -232,7 +258,7 @@ class sar:
         mygeom_ref["QNSR"] = -6.02*option["ADCbits"]
         G_dB = self.myAntenna.gain
         NESZ_0 = 10*np.log10(4*(4*np.pi)**3*v
-                             /(c*wavelength**3*pool["pulseLength"]*fp))
+                             /(c*wavelength**3*option["pulseLength"]*fp))
         NESZ_cnst = NESZ_0 + P_N_dB - P_dB - 2*G_dB + P_atm_dB
         
         incidence = np.radians(mygeom_ref["incidence"])

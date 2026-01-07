@@ -240,17 +240,17 @@ v = np.array([[0,
               np.cos(np.radians(ob))] for ob in off_boresight])
 
 """ Compute the reference min and max ranges """
-refR0 = sv.computeRangeVectorsU(XP, np.matmul(aeuP, v[0,:]))
-refR1 = sv.computeRangeVectorsU(XP, np.matmul(aeuP, v[1,:]))
-refR2 = sv.computeRangeVectorsU(XP, np.matmul(aeuP, v[2,:]))
+refR0, _ = sv.computeRangeVectorsU(XP, np.matmul(aeuP, v[0,:]))
+refR1, _ = sv.computeRangeVectorsU(XP, np.matmul(aeuP, v[1,:]))
+refR2, _ = sv.computeRangeVectorsU(XP, np.matmul(aeuP, v[2,:]))
 refRng0 = np.linalg.norm(refR0, axis=-1)
 refRng1 = np.linalg.norm(refR1, axis=-1)
 refRng2 = np.linalg.norm(refR2, axis=-1)
 
 """ Compute the perturbed min and max ranges """
-R0 = sv.computeRangeVectorsU(XP, np.matmul(aeuPe, v[0,:]))
-R1 = sv.computeRangeVectorsU(XP, np.matmul(aeuPe, v[1,:]))
-R2 = sv.computeRangeVectorsU(XP, np.matmul(aeuPe, v[2,:]))
+R0, _ = sv.computeRangeVectorsU(XP, np.matmul(aeuPe, v[0,:]))
+R1, _ = sv.computeRangeVectorsU(XP, np.matmul(aeuPe, v[1,:]))
+R2, _ = sv.computeRangeVectorsU(XP, np.matmul(aeuPe, v[2,:]))
 
 Rng0 = np.linalg.norm(R0, axis=-1)
 Rng1 = np.linalg.norm(R1, axis=-1)

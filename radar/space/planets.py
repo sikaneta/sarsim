@@ -319,6 +319,7 @@ class venus(venusIAU):
 
     """ spin rate """
     spinRate = 243.0202
+    w = -2*np.pi/(spinRate*24*60*60)
 
     """ Venus initial meridian state """
     w0 = 160.23

@@ -193,8 +193,10 @@ class orbit:
                 ("orbits_per_day", None, orbits_per_day2a),
                 ("inclination", 90.0, identity),
                 ("ascendingNode", 0.0, identity)]
-        args = [x[2](pool[x[0]]) if x[0] in keys else x[2](x[1]) 
-                for x in flds]
+        # args = [x[2](pool[x[0]]) if x[0] in keys else x[2](x[1]) 
+        #         for x in flds]
+        args = [fn(pool[key]) if key in keys else fn(default) 
+                for key,default,fn in flds]
         self.e = args[0]
         self.arg_perigee = self.toRadians(args[1])
         self.a = [x for x in args[2:5] if x is not None][0]
@@ -325,13 +327,17 @@ class orbit:
         p = np.arccos(unvec.dot(uevec))
         p = p if evec[-1] >= 0 else 2*np.pi - p
         
+        """ Compute the orbit angle """
+        orbitAngle = np.mod(tAnomaly + p, 2*np.pi)
+        
         angleUnitFn = (lambda x:x) if self.toRadians(1) == 1 else np.degrees
         return {"eccentricity": e,
                 "perigee": angleUnitFn(p),
                 "a": a,
                 "inclination": angleUnitFn(i),
                 "ascendingNode": angleUnitFn(anode),
-                "trueAnomaly": angleUnitFn(tAnomaly)}
+                "trueAnomaly": angleUnitFn(tAnomaly),
+                "orbitAngle": angleUnitFn(orbitAngle)}
     
     def computeSV(self, beta):
         """

@@ -927,13 +927,13 @@ class simulation:
         
         """ Compute the reference min and max ranges """
         uProt = np.einsum("ij,jlm->ilm", aeuP, erot)[:,2,:]
-        refR = sv.computeRangeVectorsU(XP, uProt.T)
+        refR, _ = sv.computeRangeVectorsU(XP, uProt.T)
         refRng = np.linalg.norm(refR, axis=1)
         
         uPerot = np.einsum("ijk,jmn->imnk", 
                            aeuPe, 
                            erot)[:,2,:,:].T.reshape((3*n_AEU,3))
-        errR = sv.computeRangeVectorsU(XP, uPerot)
+        errR, _ = sv.computeRangeVectorsU(XP, uPerot)
         errRng = np.linalg.norm(errR, axis=-1).reshape((n_AEU,3))
         
         """ define vectorized functions to compute min and max over array """
