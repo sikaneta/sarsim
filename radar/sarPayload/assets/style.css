@@ -1,0 +1,130 @@
+.parent {
+  display: flex;
+  flex-direction: row;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.plot{
+    display: flex;
+    width: 50%
+}
+
+.title {
+    font-family: Courier New, Monospace; 
+    font-size: 20pt;
+}
+
+.subtitle {
+    font-family: Cursive; 
+}
+
+.mytitle {
+  font-family: Verdana, Monospace; 
+  width: 80%;
+  text-align: left;
+  margin-left: 0.5%;
+  margin-top: 1%;
+  font-size: 1.5em;
+}
+
+.myh2 {
+  color: green;
+  text-align: left;
+  margin-left: 0.5%;
+  font-size: 1em;
+}
+
+.myh2ref {
+  color: red;
+  text-align: left;
+  margin-left: 2%;
+}
+
+h5 {
+  color: blue;
+  text-align: left;
+  margin-left: 2%;
+  padding-bottom: 1%;
+}
+.myh5 {
+  color: green;
+  text-align: left;
+  margin-left: 2%;
+}
+.myh5ref {
+  color: grey;
+  text-align: center;
+  margin-right: 4%;
+}
+
+.radiodiv {
+  margin-left: 2%;
+  width: 40%;
+  display: inline-block;
+  border-style: solid;
+  border-width: 1px; 
+  border-color: #333;
+  text-align: center;
+}
+
+.myrow {
+  margin-left: 2%;
+  width: 96%;
+  display: inline-block;
+  border-width: 1px; 
+  border-color: #333;
+  text-align: left;
+}
+
+.logo {
+  margin-left: auto;
+  margin-right: 2%;
+  display: block;
+  width: 10em;
+  float: right;
+}
+
+.slidertext {
+  color: green;
+  text-align: center;
+  width: 40%;
+  display: inline-block;
+}
+
+.sliderdiv {
+  color: blue;
+  text-align: center;
+  margin-left: 2%;
+  width: 40%;
+  display: inline-block;
+}
+
+.radio-group .form-check {
+  padding-left: 0;
+}
+
+.radio-group .btn-group > .form-check:not(:last-child) > .btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-left: 0.5%;
+}
+
+.radio-group .btn-group > .form-check:not(:first-child) > .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: 0.5%;
+}
+
+@media screen and (max-width: 1200px) {
+  .parent{
+    flex-direction: column;
+  }
+  .plot{
+    width: 100%
+  }
+}
+
+

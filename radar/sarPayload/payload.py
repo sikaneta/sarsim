@@ -14,9 +14,9 @@ from orbit.kepler import svFromJsonArgs
 import plotly.graph_objects as go
 import scipy.integrate as integrate
 import pandas as pd
-from plot.diamond import antenna
+from plot.diamond import antenna, reflect_antenna
 import portion as P
-
+ant_types = {"reflector": reflect_antenna, "array": antenna}
 #%% Define a class for computing various things
 class sar:
 
@@ -67,7 +67,7 @@ class sar:
             svdata["vector"] = mycart["xyzVxVyVz"]
         
         self.v = np.linalg.norm(svdata["vector"][3:6])
-        self.myAntenna = sar.getInstrument(option)
+        self.myAntenna = sar.getInstrument(option, sF=pool["sincFactor"])
         
         self.sF = pool["sincFactor"]
         
@@ -98,31 +98,37 @@ class sar:
         self.pool = pool
         self.radar = radar
         
-        # self.echoWindowPRFs = np.arange(min(self.mydF.tP.prf_range),
-        #                                 max(self.mydF.tP.prf_range), 
-        #                                 10)
         self.echoWindowPRFs = self.mydF.tP.prf_range
         
         self.echoWindows = [[P.closed(*x) for x in self.mydF.echoWindows(k)] 
                             for k in self.echoWindowPRFs]
+        self.prf = 3000
+        self.performance = None
     
     @staticmethod
-    def getInstrument(option):
+    def getInstrument(option, sF=0.866):
         # #%% Compute the wavelength and beamwidths
-        myInst = antenna(dutyCycle = option["dutyCycle"], 
-                         antennaAz = option["azimuth"],
-                         antennaEl = option["elevation"],
-                         carrier = option["carrier"],
-                         beamSpreadEl = option["beamSpreadEl"],
-                         beamSpreadAz = option["beamSpreadAz"],
-                         ohmicLoss = option["ohmicLoss"])
+        
+        myInst = ant_types[option["type"]](
+            dutyCycle = option["dutyCycle"], 
+            antennaAz = option["azimuth"],
+            antennaEl = option["elevation"],
+            carrier = option["carrier"],
+            beamSpreadEl = option["beamSpreadEl"],
+            beamSpreadAz = option["beamSpreadAz"],
+            ohmicLoss = option["ohmicLoss"],
+            sF = sF
+        )
+        
         return myInst
 
     def twoWayVoltageElevation(self, angles):
-        return np.sinc(self.sF*angles/self.myAntenna.beamwidthEl)**2
+        return self.myAntenna.twoWayVoltageElevation(angles)
+        #return np.sinc(self.sF*angles/self.myAntenna.beamwidthEl)**2
     
     def twoWayVoltageAzimuth(self, angles):
-        return np.sinc(self.sF*angles/self.myAntenna.beamwidthAz)**2
+        return self.myAntenna.twoWayVoltageAzimuth(angles)
+        #return np.sinc(self.sF*angles/self.myAntenna.beamwidthAz)**2
     
     def twoWayPowerElevation(self, angles):
         return self.twoWayVoltageElevation(angles)**2
@@ -189,11 +195,18 @@ class sar:
         csm_pw_amb = np.cumsum([pw_amb[k] for k in daar_idx])
         return intervals, pw_sig, pw_amb, csm_pw_amb/csm_pw_sig
 
-    def powerPerformance(self, look, fp, bands=[-2,-1,0,1,2]):
+    def powerPerformance(self, 
+                         look, 
+                         fp, 
+                         dAz = None, 
+                         daar_max = -10,
+                         bands=[-2,-1,0,1,2]):
+        # self.prf = fp
         mygeom = self.mygeom
         option = self.option
         v = self.v
         wavelength = self.myAntenna.wavelength
+        dAz = dAz or self.myAntenna.antennaAz/2
         
         """ Determine the reference band """
         ref_index = bands.index(0)
@@ -204,9 +217,10 @@ class sar:
                                mygeom["range"])
         dT = 1/fp - 2*option["pulseLength"]
         look_range_time = look_range*2/c
-        echo_times = np.array([list(np.linspace(-dT/2, dT/2, 100)) 
-                              + look_range_time
-                              + k/fp for k in bands])
+        echo_times = np.array([np.linspace(-dT/2, dT/2, 100) 
+                               + look_range_time
+                               + k/fp for k in bands])
+        
         slantRange = c/2*echo_times
         
         slantRange_ref = slantRange[ref_index, :]
@@ -234,6 +248,8 @@ class sar:
         twoWay = self.twoWayPowerElevation(np.radians(off_nadir_range-look))
         
         """ Compute the total power interference from range ambiguities """
+        """ Here is where we would insert a function to incorporate
+            the effects of incidence angle on back-scatter """
         power = twoWay/slantRange**3
         power_ref = power[ref_index,:]
         power_intf = np.nansum(power, axis=0) - power_ref
@@ -241,14 +257,12 @@ class sar:
         mygeom_ref["range ambiguity"] = 10*np.log10(power_intf/power_ref)
         
         """ Compute the azimuth ambiguity """
-        u_range = [[wavelength*(-fp/2 + k*fp)/2/v, 
-                    wavelength*(fp/2 + k*fp)/2/v] 
-                   for k in bands] 
-        azimuthPower = [integrate.quad(self.twoWayPowerAzimuth, 
-                                       *tuple(u_bds))[0]
-                         for u_bds in u_range]
-        azimuthPower_ref = azimuthPower[ref_index]
-        azimuthPower_interf = np.sum(azimuthPower) - azimuthPower_ref
+        ivs, sig, amb, cm = self.multilook(dAz, fp)
+        az_amb = 10*np.log10(cm)
+        nlooks = len(az_amb)-1
+        
+        while (az_amb[nlooks] > daar_max) and (nlooks > 0):
+            nlooks -= 1
         
         
         """ Compute radar equation contributors """
@@ -264,29 +278,90 @@ class sar:
         incidence = np.radians(mygeom_ref["incidence"])
         mygeom_ref["NESZ"] = NESZ_cnst + 10*np.log10(np.sin(incidence)
                                                      /power_ref)
-        mygeom_ref["azimuth ambiguity"] = 10*np.log10(azimuthPower_interf
-                                                      /azimuthPower_ref)
+        mygeom_ref["azimuth ambiguity"] = az_amb[nlooks]
+        mygeom_ref["azimuth_looks"] = nlooks + 1
         mygeom_ref["MNR"] = 10*np.log10(sum([10**(mygeom_ref[amb]/10)
                                          for amb in ["azimuth ambiguity",
                                                      "range ambiguity",
                                                      "QNSR"]]))
         return pd.DataFrame(mygeom_ref)
+        #self.performance = pd.DataFrame(mygeom_ref)
 
-    def performanceTraces(self, look, fp, field):
-        perf = self.powerPerformance(look, fp)
-    
+    def performanceTraces(self, field, perf):
+        
+        #perf = self.performance
+        
         return [go.Scatter(
-            name=key,
-            x=perf[field],
-            y=perf[key],
-            mode='lines',
-            line=dict(width=5,color=self.perf_colors[key]),
-            showlegend=True
-            ) for key in ["NESZ", 
-                          "range ambiguity", 
-                          "azimuth ambiguity", 
-                          "MNR"]]
-
+                name=key,
+                x=perf[field],
+                y=perf[key],
+                mode='lines',
+                line=dict(width=5,color=self.perf_colors[key]),
+                showlegend=True
+                ) for key in ["NESZ", 
+                              "range ambiguity", 
+                              "azimuth ambiguity", 
+                              "MNR"]]
+    
+    def getDRARSpan(self,  
+                    field,
+                    perf,
+                    prf,
+                    drar_max = -10):
+        #perf = self.performance
+        myG = self.mydF.tP.my_geometry
+        idxs = np.argwhere(perf["range ambiguity"]<drar_max)
+        target = P.closed(perf['incidence'][idxs[0][0]], 
+                          perf['incidence'][idxs[-1][0]])
+        
+        """ Find the index of the the PRF so we can check the echo
+            window options """
+        prf_idx = np.argmin(np.abs(self.echoWindowPRFs-prf))
+        
+        """ Compute the intersection of the target with the echo window
+            options available for the PRF """
+        clear_zones = [target.intersection(z) 
+                       for z in self.echoWindows[prf_idx]]
+        
+        """ Compute the intersection lengths """
+        zone_length = [(x.upper - x.lower) if not x.empty else 0 
+                       for x in clear_zones]
+        
+        """ Update the target to the set with the longest intersection
+            with possible echo windows """
+        target = clear_zones[np.argmax(zone_length)]
+        
+        swath = np.interp([perf['incidence'][idxs[0][0]],
+                           perf['incidence'][idxs[-1][0]]], 
+                          myG["incidence"],
+                          myG["swath"])
+        rng = np.interp([perf['incidence'][idxs[0][0]],
+                         perf['incidence'][idxs[-1][0]]], 
+                        myG["incidence"],
+                        myG["range"])
+        
+        xP = np.interp([target.lower, target.upper], 
+                       self.mydF.tP.my_geometry["incidence"], 
+                       self.mydF.tP.my_geometry[field])
+            
+        """ Compute swath lengths """
+        swLen = np.diff(swath)[0]
+        
+        validSwath = {
+            "x": xP,
+            "y": [prf, prf],
+            "showlegend": True,
+            "name": u"%0.1f\u00B0-%0.1f\u00B0 (%0.1f km)" % (target.lower,
+                                                             target.upper,
+                                                             swLen/1e3),
+            "line": dict(color='orange', 
+                         width=5),
+            "mode": "lines"
+        }
+        
+        return target, np.diff(swath)[0], np.diff(rng)[0], validSwath
+        
+    
     @staticmethod
     def iLen(interval):
         if interval.empty:
@@ -354,25 +429,10 @@ class sar:
                              new_right_idx, 
                              overlap, 
                              maxIter = maxIter - 1)
-       
-    def drarSpan(self, off_nadir, prf, drar_max = -10):
-        myG = self.mydF.tP.my_geometry
-        perf = self.powerPerformance(off_nadir, prf)
-        idxs = np.argwhere(perf["range ambiguity"]<drar_max)
-        target = P.closed(perf['incidence'][idxs[0][0]], 
-                          perf['incidence'][idxs[-1][0]])
-        swath = np.interp([perf['incidence'][idxs[0][0]],
-                           perf['incidence'][idxs[-1][0]]], 
-                          myG["incidence"],
-                          myG["swath"])
-        rng = np.interp([perf['incidence'][idxs[0][0]],
-                         perf['incidence'][idxs[-1][0]]], 
-                        myG["incidence"],
-                        myG["range"])
-        return target, np.diff(swath)[0], np.diff(rng)[0]
 
     def getBestEchoWindows(self,
                            off_nadir, 
+                           perf,
                            fp, 
                            trail = [], 
                            drar_max = -10, 
@@ -383,7 +443,9 @@ class sar:
         p_rng = self.mydF.tP.prf_range
         prf = p_rng[np.argmin(np.abs(p_rng - fp))]
         prfidx = np.argmin(np.abs(self.echoWindowPRFs - prf))
-        target, swath, rng = self.drarSpan(off_nadir, prf, drar_max = drar_max)
+        target, _, _, _ = self.getDRARSpan("incidence",
+                                           perf,
+                                           prf)
         overlap = [max([sar.iLen(target.intersection(e)) for e in eW]) 
                    for eW in self.echoWindows]
         nprfidx = sar.bracket(prfidx, overlap)
@@ -395,12 +457,16 @@ class sar:
             return nnew_prf
         else:
             trail.append(nnew_prf)
-            return self.getBestEchoWindows(off_nadir, 
+            return self.getBestEchoWindows(off_nadir,
+                                           perf,
                                            trail[-1],
                                            trail = trail,
                                            drar_max = drar_max)
     
-    def estPRF(self, off_nadir, drar_max = -10):
+    def estPRF(self, 
+               off_nadir,
+               perf,
+               drar_max = -10):
         myG = self.mydF.tP.my_geometry
         fp = self.mydF.tP.prf_range[0]
         maxprf = self.mydF.tP.prf_range[-1]
@@ -408,6 +474,7 @@ class sar:
         dF = c/2/r
         try:
             prf_list = [self.getBestEchoWindows(off_nadir, 
+                                                perf,
                                                 fp, 
                                                 trail = [],
                                                 drar_max = drar_max)]
@@ -417,6 +484,7 @@ class sar:
         while prf_list[-1] < maxprf:
             try:
                 prf_list.append(self.getBestEchoWindows(off_nadir, 
+                                                        perf,
                                                         prf_list[-1] + dF,
                                                         trail = [],
                                                         drar_max = drar_max))

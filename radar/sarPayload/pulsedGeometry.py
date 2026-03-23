@@ -11,7 +11,7 @@ import plotly.colors as plc
 from shapely import LineString, Polygon, MultiPolygon, MultiLineString
 from shapely import difference
 import numpy as np
-from elasticOrbit import estimateSV
+# from elasticOrbit import estimateSV
 from space.planets import venus
 from orbit.geometry import perspective
 from plot.diamond import timingPlot
@@ -87,11 +87,11 @@ class diamondFigure:
         except AttributeError:
             pass
         
-    def setPerspective(self, timeTDB):
-        svdata, svtime = estimateSV(timeTDB)
-        return perspective(sPosVel = svdata, 
-                           sTime = svtime, 
-                           planet = venus())
+    # def setPerspective(self, timeTDB):
+    #     svdata, svtime = estimateSV(timeTDB)
+    #     return perspective(sPosVel = svdata, 
+    #                        sTime = svtime, 
+    #                        planet = venus())
         
     
     def getForbiddenPolygons(self, 

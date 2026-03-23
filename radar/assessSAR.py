@@ -11,7 +11,6 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
-import os
 import argparse
 
 #%%
@@ -36,7 +35,7 @@ parser.add_argument("--state-tag",
                     required=True)
 
 #%%
-tt = " --source ../../Envision/EuroSAR/generic.json --sys-tag EuroSAR1_1 --state-tag low"
+tt = " --source ../../Envision/EuroSAR/generic.json --sys-tag VenSAR --state-tag med_high"
 #tt = " --source ../../Envision/EuroSAR/fromMarc.json --state-tag Hydroterra+ --sys-tag HYDROTERRA"
 
 #%%
@@ -67,7 +66,7 @@ look_angle_slider = html.Div(
     className = "row"
 )
 
-prf_range = mySAR.mydF.tP.prf_range
+prf_range = [float(prf) for prf in mySAR.mydF.tP.prf_range]
 dPRF = float("%0.2f" % (prf_range[1]-prf_range[0]))
 nyqIDX = np.argmin(np.abs(prf_range - mySAR.mydF.tP.dopp_BW))
 prf_slider = html.Div(
@@ -161,13 +160,16 @@ form = html.Div([
 """ Create an instance of the app """
 app = Dash(external_stylesheets=[dbc.themes.FLATLY])
 
+""" Set the figure height """
+fg_height = 1000
+
 """ Setup the layout """
 app.layout = html.Div(className='row', children=[
     html.H2("Instrument: %s" % vv.sys_tag, className="mytitle"),
     html.Img(src=get_asset_url('esaLogo.svg'), className="logo"),
     html.H2("State Vector: %s" % vv.state_tag, className='myh2'),
     dcc.Store(id="diamondData", data=mySAR.mydF_dict),
-    #radio_field,
+    # #radio_field,
     form,
     look_angle_slider,
     prf_slider,
@@ -175,13 +177,13 @@ app.layout = html.Div(className='row', children=[
         dcc.Tab(
             label='Performance', 
             children=[
-                dcc.Graph(id="graph0")
+                dcc.Graph(id="graph0", style={"height": fg_height})
                 ]
             ),
         dcc.Tab(
             label='Processing', 
             children=[
-                dcc.Graph(id="graph1")
+                dcc.Graph(id="graph1", style={"height": fg_height})
                 ]
             )
         ]
@@ -201,21 +203,36 @@ app.layout = html.Div(className='row', children=[
     Input("drar", "value"),
     Input("azresolution", "value")
 )
-def update_look_angle(domain_idx, off_nadir, prf, data, mydaar, mydrar, dAz):
+def update_look_angle(domain_idx, 
+                      off_nadir, 
+                      prf, 
+                      udata, 
+                      mydaar, 
+                      mydrar, 
+                      dAz):
     """ Update the boresight angle """
     vPRF = mySAR.mydF.getValidPRFs(off_nadir)
     data = mySAR.mydF.getPRFPlotFeatures(options[domain_idx], vPRF, prf)
-    perf = mySAR.performanceTraces(off_nadir, prf, options[domain_idx])
+    pw_perf = mySAR.powerPerformance(off_nadir, 
+                                  prf,
+                                  dAz = dAz,
+                                  daar_max = mydaar)
+    
+    perf = mySAR.performanceTraces(options[domain_idx], pw_perf)
     
     """ Compute and report the swath width """
     try: 
-        _,drarSwath,drarRng = mySAR.drarSpan(off_nadir, 
-                                             prf, 
-                                             drar_max = mydrar)
+        _,drarSwath,drarRng,validSwath = mySAR.getDRARSpan(options[domain_idx],
+                                                           pw_perf,
+                                                           prf,
+                                                           drar_max = mydrar)   
+        validSwath['line']['color'] = 'darkolivegreen'
+        validSwath['line']['width'] = 8
+        data.append(validSwath)
     except IndexError:
         drarSwath = drarRng = 0.0
         
-    
+ 
     perf[1].name = 'range ambiguity %0.1f/%0.1f km' % (drarSwath/1e3,
                                                        drarRng/1e3)
     
@@ -226,7 +243,7 @@ def update_look_angle(domain_idx, off_nadir, prf, data, mydaar, mydrar, dAz):
     for trace in perf:
         figure.add_trace(trace, secondary_y = True)
         
-    figure.update_layout(uirevision=options[domain_idx], height = 600)
+    figure.update_layout(uirevision=options[domain_idx], height = fg_height)
     figure.update_layout(hovermode="x unified")
     figure.update_xaxes(title_text = options[domain_idx])    
     figure.update_yaxes(title_text="PRF / Hz", secondary_y=False)   
@@ -243,11 +260,13 @@ def update_look_angle(domain_idx, off_nadir, prf, data, mydaar, mydrar, dAz):
                   x="Number of Looks", 
                   y="DAAR / dB",
                   color='Compliant',
-                  height=600)
+                  height=fg_height)
     
-    mark_prfs = mySAR.estPRF(off_nadir, drar_max = mydrar)
-    prf_marks = {x: "%d" % x for x in mark_prfs} or None
-    return figure, aFig, data, prf_marks
+    mark_prfs = mySAR.estPRF(off_nadir, 
+                             pw_perf,
+                             drar_max = mydrar)
+    prf_marks = {float(x): "%d" % x for x in mark_prfs} or None
+    return figure, aFig, udata, prf_marks
 
 
 if __name__ == "__main__":
