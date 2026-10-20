@@ -160,7 +160,7 @@ if vv.validate_numerical:
     plt.xlabel('time (s)')
     plt.ylabel('difference (m)')
     plt.legend(['ECEF-X','ECEF-Y','ECEF-Z', 'diffIntState-X', 'diffIntState-Y', 'diffIntState-Z'])
-    plt.title('Difference between integration and expansion')
+    plt.title('Difference between integration and state vectors in file')
 else:
     plt.figure()
     plt.plot(integration_times, (C.c - npos).T)

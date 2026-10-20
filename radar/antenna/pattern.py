@@ -76,7 +76,7 @@ def antennaResponse(fastTimes,
         requiredNumberSamples = 2**int(np.ceil(np.log2(requiredNumberSamples)))
         newFastTimes = np.arange(requiredNumberSamples)*dT + fastTimes[0]
     else:
-        return np.zeros(fastTimes.shape, dtype=np.complex128)
+        return np.zeros(fastTimes.shape, dtype=complex)
     
     # Compute the element factor
     eF = np.sinc(chirp_carrier*minAntennaLength/c*u)**2
@@ -105,7 +105,7 @@ def antennaResponse(fastTimes,
     wcarrier = 2.0*1j*np.pi*chirp_carrier
     
     newnSamples = len(newFastTimes)
-    response = np.zeros(newnSamples, dtype=np.complex128)
+    response = np.zeros(newnSamples, dtype=complex)
     for k in prange(newnSamples):
         t = newFastTimes[k] - targetRangeTime - geometric_delay
         idx = (t>=0.0) & (t<chirp_duration)
@@ -127,7 +127,7 @@ def numberWaveformComputationSamples(fastTimes,
     dT = fastTimes[1] - fastTimes[0]
     if (fastTimes[0] <= targetRangeTime) and (fastTimes[-1]>targetRangeTime):
         """ enlarge the fastTimes array as necessary """
-        firstValidSample = np.argwhere(fastTimes>=targetRangeTime)[0]
+        firstValidSample = np.argwhere(fastTimes>=targetRangeTime).flatten()[0]
         requiredNumberSamples = np.max([(firstValidSample + 
                                          waveformBufferSamples + 
                                          np.ceil(waveformDuration/dT)),
@@ -189,11 +189,11 @@ def corePatternMultiCPU(freq_delay,
     
     for k in prange(len(freq)):
         w = 1j*2.0*np.pi*freq[k]
-        sTx = np.complex(0.0,0.0)
+        sTx = complex(0.0,0.0)
         for kk in range(myTxLen):
             sTx += myTxAmp[kk]*np.exp(-w*(myTxDly[kk] + u*myTxPos[kk]))
             
-        sRx = np.complex(0.0,0.0)
+        sRx = complex(0.0,0.0)
         for kk in range(myRxLen):
             sRx += myRxAmp[kk]*np.exp(-w*(myRxDly[kk] + u*myRxPos[kk]))
             
@@ -228,7 +228,7 @@ def antennaResponseMultiCPU(return_response,
     -----
     The calculations are accelerated by computation in the frequency domain
     
-    Given some pulse wavefor :math:`z(\tau)`, the transmit waveform is
+    Given some pulse waveform :math:`z(\tau)`, the transmit waveform is
     given by
     
     .. math::
@@ -248,7 +248,7 @@ def antennaResponseMultiCPU(return_response,
 
     Parameters
     ----------
-    return_response : `np.ndarray((N,), dtype=np.complex64)`
+    return_response : `np.ndarray((N,), dtype=complex64)`
         An array of responses for the pulse. This will be the output
     fastTimes : `np.ndarray(N,)`, (s)
         An array of times corresponding to the pulse samples.
@@ -303,7 +303,7 @@ def antennaResponseMultiCPU(return_response,
     freq = np.roll(freq, wrapped_offset) + wrapped_offset + cycle*N
     freq = freq*fp/N
     
-    dCorrection = np.zeros(fastTimes.shape, dtype=np.complex128)
+    dCorrection = np.zeros(fastTimes.shape, dtype=complex)
     freq_delay = np.zeros_like(dCorrection)
     corePatternMultiCPU(freq_delay,
                         dCorrection,
@@ -347,7 +347,7 @@ def antennaResponseMultiCPU(return_response,
     
     
     for k in range(len(return_response)):
-        return_response[k]=response[k]
+        return_response[k] += response[k]
     
     return
 
@@ -399,7 +399,7 @@ if False:
             requiredNumberSamples = 2**int(np.ceil(np.log2(requiredNumberSamples)))
             newFastTimes = np.arange(requiredNumberSamples)*dT + fastTimes[0]
         else:
-            return np.zeros(fastTimes.shape, dtype=np.complex128)
+            return np.zeros(fastTimes.shape, dtype=complex)
         
         
         # Compute the element factor
@@ -437,15 +437,15 @@ if False:
         pattern_delay = (np.dot(myTxDly, myTxAmp/np.sum(myTxAmp)) 
                         + np.dot(myRxDly, myRxAmp/np.sum(myRxAmp)))
         
-        freq_delay = np.zeros(len(freq), dtype=np.complex128)
+        freq_delay = np.zeros(len(freq), dtype=complex)
         num_freq_samples = len(freq)
         for k in prange(num_freq_samples):
             w = 1j*2.0*np.pi*freq[k]
-            sTx = np.complex(0.0,0.0)
+            sTx = complex(0.0,0.0)
             for kk in range(myTxLen):
                 sTx += myTxAmp[kk]*np.exp(-w*(myTxDly[kk] + u*myTxPos[kk]))
                 
-            sRx = np.complex(0.0,0.0)
+            sRx = complex(0.0,0.0)
             for kk in range(myRxLen):
                 sRx += myRxAmp[kk]*np.exp(-w*(myRxDly[kk] + u*myRxPos[kk]))
                 
@@ -504,7 +504,7 @@ if cuda.is_available():
             requiredNumberSamples = 2**int(np.ceil(np.log2(requiredNumberSamples)))
             newFastTimes = np.arange(requiredNumberSamples)*dT + fastTimes[0]
         else:
-            return np.zeros(fastTimes.shape, dtype=np.complex128)
+            return np.zeros(fastTimes.shape, dtype=complex)
         
         
         # Compute the element factor. Normalize by FFT length
@@ -545,7 +545,7 @@ if cuda.is_available():
                     + np.dot(mydRxDly, myRxAmp/np.sum(myRxAmp)))
         
         """ Define the output array """
-        freq_delay = np.zeros(len(freq), dtype=np.complex128)
+        freq_delay = np.zeros(len(freq), dtype=complex)
         
         threadsperblock = 32
         blockspergrid = (freq_delay.size + (threadsperblock-1))//threadsperblock
@@ -568,20 +568,21 @@ if cuda.is_available():
         baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) - chirp_duration/2.0)**2 )
         return eF*np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, len(response)))*np.fft.fft(response))[0:nSamples]
     
-    #%%
-    @jit(parallel=True)
-    def antennaResponseCudaMem(fastTimes,
-                        targetRangeTime, 
-                        u, 
-                        minAntennaLength,
-                        azimuthPositions,
-                        txMag,
-                        rxMag,
-                        txDelay,
-                        rxDelay,
-                        chirp_bandwidth,
-                        chirp_duration,
-                        chirp_carrier):
+    # #%%
+    # @jit(parallel=True)
+    def antennaResponseCudaMem(return_response,
+                               fastTimes,
+                               targetRangeTime, 
+                               u, 
+                               minAntennaLength,
+                               azimuthPositions,
+                               txMag,
+                               rxMag,
+                               txDelay,
+                               rxDelay,
+                               chirp_bandwidth,
+                               chirp_duration,
+                               chirp_carrier):
         """ This function takes a range time: targetRangeTime and a look angle: u along
         other parameters which describe the positions of the antenna
         elements and the delays for each element and calculates the response
@@ -593,16 +594,17 @@ if cuda.is_available():
         dT = fastTimes[1] - fastTimes[0]
         if (fastTimes[0] <= targetRangeTime) and (fastTimes[-1]>targetRangeTime):
             """ enlarge the fastTimes array as necessary """
-            firstValidSample = np.argwhere(fastTimes>=targetRangeTime)[0]
+            firstValidSample = np.argwhere(fastTimes>=targetRangeTime).flatten()[0]
             chirpLengthBuffer = 10
-            requiredNumberSamples = np.max([(firstValidSample + 
-                                             chirpLengthBuffer + 
-                                             np.ceil(chirp_duration/dT)),
-                                           len(fastTimes)])
+            requiredNumberSamples = max(firstValidSample + 
+                                        chirpLengthBuffer + 
+                                        np.ceil(chirp_duration/dT),
+                                        len(fastTimes)
+                                        )
             requiredNumberSamples = 2**int(np.ceil(np.log2(requiredNumberSamples)))
             newFastTimes = np.arange(requiredNumberSamples)*dT + fastTimes[0]
         else:
-            return np.zeros(fastTimes.shape, dtype=np.complex128)
+            return
         
         
         # Compute the element factor. Divide by the FFT length for normalization
@@ -614,7 +616,7 @@ if cuda.is_available():
         fp = 1.0/dT
         
         freq = np.arange(N, dtype=int)
-        fidx = freq>=(N/2)
+        fidx = np.argwhere(freq>=(N/2))
         freq[fidx] -= N
         unwrapped_offset = np.round(N*f0/fp).astype(int)
         wrapped_offset = unwrapped_offset%N
@@ -643,7 +645,7 @@ if cuda.is_available():
                     + np.dot(mydRxDly, myRxAmp/np.sum(myRxAmp)))
         
         """ Define the output array """
-        freq_delay = np.zeros(len(freq), dtype=np.complex128)
+        freq_delay = np.zeros(len(freq), dtype=complex)
         d_freq = cuda.to_device(freq)
         d_freq_delay = cuda.to_device(freq_delay)
         d_myTxAmp = cuda.to_device(myTxAmp)
@@ -676,7 +678,11 @@ if cuda.is_available():
         
         # Pulse compress the signal
         baseband_pulse = np.exp( rate*(np.arange(0,chirp_duration,dT) - chirp_duration/2.0)**2 )
-        return eF*np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, len(response)))*np.fft.fft(response))[0:nSamples]
+        response = eF*np.fft.ifft(np.conj(np.fft.fft(baseband_pulse, len(response)))*np.fft.fft(response))[0:nSamples]
+        for k in range(len(return_response)):
+            return_response[k] += response[k]
+            
+        return
     
     #%%
     from numba import cuda
@@ -689,11 +695,11 @@ if cuda.is_available():
         myRxLen = len(myRxAmp)
         k = cuda.grid(1)
         w = -2.0*np.pi*freq[k]
-        sTx = np.complex(0.0,0.0)
+        sTx = complex(0.0,0.0)
         for kk in range(myTxLen):
             sTx += myTxAmp[kk]*(math.cos(w*myTxDly[kk]) + 1j*math.sin(w*myTxDly[kk]))
             
-        sRx = np.complex(0.0,0.0)
+        sRx = complex(0.0,0.0)
         for kk in range(myRxLen):
             sRx += myRxAmp[kk]*(math.cos(w*myRxDly[kk]) + 1j*math.sin(w*myRxDly[kk]))
             
@@ -705,11 +711,11 @@ if cuda.is_available():
 #    stride = cuda.gridsize(1)
 #    for k in range(start, freq.shape[0], stride):
 #        w = 2.0*np.pi*freq[k]
-#        sTx = np.complex(0.0,0.0)
+#        sTx = complex(0.0,0.0)
 #        for kk in range(myTxLen):
 #            sTx += myTxAmp[kk]*(math.cos(-w*myTxDly[kk]) + 1j*math.sin(-w*myTxDly[kk]))
 #            
-#        sRx = np.complex(0.0,0.0)
+#        sRx = complex(0.0,0.0)
 #        for kk in range(myRxLen):
 #            sRx += myRxAmp[kk]*(math.cos(-w*myRxDly[kk]) + 1j*math.sin(-w*myRxDly[kk]))
 #            

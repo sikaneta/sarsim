@@ -1,0 +1,218 @@
+<gmtiAuxDataParams schemaVersion="1.0">
+  <acquisitionParameters>
+    <mode>Ish_Burst_Mode</mode>
+    <instrument>
+      <antennaArray>
+        <carrierFrequency unit="Hz">5.4050e9</carrierFrequency>
+        <azimuthPositions unit="m">0.4250 1.2750 2.1250 2.9750 3.8250 4.6750 5.5250 6.3750 7.2250 8.0750 8.9250 9.7750 10.6250 11.4750 12.3250 13.1750</azimuthPositions>
+        <elevationPositions unit="m">0.039167 0.117500 0.195833 0.274167 0.352500 0.430833 0.509167 0.587500 0.665833 0.744167 0.822500 0.900833</elevationPositions>
+        <azimuthElementLengths unit="m">0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85 0.85</azimuthElementLengths>
+        <elevationElementLengths unit="m">0.078333 0.078333 0.078333 0.078333 0.078333 0.078333 0.078333 0.078333 0.078333 0.078333 0.078333 0.078333</elevationElementLengths>
+        <transmitPowers unit="dB">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</transmitPowers>
+        <systemTemperature unit="degrees" system="Kelvin">297</systemTemperature>
+        <systemLosses unit="dB">-5.3</systemLosses>
+      </antennaArray>
+      <lookDirection>Right</lookDirection>
+      <orbit>
+        <inclination unit="degrees">98.18</inclination>
+        <eccentricity>0.0011</eccentricity>
+        <semiMajorAxis unit="m">7071000.00</semiMajorAxis>
+        <angleOfPerigee unit="degrees">90.00</angleOfPerigee>
+        <orbitAngle unit="degrees">-90.00</orbitAngle>
+      </orbit>
+    </instrument>
+    <platformLongitude unit="degrees" referenceEllipsoid="WGS84">90</platformLongitude>
+  </acquisitionParameters>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-0">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-1">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 1.0000 1.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-2">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 0.0000 0.0000 1.0000 1.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-3">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.0000 1.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-4">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.0000 1.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-5">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.0000 1.0000 0.0000 0.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-6">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.0000 1.0000 0.0000 0.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+  <signalData>
+    <azimuthStartTime>2026-09-21T15:45:34.123587782</azimuthStartTime>
+    <numRangeSamples unit="Pixels">10510</numRangeSamples>
+    <numAzimuthSamples unit="Pixels">359</numAzimuthSamples>
+    <nearRangeTime unit="s">5.628429471e-03</nearRangeTime>
+    <rangeSampleSpacing unit="s">1.818181818e-08</rangeSampleSpacing>
+    <pulseRepetitionFrequency unit="Hz">1284.0000</pulseRepetitionFrequency>
+    <pulseBandwidth unit="MHz">9.5940e+07</pulseBandwidth>
+    <pulseDuration unit="s">4.000000000e-05</pulseDuration>
+    <radarConfiguration channel="0-7">
+      <transmitConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">98.2902 62.5566 39.8869 19.9094 7.6174 -39.1559 -69.5927 -79.1337 -79.1337 -69.5927 -39.1559 7.6174 19.9094 39.8869 62.5566 98.2902</phase>
+        <truedelay unit="s">5.051028e-11 3.214715e-11 2.049743e-11 1.023121e-11 3.914520e-12 -2.012180e-11 -3.576296e-11 -4.066596e-11 -4.066596e-11 -3.576296e-11 -2.012180e-11 3.914520e-12 1.023121e-11 2.049743e-11 3.214715e-11 5.051028e-11</truedelay>
+      </transmitConfiguration>
+      <receiveConfiguration>
+        <polarization>H</polarization>
+        <magnitude unit="natural">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.0000 1.0000</magnitude>
+        <phase unit="degrees">0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</phase>
+        <truedelay unit="s">0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00</truedelay>
+      </receiveConfiguration>
+    </radarConfiguration>
+  </signalData>
+</gmtiAuxDataParams>

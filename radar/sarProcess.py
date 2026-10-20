@@ -75,11 +75,12 @@ if not vv.no_phase_correct:
 #%% Do the SAR processing for this chunk
 print("Processing")
 print(vv.xidx)
+mycols = [x for x in [cols, vv.rblock_size] if x is not None]
 wkSignal = cfg.wkProcessNumba(procData, 
                               r_sys, 
                               ks = r_sys.ks_full[vv.xidx[0]:vv.xidx[1]],
                               os_factor=16, 
-                              mem_cols = np.min([cols, vv.rblock_size]),
+                              mem_cols = min(mycols),
                               mem_rows = 8192)
 
 #%% Call the SAR processing algorithm

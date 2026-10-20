@@ -9,7 +9,7 @@ Created on Fri Mar 27 13:38:54 2020
 import configuration.configuration as cfg
 import plot.simplot as sp
 import numpy as np
-from scipy.signal import hann as weightwin
+from scipy.signal import get_window as weight
 from scipy.constants import c, Boltzmann
 import argparse
 import os
@@ -59,6 +59,10 @@ parser.add_argument("--xidx",
                     type=int,
                     nargs=2,
                     default=[0,None])
+parser.add_argument("--weight",
+                    help="Name of weighting window to apply",
+                    type=str,
+                    default="hann")
 parser.add_argument("--interactive",
                     help="Interactive mode. Program halts until figures are closed",
                     action="store_true",
@@ -118,7 +122,7 @@ if 'wkSignal'not in locals():
     s -= np.mean(s)
     mxcol = np.argmax(wkSignal[0,:])
     intf = wkSignal[0:-1, mxcol]*np.conj(wkSignal[1:, mxcol])
-    intf_weight = np.fft.fftshift(weightwin(len(intf)))**6
+    intf_weight = np.fft.fftshift(weight(vv.weight, len(intf)))
     dks = r_sys.ks_full[1] - r_sys.ks_full[0]
     c_ang = np.angle(np.sum(intf*intf_weight)) - dks*np.min(s)
     s_off = c_ang/dks
@@ -151,7 +155,7 @@ sim_folder = os.path.join(os.path.split(vv.config_xml)[0],
 
 #%% Do the plotting
 S, R, Z = sp.sarprocPlot(wkSignal, 
-               r_sys, 
-               interactive=vv.interactive, 
-               folder=sim_folder, 
-               s_off=vv.arclength_offset)
+                         r_sys, 
+                         interactive=vv.interactive, 
+                         folder=sim_folder, 
+                         s_off=vv.arclength_offset)

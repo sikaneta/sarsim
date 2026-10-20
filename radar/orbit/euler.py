@@ -212,7 +212,81 @@ def RPYfromAEU(AEU, M_e, RPY):
         
         """ Compute the yaw angle """
         RPY[0,k] = np.arctan2(-Rp[1,2], Rp[1,1])
+
+@njit
+def YPRfromAEU(AEU, M_e, RPY):
+    """
+    Compute Yaw, pitch and roll errors from azimuth, elevation and
+    tilt errors
+    
+    This function computes the Yaw angle, Pitch angle
+    and Roll angle errors from given azimuth, elevation and tilt
+    errors. The algorithm for computing these values can be found
+    in my notes.
+    
+    The angles are computed according to equation (31) of 
+    `Reference Systems`_.
+    
+    Parameters
+    ----------
+    AEU : `numpy.ndarray, [3, N]`
+        The a, e, u values as a matrix of Nx3.
+    M_e : `numpy.ndarray, [3,3]`
+        The matrix that rotates aeu into jki_s.
+    YPR : `numpy.ndarray, [3, N]`
+        Numpy array to hold computed yaw pitch roll values.
+
+    Returns
+    -------
+    None
+
+    """
+    
+    _, N = AEU.shape
+    
+    for k in prange(N):
+        """ Compute the rotation matrix from a,e,u values """
+        c_a = np.cos(AEU[0,k])
+        s_a = np.sin(AEU[0,k])
+        c_e = np.cos(AEU[1,k])
+        s_e = np.sin(AEU[1,k])
+        c_u = np.cos(AEU[2,k])
+        s_u = np.sin(AEU[2,k])
+        SdSa = (M_e.T
+                .dot(np.array([[1.0,0.0,0.0],[0.0,c_e,-s_e],[0.0,s_e,c_e]]))
+                .dot(np.array([[c_a,0.0,s_a],[0.0,1.0,0.0],[-s_a,0.0,c_a]]))
+                .dot(np.array([[c_u,-s_u,0.0],[s_u,c_u,0.0],[0.0,0.0,1.0]]))
+                .dot(M_e))
         
+        """ Compute the yaw angle """
+        RPY[2,k] = np.arctan2(-SdSa[0,1], SdSa[0,0])
+        c_y = np.cos(RPY[2,k])
+        s_y = np.sin(RPY[2,k])
+        
+        M_y = np.array([
+                        [c_y,  s_y,  0.0],
+                        [-s_y, c_y,  0.0],
+                        [0.0,  0.0,  1.0]
+                        ])
+        
+        Rp = SdSa.dot(M_y)
+        
+        """ Compute the pitch angle """
+        RPY[1,k] = np.arctan2(Rp[0,2], Rp[0,0])
+        c_p = np.cos(RPY[1,k])
+        s_p = np.sin(RPY[1,k])
+        
+        M_p = np.array([
+                        [c_p,  0.0, -s_p],
+                        [0.0,  1.0,  0.0],
+                        [s_p,  0.0,  c_p]
+                        ])
+        
+        Rp = Rp.dot(M_p)
+        
+        """ Compute the yaw angle """
+        RPY[0,k] = np.arctan2(-Rp[1,2], Rp[1,1])
+
 @njit
 def AEUfromRPY(RPY, M_e, AEU):
     """

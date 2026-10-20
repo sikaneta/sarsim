@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.constants as const
+from scipy.special import j1
 from matplotlib.collections import PatchCollection
 import matplotlib.patches as patches
 import matplotlib.cm
@@ -14,7 +15,8 @@ class antenna:
                  carrier = 3.15e9,
                  beamSpreadEl = 1.22,
                  beamSpreadAz = 1.22,
-                 ohmicLoss = 0.95):
+                 ohmicLoss = 0.95,
+                 sF = 0.866):
         self.dutyCycle = dutyCycle
         self.antennaAz = antennaAz
         self.antennaEl = antennaEl
@@ -30,11 +32,40 @@ class antenna:
         self.antennaArea = antennaAz*antennaEl
         self.antennaAreaEff = self.antennaArea/beamSpreadEl/beamSpreadAz
         self.efficiency = self.ohmicLoss/beamSpreadEl/beamSpreadAz
+        self.sF = sF
         self.gain = 10*np.log10(4*np.pi
                                 *self.efficiency
                                 *self.antennaArea
                                 /self.wavelength**2)
+        
+    def twoWayVoltageElevation(self, angles):
+        return np.sinc(self.sF*angles/self.beamwidthEl)**2
+    
+    def twoWayVoltageAzimuth(self, angles):
+        return np.sinc(self.sF*angles/self.beamwidthAz)**2
 
+class reflect_antenna(antenna):
+        
+    def twoWayVoltageElevation(self, angles):
+        s_vals = np.sin(angles)
+        sn = s_vals[s_vals != 0.0]
+        E = np.zeros_like(s_vals)
+        beta = self.wavelength/np.pi/self.antennaElEff
+        E[s_vals != 0.0] = 2*beta*j1(sn/beta)/sn
+        E[s_vals == 0.0] = 1.0
+
+        return E**2
+    
+    def twoWayVoltageAzimuth(self, angles):
+        s_vals = np.sin(angles)
+        sn = s_vals[s_vals != 0.0]
+        E = np.zeros_like(s_vals)
+        beta = self.wavelength/np.pi/self.antennaAzEff
+        E[s_vals != 0.0] = 2*beta*j1(sn/beta)/sn
+        E[s_vals == 0.0] = 1.0
+
+        return E**2
+    
 class timingPlot:
     def __init__(self,
                  persp, 

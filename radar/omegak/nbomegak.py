@@ -6,7 +6,7 @@ Created on Sat Jan 25 08:11:49 2020
 @author: ishuwa
 """
 import numpy as np
-from numba import jit, njit, prange, complex128, float64, cuda
+from numba import jit, njit, prange, complex128, float64, int64, cuda, void
 
 #%% Define the g function
 @njit
@@ -42,6 +42,11 @@ def df(x, p0, p1, p2, p3, p4, r, a2, a3, a4):
             p4*dkernel_factored(x,4,1,4,r,a2,a3,a4))
 
 #%% simplified version
+# @njit(void(complex128[:,:],
+#            complex128[:,:],
+#            float64[:,:],
+#            float64,
+#            int64[:]))
 @jit(forceobj=True)
 def interpolatePulsesCxSimple(y, YY, Xnew, oversample, yupidx):
     """
@@ -54,10 +59,13 @@ def interpolatePulsesCxSimple(y, YY, Xnew, oversample, yupidx):
     direction. The matrix Xnew and the sample numbers (double) at which
     to interpolate the original matrix Y. Xnew has the same dimension as
     Y and YY. The vector Yos (os -> oversample) is a workspace in which
-    to story temporary oversampled FFT values. while the vector Yos_idx
+    to store temporary oversampled FFT values. while the vector Yos_idx
     provides the indeces for populating this oversampled vector in the
     frequency domain.
 
+    Note to self: Check that the comments below are correct. Is it in fact
+    that rows corresond to azimuth and columns to range?
+    
     Parameters
     ----------
     y : `numpy.ndarray`, (range, azimuth)
@@ -98,6 +106,29 @@ def interpolatePulsesCxSimple(y, YY, Xnew, oversample, yupidx):
         # Compute the linearly interpolated values
         YY[row,:] = (1.0-xx_fraction)*Yup[xx_floor] + xx_fraction*Yup[xx_ceil] 
         YY[row,invalid] = 0.0
+ 
+def dirichlet(N, dx):
+    x = np.arange(N) + dx
+    y = np.ones_like(x, dtype=complex)
+    idx = np.argwhere(x!=0.0)
+    y[idx] = np.sin(np.pi*x[idx])/np.sin(np.pi*x[idx]/N)/N
+    y *= np.exp(np.pi*1j*x*(N-1)/N)
+    return y
+    
+def myInterp(Y, YY, Xnew, oversample):
+    N = len(Y)
+    H = [dirichlet(N, k/oversample) for k in range(oversample)]
+    y_int = [[inner_sum(Y, k, h) for h in H] for k in range(N)]
+    
+def inner_sum(Y, n, h):
+    N = len(Y)
+    idx = [k+n if k < N/2 else (k+n - N) for k in range(N)]
+    total = 0.0
+    for k in range(N):
+        total += Y[idx[k]]*h[k]
+    return total
+        
+    
     
 
 

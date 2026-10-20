@@ -80,10 +80,10 @@ def generateXML(vv,
     prf = (va/(number_channels)/azimuthResolution)*vv.az_oversample
     near_RANGE = nearRange*c/2.0
     far_RANGE = near_RANGE+swathWidth
-    channel_LEN = np.int(np.round(far_RANGE*(c/fc)
-                                  *(prf/number_channels)
-                                  *(beam_DOPPLER)
-                                  /2.0/(va**2)))
+    channel_LEN = int(np.round(far_RANGE*(c/fc)
+                               *(prf/number_channels)
+                               *(beam_DOPPLER)
+                               /2.0/(va**2)))
     print("Doppler bandwidth per beam: %f Hz" % beam_DOPPLER)
     print("Number of samples per beam in aperture: %d" % channel_LEN)
     print("Number of samples/aperture (channels and beams combined): %d" 

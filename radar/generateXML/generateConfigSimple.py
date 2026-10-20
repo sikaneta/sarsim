@@ -3,15 +3,16 @@
 """ This python program should generate the config files for burst mode multi or single channel data
     The program generates an xml file to be processed in MATLAB """
 
-import sys
-import getopt
 import numpy as np
-from datetime import datetime, date, time, timedelta
-from math import pi
-import urllib
 from copy import deepcopy
 import lxml.etree as etree
 import argparse
+from generateXML.base_XML import modes
+import json
+from orbit.orientation import orbit
+from orbit.geometry import perspective
+from scipy.constants import c
+import os
 
 #%% Do the argument parsing stuff here
 def get_parser():
@@ -21,378 +22,328 @@ def get_parser():
                       This program sets up also for a burst mode."""
     parser = argparse.ArgumentParser(description=description)
     
+    parser.add_argument("--sim-folder",
+                    help="Folder in which to place simulated data and files",
+                    default= r"C:\Users\ishuwa.sikaneta\s1ng")
+    
     parser.add_argument("--config-xml", 
                         required=True,
                         help="The name of the xml file to write")
     
-    parser.add_argument("--prf",
-                        default = 500.0,
-                        type = float)
+    parser.add_argument("--instrument",
+                        type=str,
+                        default = "base_SentinelNG_2026")
     
-    parser.add_argument("--mode",
-                        help="""The mode to use. Choices from:
-                                    "MODEX",
-                                    "UltraFine",
-                                    "Classical"
-                                The default choice is MODEX""",
-                        choices=["MODEX",
-                                 "UltraFine",
-                                 "Classical"],
-                        default="MODEX")
+    parser.add_argument("--beams",
+                        nargs = "+",
+                        default = [0],
+                        type=int,
+                        help="The list of beams to include")
     
-    parser.add_argument("--burst-length",
-                        default = 1,
-                        type = int,
-                        help="Number of Samples in a burst")
+    parser.add_argument("--channel-json",
+                        default = r"C:\Users\Ishuwa.Sikaneta\OneDrive - ESA\Documents\ESTEC\Sentinel-NG\Tobias\TxTaperAz.json",
+                        type=str,
+                        help="Name of json file containing channel configurations")
     
-    parser.add_argument("--centroids",
-                        help="Doppler centroids for beams",
+    parser.add_argument("--keep-pickle",
+                        help="""Keep any existing pickle file associated with the
+                        computed radar object""",
+                        action="store_true",
+                        default=False)
+    
+    parser.add_argument("--bands",
+                    help="The bands to process ...,-1,0,1,...",
+                    type=int,
+                    nargs="+",
+                    default=None)
+    
+    parser.add_argument("--recompute-rsys",
+                        help="Recompute the signal processing object",
+                        action="store_true",
+                        default=False)
+    
+    parser.add_argument("--recompute-Hfilter",
+                        help="Recompute the multi channel filter",
+                        action="store_true",
+                        default=False)
+    
+    parser.add_argument("--ref-rangeidx",
+                    help="""The reference range used for processing
+                            If not specified, will use the center range""",
+                    type = int,
+                    default = None)
+        
+    parser.add_argument("--file-data-domain",
+                    help="""The domain of the data in the associated file. 
+                    Frequency or space. Uppercase=frequency, 
+                    lowercase=time/space""",
+                    choices=["rx", "rX", "RX", "Rx"],
+                    default="rX")
+    
+    parser.add_argument("--channel-idxs",
+                        help=""" The indexes of the channels to create. This 
+                        allows the program to be run simulataneously on different 
+                        CPUs. Each channel is of the form cXbY for channel X, 
+                        beam Y""",
                         nargs = "*",
-                        default = [0.0],
-                        type = float)
+                        type=int,
+                        default = None)
     
-    parser.add_argument("--num-azimuth-samples",
-                        default = 8192,
-                        type = int)
+    parser.add_argument("--target-rangeidx",
+                        help="The range index of the target to simulate",
+                        type=int,
+                        default=400)
     
-    parser.add_argument("--range-samples",
-                        help=""""Instead of simulating the entire swath, 
-                                 use fewer samples. Subset of the swath (int)""",
-                        type = int,
-                        default = 512)
+    parser.add_argument("--rblock-size",
+                        help="""The output files for each beam/channel will be
+                                written to files with the range dimension of
+                                size range block. 
+                                i.e. with 
+                                - a range block size of --range-block=512 
+                                - a data file with name (...rX_c0b0.npy)
+                                - a data size of 1200X16384 in range by
+                                  azimuth respectively (rX) 
+                                then will write several files of names 
+                                ...r0X0_c0b0.npy    (has 512 rows)
+                                ...r512X0_c0b0.npy  (has 512 rows)
+                                ...r1024X0_c0b0.npy (has 1200-1024 rows)
+                                If not specified, will set block to the total
+                                number of range samples.""",
+                        type=int,
+                        default = None)
+    
+    parser.add_argument("--mchan-processed-file",
+                        help="The name of the multi-channel processed output file",
+                        default = None)
+    
+    parser.add_argument("--wk-processed-file",
+                        help="The name of the w-k processed output file",
+                        default = None)
+    
+    parser.add_argument("--vanilla-stolt",
+                        help="Apply vanilla Stolt interpolation a3=a4=0",
+                        action="store_true")
+    
+    parser.add_argument("--ridx",
+                        help="""The range indeces to process. The process is
+                                independent of the range variable so we can
+                                easily split it into chunks""",
+                        type=int,
+                        nargs="+",
+                        default=[0,-1])
+    
+    parser.add_argument("--xidx",
+                        help="""The azimuth indeces to process. The process can
+                                proceed with the azimuth direction split into 
+                                tiles and processed independently. For a given
+                                range of azimuth samples, all range samples need
+                                to be loaded into memory""",
+                        type=int,
+                        nargs="+",
+                        default=[0,None])
+    
+    parser.add_argument("--no-phase-correct",
+                        help="""Do not Correct for difference between diffgeo and real""",
+                        action="store_true")
+    
+    parser.add_argument("--p",
+                        help="The value of p to use in the MCHAN filter",
+                        type=float,
+                        default = 0.9)
+    
+    parser.add_argument("--xblock-size",
+                        help="Size of the output data block in the X direction",
+                        type=int,
+                        default=None)
 
     return parser
 
-def main(argv):
+def createXMLStructure(folder): 
+    for fd in ["simulation_data", 
+               "simulation_plots",
+               os.path.join("simulation_data", "raw"),
+               os.path.join("simulation_data", "mchan_processed"),
+               os.path.join("simulation_data", "wk_processed")]:
+        tfd = os.path.join(folder, fd)
+        if not os.path.exists(tfd):
+            try:
+                os.makedirs(tfd)
+            except IOError as ie:
+                print(ie)
+                return False
+    return True
+
+def arr2str(el, pol='H'):
+    p2d = (1.0/el['carrier'])/360.0
+    mag = " ".join(["%0.4f" % x for x in el['amplitude']])
+    phs = " ".join(["%0.4f" % x for x in el['phase']])
+    dly = " ".join(["%0.6e" % (p2d*x) for x in el['phase']])
+    return pol, mag, phs, dly
+
+def genModeXML(vv):
     print("Wiper burst configuration generator")
-    parser = get_parser()
-    vv = parser.parse_args()
+    with open(vv.channel_json, 'r') as f:
+        cfg = json.loads(f.read())
     
-    prf = vv.prf
-    numAziSamples = vv.num_azimuth_samples
-    burst_LENGTH = vv.burst_length 
+    brf = 1.0/sum([x['burst_len'] for x in cfg['tx']])
+    
+    TX = [x for k,x in enumerate(cfg['tx']) if k in vv.beams]
+    o_j = cfg['orbit']
+    orbit_tup = (o_j['inclination'],
+                 o_j['e'],
+                 o_j['a'],
+                 o_j['arg_perigee'],
+                 o_j['true_anomaly'])
+        
     p = etree.XMLParser(remove_blank_text=True)
-    base_XML = """
-    <gmtiAuxDataParams schemaVersion="1.0">
-      <acquisitionParameters>
-        <mode>Ish_Burst_Mode</mode>
-        <instrument>
-          <antennaArray>     
-            <carrierFrequency unit="Hz">5.405e9</carrierFrequency>
-            <azimuthPositions unit="m">0.4688 1.4062 2.3438 3.2812 4.2188 5.1562 6.0938 7.0312 7.9688 8.9062 9.8438 10.7812 11.7188 12.6562 13.5938 14.5312</azimuthPositions>
-            <elevationPositions unit="m">0.75</elevationPositions>
-            <azimuthElementLengths unit="m">0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286 0.9286</azimuthElementLengths>
-            <elevationElementLengths unit="m">1.5</elevationElementLengths>
-            <transmitPowers unit="dB">30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30</transmitPowers>
-            <systemTemperature unit="degrees" system="Kelvin">297</systemTemperature>
-            <systemLosses unit="dB">-5.3</systemLosses>
-          </antennaArray>
-                      
-          <lookDirection>Right</lookDirection>
-          <orbit>
-            <inclination unit="degrees">98.6</inclination>
-            <eccentricity>0.00</eccentricity>
-            <semiMajorAxis unit="m">7071009</semiMajorAxis>
-            <angleOfPerigee unit="degrees">90.0</angleOfPerigee>
-            <orbitAngle unit="degrees">60</orbitAngle>
-          </orbit>
-        </instrument>
-        <platformLongitude unit="degrees" referenceEllipsoid="WGS84">90</platformLongitude>
-      </acquisitionParameters>
-    </gmtiAuxDataParams>"""
+    base_XML = modes[vv.instrument] % orbit_tup
 
     # Generate the base XML object
     pq = etree.XMLParser(remove_blank_text=True)
     xml = etree.XML(base_XML,parser=pq)
-    azimuthPosNode = xml.findall('.//azimuthPositions')
-    xpos = [float(pos) for pos in azimuthPosNode[0].text.split()]
-
-    beam_DOPPLER = vv.centroids
-    modeSnippet1 = """
-    <mode>
-        <radarConfiguration channel="MODEX-1 Aft HH">
+    # azimuthPosNode = xml.findall('.//azimuthPositions')
+    # xpos = [float(pos) for pos in azimuthPosNode[0].text.split()]
+    
+    myOrbit = orbit()
+    myOrbit.setFromDict(o_j)
+    
+    sv, r, v = myOrbit.computeSV(o_j['true_anomaly'])
+    
+    persp = perspective(np.array(sv), np.datetime64(o_j['epoch']))
+    off_nadir = np.radians(np.arange(5,55,0.01))
+    geom = persp.computeGeometry(off_nadir)
+    
+    rngs = [[np.interp(x, geom['off_nadir'], geom['range']) 
+             for x in y['look']] for y in TX]
+    
+    channel_xml = """
+        <radarConfiguration channel="%d-%d">
             <transmitConfiguration>
-                <polarization>H</polarization>
-                <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
-                <phase unit="degrees">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
+                <polarization>%s</polarization>
+                <magnitude unit="natural">%s</magnitude>
+                <phase unit="degrees">%s</phase>
+                <truedelay unit="s">%s</truedelay>
             </transmitConfiguration>
             <receiveConfiguration>
-                <polarization>H</polarization>
-                <magnitude unit="natural">1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0</magnitude>
-                <phase unit="degrees">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
+                <polarization>%s</polarization>
+                <magnitude unit="natural">%s</magnitude>
+                <phase unit="degrees">%s</phase>
+                <truedelay unit="s">%s</truedelay>
             </receiveConfiguration>
         </radarConfiguration>
-        <radarConfiguration channel="MODEX-1 Fore HH">
-            <transmitConfiguration>
-                <polarization>H</polarization>
-                <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
-                <phase unit="degrees">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
-            </transmitConfiguration>
-            <receiveConfiguration>
-                <polarization>H</polarization>
-                <magnitude unit="natural">0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1</magnitude>
-                <phase unit="degrees">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
-            </receiveConfiguration>
-        </radarConfiguration>
-    </mode>
     """
     
-    modeSnippet2 = """
+    mode_template = """
     <mode>
-        <radarConfiguration channel="UltraFine Aft HH">
-	  <transmitConfiguration>
-	    <polarization>H</polarization>
-	    <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
-	    <phase unit="radians">1.963 1.374 1.374 0.982 0.785 0.393 0.000 0.000 0.000 0.000 0.393 0.785 0.982 1.374 1.374 1.963</phase>
-	  </transmitConfiguration>
-	  <receiveConfiguration>
-	    <polarization>H</polarization>
-	    <magnitude unit="natural">0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0</magnitude>
-	    <phase unit="radians">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
-	  </receiveConfiguration>
-        </radarConfiguration>								
-        <radarConfiguration channel="UltraFine Fore HH">
-	  <transmitConfiguration>
-	    <polarization>H</polarization>
-	    <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
-	    <phase unit="radians">1.963 1.374 1.374 0.982 0.785 0.393 0.000 0.000 0.000 0.000 0.393 0.785 0.982 1.374 1.374 1.963</phase>
-	  </transmitConfiguration>
-	  <receiveConfiguration>
-	    <polarization>H</polarization>
-	    <magnitude unit="natural">0 0 0 0 0 0 0 0 1 1 1 1 1 0 0 0</magnitude>
-	    <phase unit="radians">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
-	  </receiveConfiguration>
-        </radarConfiguration>	
+        %s
     </mode>
     """
+    # mytx = arr2str(channels['tx'][0])
+    chans = [[channel_xml % ((iy,ix) + arr2str(y) + arr2str(x)) 
+              for ix,x in enumerate(cfg['rx'])]
+             for iy,y in enumerate(TX)]
+        
+    beams = [mode_template % "\n".join(y) for y in chans]
     
-    modeSnippet3 = """
-    <mode>
-        <radarConfiguration channel="Full Antenna">
-            <transmitConfiguration>
-                <polarization>H</polarization>
-                <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
-                <phase unit="degrees">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
-            </transmitConfiguration>
-            <receiveConfiguration>
-                <polarization>H</polarization>
-                <magnitude unit="natural">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</magnitude>
-                <phase unit="degrees">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</phase>
-            </receiveConfiguration>
-        </radarConfiguration>
-    </mode>
-    """
-    modeSnippet={'MODEX': modeSnippet1, 'UltraFine': modeSnippet2, 'Classical': modeSnippet3}
+
+    modeXML = [etree.XML(beam,parser=p) for beam in beams]
     
-    va = 7500.0
-    output_FILE = vv.config_xml
-    #radarConfigURL = "/home/sikaneta/Documents/Radarsat_Modes/radarConfiguration.xml"
-    #modeChoice = 'MODEX'
-
-    # Load the configuration file
-    # try:
-    #     opts, args = getopt.getopt(argv,"hp:l:f:a:d:m:",["help","prf=","burst_samples=","xmlfile=","numAzimuthSamples=","dopplerSpread=","mode="])
-    # except getopt.GetoptError as err:
-    #     print('Options error')
-    #     print(err)
-    #     print('generateBurstConfig -p <--prf=> -l <--burst_samples=> -f <--xmlfile=> -a <--numAzimuthSamples> -d <--dopplerSpread> -m <--mode>')
-    #     sys.exit(2)
-
-    # for opt, arg in opts:
-    #     if opt in ("-h", "--help"):
-    #         print('generateBurstConfig -p <--prf=> -l <--burst_samples=> -f <--xmlfile=>')
-    #     elif opt in ("-p", "--prf"):
-    #         prf = float(arg)
-    #     elif opt in ("-l", "--burst_samples"):
-    #         burst_LENGTH = int(arg)
-    #     elif opt in ("-d", "--dopplerSpread"):
-    #         #beam_DOPPLER = [-float(arg),float(arg)]
-    #         beam_DOPPLER = [int(k) for k in arg.split(',')]
-    #     elif opt in ("-f", "--xmlfile"):
-    #         output_FILE = arg
-    #     elif opt in ("-a", "--numAzimuthSamples"):
-    #         numAziSamples = int(arg)
-    #     elif opt in ("-m", "--mode"):
-    #         if(arg in modeSnippet):
-    #             modeChoice = arg
-    #         else:
-    #             print('(E) Error: Mode not recognized')
-    #             print('Choose from:')
-    #             print('------------')
-    #             for key in modeSnippet.keys():
-    #                 print(key)
-    #             sys.exit(2)
-
-    # Read the mode XML snippet
-    modeXML = [etree.XML(modeSnippet[vv.mode],parser=p) for doppler in beam_DOPPLER]
-    
-    # Compute the channel tables for each pulse in the g vector. i.e. put in the squint
-    allModes = []
-    print(beam_DOPPLER)
-    for mode,fd in zip(modeXML,beam_DOPPLER):
-        channels = mode.findall("radarConfiguration")
-        for channel in channels:
-            tx = channel.findall('transmitConfiguration')
-            phase = tx[0].findall('phase')
-            if(phase[0].get("unit")=="degrees"):
-                phases = [float(k)+180*x*fd/va for k,x in zip(phase[0].text.split(),xpos)]
-            elif(phase[0].get("unit")=="radians"):
-                phases = [float(k)+pi*x*fd/va for k,x in zip(phase[0].text.split(),xpos)]
-            phase[0].text = " ".join(["%0.4f" % p for p in phases])
-            rx = channel.findall('receiveConfiguration')
-            phase = rx[0].findall('phase')
-            if(phase[0].get("unit")=="degrees"):
-                phases = [float(k)+180*x*fd/va for k,x in zip(phase[0].text.split(),xpos)]
-            elif(phase[0].get("unit")=="rad"):
-                phases = [float(k)+pi*x*fd/va for k,x in zip(phase[0].text.split(),xpos)]
-            phase[0].text = " ".join(["%0.4f" % p for p in phases])
-        allModes.append(channels)
 
     # Generate the reference time from which to compute the offsets. e.t.c.
-    reference_TIME = datetime.combine(date(2015,1,1),time(0,0,0))
+    reference_TIME = np.datetime64("2026-09-21T15:45:34.123587782")
+    dT = [np.timedelta64(int(x['burst_len']*1e9), 'ns') 
+          for x in TX]
+    N_az = [int(x['prf']/brf) for x in TX]
+    B_az = [int(x['burst_len']*x['prf']) - 5 for x in TX]
+    c_TIMES = [reference_TIME]
+    for _dT in dT:
+        c_TIMES.append(c_TIMES[-1] + _dT)
+    prfs = [x['prf'] for x in TX]
+    
+    for prf, r, n_az, b_az, st, beam, tx, rx in zip(prfs, 
+                                                    rngs, 
+                                                    N_az,
+                                                    B_az,
+                                                    c_TIMES, 
+                                                    modeXML,
+                                                    TX,
+                                                    cfg['rx']):
+        print(st)
+        for config in beam:
+            # Add the signal elements
+            signalData = etree.SubElement(xml,"signalData")
+            timeNode = etree.SubElement(signalData,"azimuthStartTime")
+            timeNode.set("iso", str(st))
 
-    # Now generate the start times
-    n_BEAMS = len(beam_DOPPLER)
-    sample_TIMES = [[reference_TIME + timedelta(seconds=float(s+burst_LENGTH*beam)/(prf)) for s in range(burst_LENGTH)] for beam in range(n_BEAMS)]
-    # sample_TIMES = [[reference_TIME + timedelta(seconds=float(s)/prf) for mode in modeXML] for s in range(burst_LENGTH*n_BEAMS)]
+            numRangeSamples = etree.SubElement(signalData,"numRangeSamples")
+            numRangeSamples.set("unit","Pixels")
+            numRangeSamples.text = "%d" % (int((r[1]-r[0])*2/c*rx['fs']))
 
-    for tm,mode in zip(sample_TIMES,allModes):
-        for thisTime in tm:
-            for config in mode:
-                # Add the signal elements
-                signalData = etree.SubElement(xml,"signalData")
-                timeNode = etree.SubElement(signalData,"azimuthStartTime")
-                yearNode = etree.SubElement(timeNode,"year")
-                monthNode = etree.SubElement(timeNode,"month")
-                dayNode = etree.SubElement(timeNode,"day")
-                hourNode = etree.SubElement(timeNode,"hour")
-                minuteNode = etree.SubElement(timeNode,"minute")
-                secondNode = etree.SubElement(timeNode,"sec")
-                usecNode = etree.SubElement(timeNode,"usec")
-                systemNode = etree.SubElement(timeNode,"time_system")
+            numAzimuthSamples = etree.SubElement(signalData,"numAzimuthSamples")
+            numAzimuthSamples.set("unit","Pixels")
+            numAzimuthSamples.text = "%d" % n_az
+            
+            numAzimuthSamples = etree.SubElement(signalData,"numBurstSamples")
+            numAzimuthSamples.set("unit","Pixels")
+            numAzimuthSamples.text = "%d" % b_az
 
-                yearNode.text = '%0.4d'%thisTime.year
-                monthNode.text = '%0.2d'%thisTime.month
-                dayNode.text = '%0.2d'%thisTime.day
-                hourNode.text = '%0.2d'%thisTime.hour
-                minuteNode.text = '%0.2d'%thisTime.minute
-                secondNode.text = '%0.2d'%thisTime.second
-                usecNode.text = '%0.6d'%thisTime.microsecond
-                systemNode.text = '2'
+            nearRangeTime = etree.SubElement(signalData,"nearRangeTime")
+            nearRangeTime.set("unit","s")
+            nearRangeTime.text = "%0.9e" % (r[0]*2/c)
 
-                numRangeSamples = etree.SubElement(signalData,"numRangeSamples")
-                numRangeSamples.set("unit","Pixels")
-                numRangeSamples.text = "256"
+            rangeSampleSpacing = etree.SubElement(signalData,"rangeSampleSpacing")
+            rangeSampleSpacing.set("unit","s")
+            fs = max(rx['fs'], 1.2*tx['waveform']['bandwidth'])
+            rangeSampleSpacing.text = "%0.9e" % (1.0/fs)
 
-                numAzimuthSamples = etree.SubElement(signalData,"numAzimuthSamples")
-                numAzimuthSamples.set("unit","Pixels")
-                numAzimuthSamples.text = "%d" % (numAziSamples/(n_BEAMS*burst_LENGTH))
+            pulseRepetitionFrequency = etree.SubElement(signalData,"pulseRepetitionFrequency")
+            pulseRepetitionFrequency.set("unit","Hz")
+            pulseRepetitionFrequency.text = "%0.4f" % prf
 
+            pulseBandwidth = etree.SubElement(signalData,"pulseBandwidth")
+            pulseBandwidth.set("unit","Hz")
+            pulseBandwidth.text = "%0.4e" % tx['waveform']['bandwidth']
 
-                nearRangeTime = etree.SubElement(signalData,"nearRangeTime")
-                nearRangeTime.set("unit","s")
-                nearRangeTime.text = "5.568856572102291e-03"
+            pulseDuration = etree.SubElement(signalData,"pulseDuration")
+            pulseDuration.set("unit","s")
+            pulseDuration.text = "%0.9e" % tx['waveform']['length']
 
-                rangeSampleSpacing = etree.SubElement(signalData,"rangeSampleSpacing")
-                rangeSampleSpacing.set("unit","s")
-                rangeSampleSpacing.text = "1.776133220079680e-08"
+            signalData.append(deepcopy(config))
+            thisfilename = etree.SubElement(signalData,"filename")
+            thisfilename_text = "%s_%s_c%s.npy" % (os.path.split(vv.config_xml)[-1].split(".")[0], 
+                                                      vv.file_data_domain, 
+                                                      config.get("channel"))
+            thisfilename.text = os.path.sep.join([os.path.split(vv.config_xml)[0],
+                                                  "simulation_data",
+                                                  "raw",
+                                                  thisfilename_text])
 
-                pulseRepetitionFrequency = etree.SubElement(signalData,"pulseRepetitionFrequency")
-                pulseRepetitionFrequency.set("unit","Hz")
-                pulseRepetitionFrequency.text = "%0.4f" % (prf/float(n_BEAMS*burst_LENGTH))
-
-                pulseBandwidth = etree.SubElement(signalData,"pulseBandwidth")
-                pulseBandwidth.set("unit","MHz")
-                pulseBandwidth.text = "5.001628063000000e+01"
-
-                pulseDuration = etree.SubElement(signalData,"pulseDuration")
-                pulseDuration.set("unit","us")
-                pulseDuration.text = "4.159703826904297e+01"
-
-                signalData.append(deepcopy(config))
-
-    with open(output_FILE,'w') as outfile:
-        outfile.write(etree.tostring(xml, pretty_print=True).decode())
-
-
-# def modifyRadarConfigurations(gmtiDataPool, radarConfigURL, directory):
-#     # Open the radar configuration file and parse
-#     radarConfig = etree.parse(urllib.urlopen(radarConfigURL))
-#     radarConfigurations = radarConfig.xpath('//radarConfiguration')
-
-#     # Define the default pulse type
-#     pulse = {'pulseId': "-", 'pulseString': "Unknown", 'pulseDuration': "0", 'pulseBwd': "0"}
-
-#     # Get all the signalData elements
-#     currentConfigs = gmtiDataPool.xpath('//signalData')
-
-#     print("Current configurations are: ")
-#     printSignalRadarConfigurations(currentConfigs)
-#     currentConfig = int(raw_input("Enter the number of the configuration you wish to replace/add (0 for none)? "))
-#     while((currentConfig > 0) and (currentConfig <= len(currentConfigs))):
-#         targetConfig = int(raw_input("Enter the number of the desired radar configuration (-1 for a list)?"))
-#         while((targetConfig < 1) or (targetConfig > len(radarConfigurations))):
-#             printRadarConfigurations(radarConfigurations)
-#             targetConfig = int(raw_input("Enter the number of the configuration you wish to replace it with (-1 for a list)? "))
-
-#         # Rename the element so we dont need to write so much
-#         configParent = currentConfigs[currentConfig-1]
-
-#         # Find and remove the current configuration if it is present
-#         toRemove = configParent.xpath('radarConfiguration')
-#         if(len(toRemove)>0):
-#             # record the current pulse type
-#             pulse = {'pulseId': configParent.xpath('radarConfiguration/pulse/pulseId')[0].text,
-#                      'pulseString': configParent.xpath('radarConfiguration/pulse/pulseString')[0].text,
-#                      'pulseDuration': configParent.xpath('radarConfiguration/pulse/pulseDuration')[0].text,
-#                      'pulseBwd': configParent.xpath('radarConfiguration/pulse/pulseBwd')[0].text}
-
-#             # Remove the old element
-#             configParent.remove(toRemove[0])
-#         else:
-#             dataFile = configParent.xpath('dataFile')
-#             if(len(dataFile)>0):
-#                 pulse = getPulseType(os.path.join(directory,dataFile[0].text).replace('SarImage_0.tif','PARM_IngestParameters.self'))
-
-#         # Add the new config. First locate the point where it will go
-#         # The schema says there should be a dopplerCentroid element
-#         dopEl = configParent.find('dopplerCentroid')
-#         dopEl.addprevious(deepcopy(radarConfigurations[targetConfig-1]))
-
-#         # Now add the pulse element
-#         rConf = configParent.find('radarConfiguration')
-#         pulseElement = etree.Element("pulse")
-#         pulseId = etree.SubElement(pulseElement, "pulseId")
-#         pulseSt = etree.SubElement(pulseElement, "pulseString")
-#         pulseDu = etree.SubElement(pulseElement, "pulseDuration")
-#         pulseBw = etree.SubElement(pulseElement, "pulseBwd")
-#         pulseId.text = pulse['pulseId']
-#         pulseSt.text = pulse['pulseString']
-#         pulseDu.text = pulse['pulseDuration']
-#         pulseBw.text = pulse['pulseBwd']
-#         rConf.insert(0, pulseElement)
-
-#         #currentConfigs[currentConfig-1].getparent().remove(currentConfigs[currentConfig-1])
-#         currentConfigs = gmtiDataPool.xpath('//signalData')
-
-#         # Ask for the next config to change
-#         print("Current configurations are: ")
-#         printSignalRadarConfigurations(currentConfigs)
-#         currentConfig = int(raw_input("Enter the number of the configuration you wish to change (0 for none)? "))
-
-def printRadarConfigurations(radarConfigurations):
-    for config, index in zip(radarConfigurations, range(len(radarConfigurations))):
-        tag = config.get('channel')
-        txPol = config.xpath('transmitConfiguration/polarization')
-        txCols = config.xpath('transmitConfiguration/magnitude')
-        rxPol = config.xpath('receiveConfiguration/polarization')
-        rxCols = config.xpath('receiveConfiguration/magnitude')
-        print("%0.2d"%(index+1) + ': ' + ' --> ' + txPol[0].text + ': ' + txCols[0].text + ' <-- ' + rxPol[0].text + ': '+ rxCols[0].text + ' ' + tag)
+    return xml
 
 
+#%%
+# def_args = "--config-xml s1g.xml --beams 1".split()
+# vv = get_parser().parse_args(def_args)
 
+# if os.path.abspath(vv.config_xml) != vv.config_xml:
+#     vv.config_xml = os.path.join(os.path.abspath(vv.sim_folder), vv.config_xml)
 
+# if vv.ridx[-1] == -1:
+#     vv.ridx[-1] = None
+    
+# #%%
+# myxml = genModeXML(vv)
 
+# #%%
+# with open(vv.config_xml,'w') as outfile:
+#     outfile.write(etree.tostring(myxml, pretty_print=True).decode())
 
-if __name__=="__main__":
-    main(sys.argv[1:])
+# #%% Create the target directory if it does not exist
+# if vv.config_xml is not None:
+#     createXMLStructure(os.path.split(vv.config_xml)[0])
+
+# #%% Delete any existing pickle radar file
+# if not vv.keep_pickle:
+#     pkl_file = ".".join(vv.config_xml.split(".")[0:-1]) + "_radar.pickle"
+#     if os.path.exists(pkl_file):
+#         os.remove(pkl_file)

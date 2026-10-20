@@ -214,9 +214,9 @@ def update_look_angle(domain_idx,
     vPRF = mySAR.mydF.getValidPRFs(off_nadir)
     data = mySAR.mydF.getPRFPlotFeatures(options[domain_idx], vPRF, prf)
     pw_perf = mySAR.powerPerformance(off_nadir, 
-                                  prf,
-                                  dAz = dAz,
-                                  daar_max = mydaar)
+                                    prf,
+                                    dAz = dAz,
+                                    daar_max = mydaar)
     
     perf = mySAR.performanceTraces(options[domain_idx], pw_perf)
     

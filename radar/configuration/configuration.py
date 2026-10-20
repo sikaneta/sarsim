@@ -21,6 +21,7 @@ import os
 import pickle
 from numba import cuda
 from tqdm import tqdm
+import math
 import json
 from antenna.pattern import numberWaveformComputationSamples as nWCS
 if cuda.is_available():
@@ -311,15 +312,15 @@ def readSignalDataElement(xmlroot, antenna):
     sconv = stringConverters()
     
     tx = sconv.getXMLElement('.//transmitConfiguration', xmlroot)
-    txCols = np.array([m*np.complex(np.cos(p), np.sin(p)) for 
+    txCols = np.array([m*complex(np.cos(p), np.sin(p)) for 
               m,p in zip(sconv.toPowerArray('.//magnitude', tx), 
                          sconv.toAngleArray('.//phase', tx))])
-    txuZero = sconv.toAngle('.//u0', tx)
+    txuZero = sconv.toAngle('.//u0', tx) or 0.0
     rx = sconv.getXMLElement('.//receiveConfiguration', xmlroot)
-    rxCols = np.array([m*np.complex(np.cos(p), np.sin(p)) for 
+    rxCols = np.array([m*complex(np.cos(p), np.sin(p)) for 
               m,p in zip(sconv.toPowerArray('.//magnitude', rx), 
                          sconv.toAngleArray('.//phase', rx))])
-    rxuZero = sconv.toAngle('.//u0', rx)
+    rxuZero = sconv.toAngle('.//u0', rx) or 0.0
     
     txMag = np.array(sconv.toPowerArray('.//magnitude', tx))
     txDelay = np.array(sconv.toDurationArray('.//truedelay', tx))
@@ -328,6 +329,7 @@ def readSignalDataElement(xmlroot, antenna):
     rdrfilename = sconv.toString('.//filename', xmlroot)
     radar = {'acquisition': {'startTime': sconv.toDateTime('.//azimuthStartTime', xmlroot),
                              'numAzimuthSamples': sconv.toInt('.//numAzimuthSamples', xmlroot),
+                             'numBurstSamples': sconv.toInt('.//numBurstSamples', xmlroot),
                              'numRangeSamples': sconv.toInt('.//numRangeSamples', xmlroot),
                              'prf': sconv.toDouble('.//pulseRepetitionFrequency', xmlroot),
                              'nearRangeTime': sconv.toDuration('.//nearRangeTime', xmlroot),
@@ -516,6 +518,7 @@ def satellitePositionsArclength(rd):
     sampleTimes = [myrd.measurementTime[0]
                    + secondsToDelta(t) for t in tList]
     return sampleTimes, np.array(svc), sampleS, C
+    
 
 #%% plot the space time diagram
 def plotSpaceTime(N, radar):
@@ -666,6 +669,105 @@ def twoWayArrayPatternLinearKS(ks, rad, krz, s_off):
 
 
 #%% Compute the signals
+def computeSignals(radar, pointsXYZ, rblock_size=None): 
+    # Loop through radars and compute and write data
+    for rad in radar:
+        ref = rad['acquisition']
+        print("Computing file: %s" % os.path.split(rad['filename'])[-1])
+        print("="*80)
+        
+        
+        # for pointXYZ in pointsXYZ:
+        # Compute some parameters
+        nAziSamples = ref['numAzimuthSamples']
+        nRngSamples = ref['numRangeSamples']
+        
+        try: 
+            burstSamples = ref['numBurstSamples']
+        except KeyError:
+            burstSamples = ref['numAzimuthSamples']
+            
+        
+        pulse_data = np.zeros((nRngSamples, nAziSamples), dtype=complex)
+        startIDX = int((nAziSamples-burstSamples)/2)
+        pulseIDXs = range(startIDX, startIDX + burstSamples)
+        
+        #% Define the fast time values
+        fastTimes = ref['nearRangeTime'] + np.arange(nRngSamples)*ref['rangeSampleSpacing']
+        
+        #% Define the slow times
+        slowTimes = np.arange(ref['numAzimuthSamples'])/ref['prf']
+        slowTimes -= np.mean(slowTimes)
+        slowTimes = slowTimes.reshape((len(slowTimes),1))
+        
+        #% Compute the antenna pattern amplitudes and delays
+        txMag = rad['mode']['txMagnitude']
+        
+        r2t = 2.0/c
+        
+        radarEq1 = ((rad['antenna']['wavelength'])
+                    *np.sqrt(np.sum(rad['antenna']['transmitPowers'][txMag>0])/(4.0*np.pi)**3)
+                    /np.sqrt(Boltzmann*rad['antenna']['systemTemperature']*rad['chirp']['pulseBandwidth'])
+                    /np.sqrt(rad['antenna']['systemLosses'])
+                    )/(fastTimes/r2t)**2
+        velocityVectors = ref['satellitePositions'][1][:,3:]
+        velocityMagnitudes = np.sqrt(np.sum(velocityVectors*velocityVectors, axis=1))
+        
+        for pointXYZ in pointsXYZ:
+            if len(pointXYZ) >= 6: 
+                v_target = pointXYZ[3:6].reshape((1,3))
+            else:
+                v_target = np.zeros((1,3))
+                
+            tmp = np.matlib.repmat(pointXYZ[:3], nAziSamples,1)
+            tmp += slowTimes.dot(v_target)
+            rangeVectors = ref['satellitePositions'][1][:,0:3]-tmp
+            ranges = np.sqrt(np.sum(rangeVectors*rangeVectors, axis=1))
+            lookDirections = np.sum(rangeVectors*velocityVectors, axis=1)/ranges/velocityMagnitudes
+            
+            rangeTimes = ranges*r2t
+            
+            
+            # Define the output array
+            for pulseIDX in tqdm(pulseIDXs):
+                computeFastTimes = nWCS(fastTimes,
+                                        rangeTimes[pulseIDX],
+                                        rad['chirp']['length'])
+                if computeFastTimes is None:
+                    continue
+                response = np.zeros(len(computeFastTimes), complex)
+                antennaResp(response,
+                            computeFastTimes, 
+                            rangeTimes[pulseIDX],
+                            lookDirections[pulseIDX],
+                            np.min(rad['antenna']['azimuthLengths']),
+                            rad['antenna']['azimuthPositions']/c,
+                            rad['mode']['txMagnitude'],
+                            rad['mode']['rxMagnitude'],
+                            rad['mode']['txDelay'],
+                            rad['mode']['rxDelay'],
+                            rad['chirp']['pulseBandwidth'],
+                            rad['chirp']['length'],
+                            rad['antenna']['fc'])
+                pulse_data[:,pulseIDX] += response[0:len(fastTimes)]*radarEq1
+        
+        # Get the target domain from the filename
+        domain = rad['filename'].split("_")[-2]
+        
+        fn_dict = {'rx': lambda x: x, 
+                   'Rx': lambda x: np.fft.fft(x, axis=0),
+                   'rX': lambda x: np.fft.fft(x, axis=1),
+                   'RX': lambda x: np.fft.fft2(x)}
+        
+        # Choose the domain for the data written to file
+        pulse_data = fn_dict[domain](pulse_data)
+        
+        # Write the file to disk
+        filenames = fio.writeSimFiles(rad['filename'], 
+                                      pulse_data,
+                                      rblock = rblock_size)
+    return filenames
+
 def computeSignal(radar, pointXYZ, satSV, rblock_size=None): 
     # Loop through radars and compute and write data
     for rad in radar:
@@ -675,6 +777,10 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
         
         # Compute some parameters
         tmp = np.matlib.repmat(pointXYZ,ref['numAzimuthSamples'],1)
+        try: 
+            burstSamples = ref['numBurstSamples']
+        except KeyError:
+            burstSamples = len(tmp)
         rangeVectors = ref['satellitePositions'][1][:,0:3]-tmp
         ranges = np.sqrt(np.sum(rangeVectors*rangeVectors, axis=1))
         velocityVectors = ref['satellitePositions'][1][:,3:]
@@ -703,15 +809,16 @@ def computeSignal(radar, pointXYZ, satSV, rblock_size=None):
                     )/(fastTimes/r2t)**2
         
         # Define the output array
-        pulse_data = np.zeros((len(fastTimes), len(ranges)), dtype=np.complex128)
-        n_iterations = len(ranges)
-        for pulseIDX in tqdm(range(n_iterations)):
+        pulse_data = np.zeros((len(fastTimes), len(ranges)), dtype=complex)
+        startIDX = int((len(tmp)-burstSamples)/2)
+        pulseIDXs = range(startIDX, startIDX + burstSamples)
+        for pulseIDX in tqdm(pulseIDXs):
             computeFastTimes = nWCS(fastTimes,
                                     rangeTimes[pulseIDX],
                                     rad['chirp']['length'])
             if computeFastTimes is None:
                 continue
-            response = np.zeros(len(computeFastTimes), np.complex128)
+            response = np.zeros(len(computeFastTimes), complex)
             antennaResp(response,
                         computeFastTimes, 
                         rangeTimes[pulseIDX],
@@ -828,13 +935,17 @@ class radar_system:
         self.C.computeRangeCoefficients(pointXYZ - satSV[0:3])
         
     def computePhaseResidual(self):
-        C = self.radar[0]['acquisition']['satelliteArc'][1]
-        s = np.array(self.radar[0]['acquisition']['satelliteArc'][0])
-        print(np.min(self.radar[0]['acquisition']['satelliteArc'][0]))
-        print(np.max(self.radar[0]['acquisition']['satelliteArc'][0]))
+        myradar = self.radar[0]
+        mytarget = self.target_ground_position
+        mykr = self.kr[0]
+        myks_full = self.ks_full
+        C = myradar['acquisition']['satelliteArc'][1]
+        s = np.array(myradar['acquisition']['satelliteArc'][0])
+        print(np.min(myradar['acquisition']['satelliteArc'][0]))
+        print(np.max(myradar['acquisition']['satelliteArc'][0]))
         
         # Get the satpositions from integration and from expansion
-        sPos_numerical = self.radar[0]['acquisition']['satellitePositions'][1][:,0:3].T
+        sPos_numerical = myradar['acquisition']['satellitePositions'][1][:,0:3].T
         sPos_expanded = (np.outer(C.cdf[0], np.ones_like(s)) +
                          np.outer(C.cdf[1], s) +
                          np.outer(C.cdf[2], s**2)/2.0 +
@@ -845,24 +956,24 @@ class radar_system:
         sPos_delta = sPos_numerical - sPos_expanded
     
         # Calculate the domain variable
-        Rn_vector = sPos_numerical - np.outer(self.target_ground_position, 
+        Rn_vector = sPos_numerical - np.outer(mytarget, 
                                               np.ones_like(s))
         Rn = np.linalg.norm(Rn_vector, axis=0)
         rhat_vector = Rn_vector/np.outer(np.ones((3,)), Rn)
-        ksM = -self.kr[0]*np.sum(rhat_vector*sDer_expanded, axis=0)
+        ksM = -mykr*np.sum(rhat_vector*sDer_expanded, axis=0)
     
-        # Caluclate component of delta in direction of rhat (dependent variable)
-        delta = -self.kr[0]*np.sum(sPos_delta*rhat_vector, axis=0)
+        # Calculate component of delta in direction of rhat (dependent variable)
+        delta = -mykr*np.sum(sPos_delta*rhat_vector, axis=0)
         
         print("ksM: %0.4f, %0.4f" % (np.min(ksM), np.max(ksM)))
-        print("ks_full: %0.4f, %0.4f" % (np.min(self.ks_full), np.max(self.ks_full)))
+        print("ks_full: %0.4f, %0.4f" % (np.min(myks_full), np.max(myks_full)))
         print(delta)
         
         # Compute the interpolator
         f = interpolate.interp1d(ksM, delta, kind = 'linear')
         
         # Get the ks dependent values
-        self.ks_phase_correction = f(self.ks_full)
+        self.ks_phase_correction = f(myks_full)
         
 
 #%% Compute and store the r_sys file for quicker processing
@@ -885,7 +996,8 @@ def computeStoreRsys(radar, bands = None, ref_range_idx = None):
     r_sys.computeGroundPoint(radar, range_idx=ref_range_idx)
     
     # Compute phase residual
-    r_sys.computePhaseResidual()
+    #r_sys.computePhaseResidual()
+    r_sys.ks_phase_correction = np.zeros_like(r_sys.ks_full)
     
     with open(sys_file, 'wb') as f:
         pickle.dump(r_sys, f, pickle.HIGHEST_PROTOCOL)
@@ -904,6 +1016,26 @@ def computeStoreMultiProcFilter(radar):
                                              r_sys.kr[0], 
                                              ds) 
                   for rd,ds in zip(radar,r_sys.s_offsets)])
+        
+    """Normalize the computed pattern"""
+    H /= np.sqrt(np.max(H*np.conj(H)))
+    
+    print("Writing processing filter to pickle file...")
+    with open(mprocH_file, 'wb') as f:
+        pickle.dump(H, f, pickle.HIGHEST_PROTOCOL)
+    
+    """Return the processing filter"""
+    return H, r_sys
+
+#%% For non-linear narrowband systems
+def computeStoreMultiProcFilterNonLinear(radar):
+    mprocH_file = fio.fileStruct(radar[0]['filename'], "", "", "mprocH.pickle")
+    
+    r_sys = loadRsys(radar)
+    
+    print("Computing the multi-channel H matrix...")
+    H = np.array([twoWayArrayPattern(-r_sys.ks/r_sys.kr[0], rd) 
+                  for rd in radar])
         
     """Normalize the computed pattern"""
     H /= np.sqrt(np.max(H*np.conj(H)))
@@ -979,7 +1111,7 @@ def multiChannelProcessMem(radar,
     Rn = np.eye(len(radar))/np.sqrt(SNR)
     
     # print("Multi-channel processing ...")
-    procData = np.zeros((n_b,n_x,n_r), dtype=np.complex128)
+    procData = np.zeros((n_b,n_x,n_r), dtype=complex)
     for kidx in tqdm(range(n_x)):
         Rinv = np.linalg.inv(np.dot(H[:,:,kidx], np.conj(H[:,:,kidx].T)) 
                                     + (1.0-p)/p*Rn)
@@ -1037,7 +1169,7 @@ def multiChannelNoise(radar, p=0.5, SNR = 1.0, make_plots=False):
     Rn = np.eye(len(radar))/np.sqrt(SNR)
     
     # print("Multi-channel processing ...")
-    procData = np.zeros((n_b,n_x), dtype=np.complex128)
+    procData = np.zeros((n_b,n_x), dtype=complex)
     for kidx in tqdm(range(n_x)):
         Rinv = np.linalg.inv(np.dot(H[:,:,kidx], np.conj(H[:,:,kidx].T)) 
                                     + (1.0-p)/p*Rn)
@@ -1107,7 +1239,7 @@ def multiChannelProcess(radar, bands=None, p=0.5, make_plots=False, SNR = 1.0):
     Rn = np.eye(len(radar))/np.sqrt(SNR)
     
     print("Multi-channel processing ...")
-    procData = np.zeros((r_sys.n_bands,r_sys.Na,r_sys.Nr), dtype=np.complex128)
+    procData = np.zeros((r_sys.n_bands,r_sys.Na,r_sys.Nr), dtype=complex)
     blkSize = int(r_sys.Na/20)
     for kidx in range(r_sys.Na):
         if kidx%blkSize == 1:
@@ -1161,7 +1293,7 @@ def wkProcessNumba(procData,
     
     try:
         r = r or np.linalg.norm(r_sys.C.R)
-    except AttributeError as aE:
+    except AttributeError:
         print("will use center range for w-k processing")
         r = r_sys.mid_range
         
@@ -1171,16 +1303,16 @@ def wkProcessNumba(procData,
         
     """ Calculate the inverse frequency offset for oversampling in
         the frequency signal (this is done in the interpolation step)"""
-    swath = r_sys.far_range - r_sys.near_range
-    baseband_mix = 2.0*np.pi*np.mod(r_sys.mid_range, swath)/swath
+    # swath = r_sys.far_range - r_sys.near_range
+    # baseband_mix = 2.0*np.pi*np.mod(r_sys.mid_range, swath)/swath
     # baseband_mix = 2.0*np.pi*0.5/r_sys.Nr
         
-    r2t = 2.0/c
+    # r2t = 2.0/c
     cols = len(r_sys.kr_sorted)
     rows = len(ks)
     
     """ Allocate memory and calculate indeces for the pulse workspace """
-    Yos_idx = np.round(FFT_freq(cols,cols,0)).astype('int')
+    # Yos_idx = np.round(FFT_freq(cols,cols,0)).astype('int')
     
     dkr = r_sys.kr[1]-r_sys.kr[0]
     
@@ -1188,19 +1320,20 @@ def wkProcessNumba(procData,
     row_spans = [(row_ticks[k], row_ticks[k+1]) 
                  for k in range(len(row_ticks)-1)]
     
-    wk_processed = np.zeros((rows,mem_cols), dtype=np.complex128)
+    wk_processed = np.zeros((rows,mem_cols), dtype=complex)
     yupkr = 4.0*np.pi/c*(FFT_freq(cols*os_factor, r_sys.fs, 0) + r_sys.f0)
     yupidx = np.argsort(yupkr)
     
     for span in row_spans:
-        # print("Processing rows (azimuth) %d to %d..." % span)
+        print("Processing rows (azimuth) %d to %d..." % span)
         n_rows = span[1]-span[0]
-        YY = np.zeros((n_rows, cols), dtype=np.complex128)
+        YY = np.zeros((n_rows, cols), dtype=complex)
     
         iP = np.zeros((n_rows, r_sys.kr_sorted.shape[0]), 
                       dtype=np.double)
         
         """ Compute the points at which to interpolate """
+        print("Computing interpolation points")
         stlz.getInterpolationPoints(ks[span[0]:span[1]], 
                                     r_sys.kr_sorted,
                                     iP,
@@ -1231,7 +1364,7 @@ def wkProcessNumba(procData,
                                        (iP - r_sys.kr_sorted[0])/dkr, 
                                        os_factor, 
                                        yupidx)
-        # Yos = np.zeros((cols*os_factor, ), dtype=np.complex128)
+        # Yos = np.zeros((cols*os_factor, ), dtype=complex)
         # chunk_DATA = np.fft.fft(procData[span[0]:span[1], :], axis=1)
         # nbwk.interpolatePulsesCx(chunk_DATA[:,r_sys.kridx], 
         #                         YY,

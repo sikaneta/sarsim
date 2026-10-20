@@ -17,6 +17,7 @@ import pandas as pd
 from plot.diamond import antenna, reflect_antenna
 import portion as P
 ant_types = {"reflector": reflect_antenna, "array": antenna}
+
 #%% Define a class for computing various things
 class sar:
 
@@ -226,10 +227,16 @@ class sar:
         slantRange_ref = slantRange[ref_index, :]
         
         off_nadir_range = np.interp(slantRange, 
-                              mygeom["range"], 
-                              mygeom["off_nadir"], 
-                              left=np.nan, 
-                              right=np.nan)
+                                    mygeom["range"], 
+                                    mygeom["off_nadir"], 
+                                    left=np.nan, 
+                                    right=np.nan)
+        
+        incidence_range = np.interp(slantRange, 
+                                    mygeom["range"], 
+                                    mygeom["incidence"], 
+                                    left=np.nan, 
+                                    right=np.nan)
         
         mygeom_ref = {
             "range": slantRange_ref,
@@ -246,11 +253,12 @@ class sar:
         }
         
         twoWay = self.twoWayPowerElevation(np.radians(off_nadir_range-look))
+        sin_incidence = np.sin(np.radians(incidence_range))
         
         """ Compute the total power interference from range ambiguities """
         """ Here is where we would insert a function to incorporate
             the effects of incidence angle on back-scatter """
-        power = twoWay/slantRange**3
+        power = twoWay/slantRange**3/sin_incidence
         power_ref = power[ref_index,:]
         power_intf = np.nansum(power, axis=0) - power_ref
         
@@ -269,15 +277,15 @@ class sar:
         P_dB = 10*np.log10(option["transmitPower"])
         P_N_dB = 10*np.log10(option["noisePower"])
         P_atm_dB = option["twoWayAtmosphericLoss"]
+        P_sys_dB = option["systemLosses"]
         mygeom_ref["QNSR"] = -6.02*option["ADCbits"]
         G_dB = self.myAntenna.gain
         NESZ_0 = 10*np.log10(4*(4*np.pi)**3*v
                              /(c*wavelength**3*option["pulseLength"]*fp))
-        NESZ_cnst = NESZ_0 + P_N_dB - P_dB - 2*G_dB + P_atm_dB
+        NESZ_cnst = NESZ_0 + P_N_dB - P_dB - 2*G_dB + P_atm_dB + P_sys_dB
         
-        incidence = np.radians(mygeom_ref["incidence"])
-        mygeom_ref["NESZ"] = NESZ_cnst + 10*np.log10(np.sin(incidence)
-                                                     /power_ref)
+        #incidence = np.radians(mygeom_ref["incidence"])
+        mygeom_ref["NESZ"] = NESZ_cnst - 10*np.log10(power_ref)
         mygeom_ref["azimuth ambiguity"] = az_amb[nlooks]
         mygeom_ref["azimuth_looks"] = nlooks + 1
         mygeom_ref["MNR"] = 10*np.log10(sum([10**(mygeom_ref[amb]/10)
